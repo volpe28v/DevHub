@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <title>Dev Hub</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("jquery", "1.4.4");</script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/js/client.js"></script>
+
+<script type="text/javascript">
+$(function() {
+  // common
+  var socket = new io.connect('http://<%= host_name %>:' + <%= port %>);
+
+  init_websocket(socket);    
+});
+</script>
+
+<style type="text/css">
+body{
+  background-color: #eee;
+  line-height: 16px;
+  font-size: 12px;
+}
+
+a {
+  color: dodgerblue;
+}
+
+a:hover {
+  color: deeppink;
+}
+
+#wrapper{
+  margin: auto;
+}
+
+#form {
+  padding: 5px;
+}
+
+#code {
+  width: 100%;
+  height: 200px;
+  padding: 5px;
+  background-color: #fff;
+}
+
+#code_out {
+  width: 100%;
+  height: 800px;
+  padding: 5px;
+  border: dotted 1px black;
+  background-color: #fff;
+}
+
+#editor{
+  float: left;
+  margin-left: 10px;
+  width: 55%;
+}
+
+#chat{
+  float: left;
+  width: 40%;
+  height: 1000px;
+  border: solid 1px black;
+  background-color: #fff;
+}
+
+#chat_body {
+  width: 100%;
+  height: 900px;
+  //background-color: #fff;
+  overflow-y: auto;
+}
+
+#list {
+  margin: 0 0 0 2em;
+  padding: 0;
+  font-weight: bold;
+  color: #555;
+}
+
+#login_list {
+  width: 100%;
+  height: 40px;
+  background-color: #777;
+  color: yellow;
+  font-size: 11px;
+}
+
+</style>
+
+  </head>
+  <body>
+    <div id="wrapper">
+    <h2>Dev Hub</h2>
+    <div id="chat">
+      <form id="form">
+	<div>
+          <textarea readonly id="login_list"></textarea>
+	</div>
+        <input type="text" name="name" id="name" size=3 />
+        <input type="text" name="message" id="message" size=40 />
+        <input type="submit" value="Send" />
+      </form>
+      <div id="chat_body">
+        <ul id="list"></ul>
+      </div>
+    </div>
+ 
+    <div id="editor">
+      <textarea id="code"></textarea>
+      <button id="copy_text">copy text to textarea</button>
+      <textarea readonly id="code_out"></textarea>
+    </div>
+    <div style="clear: both;"/>
+    </div>
+
+  </body>
+</html>
+
+
