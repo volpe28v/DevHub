@@ -81,14 +81,14 @@ function append_msg(data){
   $('#list').prepend($('<li id="' + id + '" style="display:none">' + get_msg_body(data) + ' <span style="color: ' + date_color + ';">(' + getFullDate(date) + ')</span></li>'));
   $('#' + id).fadeIn('slow');
 
-	add_to_sequence(data);
+  add_to_sequence(data);
 };
 
 var seq_msg_log = [];
 function add_to_sequence(data){
-	if ( data.name != "System" ){
-	  seq_msg_log.unshift(data);
-	}
+  if ( data.name != "System" ){
+    seq_msg_log.unshift(data);
+  }
 
 	var seq_msg = "";
 	for(var i = 0; i < seq_msg_log.length; i++){
