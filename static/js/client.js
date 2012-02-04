@@ -57,7 +57,7 @@ function init_websocket(socket){
 };
 
 function to_sequence(msg){
-	var seq_html = '<div class=wsd wsd_style="modern-blue"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
+	var seq_html = '<div class=wsd wsd_style="napkin"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
 	return seq_html.replace("MSG",msg);
 
 }
@@ -96,7 +96,7 @@ function add_to_sequence(data){
 	  seq_msg_log[i].msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
 	  var msg_body = seq_msg_log[i].msg.replace(/(>[ ]*(.+))/,"");
 
-		other_name = other_name || seq_msg_log[i].name;
+		other_name = other_name || "みなさん";
 
     seq_msg += seq_msg_log[i].name + "-->" + other_name + ": " + msg_body + "\n";
 	}
