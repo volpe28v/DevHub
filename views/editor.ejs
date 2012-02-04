@@ -9,7 +9,7 @@
 <script type="text/javascript">
 $(function() {
   // common
-  var socket = new io.connect('http://<%= host_name %>:' + <%= port %>);
+  var socket = io.connect('/');
 
   init_websocket(socket);    
 });
@@ -37,6 +37,15 @@ a:hover {
 #form {
   padding: 5px;
 }
+
+#sequence {
+  width: 100%;
+  height: 300px;
+  padding: 5px;
+  background-color: #fff;
+  display: none;
+}
+
 
 #code {
   width: 100%;
@@ -110,6 +119,8 @@ a:hover {
     </div>
  
     <div id="editor">
+      <div id="sequence"></div>
+
       <textarea id="code"></textarea>
       <button id="copy_text">copy text to textarea</button>
       <textarea readonly id="code_out"></textarea>
@@ -118,6 +129,7 @@ a:hover {
     </div>
 
   </body>
+  <script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>
 </html>
 
 

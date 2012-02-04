@@ -42,7 +42,10 @@ function init_websocket(socket){
   // for editor
   socket.on('text', function(msg) {
     //console.log('text recv');
+    //$('#code_out').text(msg);
+//		msg = to_sequence(msg); 
     $('#code_out').text(msg);
+//    $('#sequence').html(to_sequence(msg));
   });
 
   var code_prev = $('#code').val();
@@ -56,6 +59,12 @@ function init_websocket(socket){
   };
   loop();
 };
+
+function to_sequence(msg){
+	var seq_html = '<div class=wsd wsd_style="default"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
+	return seq_html.replace("MSG",msg);
+
+}
 
 function getFullDate(date){
   var yy = date.getYear();
@@ -75,7 +84,17 @@ function append_msg(data){
 
   $('#list').prepend($('<li id="' + id + '" style="display:none">' + get_msg_body(data) + ' <span style="color: ' + date_color + ';">(' + getFullDate(date) + ')</span></li>'));
   $('#' + id).fadeIn('slow');
+
+  var seq_msg = data.name + "-->" + data.name + ": " + data.msg;
+	add_to_sequence(seq_msg);
 };
+
+var seq_msg_log = [];
+function add_to_sequence(seq_msg){
+	seq_msg_log.unshift(seq_msg);
+
+  $('#sequence').html(to_sequence(seq_msg_log.join("\n")));
+}
 
 function append_msg_without_date(data){
   var date = new Date();

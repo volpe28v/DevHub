@@ -1,9 +1,20 @@
 var express = require('express');
+var program = require('commander');
 var app = express.createServer();
 
+program
+  .version('0.0.1')
+  .option('-p, --port <n>', 'port no')
+  .option('-H, --host <s>', 'host name')
+  .parse(process.argv);
+
 // 接続ポートを設定
-var port = 3008;
-var host_name = "192.168.0.3";
+var port = program.port || 3008;
+var host_name = program.host || "localhost";
+//var host_name = "192.168.0.3";
+
+console.log(' port : ' + port);
+console.log(' host : ' + host_name);
 
 // appサーバの設定
 app.set('view engine', 'ejs');
