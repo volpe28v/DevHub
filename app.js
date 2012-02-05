@@ -18,7 +18,7 @@ app.set('view engine', 'ejs');
 app.set('view options', { layout: false });
 app.set('views', __dirname + '/views');
 app.configure(function(){
-    app.use(express.static(__dirname + '/static'));
+  app.use(express.static(__dirname + '/static'));
 });
 
 app.get('/', function(req, res) {
