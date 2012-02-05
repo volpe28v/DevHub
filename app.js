@@ -4,16 +4,13 @@ var app = express.createServer();
 
 program
   .version('0.0.1')
-  .option('-p, --port <n>', 'port no')
-  .option('-H, --host <s>', 'host name')
+  .option('-p, --port <n>', 'port no. default is 3008.')
   .parse(process.argv);
 
 // 接続ポートを設定
 var port = program.port || 3008;
-var host_name = program.host || "localhost";
 
 console.log(' port : ' + port);
-console.log(' host : ' + host_name);
 
 
 // appサーバの設定
@@ -25,25 +22,25 @@ app.configure(function(){
 });
 
 app.get('/', function(req, res) {
-    console.log('/');
-    res.render('editor', { locals: { port: port, host_name: host_name } });
+  console.log('/');
+  res.render('editor', { locals: { port: port, host_name: host_name } });
 });
 
 app.get('/editor', function(req, res) {
-    console.log('/editor');
-    res.render('editor', { locals: { port: port, host_name: host_name } });
+  console.log('/editor');
+  res.render('editor', { locals: { port: port, host_name: host_name } });
 });
 
 app.get('/notify', function(req, res) {
-    console.log('/notify');
-    var name = "Ext";
-    var msg = req.query.msg;
-    var data = {name: name, msg: msg };
+  console.log('/notify');
+  var name = "Ext";
+  var msg = req.query.msg;
+  var data = {name: name, msg: msg };
 
-    io.sockets.emit('message', data);
-    add_msg_log(data);
-    send_growl_all(msg);
-    res.end('recved msg: ' + msg);
+  io.sockets.emit('message', data);
+  add_msg_log(data);
+  send_growl_all(msg);
+  res.end('recved msg: ' + msg);
 });
 
 
@@ -56,13 +53,13 @@ var io = require('socket.io').listen(app);
 console.log("listen!!!");
 
 function send_growl(addr, msg){
-    var exec = require('child_process').exec
-    var cmd = 'growl -H ' + addr + ' -t "Dev Hub" -m "' + msg + '" -P growl';
+  var exec = require('child_process').exec
+  var cmd = 'growl -H ' + addr + ' -t "Dev Hub" -m "' + msg + '" -P growl';
 
-    exec(cmd, {timeout: 1000},
-        function(error, stdout, stderr){
-        }
-    );
+  exec(cmd, {timeout: 1000},
+    function(error, stdout, stderr){
+    }
+  );
 };
 
 Array.prototype.uniq = function(){ 

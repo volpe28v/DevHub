@@ -57,8 +57,8 @@ function init_websocket(socket){
 };
 
 function to_sequence(msg){
-	var seq_html = '<div class=wsd wsd_style="napkin"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
-	return seq_html.replace("MSG",msg);
+  var seq_html = '<div class=wsd wsd_style="napkin"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
+  return seq_html.replace("MSG",msg);
 
 }
 
@@ -90,18 +90,19 @@ function add_to_sequence(data){
     seq_msg_log.unshift(data);
   }
 
-	var seq_msg = "";
-	for(var i = 0; i < seq_msg_log.length; i++){
-		var other_name = "";
-	  seq_msg_log[i].msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
-	  var msg_body = seq_msg_log[i].msg.replace(/(>[ ]*(.+))/,"");
+  var seq_msg = "";
+  var other_name = "";
+  for(var i = 0; i < seq_msg_log.length; i++){
+    other_name = "";
+    seq_msg_log[i].msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
+    var msg_body = seq_msg_log[i].msg.replace(/(>[ ]*(.+))/,"");
 
-		other_name = other_name || "みなさん";
+    other_name = other_name || "みなさん";
 
     seq_msg += seq_msg_log[i].name + "-->" + other_name + ": " + msg_body + "\n";
-	}
+  }
 
-//	console.log(seq_msg);
+//  console.log(seq_msg);
 
   $('#sequence').html(to_sequence(seq_msg));
 }
@@ -114,7 +115,7 @@ function append_msg_without_date(data){
 
   $('#' + id).fadeIn('slow');
 
-	add_to_sequence(data);
+  add_to_sequence(data);
 };
 
 function get_msg_body(data){
@@ -133,14 +134,18 @@ function get_msg_body(data){
     msg_color = "#aaa";
   }
 
-  return '<span style="color: ' + name_color + ';">[' + data.name + ']</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
-};
+  data.msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
+  return '<span style="color: ' + name_color + ';">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
+}
 
 function decorate_msg(msg){
   var deco_msg = msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
 
-  deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen">' + RegExp.$1 + '</span>'});
-  deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red">' + RegExp.$1 + '</span>'});
+  deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + RegExp.$1 + '</span>'});
+  deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>'});
+
+  deco_msg = deco_msg.replace(/(>[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
+
   return deco_msg;
 };
 
