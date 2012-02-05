@@ -23,12 +23,12 @@ app.configure(function(){
 
 app.get('/', function(req, res) {
   console.log('/');
-  res.render('editor', { locals: { port: port, host_name: host_name } });
+  res.render('editor', { locals: { port: port } });
 });
 
 app.get('/editor', function(req, res) {
   console.log('/editor');
-  res.render('editor', { locals: { port: port, host_name: host_name } });
+  res.render('editor', { locals: { port: port } });
 });
 
 app.get('/notify', function(req, res) {

@@ -88,6 +88,9 @@ var seq_msg_log = [];
 function add_to_sequence(data){
   if ( data.name != "System" ){
     seq_msg_log.unshift(data);
+    if (seq_msg_log.length > 10){
+      seq_msg_log.pop();
+    }
   }
 
   var seq_msg = "";
@@ -139,12 +142,15 @@ function get_msg_body(data){
 }
 
 function decorate_msg(msg){
-  var deco_msg = msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
+  var deco_msg = msg;
+  
+  deco_msg = deco_msg.replace(/(>[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
+
+  deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
 
   deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + RegExp.$1 + '</span>'});
   deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>'});
 
-  deco_msg = deco_msg.replace(/(>[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
 
   return deco_msg;
 };
