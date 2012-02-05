@@ -97,8 +97,8 @@ function add_to_sequence(data){
   var other_name = "";
   for(var i = 0; i < seq_msg_log.length; i++){
     other_name = "";
-    seq_msg_log[i].msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
-    var msg_body = seq_msg_log[i].msg.replace(/(>[ ]*(.+))/,"");
+    seq_msg_log[i].msg.replace(/>|＞[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
+    var msg_body = seq_msg_log[i].msg.replace(/(>|＞[ ]*(.+))/,"");
 
     other_name = other_name || "みなさん";
 
@@ -145,6 +145,7 @@ function decorate_msg(msg){
   var deco_msg = msg;
   
   deco_msg = deco_msg.replace(/(>[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
+  deco_msg = deco_msg.replace(/(＞[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
 
   deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
 
