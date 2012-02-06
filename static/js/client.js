@@ -57,7 +57,7 @@ function init_websocket(socket){
 };
 
 function to_sequence(msg){
-  var seq_html = '<div class=wsd wsd_style="napkin"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
+  var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
   return seq_html.replace("MSG",msg);
 
 }
@@ -86,11 +86,12 @@ function append_msg(data){
 
 var seq_msg_log = [];
 function add_to_sequence(data){
-  if ( data.name != "System" ){
-    seq_msg_log.unshift(data);
-    if (seq_msg_log.length > 10){
-      seq_msg_log.pop();
-    }
+  if ( (data.name == "System") ||                                                  
+       (data.name == "Ext") ){ return; }                                           
+
+  seq_msg_log.unshift(data);
+  if (seq_msg_log.length > 10){
+    seq_msg_log.pop();
   }
 
   var seq_msg = "";
