@@ -39,7 +39,7 @@ app.get('/notify', function(req, res) {
 
   io.sockets.emit('message', data);
   add_msg_log(data);
-  send_growl_all(msg);
+  send_growl_all(data);
   res.end('recved msg: ' + msg);
 });
 
@@ -52,7 +52,8 @@ var text_log = "";
 var io = require('socket.io').listen(app);
 console.log("listen!!!");
 
-function send_growl(addr, msg){
+function send_growl(addr, data){
+  var msg = "[" + data.name + "] " + data.msg;
   var exec = require('child_process').exec
   var cmd = 'growl -H ' + addr + ' -t "Dev Hub" -m "' + msg + '" -P growl';
 
@@ -74,9 +75,11 @@ Array.prototype.uniq = function(){
   return tmp_arr; 
 };
 
-function send_growl_all(msg){
+function send_growl_all(data){
   for ( var i = 0; i < client_info.length; i++){
-    send_growl(client_info[i].ip, msg);
+    if ( client_info[i].pomo != true){
+      send_growl(client_info[i].ip,data);
+    }
   }
 };
 
@@ -140,6 +143,46 @@ function exist_ip_num(client, ip){
   return ip_count;
 }
 
+function get_client_info(client){
+  var client_addr = client.handshake.address.address;
+  for(var i = 0; i < client_info.length; i++){
+    if ( client_info[i].ip == client_addr ){ 
+      return client_info[i];
+    }
+  }
+  return null;
+}
+
+function get_name_on_client(client){
+  var c = get_client_info(client);
+  if ( c.name != 'unknown' ){
+    return c.name;
+  }else{
+    return c.ip;
+  }
+}
+
+function is_pomo_on_client(client){
+  var c = get_client_info(client);
+  if ( c.pomo == true ){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function set_pomo_on_client(client, pomo_flg,timer_id){
+  var c = get_client_info(client);
+  c.pomo = pomo_flg;
+  if (pomo_flg){
+    c.pomo_id = timer_id;
+  }else{
+    clearTimeout(c.pomo_id);
+    c.pomo_id = null;
+  }
+}
+
+
 function add_msg_log(data){
   chat_log.push(data)
   if (chat_log.length > 100){
@@ -175,10 +218,34 @@ io.sockets.on('connection', function(client) {
     client.emit('list', ip_list());
     client.broadcast.emit('list', ip_list());
 
-    var msg = "[" + data.name + "] " + data.msg;
     add_msg_log(data)
-    send_growl_all(msg );
-    console.log(msg);
+    send_growl_all(data);
+  });
+
+  client.on('pomo', function(){
+    if ( is_pomo_on_client(client) ){
+      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを中止しました。"};
+      set_pomo_on_client(client,false);
+
+      client.emit('message', data);
+      client.broadcast.emit('message', data);
+      send_growl_all(data);
+    }else{
+      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。(残り25分)"};
+      client.emit('message', data);
+      client.broadcast.emit('message', data);
+      send_growl_all(data);
+
+      var timer_id = setTimeout(function(){
+      var data = {name: "Pomo", msg: get_name_on_client(client) + " のポモドーロが終了しました。"};
+        set_pomo_on_client(client,false);
+        client.emit('message', data);
+        client.broadcast.emit('message', data);
+        send_growl_all(data);
+      //}, 25 * 60000);
+      }, 10000);
+      set_pomo_on_client(client,true,timer_id);
+    }
   });
 
   client.on('text', function(msg) {

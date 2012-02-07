@@ -39,6 +39,12 @@ function init_websocket(socket){
     $('#code').val($('#code_out').text());
   });
 
+  $('#pomo').click(function(){
+    socket.emit('pomo', "");
+  });
+
+
+
 
   // for editor
   socket.on('text', function(msg) {
@@ -88,8 +94,9 @@ function append_msg(data){
 
 var seq_msg_log = [];
 function add_to_sequence(data){
-  if ( (data.name == "System") ||                                                  
-       (data.name == "Ext") ){ return; }                                           
+  if ( (data.name == "System") ||
+       (data.name == "Ext") ||
+       (data.name == "Pomo") ){ return; }                                           
 
   seq_msg_log.unshift(data);
   if (seq_msg_log.length > 10){
@@ -140,6 +147,9 @@ function get_msg_body(data){
   }else if ( data.name == "Ext" ){
     name_color = "#aca";
     msg_color = "#aaa";
+  }else if ( data.name == "Pomo" ){
+    name_color = "tomato";
+    msg_color = "orange";
   }
 
   data.msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
