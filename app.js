@@ -242,8 +242,7 @@ io.sockets.on('connection', function(client) {
         client.emit('message', data);
         client.broadcast.emit('message', data);
         send_growl_all(data);
-      //}, 25 * 60000);
-      }, 10000);
+      }, 25 * 60000);
       set_pomo_on_client(client,true,timer_id);
     }
   });
