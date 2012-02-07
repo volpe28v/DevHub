@@ -112,9 +112,7 @@ function show_sequence(){
     }
   }
 
-  $('#sequence').hide();
   $('#sequence').html(to_sequence(seq_msg));
-  $('#sequence').fadeIn("slow");
 }
 
 function append_msg_without_date(data){
