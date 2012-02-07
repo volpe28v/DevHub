@@ -20,6 +20,7 @@ function init_websocket(socket){
     for ( var i = 0 ; i < msgs.length; i++){
       append_msg_without_date(msgs[i])
     }
+    show_sequence();
   });
 
   $('#form').submit(function() {
@@ -82,6 +83,7 @@ function append_msg(data){
   $('#' + id).fadeIn('slow');
 
   add_to_sequence(data);
+  show_sequence();
 };
 
 var seq_msg_log = [];
@@ -93,7 +95,9 @@ function add_to_sequence(data){
   if (seq_msg_log.length > 10){
     seq_msg_log.pop();
   }
+}
 
+function show_sequence(){
   var seq_msg = "";
   var other_name = "";
   for(var i = 0; i < seq_msg_log.length; i++){
@@ -108,9 +112,9 @@ function add_to_sequence(data){
     }
   }
 
-//  console.log(seq_msg);
-
+  $('#sequence').hide();
   $('#sequence').html(to_sequence(seq_msg));
+  $('#sequence').fadeIn("slow");
 }
 
 function append_msg_without_date(data){

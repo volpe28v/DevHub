@@ -70,15 +70,19 @@ a:hover {
 #editor{
   float: left;
   margin-left: 10px;
-  width: 55%;
+  width: 62%;
 }
 
 #chat{
   float: left;
-  width: 40%;
+  width: 35%;
   height: 1000px;
   border: solid 1px black;
   background-color: #fff;
+}
+
+#name, #message, #code {
+  background-color: aliceblue;
 }
 
 #chat_body {
@@ -128,7 +132,7 @@ a:hover {
       <div id="sequence"></div>
 
       <textarea id="code"></textarea>
-      <button id="copy_text">copy text to textarea</button>
+      <button id="copy_text">Sync</button>
       <textarea readonly id="code_out"></textarea>
     </div>
     <div style="clear: both;"/>
