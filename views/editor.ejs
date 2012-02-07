@@ -12,6 +12,10 @@ $(function() {
   var socket = io.connect('/');
 
   init_websocket(socket);    
+
+  $('#sequence_button').click(function(){                                          
+    $('#sequence').slideToggle();                                                  
+  });
 });
 </script>
 
@@ -120,6 +124,7 @@ a:hover {
     </div>
  
     <div id="editor">
+      <button id="sequence_button">SequenceChat show/hide</button>
       <div id="sequence"></div>
 
       <textarea id="code"></textarea>

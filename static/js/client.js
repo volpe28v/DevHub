@@ -101,9 +101,11 @@ function add_to_sequence(data){
     seq_msg_log[i].msg.replace(/(>|＞)[ ]*(.+)/,function(){ return other_name = RegExp.$2;});
     var msg_body = seq_msg_log[i].msg.replace(/((>|＞)[ ]*(.+))/,"");
 
-    other_name = other_name || "みなさん";
-
-    seq_msg += seq_msg_log[i].name + "-->" + other_name + ": " + msg_body + "\n";
+    if ( other_name ){
+      seq_msg += seq_msg_log[i].name + "-->" + other_name + ": " + msg_body + "\n";
+    }else{
+      seq_msg += "note right of " + seq_msg_log[i].name + ": " + msg_body + "\n";  
+    }
   }
 
 //  console.log(seq_msg);
