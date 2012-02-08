@@ -12,8 +12,9 @@ function init_websocket(socket){
     append_msg(data)
   });
 
-  socket.on('list', function(msg) {
-    $('#login_list').text(msg);
+  socket.on('list', function(login_list) {
+    $('#login_list').text(login_list.join(" "));
+    suggest_start(login_list);
   });
 
   socket.on('latest_log', function(msgs) {
@@ -43,9 +44,6 @@ function init_websocket(socket){
     socket.emit('pomo', "");
   });
 
-
-
-
   // for editor
   socket.on('text', function(msg) {
     $('#code_out').text(msg);
@@ -62,6 +60,19 @@ function init_websocket(socket){
   };
   loop();
 };
+
+var suggest_obj = undefined;
+function suggest_start(list){
+  var suggest_list = []
+  for (var i = 0; i < list.length; ++i){
+    suggest_list.push(">" + list[i]);
+  }
+  if (suggest_obj == undefined){
+    suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {dispAllKey: false, prefix: true});
+  }else{
+    suggest_obj.candidateList = suggest_list;
+  }
+}
 
 function to_sequence(msg){
   var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';

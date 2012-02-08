@@ -122,12 +122,12 @@ function logout(client, ip){
 };
  
 function ip_list(){
-  var ip_list = "";
+  var ip_list = [];
   for(var i = 0; i < client_info.length; i++){
     if ( client_info[i].name != "unknown" ){ 
-      ip_list += "[" + client_info[i].name + "] ";
+      ip_list.push(client_info[i].name);
     }else{
-      ip_list += "[" + client_info[i].ip + "] ";
+      ip_list.push(client_info[i].ip);
     }
   }
   return ip_list;

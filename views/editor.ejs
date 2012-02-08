@@ -5,6 +5,7 @@
     <script type="text/javascript">google.load("jquery", "1.4.4");</script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/js/client.js"></script>
+    <script type="text/javascript" src="/js/suggest.js"></script>
 
 <script type="text/javascript">
 $(function() {
@@ -13,8 +14,8 @@ $(function() {
 
   init_websocket(socket);    
 
-  $('#sequence_button').click(function(){                                          
-    $('#sequence').slideToggle();                                                  
+  $('#sequence_button').click(function(){ 
+    $('#sequence').slideToggle(); 
   });
 });
 </script>
@@ -32,6 +33,30 @@ a {
 
 a:hover {
   color: deeppink;
+}
+
+#suggest {
+  position: absolute;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCFF;
+  width: 252px;
+}
+
+#suggest div {
+  padding: 1px;
+  display: block;
+  width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#suggest div.select{
+  color: #FFFFFF;
+  background-color: #3366FF;
+}
+
+#suggest div.over{
+  background-color: #99CCFF;
 }
 
 #wrapper{
@@ -120,6 +145,7 @@ a:hover {
         <input type="text" name="message" id="message" size=40 />
         <input type="submit" value="Send" />
         <button id="pomo">Pomo</button>
+        <div id="suggest" style="display: none;"></div>
       </form>
       <div id="chat_body">
         <ul id="list"></ul>
