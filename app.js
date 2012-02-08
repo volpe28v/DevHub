@@ -256,6 +256,7 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('disconnect', function() {
+    set_pomo_on_client(client,false);
     var client_addr = client.handshake.address;
 
     if( logout(client, client_addr.address) ){
