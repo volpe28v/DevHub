@@ -124,11 +124,18 @@ function logout(client, ip){
 function ip_list(){
   var ip_list = [];
   for(var i = 0; i < client_info.length; i++){
-    if ( client_info[i].name != "unknown" ){ 
-      ip_list.push(client_info[i].name);
-    }else{
-      ip_list.push(client_info[i].ip);
+    var pomo_min = ""
+    if (client_info[i].pomo_min > 0 ){
+      pomo_min = "(" + client_info[i].pomo_min + "min)"
     }
+
+    var name = ""
+    if ( client_info[i].name != "unknown" ){ 
+      name = client_info[i].name
+    }else{
+      name = client_info[i].ip
+    }
+    ip_list.push("[" + name + pomo_min + "]");
   }
   return ip_list;
 }
@@ -176,12 +183,18 @@ function set_pomo_on_client(client, pomo_flg,timer_id){
   c.pomo = pomo_flg;
   if (pomo_flg){
     c.pomo_id = timer_id;
+    c.pomo_min = 25
   }else{
     clearTimeout(c.pomo_id);
     c.pomo_id = null;
+    c.pomo_min = 0
   }
 }
 
+function update_pomo_on_client(client, min){
+  var c = get_client_info(client);
+  return c.pomo_min -= min
+}
 
 function add_msg_log(data){
   chat_log.push(data)
@@ -191,7 +204,6 @@ function add_msg_log(data){
 }
  
 io.sockets.on('connection', function(client) {
-  console.log("connection!!!");
   var client_addr = client.handshake.address;
   login(client_addr.address);
 
@@ -230,20 +242,33 @@ io.sockets.on('connection', function(client) {
       client.emit('message', data);
       client.broadcast.emit('message', data);
       send_growl_all(data);
+
+      client.emit('list', ip_list());
+      client.broadcast.emit('list', ip_list());
     }else{
       var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。(残り25分)"};
       client.emit('message', data);
       client.broadcast.emit('message', data);
       send_growl_all(data);
 
-      var timer_id = setTimeout(function(){
-      var data = {name: "Pomo", msg: get_name_on_client(client) + " のポモドーロが終了しました。"};
-        set_pomo_on_client(client,false);
-        client.emit('message', data);
-        client.broadcast.emit('message', data);
-        send_growl_all(data);
-      }, 25 * 60000);
+      var timer_id = setInterval(function(){
+        var current_min = update_pomo_on_client(client, 5);
+        //console.log( "current pomo: " + current_min );
+
+        if (current_min <= 0 ){
+          var data = {name: "Pomo", msg: get_name_on_client(client) + " のポモドーロが終了しました。"};
+          set_pomo_on_client(client,false);
+          client.emit('message', data);
+          client.broadcast.emit('message', data);
+          send_growl_all(data);
+        }
+
+        client.emit('list', ip_list());
+        client.broadcast.emit('list', ip_list());
+      }, 5 * 60000);
       set_pomo_on_client(client,true,timer_id);
+      client.emit('list', ip_list());
+      client.broadcast.emit('list', ip_list());
     }
   });
 

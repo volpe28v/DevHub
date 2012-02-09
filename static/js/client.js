@@ -65,7 +65,9 @@ var suggest_obj = undefined;
 function suggest_start(list){
   var suggest_list = []
   for (var i = 0; i < list.length; ++i){
-    suggest_list.push(">" + list[i]);
+    var user_name = ""
+    list[i].replace(/\[(.+?)(\(|\])/, function(){ user_name = '>' + RegExp.$1 });
+    suggest_list.push(user_name);
   }
   if (suggest_obj == undefined){
     suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {dispAllKey: false, prefix: true});
