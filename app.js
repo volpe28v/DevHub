@@ -83,6 +83,18 @@ function send_growl_all(data){
   }
 };
 
+function send_growl_without(client, data){
+  var current_client = get_client_info(client)
+  for ( var i = 0; i < client_info.length; i++){
+    if ( client_info[i].ip != current_client.ip ){
+      if ( client_info[i].pomo != true){
+        send_growl(client_info[i].ip,data);
+      }
+    }
+  }
+};
+
+
 function login(ip){
   for(var i = 0; i < client_info.length; i++){
     if(client_info[i].ip == ip){
@@ -231,7 +243,7 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('list', ip_list());
 
     add_msg_log(data)
-    send_growl_all(data);
+    send_growl_without(client, data);
   });
 
   client.on('pomo', function(){
