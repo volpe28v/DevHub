@@ -226,11 +226,12 @@ io.sockets.on('connection', function(client) {
 
   console.log("New Connection from " + client_addr.address);
 
+  client.emit('list', ip_list());
+  client.broadcast.emit('list', ip_list());
+
   if (chat_log.length > 0 ){
     client.emit('latest_log',chat_log);
   }
-  client.emit('list', ip_list());
-  client.broadcast.emit('list', ip_list());
 
   client.emit('text',text_log);
   client.emit('message', {name:"System", msg: "you join in  : " + client_addr.address });

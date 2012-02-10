@@ -1,3 +1,6 @@
+var latest_login_list = []
+var suggest_obj = undefined;
+
 function init_websocket(socket){
   socket.on('connect', function() {
     //console.log('connect');
@@ -13,6 +16,8 @@ function init_websocket(socket){
   });
 
   socket.on('list', function(login_list) {
+    latest_login_list = login_list
+
     var out_list = ""
     for (var i = 0; i < login_list.length; ++i){
       if ( login_list[i].pomo_min > 0 ){
@@ -70,7 +75,6 @@ function init_websocket(socket){
   loop();
 };
 
-var suggest_obj = undefined;
 function suggest_start(list){
   var suggest_list = []
   for (var i = 0; i < list.length; ++i){
@@ -82,7 +86,6 @@ function suggest_start(list){
   }else{
     suggest_obj.candidateList = suggest_list;
   }
-  console.log(suggest_list)
 }
 
 function to_sequence(msg){
@@ -174,21 +177,43 @@ function get_msg_body(data){
     msg_color = "orange";
   }
 
-  data.msg.replace(/>[ ]*(.+)/,function(){ return other_name = RegExp.$1;});
   return '<span style="color: ' + name_color + ';">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
   var deco_msg = msg;
-  
-  deco_msg = deco_msg.replace(/((>|＞)[ ]*(.+))/,function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>' ;});
+  var other_name = get_other_name(msg)
+
+  if ( is_login_name(other_name.name) ){
+    deco_msg = deco_msg.replace(other_name.area,function(){ return '<span style="color: red;">' + other_name.area + '</span>' ;});
+  }
 
   deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
 
   deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + RegExp.$1 + '</span>'});
   deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>'});
 
-
   return deco_msg;
 };
+
+function get_other_name(msg){
+  var match_area = ""
+  var other_name = ""
+  msg.replace(/((>|＞)[ ]*(.+?)( |$))/,function(){ 
+    match_area = RegExp.$1
+    other_name = RegExp.$3
+  });
+  return {name: other_name, area: match_area }
+};
+
+function is_login_name(name){
+  for(var i = 0; i < latest_login_list.length; ++i ){
+    console.log("list:" + latest_login_list[i].name + ":name:" + name)
+    if ( latest_login_list[i].name == name ){
+    console.log("true list:" + latest_login_list[i].name + ":name:" + name)
+      return true;
+    }
+  }
+  return false;
+}
 
