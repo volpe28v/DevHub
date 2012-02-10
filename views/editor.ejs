@@ -88,6 +88,9 @@ a:hover {
   padding: 5px;
   border: dotted 1px black;
   background-color: #fff;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
 }
 
 #editor{
@@ -102,6 +105,9 @@ a:hover {
   height: 1000px;
   border: solid 1px black;
   background-color: #fff;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
 }
 
 #name, #message, #code {
@@ -143,13 +149,13 @@ a:hover {
 }
 
 .login-name{
-  color: blue;
+  color: darkblue;
   background: -webkit-gradient(linear, left top, left bottom, from(aliceblue), to(lightsteelblue));
   background: -moz-linear-gradient(top, aliceblue,lightsteelblue);
 }
 
 .login-name-pomo{
-  color: blue;
+  color: darkblue;
   background: -webkit-gradient(linear, left top, left bottom, from(antiquewhite), to(tomato));
   background: -moz-linear-gradient(top, antiquewhite,tomato);
 }

@@ -260,7 +260,7 @@ io.sockets.on('connection', function(client) {
 
       client.emit('message', data);
       client.broadcast.emit('message', data);
-      send_growl_all(data);
+      send_growl_without(client, data);
 
       client.emit('list', ip_list());
       client.broadcast.emit('list', ip_list());
@@ -268,7 +268,7 @@ io.sockets.on('connection', function(client) {
       var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。"};
       client.emit('message', data);
       client.broadcast.emit('message', data);
-      send_growl_all(data);
+      send_growl_without(client, data);
 
       var timer_id = setInterval(function(){
         var current_min = update_pomo_on_client(client, 5);
