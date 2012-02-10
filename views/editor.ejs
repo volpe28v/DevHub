@@ -124,10 +124,31 @@ a:hover {
 #login_list {
   width: 100%;
   height: 24px;
-  background-color: #777;
-  color: yellow;
+  color: blue;
   font-size: 11px;
+  margin-top: 5px;
 }
+
+.login-name , .login-name-pomo{
+  font-weight: bold;
+  border: solid 0px;
+  padding: 4px;
+  margin: 1px;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
+}
+
+.login-name{
+  background: -webkit-gradient(linear, left top, left bottom, from(aliceblue), to(lightsteelblue));
+  background: -moz-linear-gradient(top, aliceblue,lightsteelblue);
+}
+
+.login-name-pomo{
+  background: -webkit-gradient(linear, left top, left bottom, from(antiquewhite), to(tomato));
+  background: -moz-linear-gradient(top, antiquewhite,tomato);
+}
+
 
 </style>
 
@@ -138,7 +159,7 @@ a:hover {
     <div id="chat">
       <form id="form">
         <div>
-          <textarea readonly id="login_list"></textarea>
+          <div id="login_list"></div>
         </div>
 
         <input type="text" name="name" id="name" size="3" />

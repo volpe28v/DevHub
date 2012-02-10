@@ -21,13 +21,13 @@ function init_websocket(socket){
     var out_list = ""
     for (var i = 0; i < login_list.length; ++i){
       if ( login_list[i].pomo_min > 0 ){
-        out_list += "[" + login_list[i].name + "(" + login_list[i].pomo_min + "min)]"
+        out_list += '<span class="login-name-pomo">' + login_list[i].name + '(' + login_list[i].pomo_min + 'min)</span>'
       }else{
-        out_list += "[" + login_list[i].name + "]"
+        out_list += '<span class="login-name">' + login_list[i].name + '</span>'
       }
     }
       
-    $('#login_list').text(out_list);
+    $('#login_list').html(out_list);
     suggest_start(login_list);
   });
 
