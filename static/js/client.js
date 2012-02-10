@@ -15,7 +15,11 @@ function init_websocket(socket){
   socket.on('list', function(login_list) {
     var out_list = ""
     for (var i = 0; i < login_list.length; ++i){
-      out_list += "[" + login_list[i].name + "]"
+      if ( login_list[i].pomo_min > 0 ){
+        out_list += "[" + login_list[i].name + "(" + login_list[i].pomo_min + "min)]"
+      }else{
+        out_list += "[" + login_list[i].name + "]"
+      }
     }
       
     $('#login_list').text(out_list);

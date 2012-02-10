@@ -179,7 +179,7 @@ function get_client_info(client){
 
 function get_name_on_client(client){
   var c = get_client_info(client);
-  if ( c.name != 'unknown' ){
+  if ( c.name != undefined ){
     return c.name;
   }else{
     return c.ip;
