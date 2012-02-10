@@ -131,16 +131,15 @@ function add_to_sequence(data){
 
 function show_sequence(){
   var seq_msg = "";
-  var other_name = "";
   for(var i = 0; i < seq_msg_log.length; i++){
-    other_name = "";
-    seq_msg_log[i].msg.replace(/(>|＞)[ ]*(.+)/,function(){ return other_name = RegExp.$2;});
-    var msg_body = seq_msg_log[i].msg.replace(/((>|＞)[ ]*(.+))/,"");
+    other_name = get_other_name(seq_msg_log[i].msg)
 
-    if ( other_name ){
-      seq_msg += seq_msg_log[i].name + "-->" + other_name + ": " + msg_body + "\n";
+    console.log("seq:" + other_name.name)
+    if ( is_login_name(other_name.name) ){
+      var msg_body = seq_msg_log[i].msg.replace(other_name.area,"")
+      seq_msg += seq_msg_log[i].name + "-->" + other_name.name + ": " + msg_body + "\n";
     }else{
-      seq_msg += "note right of " + seq_msg_log[i].name + ": " + msg_body + "\n";  
+      seq_msg += "note right of " + seq_msg_log[i].name + ": " + seq_msg_log[i].msg + "\n";  
     }
   }
 
