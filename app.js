@@ -241,12 +241,13 @@ io.sockets.on('connection', function(client) {
   }
 
   client.on('message', function(data) {
-    client.emit('message', data);
-    client.broadcast.emit('message', data);
-
     set_name(client, data.name);
+
     client.emit('list', ip_list());
     client.broadcast.emit('list', ip_list());
+
+    client.emit('message', data);
+    client.broadcast.emit('message', data);
 
     add_msg_log(data)
     send_growl_without(client, data);
