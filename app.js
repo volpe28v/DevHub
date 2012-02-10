@@ -265,7 +265,7 @@ io.sockets.on('connection', function(client) {
       client.emit('list', ip_list());
       client.broadcast.emit('list', ip_list());
     }else{
-      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。(残り25分)"};
+      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。"};
       client.emit('message', data);
       client.broadcast.emit('message', data);
       send_growl_all(data);

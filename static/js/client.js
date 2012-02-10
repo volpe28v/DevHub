@@ -163,16 +163,15 @@ function get_msg_body(data){
 
   var name_class = "login-name";
   var msg_color = "#555";
-  var date_color = "#ccc";
 
   if ( data.name == "System" ){
-    name_color = "#caa";
+    name_class = "login-name-system";
     msg_color = "#aaa";
   }else if ( data.name == "Ext" ){
-    name_color = "#aca";
+    name_class = "login-name-ext";
     msg_color = "#aaa";
   }else if ( data.name == "Pomo" ){
-    name_color = "tomato";
+    name_class = "login-name-pomosys";
     msg_color = "orange";
   }
 
