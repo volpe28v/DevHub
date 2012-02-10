@@ -102,7 +102,13 @@ function login(ip){
     }
   }
   
-  client_info.push({ip: ip, name: "unknown"})
+  client_info.push(
+    {
+      ip: ip,
+      name: undefined, 
+      pomo_min: 0
+    }
+  )
   return true; 
 };
 
@@ -136,18 +142,17 @@ function logout(client, ip){
 function ip_list(){
   var ip_list = [];
   for(var i = 0; i < client_info.length; i++){
-    var pomo_min = ""
-    if (client_info[i].pomo_min > 0 ){
-      pomo_min = "(" + client_info[i].pomo_min + "min)"
-    }
-
     var name = ""
-    if ( client_info[i].name != "unknown" ){ 
+    if ( client_info[i].name != undefined ){ 
       name = client_info[i].name
     }else{
       name = client_info[i].ip
     }
-    ip_list.push("[" + name + pomo_min + "]");
+    ip_list.push(
+      {
+        name: name, 
+        pomo_min: client_info[i].pomo_min
+      });
   }
   return ip_list;
 }

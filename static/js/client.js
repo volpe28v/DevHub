@@ -13,7 +13,12 @@ function init_websocket(socket){
   });
 
   socket.on('list', function(login_list) {
-    $('#login_list').text(login_list.join(" "));
+    var out_list = ""
+    for (var i = 0; i < login_list.length; ++i){
+      out_list += "[" + login_list[i].name + "]"
+    }
+      
+    $('#login_list').text(out_list);
     suggest_start(login_list);
   });
 
@@ -65,15 +70,15 @@ var suggest_obj = undefined;
 function suggest_start(list){
   var suggest_list = []
   for (var i = 0; i < list.length; ++i){
-    var user_name = ""
-    list[i].replace(/\[(.+?)(\(|\])/, function(){ user_name = '>' + RegExp.$1 });
-    suggest_list.push(user_name);
+    suggest_list.push(">" + list[i].name);
   }
+
   if (suggest_obj == undefined){
     suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {dispAllKey: false, prefix: true});
   }else{
     suggest_obj.candidateList = suggest_list;
   }
+  console.log(suggest_list)
 }
 
 function to_sequence(msg){
