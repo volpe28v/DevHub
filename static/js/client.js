@@ -176,7 +176,7 @@ function get_msg_body(data){
     msg_color = "orange";
   }
 
-  return '<span style="color: ' + name_color + ';">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
+  return '<span class="login-name">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
