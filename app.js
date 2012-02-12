@@ -48,6 +48,7 @@ app.listen(port);
 
 var chat_log = [];
 var client_info = {};
+var client_info_cache = {};
 var text_log = "";
 var io = require('socket.io').listen(app);
 console.log("listen!!!");
@@ -101,10 +102,15 @@ function login(login_ip){
     }
   }
   
+  var name = undefined;
+  if (client_info_cache[login_ip]){
+    name = client_info_cache[login_ip].name
+  }
+
   client_info[login_ip] = 
   {
-      name: undefined, 
-      pomo_min: 0
+    name: name, 
+    pomo_min: 0
   }
   return true; 
 };
@@ -121,6 +127,8 @@ function set_name(client, name){
  
 function logout(client){
   var logout_ip = get_client_ip(client)
+  client_info_cache[logout_ip] = client_info[logout_ip]
+
   // ログイン中のログアウトチェック 
   if ( exist_ip_num(client, logout_ip) > 1 ){
     return false;
