@@ -47,7 +47,7 @@ app.get('/notify', function(req, res) {
 app.listen(port);
 
 var chat_log = [];
-var client_info = [];
+var client_info = {};
 var text_log = "";
 var io = require('socket.io').listen(app);
 console.log("listen!!!");
@@ -76,82 +76,74 @@ Array.prototype.uniq = function(){
 };
 
 function send_growl_all(data){
-  for ( var i = 0; i < client_info.length; i++){
-    if ( client_info[i].pomo != true){
-      send_growl(client_info[i].ip,data);
+  for (var ip in client_info){
+    if ( client_info[ip].pomo != true){
+      send_growl(ip,data);
     }
   }
 };
 
 function send_growl_without(client, data){
-  var current_client = get_client_info(client)
-  for ( var i = 0; i < client_info.length; i++){
-    if ( client_info[i].ip != current_client.ip ){
-      if ( client_info[i].pomo != true){
-        send_growl(client_info[i].ip,data);
+  var current_ip = get_client_ip(client)
+  for (var ip in client_info){
+    if ( ip != current_ip ){
+      if ( client_info[ip].pomo != true){
+        send_growl(ip,data);
       }
     }
   }
 };
 
-
-function login(ip){
-  for(var i = 0; i < client_info.length; i++){
-    if(client_info[i].ip == ip){
+function login(login_ip){
+  for (var ip in client_info){
+    if(ip == login_ip){
       return true;
     }
   }
   
-  client_info.push(
-    {
-      ip: ip,
+  client_info[login_ip] = 
+  {
       name: undefined, 
       pomo_min: 0
-    }
-  )
+  }
   return true; 
 };
 
 function set_name(client, name){
-  for(var i = 0; i < client_info.length; i++){
-    if(client_info[i].ip == client.handshake.address.address ){
-      client_info[i].name = name;
-      return true;
-    }
+  var current_ip = get_client_ip(client)
+  if (client_info[current_ip]){
+    client_info[current_ip].name = name;
+    return true;
   }
-  
-  return false; 
+
+  return false;
 };
  
-function logout(client, ip){
+function logout(client){
+  var logout_ip = get_client_ip(client)
   // ログイン中のログアウトチェック 
-  if ( exist_ip_num(client, ip) > 1 ){
+  if ( exist_ip_num(client, logout_ip) > 1 ){
     return false;
   }
 
-  for(var i = 0; i < client_info.length; i++){
-    if(client_info[i].ip == ip){
-      client_info.splice(i,1);
-      return true;
-    }
-  }
+  delete client_info[logout_ip]
 
   return false;
 };
  
 function ip_list(){
   var ip_list = [];
-  for(var i = 0; i < client_info.length; i++){
+  for (var ip in client_info){
     var name = ""
-    if ( client_info[i].name != undefined ){ 
-      name = client_info[i].name
+    if ( client_info[ip].name != undefined ){ 
+      name = client_info[ip].name
     }else{
-      name = client_info[i].ip
+      name = ip
     }
     ip_list.push(
       {
         name: name, 
-        pomo_min: client_info[i].pomo_min
+        pomo_min: client_info[ip].pomo_min
       });
   }
   return ip_list;
@@ -168,13 +160,12 @@ function exist_ip_num(client, ip){
 }
 
 function get_client_info(client){
-  var client_addr = client.handshake.address.address;
-  for(var i = 0; i < client_info.length; i++){
-    if ( client_info[i].ip == client_addr ){ 
-      return client_info[i];
-    }
-  }
-  return null;
+  var client_ip = get_client_ip(client);
+  return client_info[client_ip];
+}
+
+function get_client_ip(client){
+  return client.handshake.address.address;
 }
 
 function get_name_on_client(client){
@@ -221,10 +212,10 @@ function add_msg_log(data){
 }
  
 io.sockets.on('connection', function(client) {
-  var client_addr = client.handshake.address;
-  login(client_addr.address);
+  var client_ip = get_client_ip(client);
+  login(client_ip);
 
-  console.log("New Connection from " + client_addr.address);
+  console.log("New Connection from " + client_ip);
 
   client.emit('list', ip_list());
   client.broadcast.emit('list', ip_list());
@@ -234,10 +225,10 @@ io.sockets.on('connection', function(client) {
   }
 
   client.emit('text',text_log);
-  client.emit('message', {name:"System", msg: "you join in  : " + client_addr.address });
+  client.emit('message', {name:"System", msg: "you join in  : " + client_ip });
 
-  if ( exist_ip_num(client, client_addr.address) <= 1 ){
-    client.broadcast.emit('message', {name:"System", msg: "in  : " + client_addr.address });
+  if ( exist_ip_num(client, client_ip) <= 1 ){
+    client.broadcast.emit('message', {name:"System", msg: "in  : " + client_ip });
   }
 
   client.on('message', function(data) {
@@ -301,14 +292,14 @@ io.sockets.on('connection', function(client) {
 
   client.on('disconnect', function() {
     set_pomo_on_client(client,false);
-    var client_addr = client.handshake.address;
+    var client_addr = get_client_ip(client);
 
-    if( logout(client, client_addr.address) ){
+    if( logout(client) ){
       client.broadcast.emit('message', {name:"System", msg: "out : " + client_addr.address });
       client.broadcast.emit('list', ip_list());
     }
 
-    console.log('disconnect:' + client_addr.address);
+    console.log('disconnect:' + get_client_ip(client));
   });
 });
 
