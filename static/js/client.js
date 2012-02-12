@@ -106,6 +106,10 @@ function getFullDate(date){
 };
 
 function append_msg(data){
+  //TODO: System メッセージを非表示にする。
+  //      切り替え可能にするかは検討する。
+  if (data.name == "System") { return }
+
   var date = new Date();
   var id = date.getTime();
   var date_color = "#ccc";
