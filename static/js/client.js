@@ -39,7 +39,6 @@ function init_websocket(socket){
   });
 
   $('#form').submit(function() {
-    //console.log('send');
     var name = $('#name').val();
     var message = $('#message').val();
     if ( message && name ){
@@ -138,7 +137,6 @@ function show_sequence(){
   for(var i = 0; i < seq_msg_log.length; i++){
     other_name = get_other_name(seq_msg_log[i].msg)
 
-    console.log("seq:" + other_name.name)
     if ( is_login_name(other_name.name) ){
       var msg_body = seq_msg_log[i].msg.replace(other_name.area,"")
       seq_msg += seq_msg_log[i].name + "-->" + other_name.name + ": " + msg_body + "\n";
@@ -210,9 +208,7 @@ function get_other_name(msg){
 
 function is_login_name(name){
   for(var i = 0; i < latest_login_list.length; ++i ){
-    console.log("list:" + latest_login_list[i].name + ":name:" + name)
     if ( latest_login_list[i].name == name ){
-    console.log("true list:" + latest_login_list[i].name + ":name:" + name)
       return true;
     }
   }
