@@ -27,8 +27,10 @@ function init_websocket(socket){
       }
     }
       
-    $('#login_list').html(out_list);
-    suggest_start(login_list);
+    if ($('#login_list').html() != out_list){
+      $('#login_list').html(out_list);
+      suggest_start(login_list);
+    }
   });
 
   socket.on('latest_log', function(msgs) {

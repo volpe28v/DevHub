@@ -270,7 +270,7 @@ io.sockets.on('connection', function(client) {
       send_growl_without(client, data);
 
       var timer_id = setInterval(function(){
-        var current_min = update_pomo_on_client(client, 5);
+        var current_min = update_pomo_on_client(client, 1);
         //console.log( "current pomo: " + current_min );
 
         if (current_min <= 0 ){
@@ -283,7 +283,7 @@ io.sockets.on('connection', function(client) {
 
         client.emit('list', ip_list());
         client.broadcast.emit('list', ip_list());
-      }, 5 * 60000);
+      }, 1 * 60000);
       set_pomo_on_client(client,true,timer_id);
       client.emit('list', ip_list());
       client.broadcast.emit('list', ip_list());
