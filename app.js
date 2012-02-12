@@ -136,7 +136,7 @@ function logout(client){
 
   delete client_info[logout_ip]
 
-  return false;
+  return true;
 };
  
 function ip_list(){
