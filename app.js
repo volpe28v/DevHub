@@ -48,7 +48,6 @@ app.listen(port);
 
 var chat_log = [];
 var client_info = {};
-var client_info_cache = {};
 var text_log = "";
 var io = require('socket.io').listen(app);
 console.log("listen!!!");
@@ -102,20 +101,17 @@ function login(login_ip){
     }
   }
   
-  var name = undefined;
-  if (client_info_cache[login_ip]){
-    name = client_info_cache[login_ip].name
-  }
-
   client_info[login_ip] = 
   {
-    name: name, 
+    name: undefined, 
     pomo_min: 0
   }
   return true; 
 };
 
 function set_name(client, name){
+  if (name == ""){return false;}
+
   var current_ip = get_client_ip(client)
   if (client_info[current_ip]){
     client_info[current_ip].name = name;
@@ -127,7 +123,6 @@ function set_name(client, name){
  
 function logout(client){
   var logout_ip = get_client_ip(client)
-  client_info_cache[logout_ip] = client_info[logout_ip]
 
   // ログイン中のログアウトチェック 
   if ( exist_ip_num(client, logout_ip) > 1 ){
@@ -181,7 +176,7 @@ function get_name_on_client(client){
   if ( c.name != undefined ){
     return c.name;
   }else{
-    return c.ip;
+    return get_client_ip(client);
   }
 }
 
@@ -225,9 +220,6 @@ io.sockets.on('connection', function(client) {
 
   console.log("New Connection from " + client_ip);
 
-  client.emit('list', ip_list());
-  client.broadcast.emit('list', ip_list());
-
   if (chat_log.length > 0 ){
     client.emit('latest_log',chat_log);
   }
@@ -239,6 +231,13 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('message', {name:"System", msg: "in  : " + client_ip });
   }
 
+   client.on('name', function(data) {
+    set_name(client, data.name);
+
+    client.emit('list', ip_list());
+    client.broadcast.emit('list', ip_list());
+  });
+ 
   client.on('message', function(data) {
     set_name(client, data.name);
 
@@ -252,9 +251,15 @@ io.sockets.on('connection', function(client) {
     send_growl_without(client, data);
   });
 
-  client.on('pomo', function(){
+  client.on('pomo', function(pomo_data){
+    set_name(client, pomo_data.name);
+    var pomo_msg = ""
+    if ( pomo_data.msg != "" ){
+      pomo_msg = '"' + pomo_data.msg + '"'
+    }
+
     if ( is_pomo_on_client(client) ){
-      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを中止しました。"};
+      var data = {name: "Pomo", msg: get_name_on_client(client) + ' がポモドーロを中止しました。' + pomo_msg};
       set_pomo_on_client(client,false);
 
       client.emit('message', data);
@@ -264,7 +269,7 @@ io.sockets.on('connection', function(client) {
       client.emit('list', ip_list());
       client.broadcast.emit('list', ip_list());
     }else{
-      var data = {name: "Pomo", msg: get_name_on_client(client) + " がポモドーロを開始しました。"};
+      var data = {name: "Pomo", msg: get_name_on_client(client) + ' がポモドーロを開始しました。' + pomo_msg};
       client.emit('message', data);
       client.broadcast.emit('message', data);
       send_growl_without(client, data);

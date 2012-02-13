@@ -4,6 +4,7 @@ var suggest_obj = undefined;
 function init_websocket(socket){
   socket.on('connect', function() {
     //console.log('connect');
+    socket.emit('name', {name: $.cookie("dev_hub_name")});
   });
 
   socket.on('disconnect', function(){
@@ -29,6 +30,7 @@ function init_websocket(socket){
       
     if ($('#login_list').html() != out_list){
       $('#login_list').html(out_list);
+      $('#login_list').fadeIn();
       suggest_start(login_list);
     }
   });
@@ -43,6 +45,8 @@ function init_websocket(socket){
   $('#form').submit(function() {
     var name = $('#name').val();
     var message = $('#message').val();
+    $.cookie("dev_hub_name",name);
+
     if ( message && name ){
       var send_msg = "[" + name + "] " + message;
       socket.emit('message', {name:name,msg:message});
@@ -56,7 +60,13 @@ function init_websocket(socket){
   });
 
   $('#pomo').click(function(){
-    socket.emit('pomo', "");
+    var name = $('#name').val();
+    var message = $('#message').val();
+    $.cookie("dev_hub_name",name);
+
+    $('#message').attr('value', '');
+    socket.emit('pomo', {name: name, msg: message});
+    return false;
   });
 
   // for editor

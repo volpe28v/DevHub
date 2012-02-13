@@ -6,6 +6,7 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/js/client.js"></script>
     <script type="text/javascript" src="/js/suggest.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
 
 <script type="text/javascript">
 $(function() {
@@ -13,6 +14,8 @@ $(function() {
   var socket = io.connect('/');
 
   init_websocket(socket);    
+
+  $('#name').val($.cookie("dev_hub_name"));
 
   $('#sequence_button').click(function(){ 
     $('#sequence').slideToggle(); 
@@ -188,7 +191,7 @@ a:hover {
     <div id="chat">
       <form id="form">
         <div>
-          <div id="login_list"></div>
+          <div id="login_list" style="display:none"></div>
         </div>
 
         <input type="text" name="name" id="name" size="3" />
