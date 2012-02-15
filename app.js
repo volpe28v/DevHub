@@ -50,6 +50,7 @@ var chat_log = [];
 var client_info = {};
 var text_log = "";
 var io = require('socket.io').listen(app);
+var client_max_id = 0;
 console.log("listen!!!");
 
 function send_growl(addr, data){
@@ -104,8 +105,11 @@ function login(login_ip){
   client_info[login_ip] = 
   {
     name: undefined, 
-    pomo_min: 0
+    pomo_min: 0,
+    id: client_max_id
   }
+  client_max_id += 1
+
   return true; 
 };
 
@@ -146,7 +150,8 @@ function ip_list(){
     ip_list.push(
       {
         name: name, 
-        pomo_min: client_info[ip].pomo_min
+        pomo_min: client_info[ip].pomo_min,
+        id: client_info[ip].id
       });
   }
   return ip_list;

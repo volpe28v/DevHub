@@ -24,7 +24,7 @@ function init_websocket(socket){
       if ( login_list[i].pomo_min > 0 ){
         out_list += '<span class="login-name-pomo">' + login_list[i].name + ' <span class="pomo-min">' + login_list[i].pomo_min + 'min</span></span>'
       }else{
-        out_list += '<span class="login-name">' + login_list[i].name + '</span>'
+        out_list += '<span class="login-name' + login_list[i].id % 10 + '">' + login_list[i].name + '</span>'
       }
     }
       
