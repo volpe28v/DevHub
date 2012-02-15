@@ -21,18 +21,21 @@
 * node が入っていることが前提
 
 * 以下のプラグインをインストール
+
  $ npm install express
  $ npm install ejs
  $ npm install socket.io
  $ npm install commander
 
 * 起動
+
  $ node app.js -p 3000
 
 ## 外部サービスからの通知APIを叩く方法
 ### Jenkins
 * Post build task　プラグインをインストール
 * 以下のスクリプトを実行するようにする
+
  RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]'`
  wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
 
