@@ -216,13 +216,9 @@ function add_msg_log(data){
  
 io.sockets.on('connection', function(client) {
   var client_ip = get_client_ip(client);
-  login(client_ip);
-
   console.log("New Connection from " + client_ip);
 
-  if (chat_log.length > 0 ){
-    client.emit('latest_log',chat_log);
-  }
+  login(client_ip);
 
   client.emit('text',text_log);
   client.emit('message', {name:"System", msg: "you join in  : " + client_ip });
@@ -231,11 +227,15 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('message', {name:"System", msg: "in  : " + client_ip });
   }
 
-   client.on('name', function(data) {
+  client.on('name', function(data) {
     set_name(client, data.name);
 
     client.emit('list', ip_list());
     client.broadcast.emit('list', ip_list());
+
+    if (chat_log.length > 0 ){
+      client.emit('latest_log',chat_log);
+    }
   });
  
   client.on('message', function(data) {
