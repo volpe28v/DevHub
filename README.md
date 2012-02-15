@@ -22,10 +22,10 @@
 
 * 以下のプラグインをインストール
 
- $ npm install express
- $ npm install ejs
- $ npm install socket.io
- $ npm install commander
+  $ npm install express
+  $ npm install ejs
+  $ npm install socket.io
+  $ npm install commander
 
 * 起動
 
@@ -36,7 +36,7 @@
 * Post build task　プラグインをインストール
 * 以下のスクリプトを実行するようにする
 
- RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]'`
- wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
+  RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]'`
+  wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
 
 
