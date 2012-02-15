@@ -1,5 +1,6 @@
 var latest_login_list = []
 var suggest_obj = undefined;
+var LOGIN_COLOR_MAX = 10
 
 function init_websocket(socket){
   socket.on('connect', function() {
@@ -24,7 +25,7 @@ function init_websocket(socket){
       if ( login_list[i].pomo_min > 0 ){
         out_list += '<span class="login-name-pomo">' + login_list[i].name + ' <span class="pomo-min">' + login_list[i].pomo_min + 'min</span></span>'
       }else{
-        out_list += '<span class="login-name' + login_list[i].id % 10 + '">' + login_list[i].name + '</span>'
+        out_list += '<span class="login-name' + login_list[i].id % LOGIN_COLOR_MAX + '">' + login_list[i].name + '</span>'
       }
     }
       
@@ -178,6 +179,8 @@ function get_msg_body(data){
   var name_class = "login-name";
   var msg_color = "#555";
 
+  data.id = get_id(data.name)
+
   if ( data.name == "System" ){
     name_class = "login-name-system";
     msg_color = "#aaa";
@@ -187,6 +190,9 @@ function get_msg_body(data){
   }else if ( data.name == "Pomo" ){
     name_class = "login-name-pomosys";
     msg_color = "orange";
+  }else{
+    name_class = "login-name" + data.id % LOGIN_COLOR_MAX
+    msg_color = "#555";
   }
 
   return '<span class="' + name_class + '">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
@@ -225,5 +231,14 @@ function is_login_name(name){
     }
   }
   return false;
+}
+
+function get_id(name){
+  for(var i = 0; i < latest_login_list.length; ++i ){
+    if ( latest_login_list[i].name == name ){
+      return latest_login_list[i].id;
+    }
+  }
+  return 0;
 }
 

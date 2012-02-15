@@ -185,6 +185,11 @@ function get_name_on_client(client){
   }
 }
 
+function get_id(client){
+  var c = get_client_info(client);
+  return c.id
+}
+
 function is_pomo_on_client(client){
   var c = get_client_info(client);
   if ( c.pomo == true ){
