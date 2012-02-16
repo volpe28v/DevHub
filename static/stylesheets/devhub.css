@@ -1,0 +1,221 @@
+body{
+  background-color: #eee;
+  line-height: 16px;
+  font-size: 12px;
+}
+
+a {
+  color: dodgerblue;
+}
+
+a:hover {
+  color: deeppink;
+}
+
+#suggest {
+  position: absolute;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCFF;
+  width: 252px;
+}
+
+#suggest div {
+  padding: 1px;
+  display: block;
+  width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#suggest div.select{
+  color: #FFFFFF;
+  background-color: #3366FF;
+}
+
+#suggest div.over{
+  background-color: #99CCFF;
+}
+
+#wrapper{
+  margin: auto;
+}
+
+#form {
+  padding: 5px;
+}
+
+#sequence {
+  width: 100%;
+  background-color: #fff;
+  display: none;
+  margin-bottom: 5px;
+}
+
+
+#code {
+  width: 100%;
+  height: 200px;
+  padding: 5px;
+  background-color: #fff;
+}
+
+#code_out {
+  width: 100%;
+  height: 800px;
+  padding: 5px;
+  border: dotted 1px black;
+  background-color: #fff;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
+}
+
+#editor{
+  float: left;
+  margin-left: 10px;
+  width: 62%;
+}
+
+#chat{
+  float: left;
+  width: 35%;
+  height: 1000px;
+  border: solid 1px black;
+  background-color: #fff;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
+}
+
+#name, #message, #code {
+  background-color: aliceblue;
+}
+
+#chat_body {
+  width: 100%;
+  height: 900px;
+  overflow-y: auto;
+}
+
+#list {
+  margin: 0 0 0 2em;
+  padding: 0;
+  font-weight: bold;
+  color: #555;
+  line-height: 25px;
+  list-style-type: none;
+  margin: 0 0 0 5px;
+  padding: 0;
+}
+
+#login_list {
+  width: 100%;
+  height: 24px;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.login-name , .login-name-pomo , .login-name-system, .login-name-ext, .login-name-pomosys, .login-name0, .login-name1, .login-name2, .login-name3, .login-name4, .login-name5, .login-name6, .login-name7, .login-name8, .login-name9{
+  font-weight: bold;
+  border: solid 1px gray;
+  padding: 4px;
+  margin: 1px;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
+}
+
+.login-name{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(aliceblue), to(lightsteelblue));
+  background: -moz-linear-gradient(top, aliceblue,lightsteelblue);
+}
+
+.login-name0{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(aliceblue), to(lightsteelblue));
+  background: -moz-linear-gradient(top, aliceblue,lightsteelblue);
+}
+
+.login-name1{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(mediumaquamarine));
+  background: -moz-linear-gradient(top, ghostwhite,mediumaquamarine);
+}
+
+.login-name2{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(palegoldenrod));
+  background: -moz-linear-gradient(top, ghostwhite,palegoldenrod);
+}
+
+.login-name3{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(darkturquoise));
+  background: -moz-linear-gradient(top, ghostwhite,darkturquoise);
+}
+
+.login-name4{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(burlywood));
+  background: -moz-linear-gradient(top, ghostwhite,burlywood);
+}
+
+.login-name5{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(khaki));
+  background: -moz-linear-gradient(top, ghostwhite,khaki);
+}
+
+.login-name6{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightcoral));
+  background: -moz-linear-gradient(top, ghostwhite,lightcoral);
+}
+
+.login-name7{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightskyblue));
+  background: -moz-linear-gradient(top, ghostwhite,lightskyblue);
+}
+
+.login-name8{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(peachpuff));
+  background: -moz-linear-gradient(top, ghostwhite,peachpuff);
+}
+
+.login-name9{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(plum));
+  background: -moz-linear-gradient(top, ghostwhite,plum);
+}
+
+.login-name-pomo{
+  color: darkblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(antiquewhite), to(tomato));
+  background: -moz-linear-gradient(top, antiquewhite,tomato);
+}
+
+.login-name-pomosys{
+  color: #baa;
+  background: -webkit-gradient(linear, left top, left bottom, from(snow), to(mistyrose));
+  background: -moz-linear-gradient(top, snow,mistyrose);
+}
+
+.login-name-system{
+  color: #baa;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(gainsboro));
+  background: -moz-linear-gradient(top, ghostwhite,gainsboro);
+}
+
+.login-name-ext{
+  color: #baa;
+  background: -webkit-gradient(linear, left top, left bottom, from(honeydew), to(lightgreen));
+  background: -moz-linear-gradient(top, honeydew,lightgreen);
+}
+
+.pomo-min{
+  color: mintcream;
+}
+
