@@ -1,11 +1,23 @@
 var latest_login_list = []
 var suggest_obj = undefined;
 var LOGIN_COLOR_MAX = 10
+var COOKIE_NAME = "dev_hub_name";
 
-function init_websocket(socket){
+$(function() {
+  init_websocket();
+
+  $('#name').val($.cookie(COOKIE_NAME));
+
+  $('#sequence_button').click(function(){ 
+    $('#sequence').slideToggle(); 
+  });
+});
+
+function init_websocket(){
+  var socket = io.connect('/');
   socket.on('connect', function() {
     //console.log('connect');
-    socket.emit('name', {name: $.cookie("dev_hub_name")});
+    socket.emit('name', {name: $.cookie(COOKIE_NAME)});
   });
 
   socket.on('disconnect', function(){
@@ -46,7 +58,7 @@ function init_websocket(socket){
   $('#form').submit(function() {
     var name = $('#name').val();
     var message = $('#message').val();
-    $.cookie("dev_hub_name",name);
+    $.cookie(COOKIE_NAME,name);
 
     if ( message && name ){
       var send_msg = "[" + name + "] " + message;
@@ -63,7 +75,7 @@ function init_websocket(socket){
   $('#pomo').click(function(){
     var name = $('#name').val();
     var message = $('#message').val();
-    $.cookie("dev_hub_name",name);
+    $.cookie(COOKIE_NAME,name);
 
     $('#message').attr('value', '');
     socket.emit('pomo', {name: name, msg: message});

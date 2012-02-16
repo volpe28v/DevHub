@@ -9,20 +9,6 @@
     <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
     <link href="/stylesheets/devhub.css" media="screen" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript">
-$(function() {
-  // common
-  var socket = io.connect('/');
-
-  init_websocket(socket);    
-
-  $('#name').val($.cookie("dev_hub_name"));
-
-  $('#sequence_button').click(function(){ 
-    $('#sequence').slideToggle(); 
-  });
-});
-</script>
   </head>
 
   <body>
