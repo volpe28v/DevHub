@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DevHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("jquery", "1.7.0");</script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/javascripts/client_new.js"></script>
+    <script type="text/javascript" src="/javascripts/suggest.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <link href="/stylesheets/devhub_new.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+
+  </head>
+
+  <body style="padding-top: 50px">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">DevHub</a>
+          <ul class="nav">
+            <li class="active">
+              <a href="/new">Home</a>
+            </li>
+            <li><a href="/">OldStyle</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span5">
+          <div id="login_list" style="display:none"></div>
+          <form id="form">
+            <input type="text" name="name" id="name" class="span1" placeholder="Name"/>
+            <input type="text" name="message" id="message" class="span4" autocomplete="off" placeholder="Message"/>
+            <input type="submit" value="Send" class="btn btn-small btn-primary"/>
+            <span id="pomo" class="btn btn-small btn-warning">Pomo</span>
+            <div id="suggest" style="display: none;"></div>
+          </form>
+          <div id="chat_body">
+            <ul id="list"></ul>
+          </div>
+        </div>
+ 
+        <div class="span7">
+          <div class="tabbable">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#share-memo" data-toggle="tab">ShareMemo</a></li>
+            </ul>
+
+            <div class="tab-content">
+              <div id="share-memo" class="tab-pane active">
+                <button id="sync_text" class="btn"><i class="icon-refresh"></i> Sync</button>
+                <button id="clear_text" class="btn"><i class="icon-trash"></i> Clear</button>
+                <textarea id="code"></textarea>
+                <textarea readonly id="code_out"></textarea>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  <footer>
+    <span>
+    © 2012 Naoki KODAMA. All rights reserved.
+    </span>
+  </footer>
+
+  </body>
+</html>
+
+
