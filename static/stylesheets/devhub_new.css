@@ -49,7 +49,6 @@ a:hover {
   width: 99%;
   height: 800px;
   padding: 5px;
-  margin-top: 2px;
   border: solid 1px whitesmoke;
   background-color: ghostwhite; 
   border-radius: 4px;        /* CSS3草案 */  
@@ -193,6 +192,11 @@ a:hover {
 
 #text_writer {
   display: none;
+  margin: 6px 0px 4px 0px;
+}
+
+#history_logs dt, #current_log dt{
+  margin: 0px 0px 2px 4px;
 }
 
 footer {

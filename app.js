@@ -136,12 +136,7 @@ function logout(client){
 function ip_list(){
   var ip_list = [];
   for (var ip in client_info){
-    var name = ""
-    if ( client_info[ip].name != undefined ){ 
-      name = client_info[ip].name
-    }else{
-      name = ip
-    }
+    var name = get_client_vadlid_name(client_info[ip].name , ip)
     ip_list.push(
       {
         name: name, 
@@ -152,6 +147,14 @@ function ip_list(){
   return ip_list;
 }
 
+function get_client_vadlid_name(name,ip){
+    if ( name != undefined ){ 
+      return name
+    }else{
+      return ip
+    }
+}
+ 
 function exist_ip_num(client, ip){
   var ip_count = 0;
   for (var key in client.manager.handshaken){
@@ -220,6 +223,10 @@ function add_msg_log(data){
 }
 
 function add_text_log(data){
+  if (data.text == ""){return}
+  var blanc = new RegExp("^[ \n]+$");
+  if (blanc.test(data.text)) {return}
+
   if (text_logs[0] != undefined && text_logs[0].name == data.name){
     text_logs[0].text = data.text;
     text_logs[0].date = data.date;
@@ -330,11 +337,12 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('text', function(msg) {
-    var c = get_client_info(client);
+    var name = get_name_on_client(client)
+
     var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
 
-    text_log = { name: c.name, text: msg, date: getFullDate(now) }
+    text_log = { name: name, text: msg, date: getFullDate(now) }
     client.emit('text', text_log);
     client.broadcast.emit('text', text_log);
     if ( add_text_log(text_log) ){
