@@ -87,13 +87,25 @@ function init_websocket(){
     return false;
   });
 
-  // for editor
+  // for share memo
   socket.on('text', function(text_log) {
     $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
     $('#text_writer').show();
 
     $('#code_out').text(text_log.text);
   });
+
+  socket.on('text_logs', function(text_logs){
+      var logs_dl = "<dl>"
+      for( var i = 0; i < text_logs.length; ++i){
+        logs_dl += "<dt>" + text_logs[i].name + " at " + text_logs[i].date + "</dt>"
+        logs_dl += "<dd><pre>" + text_logs[i].text + "</pre></dd>"
+      }
+      logs_dl += "</dl>"
+      $('#auto-logs').html(logs_dl);
+  });
+
+
 
   var code_prev = $('#code').val();
   var loop = function() {

@@ -223,6 +223,20 @@ function add_msg_log(data){
     chat_log.shift();
   }
 }
+
+function add_text_log(data){
+  if (text_logs[0] != undefined && text_logs[0].name == data.name){
+    text_logs[0].text = data.text;
+    text_logs[0].date = data.date;
+    return false;
+  }else{
+    text_logs.unshift(data)
+    if (text_logs.length > 20){
+      text_logs.shift();
+    }
+    return true;
+  }
+}
  
 function getFullDate(date){
   var yy = date.getYear();
@@ -322,10 +336,17 @@ io.sockets.on('connection', function(client) {
     var c = get_client_info(client);
     var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
+
     text_log = { name: c.name, text: msg, date: getFullDate(now) }
-    console.log(msg);
     client.emit('text', text_log);
     client.broadcast.emit('text', text_log);
+    if ( add_text_log(text_log) ){
+      client.emit('text_logs', text_logs);
+      client.broadcast.emit('text_logs', text_logs);
+      console.log("logs emit");
+    }
+      
+    console.log(msg);
   });
 
   client.on('disconnect', function() {
