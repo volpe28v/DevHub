@@ -222,24 +222,31 @@ function add_msg_log(data){
   }
 }
 
-function add_text_log(data){
-  if (data.text == ""){return}
-  var blanc = new RegExp("^[ \n]+$");
-  if (blanc.test(data.text)) {return}
-
-  if (text_logs[0] != undefined && text_logs[0].name == data.name){
-    text_logs[0].text = data.text;
-    text_logs[0].date = data.date;
-    return false;
-  }else{
-    text_logs.unshift(data)
+function add_text_log(current_log){
+  if (can_add_text_log(current_log)){
+    text_logs.unshift(text_log)
     if (text_logs.length > 20){
       text_logs.shift();
     }
-    return true;
+    text_log = current_log
+    return true
+  }else{
+    text_log = current_log
+    return false
   }
 }
  
+function can_add_text_log(current_log){
+  if (text_log == undefined ){ return false }
+  if (text_log.name == current_log.name ){ return false }
+
+  var blank = new RegExp("^[ \n]+$");
+  if (text_log.text == ""){return false}
+  if (blank.test(text_log.text)) {return false}
+
+  return true
+}
+
 function getFullDate(date){
   var yy = date.getYear();
   var mm = date.getMonth() + 1;
@@ -338,14 +345,15 @@ io.sockets.on('connection', function(client) {
 
   client.on('text', function(msg) {
     var name = get_name_on_client(client)
-
     var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
 
-    text_log = { name: name, text: msg, date: getFullDate(now) }
-    client.emit('text', text_log);
-    client.broadcast.emit('text', text_log);
-    if ( add_text_log(text_log) ){
+    var current_text_log = { name: name, text: msg, date: getFullDate(now) }
+
+    client.emit('text', current_text_log);
+    client.broadcast.emit('text', current_text_log);
+
+    if ( add_text_log(current_text_log) ){
       client.emit('text_logs', text_logs);
       client.broadcast.emit('text_logs', text_logs);
     }
