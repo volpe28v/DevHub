@@ -12,7 +12,6 @@ var port = program.port || 3008;
 
 console.log(' port : ' + port);
 
-
 // appサーバの設定
 app.set('view engine', 'ejs');
 app.set('view options', { layout: false });
@@ -43,12 +42,13 @@ app.get('/notify', function(req, res) {
   res.end('recved msg: ' + msg);
 });
 
-
 app.listen(port);
 
+// ここから関数定義
 var chat_log = [];
 var client_info = {};
-var text_log = "";
+var text_log = undefined;
+var text_logs = [];
 var io = require('socket.io').listen(app);
 var client_max_id = 0;
 console.log("listen!!!");
@@ -224,13 +224,26 @@ function add_msg_log(data){
   }
 }
  
+function getFullDate(date){
+  var yy = date.getYear();
+  var mm = date.getMonth() + 1;
+  var dd = date.getDate();
+  if (yy < 2000) { yy += 1900; }
+  if (mm < 10) { mm = "0" + mm; }
+  if (dd < 10) { dd = "0" + dd; }
+
+  return yy + '/' + mm + '/' + dd + ' ' + date.toLocaleTimeString();
+};
+
 io.sockets.on('connection', function(client) {
   var client_ip = get_client_ip(client);
   console.log("New Connection from " + client_ip);
 
   login(client_ip);
 
-  client.emit('text',text_log);
+  if ( text_log != undefined ){
+    client.emit('text',text_log);
+  }
   client.emit('message', {name:"System", msg: "you join in  : " + client_ip });
 
   if ( exist_ip_num(client, client_ip) <= 1 ){
@@ -306,11 +319,13 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('text', function(msg) {
+    var c = get_client_info(client);
+    var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
-    text_log = msg;
+    text_log = { name: c.name, text: msg, date: getFullDate(now) }
     console.log(msg);
-    client.emit('text',msg);
-    client.broadcast.emit('text', msg);
+    client.emit('text', text_log);
+    client.broadcast.emit('text', text_log);
   });
 
   client.on('disconnect', function() {

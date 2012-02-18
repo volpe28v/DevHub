@@ -49,6 +49,7 @@ a:hover {
   width: 99%;
   height: 800px;
   padding: 5px;
+  margin-top: 2px;
   border: solid 1px whitesmoke;
   background-color: ghostwhite; 
   border-radius: 4px;        /* CSS3草案 */  
@@ -188,6 +189,10 @@ a:hover {
 
 .pomo-min{
   color: mintcream;
+}
+
+#text_writer {
+  display: none;
 }
 
 footer {

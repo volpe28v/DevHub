@@ -88,8 +88,11 @@ function init_websocket(){
   });
 
   // for editor
-  socket.on('text', function(msg) {
-    $('#code_out').text(msg);
+  socket.on('text', function(text_log) {
+    $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
+    $('#text_writer').show();
+
+    $('#code_out').text(text_log.text);
   });
 
   var code_prev = $('#code').val();
