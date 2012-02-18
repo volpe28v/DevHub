@@ -257,6 +257,8 @@ io.sockets.on('connection', function(client) {
 
   if ( text_log != undefined ){
     client.emit('text',text_log);
+    client.emit('text_logs', text_logs);
+    client.broadcast.emit('text_logs', text_logs);
   }
   client.emit('message', {name:"System", msg: "you join in  : " + client_ip });
 
@@ -343,7 +345,6 @@ io.sockets.on('connection', function(client) {
     if ( add_text_log(text_log) ){
       client.emit('text_logs', text_logs);
       client.broadcast.emit('text_logs', text_logs);
-      console.log("logs emit");
     }
       
     console.log(msg);

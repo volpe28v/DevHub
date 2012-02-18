@@ -91,26 +91,31 @@ function init_websocket(){
   socket.on('text', function(text_log) {
     $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
     $('#text_writer').show();
-
     $('#code_out').text(text_log.text);
+
+    var logs_dl = "<dl>"
+    logs_dl += '<dt><span class="label label-info">' + text_log.name + " at " + text_log.date + '</span></dt>'
+    logs_dl += "<dd><pre>" + text_log.text + "</pre></dd>"
+    logs_dl += "</dl>"
+    $('#current_log').html(logs_dl);
+ 
   });
 
   socket.on('text_logs', function(text_logs){
       var logs_dl = "<dl>"
       for( var i = 0; i < text_logs.length; ++i){
-        logs_dl += "<dt>" + text_logs[i].name + " at " + text_logs[i].date + "</dt>"
+        logs_dl += '<dt><span class="label label">' + text_logs[i].name + " at " + text_logs[i].date + '</span></dt>'
         logs_dl += "<dd><pre>" + text_logs[i].text + "</pre></dd>"
       }
       logs_dl += "</dl>"
-      $('#auto-logs').html(logs_dl);
+      $('#history_logs').html(logs_dl);
   });
-
-
 
   var code_prev = $('#code').val();
   var loop = function() {
     var code = $('#code').val();
-    if (code_prev != code) {
+    var code_out = $('#code_out').val();
+    if (code_prev != code && code_out != code) {
       socket.emit('text',code);
       code_prev = code;
     }
@@ -133,7 +138,6 @@ function suggest_start(list){
 }
 
 function to_sequence(msg){
-//  var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
   var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div></script>';
   return seq_html.replace("MSG",msg);
 
