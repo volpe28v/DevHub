@@ -26,6 +26,11 @@ app.get('/', function(req, res) {
   res.render('index', { locals: { port: port } });
 });
 
+app.get('/new', function(req, res) {
+  console.log('/new');
+  res.render('new', { locals: { port: port } });
+});
+
 app.get('/notify', function(req, res) {
   console.log('/notify');
   var name = "Ext";
