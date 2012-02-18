@@ -22,11 +22,6 @@ app.configure(function(){
 
 app.get('/', function(req, res) {
   console.log('/');
-  res.render('index', { locals: { port: port } });
-});
-
-app.get('/new', function(req, res) {
-  console.log('/new');
   res.render('new', { locals: { port: port } });
 });
 
