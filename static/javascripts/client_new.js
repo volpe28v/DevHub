@@ -102,13 +102,27 @@ function init_websocket(){
   });
 
   socket.on('text_logs', function(text_logs){
-      var logs_dl = "<dl>"
-      for( var i = 0; i < text_logs.length; ++i){
-        logs_dl += '<dt><span class="label label">' + text_logs[i].name + " at " + text_logs[i].date + '</span></dt>'
-        logs_dl += "<dd><pre>" + text_logs[i].text + "</pre></dd>"
+      var logs_dl = $("<dl/>")
+      for ( var i = 0; i < text_logs.length; ++i){
+        var restore_id = "text_log" + i
+        var log_dt = $("<dt/>")
+        var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
+        var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-info btn-mini").text("Restore").click(function(){
+          var restore_text = text_logs[i].text
+          return function(){
+            $('#code').val(restore_text)
+          }
+        }())
+
+        var log_dd = $("<dd/>")
+        var log_pre = $("<pre/>").text(text_logs[i].text)
+
+        log_dt.append(writer_label).append(restore_btn)
+        log_dd.append(log_pre)
+        logs_dl.append(log_dt).append(log_dd)
       }
-      logs_dl += "</dl>"
-      $('#history_logs').html(logs_dl);
+      $('#history_logs').empty();
+      $('#history_logs').append(logs_dl);
   });
 
   var code_prev = $('#code').val();
