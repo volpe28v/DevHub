@@ -52,15 +52,16 @@
           <div class="tabbable">
             <ul class="nav nav-tabs">
               <li class="active"><a id="share-memo-tab" href="#share-memo" data-toggle="tab">ShareMemo</a></li>
-              <li><a href="#auto-logs" data-toggle="tab">MemoLogs</a></li>
+              <li><a href="#auto-logs" data-toggle="tab">History</a></li>
             </ul>
 
             <div class="tab-content">
               <div id="share-memo" class="tab-pane active">
                 <button id="sync_text" class="btn"><i class="icon-refresh"></i> Sync</button>
                 <button id="clear_text" class="btn"><i class="icon-trash"></i> Clear</button>
-                <span id="text_writer" class="label label-info"></span>
+                <span id="update_log_notify" class="label label-success" style="display: none;">updated History</span>
                 <textarea id="code" placeholder="Write here"/></textarea>
+                <span id="text_writer" class="label label-info"></span>
                 <textarea readonly id="code_out"></textarea>
               </div>
 

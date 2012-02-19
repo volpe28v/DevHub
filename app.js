@@ -238,14 +238,43 @@ function add_text_log(current_log){
  
 function can_add_text_log(current_log){
   if (text_log == undefined ){ return false }
+  // 同ユーザの書き込みであれば保留
   if (text_log.name == current_log.name ){ return false }
 
-  var blank = new RegExp("^[ \n]+$");
-  if (text_log.text == ""){return false}
-  if (blank.test(text_log.text)) {return false}
+  // バックアップ対象が空文字と改行のみの場合は排除
+  var blank = new RegExp("(^[ \r\n]+$|^$)");
+  if (blank.test(text_log.text)) { return false }
 
   return true
 }
+
+function add_text_log_on_clear(name){
+  if (can_add_text_log_on_clear(name)){
+    text_logs.unshift(text_log)
+    if (text_logs.length > 20){
+      text_logs.shift();
+    }
+    return true
+  }else{
+    return false
+  }
+}
+
+function can_add_text_log_on_clear(name){
+  if (text_log == undefined){ return false }
+  if (text_log.name != name ){ return false }
+
+  // バックアップ対象が空文字と改行のみの場合は排除
+  var blank = new RegExp("(^[ \r\n]+$|^$)");
+  if (blank.test(text_log.text)) { return false }
+
+  if (text_logs.length > 0 && text_logs[0].text != text_log.text ){ return true }
+  if (text_logs.length == 0){ return true }
+
+  return false;
+}
+
+
 
 function getFullDate(date){
   var yy = date.getYear();
@@ -360,6 +389,17 @@ io.sockets.on('connection', function(client) {
       
     console.log(msg);
   });
+
+  client.on('text_clear', function() {
+    var name = get_name_on_client(client)
+
+    if ( add_text_log_on_clear(name) ){
+      client.emit('text_logs', text_logs);
+      client.broadcast.emit('text_logs', text_logs);
+    }
+    console.log("text_clear");
+  });
+
 
   client.on('disconnect', function() {
     set_pomo_on_client(client,false);

@@ -73,8 +73,8 @@ function init_websocket(){
   });
 
   $('#clear_text').click(function(){
+    socket.emit('text_clear');
     $('#code').val("");
-    socket.emit('text',"");
   });
 
   $('#pomo').click(function(){
@@ -102,29 +102,33 @@ function init_websocket(){
   });
 
   socket.on('text_logs', function(text_logs){
-      var logs_dl = $("<dl/>")
-      for ( var i = 0; i < text_logs.length; ++i){
-        var restore_id = "text_log" + i
-        var log_dt = $("<dt/>")
-        var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
-        var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-inverse btn-mini restore_button").text("Restore").click(function(){
-          var restore_text = text_logs[i].text
-          return function(){
-            $('#code').val(restore_text)
-            $('#share-memo-tab').click()
-            $('html,body').animate({ scrollTop: 0 }, 'slow');
-          }
-        }())
+    var logs_dl = $("<dl/>")
+    for ( var i = 0; i < text_logs.length; ++i){
+      var restore_id = "text_log" + i
+      var log_dt = $("<dt/>")
+      var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
+      var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-inverse btn-mini restore_button").text("Restore").click(function(){
+        var restore_text = text_logs[i].text
+        return function(){
+          $('#code').val(restore_text)
+          $('#share-memo-tab').click()
+          $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+      }())
 
-        var log_dd = $("<dd/>")
-        var log_pre = $("<pre/>").text(text_logs[i].text)
+      var log_dd = $("<dd/>")
+      var log_pre = $("<pre/>").text(text_logs[i].text)
 
-        log_dt.append(writer_label).append(restore_btn)
-        log_dd.append(log_pre)
-        logs_dl.append(log_dt).append(log_dd)
-      }
-      $('#history_logs').empty();
-      $('#history_logs').append(logs_dl);
+      log_dt.append(writer_label).append(restore_btn)
+      log_dd.append(log_pre)
+      logs_dl.append(log_dt).append(log_dd)
+    }
+    $('#history_logs').empty();
+    $('#history_logs').append(logs_dl);
+
+    $('#update_log_notify').show();
+    $('#update_log_notify').fadeOut(2000);
+
   });
 
   var code_prev = $('#code').val();
