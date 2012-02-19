@@ -107,10 +107,11 @@ function init_websocket(){
         var restore_id = "text_log" + i
         var log_dt = $("<dt/>")
         var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
-        var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-info btn-mini").text("Restore").click(function(){
+        var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-inverse btn-mini restore_button").text("Restore").click(function(){
           var restore_text = text_logs[i].text
           return function(){
             $('#code').val(restore_text)
+            $('#share-memo-tab').click()
           }
         }())
 

@@ -195,6 +195,10 @@ a:hover {
   margin: 6px 0px 4px 0px;
 }
 
+.restore_button {
+  margin: 0 0 0 4px;
+}
+
 #history_logs dt, #current_log dt{
   margin: 0px 0px 2px 4px;
 }
