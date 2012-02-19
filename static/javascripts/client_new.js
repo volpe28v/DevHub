@@ -112,6 +112,7 @@ function init_websocket(){
           return function(){
             $('#code').val(restore_text)
             $('#share-memo-tab').click()
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
           }
         }())
 
