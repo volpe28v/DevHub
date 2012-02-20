@@ -38,7 +38,7 @@ a:hover {
 
 #code {
   width: 98%;
-  height: 200px;
+  height: 150px;
   padding: 5px;
   background-color: aliceblue;
   margin-top: 2px;
@@ -86,6 +86,10 @@ a:hover {
   line-height: 21px;
   margin: 2px 2px;
   padding: 0px;
+}
+
+.msg_text{
+  font-weight: bold;
 }
 
 #login_list {

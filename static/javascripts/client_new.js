@@ -254,7 +254,7 @@ function get_msg_body(data){
     msg_color = "#555";
   }
 
-  return '<span class="' + name_class + '">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
+  return '<span class="' + name_class + '">' + data.name + '</span> <span class="msg_text" style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
