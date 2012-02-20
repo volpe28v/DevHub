@@ -241,9 +241,15 @@ function can_add_text_log(current_log){
   // 同ユーザの書き込みであれば保留
   if (text_log.name == current_log.name ){ return false }
 
+  // 表示中のメモと同じ内容であれば保留
+  if (current_log.text == text_log.text ){ return false }
+
   // バックアップ対象が空文字と改行のみの場合は排除
   var blank = new RegExp("(^[ \r\n]+$|^$)");
   if (blank.test(text_log.text)) { return false }
+
+  // 前回のバックアップと同様であれば保留
+  if (text_logs.length > 0 && text_logs[0].text == text_log.text ){ return false }
 
   return true
 }
@@ -268,6 +274,7 @@ function can_add_text_log_on_clear(name){
   var blank = new RegExp("(^[ \r\n]+$|^$)");
   if (blank.test(text_log.text)) { return false }
 
+  // 前回のバックアップと同様であれば保留
   if (text_logs.length > 0 && text_logs[0].text != text_log.text ){ return true }
   if (text_logs.length == 0){ return true }
 

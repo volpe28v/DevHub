@@ -73,6 +73,7 @@ function init_websocket(){
   });
 
   $('#clear_text').click(function(){
+    code_prev = $('#code_out').text();
     socket.emit('text_clear');
     $('#code').val("");
   });
@@ -110,6 +111,7 @@ function init_websocket(){
       var restore_btn = $("<button/>").attr("id", restore_id).addClass("btn btn-inverse btn-mini restore_button").text("Restore").click(function(){
         var restore_text = text_logs[i].text
         return function(){
+          code_prev = $('#code_out').text();
           $('#code').val(restore_text)
           $('#share-memo-tab').click()
           $('html,body').animate({ scrollTop: 0 }, 'slow');
@@ -134,7 +136,7 @@ function init_websocket(){
   var code_prev = $('#code').val();
   var loop = function() {
     var code = $('#code').val();
-    var code_out = $('#code_out').val();
+    var code_out = $('#code_out').text();
     if (code_prev != code && code_out != code) {
       socket.emit('text',code);
       code_prev = code;
