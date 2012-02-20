@@ -129,7 +129,7 @@ function init_websocket(){
     $('#history_logs').append(logs_dl);
 
     $('#update_log_notify').show();
-    $('#update_log_notify').fadeOut(2000);
+    $('#update_log_notify').fadeOut(2000,function(){ $(this).hide()});
 
   });
 
