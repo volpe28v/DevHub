@@ -303,12 +303,6 @@ io.sockets.on('connection', function(client) {
   if ( text_log != undefined ){
     client.emit('text',text_log);
     client.emit('text_logs', text_logs);
-    client.broadcast.emit('text_logs', text_logs);
-  }
-  client.emit('message', {name:"System", msg: "you join in  : " + client_ip });
-
-  if ( exist_ip_num(client, client_ip) <= 1 ){
-    client.broadcast.emit('message', {name:"System", msg: "in  : " + client_ip });
   }
 
   client.on('name', function(data) {
@@ -413,7 +407,6 @@ io.sockets.on('connection', function(client) {
     var client_addr = get_client_ip(client);
 
     if( logout(client) ){
-      client.broadcast.emit('message', {name:"System", msg: "out : " + client_addr.address });
       client.broadcast.emit('list', ip_list());
     }
 
