@@ -37,7 +37,7 @@ a:hover {
 }
 
 #code {
-  width: 99%;
+  width: 98%;
   height: 200px;
   padding: 5px;
   background-color: aliceblue;
@@ -46,7 +46,7 @@ a:hover {
 }
 
 #code_out {
-  width: 99%;
+  width: 98%;
   height: 800px;
   padding: 5px;
   border: solid 1px whitesmoke;
