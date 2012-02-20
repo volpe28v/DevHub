@@ -226,7 +226,7 @@ function add_text_log(current_log){
   if (can_add_text_log(current_log)){
     text_logs.unshift(text_log)
     if (text_logs.length > 20){
-      text_logs.shift();
+      text_logs.pop();
     }
     text_log = current_log
     return true
@@ -251,7 +251,7 @@ function can_add_text_log(current_log){
 function add_text_log_on_clear(name){
   if (can_add_text_log_on_clear(name)){
     text_logs.unshift(text_log)
-    if (text_logs.length > 20){
+    if (text_logs.pop > 20){
       text_logs.shift();
     }
     return true
