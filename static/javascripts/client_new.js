@@ -6,11 +6,12 @@ var COOKIE_NAME = "dev_hub_name";
 $(function() {
   init_websocket();
 
-  $('#name').val($.cookie(COOKIE_NAME));
+  if ( $.cookie(COOKIE_NAME) == null  ){
+    $('#name_in').modal("show")
+    $('#login_name').focus();
+  }
 
-  $('#sequence_button').click(function(){ 
-    $('#sequence').slideToggle(); 
-  });
+  $('#name').val($.cookie(COOKIE_NAME));
 });
 
 function init_websocket(){
@@ -88,6 +89,25 @@ function init_websocket(){
     return false;
   });
 
+  $('#login').click(function(){
+    var name = $('#login_name').val();
+    if ( name != "" ){
+      $.cookie(COOKIE_NAME,name);
+      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
+      $('#name').val($.cookie(COOKIE_NAME));
+    }
+  });
+
+  $('#login_form').submit(function(){
+    var name = $('#login_name').val();
+    if ( name != "" ){
+      $.cookie(COOKIE_NAME,name);
+      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
+      $('#name').val($.cookie(COOKIE_NAME));
+    }
+    $('#name_in').modal('hide')
+  });
+    
   // for share memo
   socket.on('text', function(text_log) {
     $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
