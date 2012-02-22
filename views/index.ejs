@@ -1,49 +1,108 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>DevHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">google.load("jquery", "1.4.4");</script>
+    <script type="text/javascript">google.load("jquery", "1.7.0");</script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/javascripts/client.js"></script>
     <script type="text/javascript" src="/javascripts/suggest.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
     <link href="/stylesheets/devhub.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 
   </head>
 
-  <body>
-    <div id="wrapper">
-    <h2>DevHub</h2>
-    <div id="chat">
-      <form id="form">
-        <div>
-          <div id="login_list" style="display:none"></div>
-        </div>
+<div class="modal hide fade" id="name_in">
+  <div class="modal-header">
+    <h3>DevHub</h3>
+  </div>
+  <div class="modal-body">
+    <p>Please type your name.</p>
+    <form id="login_form">
+      <input type="text" id="login_name" class="span2" placeholder="Name"/>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button id="login" class="btn btn-primary" data-dismiss="modal">Login</button>
+  </div>
+</div>
 
-        <input type="text" name="name" id="name" size="3" />
-        <input type="text" name="message" id="message" size="40" autocomplete="off" />
-        <input type="submit" value="Send" />
-        <button id="pomo">Pomo</button>
-        <div id="suggest" style="display: none;"></div>
-      </form>
-      <div id="chat_body">
-        <ul id="list"></ul>
+  <body style="padding-top: 50px">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">DevHub</a>
+          <ul class="nav">
+            <li class="active">
+              <a href="/">Home</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
- 
-    <div id="editor">
-      <button id="sequence_button">SequenceChat show/hide</button>
-      <div id="sequence"></div>
 
-      <textarea id="code"></textarea>
-      <button id="copy_text">Sync</button>
-      <textarea readonly id="code_out"></textarea>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span5">
+          <div id="login_list" style="display:none"></div>
+          <form id="form" class="form-inline">
+            <input type="text" name="name" id="name" class="span1" placeholder="Name"/>
+            <input type="text" name="message" id="message" class="span4" autocomplete="off" placeholder="Message"/>
+            <input type="submit" value="Send" class="btn btn-small btn-primary"/>
+            <span id="pomo" class="btn btn-small btn-warning">Pomo</span>
+            <div id="suggest" style="display: none;"></div>
+          </form>
+          <div id="chat_body">
+            <ul id="list"></ul>
+          </div>
+        </div>
+ 
+        <div class="span7">
+          <div class="tabbable">
+            <ul class="nav nav-tabs">
+              <li class="active"><a id="share-memo-tab" href="#share-memo" data-toggle="tab">ShareMemo</a></li>
+              <li><a href="#auto-logs" data-toggle="tab">History</a></li>
+            </ul>
+
+            <div class="tab-content">
+              <div id="share-memo" class="tab-pane active">
+                <button id="sync_text" class="btn"><i class="icon-refresh"></i> Sync</button>
+                <button id="suspend_text" class="btn"><i class="icon-share"></i> Suspend</button>
+                <span id="update_log_notify" class="label label-success" style="display: none;">updated History</span>
+                <textarea id="code" placeholder="Write here"/></textarea>
+                <span id="text_writer" class="label label-info"></span>
+                <pre id="code_out"></pre>
+              </div>
+
+              <div id="auto-logs" class="tab-pane">
+                <div id="current_log"></div>
+                <div id="history_logs"></div>
+              </div>
+
+            </div>
+        </div>
+      </div>
     </div>
-    <div style="clear: both;"/>
-    </div>
+
+  <footer>
+    <span>
+    © 2012 Naoki KODAMA. All rights reserved.
+    </span>
+  </footer>
 
   </body>
-  <script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>
 </html>
 
 

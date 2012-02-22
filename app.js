@@ -22,7 +22,7 @@ app.configure(function(){
 
 app.get('/', function(req, res) {
   console.log('/');
-  res.render('new', { locals: { port: port } });
+  res.render('index', { locals: { port: port } });
 });
 
 app.get('/notify', function(req, res) {

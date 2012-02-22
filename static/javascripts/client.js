@@ -6,11 +6,12 @@ var COOKIE_NAME = "dev_hub_name";
 $(function() {
   init_websocket();
 
-  $('#name').val($.cookie(COOKIE_NAME));
+  if ( $.cookie(COOKIE_NAME) == null  ){
+    $('#name_in').modal("show")
+    $('#login_name').focus();
+  }
 
-  $('#sequence_button').click(function(){ 
-    $('#sequence').slideToggle(); 
-  });
+  $('#name').val($.cookie(COOKIE_NAME));
 });
 
 function init_websocket(){
@@ -68,8 +69,14 @@ function init_websocket(){
     return false;
   });
 
-  $('#copy_text').click(function(){
+  $('#sync_text').click(function(){
     $('#code').val($('#code_out').text());
+  });
+
+  $('#suspend_text').click(function(){
+    code_prev = $('#code_out').text();
+    socket.emit('suspend_text');
+    $('#code').val("");
   });
 
   $('#pomo').click(function(){
@@ -82,19 +89,80 @@ function init_websocket(){
     return false;
   });
 
-  // for editor
-  socket.on('text', function(msg) {
-    $('#code_out').text(msg);
+  $('#login').click(function(){
+    var name = $('#login_name').val();
+    if ( name != "" ){
+      $.cookie(COOKIE_NAME,name);
+      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
+      $('#name').val($.cookie(COOKIE_NAME));
+    }
+  });
+
+  $('#login_form').submit(function(){
+    var name = $('#login_name').val();
+    if ( name != "" ){
+      $.cookie(COOKIE_NAME,name);
+      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
+      $('#name').val($.cookie(COOKIE_NAME));
+    }
+    $('#name_in').modal('hide')
+  });
+    
+  // for share memo
+  socket.on('text', function(text_log) {
+    $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
+    $('#text_writer').show();
+    $('#code_out').text(text_log.text);
+
+    var logs_dl = "<dl>"
+    logs_dl += '<dt><span class="label label-info">' + text_log.name + " at " + text_log.date + '</span></dt>'
+    logs_dl += "<dd><pre>" + text_log.text + "</pre></dd>"
+    logs_dl += "</dl>"
+    $('#current_log').html(logs_dl);
+ 
+  });
+
+  socket.on('text_logs', function(text_logs){
+    var logs_dl = $("<dl/>")
+    for ( var i = 0; i < text_logs.length; ++i){
+      var restore_id = "text_log" + i
+      var log_dt = $("<dt/>")
+      var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
+      var icon = $("<i/>").addClass("icon-repeat")
+      var restore_btn = $('<button id="' + restore_id + '" class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
+        var restore_text = text_logs[i].text
+        return function(){
+          code_prev = $('#code_out').text();
+          $('#code').val(restore_text)
+          $('#share-memo-tab').click()
+          $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+      }())
+
+      var log_dd = $("<dd/>")
+      var log_pre = $("<pre/>").text(text_logs[i].text)
+
+      log_dt.append(writer_label).append(restore_btn)
+      log_dd.append(log_pre)
+      logs_dl.append(log_dt).append(log_dd)
+    }
+    $('#history_logs').empty();
+    $('#history_logs').append(logs_dl);
+
+    $('#update_log_notify').show();
+    $('#update_log_notify').fadeOut(2000,function(){ $(this).hide()});
+
   });
 
   var code_prev = $('#code').val();
   var loop = function() {
     var code = $('#code').val();
-    if (code_prev != code) {
+    var code_out = $('#code_out').text();
+    if (code_prev != code && code_out != code) {
       socket.emit('text',code);
       code_prev = code;
     }
-    setTimeout(loop, 100);
+    setTimeout(loop, 200);
   };
   loop();
 };
@@ -113,7 +181,7 @@ function suggest_start(list){
 }
 
 function to_sequence(msg){
-  var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>';
+  var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div></script>';
   return seq_html.replace("MSG",msg);
 
 }
@@ -207,7 +275,7 @@ function get_msg_body(data){
     msg_color = "#555";
   }
 
-  return '<span class="' + name_class + '">' + data.name + '</span> <span style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
+  return '<span class="' + name_class + '">' + data.name + '</span> <span class="msg_text" style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
