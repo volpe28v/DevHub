@@ -229,6 +229,7 @@ function add_text_log(current_log){
       text_logs.pop();
     }
     text_log = current_log
+    console.log("add_text_log is true")
     return true
   }else{
     text_log = current_log
@@ -254,19 +255,20 @@ function can_add_text_log(current_log){
   return true
 }
 
-function add_text_log_on_clear(name){
-  if (can_add_text_log_on_clear(name)){
+function add_text_log_on_suspend(name){
+  if (can_add_text_log_on_suspend(name)){
     text_logs.unshift(text_log)
     if (text_logs.pop > 20){
       text_logs.shift();
     }
+    console.log("add_text_log_on_suspend is true")
     return true
   }else{
     return false
   }
 }
 
-function can_add_text_log_on_clear(name){
+function can_add_text_log_on_suspend(name){
   if (text_log == undefined){ return false }
   if (text_log.name != name ){ return false }
 
@@ -280,8 +282,6 @@ function can_add_text_log_on_clear(name){
 
   return false;
 }
-
-
 
 function getFullDate(date){
   var yy = date.getYear();
@@ -394,7 +394,7 @@ io.sockets.on('connection', function(client) {
   client.on('suspend_text', function() {
     var name = get_name_on_client(client)
 
-    if ( add_text_log_on_clear(name) ){
+    if ( add_text_log_on_suspend(name) ){
       client.emit('text_logs', text_logs);
       client.broadcast.emit('text_logs', text_logs);
     }

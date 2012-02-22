@@ -129,7 +129,7 @@ function init_websocket(){
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn = $('<button id="' + restore_id + '" class="btn btn-mini restore_button"><i class="icon-repeat"></i> Restore</button>').click(function(){
+      var restore_btn = $('<button id="' + restore_id + '" class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
         var restore_text = text_logs[i].text
         return function(){
           code_prev = $('#code_out').text();
