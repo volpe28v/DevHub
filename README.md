@@ -1,5 +1,7 @@
 # DevHub
 
+初めての Node.js アプリ作成を通して学習しています。
+
 ## やりたいこと
 * 開発中に開発メンバとの情報共有を促進したい
 * URLとか教えるのにメールとかめんどい
@@ -12,10 +14,10 @@
 ## いまのところできること
 * リアルタイムチャット
 * 共有リアルタイムメモ帳
+* メモ帳の履歴保持(最新のいくつか)
 * 外部サービスからの通知API
 * いろんな通知をアクセスしているメンバに Growl 通知
-* チャットの見える化(WebSequenceを使って。)
-* ポモドーロタイマー(ポモドーロ中は Growl 通知が来ない)
+* ポモドーロタイマー(ポモドーロ中は Growl 通知が来ないようになる)
 
 ## install
 * node が入っていることが前提
@@ -45,4 +47,12 @@ RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]
 wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
 </pre>
 
+### Subversion
+* hooks/post-commit に以下を記述する
+<pre>
+NAME=`svnlook author $REPOS -r $REV | nkf -w`
+CHANGE=`svnlook changed $REPOS -r $REV | nkf -w`
+LOG=`svnlook log $REPOS -r $REV | nkf -w`
+wget http://10.77.215.76:3004/notify?msg="SVN ($NAME): $LOG"
+</pre>
 
