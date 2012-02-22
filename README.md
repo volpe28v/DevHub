@@ -49,10 +49,11 @@ wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
 
 ### Subversion
 * hooks/post-commit に以下を記述する
+
 <pre>
 NAME=`svnlook author $REPOS -r $REV | nkf -w`
 CHANGE=`svnlook changed $REPOS -r $REV | nkf -w`
 LOG=`svnlook log $REPOS -r $REV | nkf -w`
-wget http://10.77.215.76:3004/notify?msg="SVN ($NAME): $LOG"
+wget http://XXXXX:3000/notify?msg="SVN ($NAME): $LOG"
 </pre>
 
