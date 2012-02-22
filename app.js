@@ -391,14 +391,14 @@ io.sockets.on('connection', function(client) {
     console.log(msg);
   });
 
-  client.on('text_clear', function() {
+  client.on('suspend_text', function() {
     var name = get_name_on_client(client)
 
     if ( add_text_log_on_clear(name) ){
       client.emit('text_logs', text_logs);
       client.broadcast.emit('text_logs', text_logs);
     }
-    console.log("text_clear");
+    console.log("suspend_text");
   });
 
 
