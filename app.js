@@ -240,9 +240,6 @@ function can_add_text_log(current_log){
   // 同ユーザの書き込みであれば保留
   if (text_log.name == current_log.name ){ return false }
 
-  // 表示中のメモと同じ内容であれば保留
-  if (current_log.text == text_log.text ){ return false }
-
   // バックアップ対象が空文字と改行のみの場合は排除
   var blank = new RegExp("(^[ \r\n]+$|^$)");
   if (blank.test(text_log.text)) { return false }
@@ -295,6 +292,13 @@ function remove_text_log(id){
       return;
     }
   }
+}
+
+function is_change_textlog(msg){
+  if (text_log == undefined){ return true;}
+  if (text_log.text != msg){ return true;}
+
+  return false;
 }
 
 function getFullDate(date){
@@ -392,6 +396,10 @@ io.sockets.on('connection', function(client) {
     var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
 
+    console.log(msg);
+
+    if ( is_change_textlog(msg) == false ){ return;}
+
     var current_text_log = { name: name, text: msg, date: getFullDate(now) }
 
     client.emit('text', current_text_log);
@@ -402,7 +410,6 @@ io.sockets.on('connection', function(client) {
       client.broadcast.emit('text_logs', text_logs);
     }
       
-    console.log(msg);
   });
 
   client.on('suspend_text', function() {
