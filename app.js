@@ -44,6 +44,7 @@ var chat_log = [];
 var client_info = {};
 var text_log = undefined;
 var text_logs = [];
+var text_log_id = 0;
 var io = require('socket.io').listen(app);
 var client_max_id = 0;
 console.log("listen!!!");
@@ -224,10 +225,7 @@ function add_msg_log(data){
 
 function add_text_log(current_log){
   if (can_add_text_log(current_log)){
-    text_logs.unshift(text_log)
-    if (text_logs.length > 20){
-      text_logs.pop();
-    }
+    add_text_log_impl(text_log)
     text_log = current_log
     console.log("add_text_log is true")
     return true
@@ -257,10 +255,7 @@ function can_add_text_log(current_log){
 
 function add_text_log_on_suspend(name){
   if (can_add_text_log_on_suspend(name)){
-    text_logs.unshift(text_log)
-    if (text_logs.pop > 20){
-      text_logs.shift();
-    }
+    add_text_log_impl(text_log)
     console.log("add_text_log_on_suspend is true")
     return true
   }else{
@@ -281,6 +276,25 @@ function can_add_text_log_on_suspend(name){
   if (text_logs.length == 0){ return true }
 
   return false;
+}
+
+function add_text_log_impl(text_log){
+  text_log.id = text_log_id;
+  text_log_id += 1;
+  text_logs.unshift(text_log)
+  if (text_logs.length > 20){
+    text_logs.pop();
+  }
+}
+
+function remove_text_log(id){
+  for ( var i = 0; i < text_logs.length; ++i){
+    if ( text_logs[i].id == id ){
+      text_logs.splice(i,1);
+      console.log("removed id: ", id)
+      return;
+    }
+  }
 }
 
 function getFullDate(date){
@@ -399,6 +413,14 @@ io.sockets.on('connection', function(client) {
       client.broadcast.emit('text_logs', text_logs);
     }
     console.log("suspend_text");
+  });
+
+  client.on('remove_text', function(id) {
+    remove_text_log(id)
+
+    client.broadcast.emit('text_logs', text_logs);
+
+    console.log("remove_text");
   });
 
 

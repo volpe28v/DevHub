@@ -125,6 +125,9 @@ function init_websocket(){
   socket.on('text_logs', function(text_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
+      var text_log_id = "text_log_id_" + text_logs[i].id
+      
+      var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
@@ -137,13 +140,23 @@ function init_websocket(){
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
+      var remove_btn = $('<button class="btn btn-mini restore_button"><i class="icon-remove"></i></button>').click(function(){
+        var target_dom_id = text_log_id
+        var target_log_id = text_logs[i].id
+        return function(){
+          $('#' + target_dom_id).fadeOut()
+          socket.emit('remove_text', target_log_id);
+        }
+      }())
+
 
       var log_dd = $("<dd/>")
       var log_pre = $("<pre/>").text(text_logs[i].text)
 
-      log_dt.append(writer_label).append(restore_btn)
+      log_dt.append(writer_label).append(restore_btn).append(remove_btn)
       log_dd.append(log_pre)
-      logs_dl.append(log_dt).append(log_dd)
+      log_div.append(log_dt).append(log_dd)
+      logs_dl.append(log_div)
     }
     $('#history_logs').empty();
     $('#history_logs').append(logs_dl);
