@@ -52,7 +52,7 @@ console.log("listen!!!");
 function send_growl(addr, data){
   var msg = "[" + data.name + "] " + data.msg;
   var exec = require('child_process').exec
-  var cmd = 'growl -H ' + addr + ' -t "Dev Hub" -m "' + msg + '" -P growl';
+  var cmd = 'growl -H ' + addr + ' -t "DevHub" -m "' + msg + '" -P growl';
 
   exec(cmd, {timeout: 1000},
     function(error, stdout, stderr){

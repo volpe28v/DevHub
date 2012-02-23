@@ -9,9 +9,10 @@ $(function() {
   if ( $.cookie(COOKIE_NAME) == null  ){
     $('#name_in').modal("show")
     $('#login_name').focus();
+  }else{
+    $('#name').val($.cookie(COOKIE_NAME));
+    $('#message').focus();
   }
-
-  $('#name').val($.cookie(COOKIE_NAME));
 });
 
 function init_websocket(){
@@ -71,12 +72,14 @@ function init_websocket(){
 
   $('#sync_text').click(function(){
     $('#code').val($('#code_out').text());
+    $('#code').focus();
   });
 
   $('#suspend_text').click(function(){
     code_prev = $('#code_out').text();
     socket.emit('suspend_text');
     $('#code').val("");
+    $('#code').focus();
   });
 
   $('#pomo').click(function(){
@@ -95,7 +98,9 @@ function init_websocket(){
       $.cookie(COOKIE_NAME,name);
       socket.emit('name', {name: $.cookie(COOKIE_NAME)});
       $('#name').val($.cookie(COOKIE_NAME));
+      $('#message').focus();
     }
+    $('#name_in').modal('hide')
   });
 
   $('#login_form').submit(function(){
@@ -104,8 +109,10 @@ function init_websocket(){
       $.cookie(COOKIE_NAME,name);
       socket.emit('name', {name: $.cookie(COOKIE_NAME)});
       $('#name').val($.cookie(COOKIE_NAME));
+      $('#message').focus();
     }
     $('#name_in').modal('hide')
+    return false;
   });
     
   // for share memo
