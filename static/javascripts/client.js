@@ -125,11 +125,10 @@ function init_websocket(){
   socket.on('text_logs', function(text_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
-      var restore_id = "text_log" + i
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn = $('<button id="' + restore_id + '" class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
+      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
         var restore_text = text_logs[i].text
         return function(){
           code_prev = $('#code_out').text();
