@@ -14,7 +14,7 @@ console.log(' port : ' + port);
 app.listen(port);
 
 // ここから関数定義
-var chat_log = [];
+var chat_log = require('./lib/chat_log');
 var client_info = {};
 var text_log = undefined;
 var text_logs = [];
@@ -190,13 +190,6 @@ function update_pomo_on_client(client, min){
   return c.pomo_min -= min
 }
 
-function add_msg_log(data){
-  chat_log.push(data)
-  if (chat_log.length > 100){
-    chat_log.shift();
-  }
-}
-
 function add_text_log(current_log){
   if (can_add_text_log(current_log)){
     add_text_log_impl(text_log)
@@ -303,8 +296,8 @@ io.sockets.on('connection', function(client) {
     client.emit('list', ip_list());
     client.broadcast.emit('list', ip_list());
 
-    if (chat_log.length > 0 ){
-      client.emit('latest_log',chat_log);
+    if (chat_log.size() > 0 ){
+      client.emit('latest_log',chat_log.get());
     }
   });
  
@@ -317,7 +310,7 @@ io.sockets.on('connection', function(client) {
     client.emit('message', data);
     client.broadcast.emit('message', data);
 
-    add_msg_log(data)
+    chat_log.add(data)
     send_growl_without(client, data);
   });
 
