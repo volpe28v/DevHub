@@ -147,7 +147,7 @@ function init_websocket(){
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
-      var remove_btn = $('<button class="btn btn-mini restore_button"><i class="icon-remove"></i></button>').click(function(){
+      var remove_btn = $('<button class="btn btn-mini remove_button"><i class="icon-remove"></i></button>').click(function(){
         var target_dom_id = text_log_id
         var target_log_id = text_logs[i].id
         return function(){

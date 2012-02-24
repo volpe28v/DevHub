@@ -201,6 +201,12 @@ a:hover {
   margin: 0 0 0 4px;
 }
 
+.remove_button {
+  margin: 0 0 0 4px;
+  float: right;
+}
+
+
 #history_logs dt, #current_log dt{
   margin: 0px 0px 2px 4px;
 }
