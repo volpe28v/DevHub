@@ -1,6 +1,5 @@
-var express = require('express');
 var program = require('commander');
-var app = express.createServer();
+var app = require('./lib/index');
 
 program
   .version('0.0.1')
@@ -11,31 +10,6 @@ program
 var port = program.port || 3008;
 
 console.log(' port : ' + port);
-
-// appサーバの設定
-app.set('view engine', 'ejs');
-app.set('view options', { layout: false });
-app.set('views', __dirname + '/views');
-app.configure(function(){
-  app.use(express.static(__dirname + '/static'));
-});
-
-app.get('/', function(req, res) {
-  console.log('/');
-  res.render('index', { locals: { port: port } });
-});
-
-app.get('/notify', function(req, res) {
-  console.log('/notify');
-  var name = "Ext";
-  var msg = req.query.msg;
-  var data = {name: name, msg: msg };
-
-  io.sockets.emit('message', data);
-  add_msg_log(data);
-  send_growl_all(data);
-  res.end('recved msg: ' + msg);
-});
 
 app.listen(port);
 
