@@ -13,14 +13,13 @@ console.log(' port : ' + port);
 
 app.listen(port);
 
-// ここから関数定義
 var chat_log = require('./lib/chat_log');
+var text_log = require('./lib/text_log');
+
 var client_info = {};
-var text_log = undefined;
-var text_logs = [];
-var text_log_id = 0;
-var io = require('socket.io').listen(app);
 var client_max_id = 0;
+
+var io = require('socket.io').listen(app);
 console.log("listen!!!");
 
 function send_growl(addr, data){
@@ -190,84 +189,6 @@ function update_pomo_on_client(client, min){
   return c.pomo_min -= min
 }
 
-function add_text_log(current_log){
-  if (can_add_text_log(current_log)){
-    add_text_log_impl(text_log)
-    text_log = current_log
-    console.log("add_text_log is true")
-    return true
-  }else{
-    text_log = current_log
-    return false
-  }
-}
- 
-function can_add_text_log(current_log){
-  if (text_log == undefined ){ return false }
-  // 同ユーザの書き込みであれば保留
-  if (text_log.name == current_log.name ){ return false }
-
-  // バックアップ対象が空文字と改行のみの場合は排除
-  var blank = new RegExp("(^[ \r\n]+$|^$)");
-  if (blank.test(text_log.text)) { return false }
-
-  // 前回のバックアップと同様であれば保留
-  if (text_logs.length > 0 && text_logs[0].text == text_log.text ){ return false }
-
-  return true
-}
-
-function add_text_log_on_suspend(name){
-  if (can_add_text_log_on_suspend(name)){
-    add_text_log_impl(text_log)
-    console.log("add_text_log_on_suspend is true")
-    return true
-  }else{
-    return false
-  }
-}
-
-function can_add_text_log_on_suspend(name){
-  if (text_log == undefined){ return false }
-  if (text_log.name != name ){ return false }
-
-  // バックアップ対象が空文字と改行のみの場合は排除
-  var blank = new RegExp("(^[ \r\n]+$|^$)");
-  if (blank.test(text_log.text)) { return false }
-
-  // 前回のバックアップと同様であれば保留
-  if (text_logs.length > 0 && text_logs[0].text != text_log.text ){ return true }
-  if (text_logs.length == 0){ return true }
-
-  return false;
-}
-
-function add_text_log_impl(text_log){
-  text_log.id = text_log_id;
-  text_log_id += 1;
-  text_logs.unshift(text_log)
-  if (text_logs.length > 20){
-    text_logs.pop();
-  }
-}
-
-function remove_text_log(id){
-  for ( var i = 0; i < text_logs.length; ++i){
-    if ( text_logs[i].id == id ){
-      text_logs.splice(i,1);
-      console.log("removed id: ", id)
-      return;
-    }
-  }
-}
-
-function is_change_textlog(msg){
-  if (text_log == undefined){ return true;}
-  if (text_log.text != msg){ return true;}
-
-  return false;
-}
-
 function getFullDate(date){
   var yy = date.getYear();
   var mm = date.getMonth() + 1;
@@ -285,9 +206,9 @@ io.sockets.on('connection', function(client) {
 
   login(client_ip);
 
-  if ( text_log != undefined ){
-    client.emit('text',text_log);
-    client.emit('text_logs', text_logs);
+  if ( !text_log.empty() ){
+    client.emit('text',text_log.get_latest());
+    client.emit('text_logs', text_log.get_logs());
   }
 
   client.on('name', function(data) {
@@ -365,16 +286,16 @@ io.sockets.on('connection', function(client) {
 
     console.log(msg);
 
-    if ( is_change_textlog(msg) == false ){ return;}
+    if ( text_log.is_change(msg) == false ){ return;}
 
     var current_text_log = { name: name, text: msg, date: getFullDate(now) }
 
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
 
-    if ( add_text_log(current_text_log) ){
-      client.emit('text_logs', text_logs);
-      client.broadcast.emit('text_logs', text_logs);
+    if ( text_log.add(current_text_log) ){
+      client.emit('text_logs', text_log.get_logs());
+      client.broadcast.emit('text_logs', text_log.get_logs());
     }
       
   });
@@ -382,17 +303,17 @@ io.sockets.on('connection', function(client) {
   client.on('suspend_text', function() {
     var name = get_name_on_client(client)
 
-    if ( add_text_log_on_suspend(name) ){
-      client.emit('text_logs', text_logs);
-      client.broadcast.emit('text_logs', text_logs);
+    if ( text_log.add_on_suspend(name) ){
+      client.emit('text_logs', text_log.get_logs());
+      client.broadcast.emit('text_logs', text_log.get_logs());
     }
     console.log("suspend_text");
   });
 
   client.on('remove_text', function(id) {
-    remove_text_log(id)
+    text_log.remove(id)
 
-    client.broadcast.emit('text_logs', text_logs);
+    client.broadcast.emit('text_logs', text_log.get_logs());
 
     console.log("remove_text");
   });
