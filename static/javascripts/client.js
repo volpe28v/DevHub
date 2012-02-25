@@ -116,7 +116,7 @@ function init_websocket(){
     
   // for share memo
   socket.on('text', function(text_log) {
-    $('#text_writer').text("last updated by '" + text_log.name + "' at " + text_log.date);
+    $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $('#text_writer').show();
     $('#code_out').text(text_log.text);
 
