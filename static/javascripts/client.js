@@ -147,12 +147,15 @@ function init_websocket(){
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
-      var remove_btn = $('<button class="btn btn-mini remove_button"><i class="icon-remove"></i></button>').click(function(){
+      //var remove_btn = $('<button class="btn btn-mini remove_button"><i class="icon-remove"></i></button>').click(function(){
+      //var remove_btn = $('<a href="#" class="remove_text"><i class="icon-remove"></i></a>').click(function(){
+      var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
         var target_log_id = text_logs[i].id
         return function(){
           $('#' + target_dom_id).fadeOut()
           socket.emit('remove_text', target_log_id);
+          return false;
         }
       }())
 
