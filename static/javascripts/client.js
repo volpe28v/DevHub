@@ -52,9 +52,8 @@ function init_websocket(){
 
   socket.on('latest_log', function(msgs) {
     for ( var i = 0 ; i < msgs.length; i++){
-      append_msg_without_date(msgs[i])
+      append_msg(msgs[i])
     }
-    show_sequence();
   });
 
   $('#form').submit(function() {
@@ -147,8 +146,7 @@ function init_websocket(){
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
-      //var remove_btn = $('<button class="btn btn-mini remove_button"><i class="icon-remove"></i></button>').click(function(){
-      //var remove_btn = $('<a href="#" class="remove_text"><i class="icon-remove"></i></a>').click(function(){
+
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
         var target_log_id = text_logs[i].id
@@ -202,12 +200,6 @@ function suggest_start(list){
   }
 }
 
-function to_sequence(msg){
-  var seq_html = '<div class=wsd wsd_style="vs2010"><pre>MSG</pre></div></script>';
-  return seq_html.replace("MSG",msg);
-
-}
-
 function getFullDate(date){
   var yy = date.getYear();
   var mm = date.getMonth() + 1;
@@ -224,54 +216,10 @@ function append_msg(data){
   //      切り替え可能にするかは検討する。
   if (data.name == "System") { return }
 
-  var date = new Date();
-  var id = date.getTime();
-  var date_color = "#ccc";
+  var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span style="color: #ccc;">(' + data.date + ')</span>');
 
-  $('#list').prepend($('<li id="' + id + '" style="display:none">' + get_msg_body(data) + ' <span style="color: ' + date_color + ';">(' + getFullDate(date) + ')</span></li>'));
-  $('#' + id).fadeIn('slow');
-
-  add_to_sequence(data);
-  show_sequence();
-};
-
-var seq_msg_log = [];
-function add_to_sequence(data){
-  if ( (data.name == "System") ||
-       (data.name == "Ext") ||
-       (data.name == "Pomo") ){ return; }                                           
-
-  seq_msg_log.unshift(data);
-  if (seq_msg_log.length > 10){
-    seq_msg_log.pop();
-  }
-}
-
-function show_sequence(){
-  var seq_msg = "";
-  for(var i = 0; i < seq_msg_log.length; i++){
-    other_name = get_other_name(seq_msg_log[i].msg)
-
-    if ( is_login_name(other_name.name) ){
-      var msg_body = seq_msg_log[i].msg.replace(other_name.area,"")
-      seq_msg += seq_msg_log[i].name + "-->" + other_name.name + ": " + msg_body + "\n";
-    }else{
-      seq_msg += "note right of " + seq_msg_log[i].name + ": " + seq_msg_log[i].msg + "\n";  
-    }
-  }
-
-  $('#sequence').html(to_sequence(seq_msg));
-}
-
-function append_msg_without_date(data){
-  var date = new Date();
-  var id = date.getTime();
-
-  $('#list').prepend($('<li id="' + id + '" style="display:none">' + get_msg_body(data) + '</li>'));
-
-  $('#' + id).fadeIn('slow');
-
-  add_to_sequence(data);
+  $('#list').prepend(msg_li);
+  msg_li.fadeIn('slow');
 };
 
 function get_msg_body(data){

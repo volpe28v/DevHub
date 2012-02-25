@@ -56,6 +56,9 @@ io.sockets.on('connection', function(client) {
   client.on('message', function(data) {
     client_info.set_name(client, data.name);
 
+    var now = new Date();
+    data.date = getFullDate(now);
+
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
 
@@ -122,7 +125,6 @@ io.sockets.on('connection', function(client) {
       client.emit('text_logs', text_log.get_logs());
       client.broadcast.emit('text_logs', text_log.get_logs());
     }
-      
   });
 
   client.on('suspend_text', function() {
