@@ -70,28 +70,18 @@ io.sockets.on('connection', function(client) {
     client_info.set_name(client, pomo_data.name);
     var pomo_msg = ""
     if ( pomo_data.msg != "" ){
-      pomo_msg = '"' + pomo_data.msg + '"'
+      pomo_msg = '「' + pomo_data.msg + '」'
     }
 
+    var data = {name: "Pomo"};
     if ( client_info.is_pomo(client) ){
-      var data = {name: "Pomo", msg: client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg};
+      data.msg = client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
-
-      client.emit('message', data);
-      client.broadcast.emit('message', data);
-      client_info.send_growl_without(client, data);
-
-      client.emit('list', client_info.ip_list());
-      client.broadcast.emit('list', client_info.ip_list());
     }else{
-      var data = {name: "Pomo", msg: client_info.get_name(client) + ' がポモドーロを開始しました。' + pomo_msg};
-      client.emit('message', data);
-      client.broadcast.emit('message', data);
-      client_info.send_growl_without(client, data);
+      data.msg = client_info.get_name(client) + ' がポモドーロを開始しました。' + pomo_msg;
 
-      var timer_id = setInterval(function(){
+      client_info.set_pomo(client,true, setInterval(function(){
         var current_min = client_info.update_pomo(client, 1);
-        //console.log( "current pomo: " + current_min );
 
         if (current_min <= 0 ){
           var data = {name: "Pomo", msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
@@ -103,11 +93,15 @@ io.sockets.on('connection', function(client) {
 
         client.emit('list', client_info.ip_list());
         client.broadcast.emit('list', client_info.ip_list());
-      }, 1 * 60000);
-      client_info.set_pomo(client,true,timer_id);
-      client.emit('list', client_info.ip_list());
-      client.broadcast.emit('list', client_info.ip_list());
+      }, 1 * 60000));
     }
+    client.emit('message', data);
+    client.broadcast.emit('message', data);
+    client_info.send_growl_without(client, data);
+
+    client.emit('list', client_info.ip_list());
+    client.broadcast.emit('list', client_info.ip_list());
+ 
   });
 
   client.on('text', function(msg) {
