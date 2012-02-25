@@ -1,2 +1,2 @@
-web: node app.js -p 44519
+web: node app.js
 

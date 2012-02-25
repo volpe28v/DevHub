@@ -7,7 +7,7 @@ program
   .parse(process.argv);
 
 // 接続ポートを設定
-var port = program.port || 3008;
+var port = program.port || process.env.PORT || 3000;
 
 console.log(' port : ' + port);
 
