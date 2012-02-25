@@ -76,7 +76,8 @@ io.sockets.on('connection', function(client) {
       pomo_msg = '「' + pomo_data.msg + '」'
     }
 
-    var data = {name: "Pomo"};
+    var now = new Date();
+    var data = {name: "Pomo", date: getFullDate(now)};
     if ( client_info.is_pomo(client) ){
       data.msg = client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
@@ -87,7 +88,8 @@ io.sockets.on('connection', function(client) {
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
-          var data = {name: "Pomo", msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
+          var now = new Date();
+          var data = {name: "Pomo", date: getFullDate(now), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
           client.emit('message', data);
           client.broadcast.emit('message', data);
@@ -144,7 +146,6 @@ io.sockets.on('connection', function(client) {
 
     console.log("remove_text");
   });
-
 
   client.on('disconnect', function() {
     client_info.set_pomo(client,false);
