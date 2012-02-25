@@ -1,0 +1,11 @@
+{
+  "name": "DevHub",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~> 2.5.1"
+  , "commander": "~> 0.5.2"
+  , "ejs": "~> 0.4.3"
+  , "socket.io": "~> 0.8.7"
+  }
+}
+
