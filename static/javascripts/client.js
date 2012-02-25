@@ -32,6 +32,7 @@ function init_websocket(){
   });
 
   socket.on('list', function(login_list) {
+    $('#login_list_loader').hide();
     latest_login_list = login_list
 
     var out_list = ""
