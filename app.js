@@ -161,6 +161,18 @@ io.sockets.on('connection', function(client) {
     console.log("remove_text");
   });
 
+  client.on('add_favo_text', function(id) {
+    text_log.add_favo(id);
+
+    console.log("add_favo_text: " + id );
+  });
+
+  client.on('remove_favo_text', function(id) {
+    text_log.remove_favo(id);
+
+    console.log("remove_favo_text: " + id );
+  });
+
   client.on('disconnect', function() {
     client_info.set_pomo(client,false);
     var client_addr = client_info.get_ip(client);

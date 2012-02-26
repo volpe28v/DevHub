@@ -153,13 +153,19 @@ function init_websocket(){
         function(){
           var target_log_id = text_logs[i].id
           return function(){
-            $(this).removeClass("no_favo_star").addClass("favo_star").text("★")
+            $(this).removeClass("no_favo_star")
+                   .addClass("favo_star")
+                   .text("★")
+            socket.emit('add_favo_text', target_log_id);
           }
         }(),
         function(){
           var target_log_id = text_logs[i].id
           return function(){
-            $(this).removeClass("favo_star").addClass("no_favo_star").text("☆")
+            $(this).removeClass("favo_star")
+                   .addClass("no_favo_star")
+                   .text("☆")
+            socket.emit('add_favo_text', target_log_id);
           }
         }()
       )
