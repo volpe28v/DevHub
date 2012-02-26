@@ -214,6 +214,20 @@ a:hover {
   margin: 0 0 0 4px;
 }
 
+.no_favo_star {
+  color: gray;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0 0 4px;
+}
+
+.favo_star {
+  color: orange;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0 0 4px;
+}
+
 .remove_text {
   margin: 0 5px 0 0;
   float: right;

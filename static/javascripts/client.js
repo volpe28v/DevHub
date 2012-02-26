@@ -149,6 +149,21 @@ function init_websocket(){
         }
       }())
 
+      var favo_star = $('<span/>').text('☆').addClass("no_favo_star").toggle(
+        function(){
+          var target_log_id = text_logs[i].id
+          return function(){
+            $(this).removeClass("no_favo_star").addClass("favo_star").text("★")
+          }
+        }(),
+        function(){
+          var target_log_id = text_logs[i].id
+          return function(){
+            $(this).removeClass("favo_star").addClass("no_favo_star").text("☆")
+          }
+        }()
+      )
+
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
         var target_log_id = text_logs[i].id
@@ -162,7 +177,7 @@ function init_websocket(){
       var log_dd = $("<dd/>")
       var log_pre = $("<pre/>").text(text_logs[i].text)
 
-      log_dt.append(writer_label).append(restore_btn).append(remove_btn)
+      log_dt.append(writer_label).append(restore_btn).append(favo_star).append(remove_btn)
       log_dd.append(log_pre)
       log_div.append(log_dt).append(log_dd)
       logs_dl.append(log_div)
