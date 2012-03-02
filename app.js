@@ -26,7 +26,7 @@ app.get('/notify', function(req, res) {
   console.log('/notify');
   var name = "Ext";
   var msg = req.query.msg;
-  var data = {name: name, msg: msg };
+  var data = {name: name, msg: msg, date: getFullDate(new Date()) };
 
   io.sockets.emit('message', data);
   chat_log.add(data);
@@ -74,8 +74,7 @@ io.sockets.on('connection', function(client) {
   client.on('message', function(data) {
     client_info.set_name(client, data.name);
 
-    var now = new Date();
-    data.date = getFullDate(now);
+    data.date = getFullDate(new Date());
 
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
@@ -94,8 +93,7 @@ io.sockets.on('connection', function(client) {
       pomo_msg = '「' + pomo_data.msg + '」'
     }
 
-    var now = new Date();
-    var data = {name: "Pomo", date: getFullDate(now)};
+    var data = {name: "Pomo", date: getFullDate(new Date())};
     if ( client_info.is_pomo(client) ){
       data.msg = client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
@@ -106,8 +104,7 @@ io.sockets.on('connection', function(client) {
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
-          var now = new Date();
-          var data = {name: "Pomo", date: getFullDate(now), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
+          var data = {name: "Pomo", date: getFullDate(new Date()), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
           client.emit('message', data);
           client.broadcast.emit('message', data);
@@ -129,14 +126,13 @@ io.sockets.on('connection', function(client) {
 
   client.on('text', function(msg) {
     var name = client_info.get_name(client)
-    var now = new Date();
     msg = msg.replace(/\n/g,"\r\n");
 
     console.log(msg);
 
     if ( text_log.is_change(msg) == false ){ return;}
 
-    var current_text_log = { name: name, text: msg, date: getFullDate(now) }
+    var current_text_log = { name: name, text: msg, date: getFullDate(new Date()) }
 
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
