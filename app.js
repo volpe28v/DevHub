@@ -1,6 +1,12 @@
 var program = require('commander');
 var app = require('./lib/index');
 
+var chat_log = require('./lib/chat_log');
+var text_log = require('./lib/text_log');
+var client_info = require('./lib/client_info');
+
+var io = require('socket.io').listen(app);
+
 program
   .version('0.0.1')
   .option('-p, --port <n>', 'port no. default is 3008.')
@@ -11,13 +17,25 @@ var port = program.port || process.env.PORT || 3000;
 
 console.log(' port : ' + port);
 
+app.get('/', function(req, res) {
+  console.log('/');
+  res.render('index');
+});
+
+app.get('/notify', function(req, res) {
+  console.log('/notify');
+  var name = "Ext";
+  var msg = req.query.msg;
+  var data = {name: name, msg: msg };
+
+  io.sockets.emit('message', data);
+  chat_log.add(data);
+  client_info.send_growl_all(data);
+  res.end('recved msg: ' + msg);
+});
+
 app.listen(port);
 
-var chat_log = require('./lib/chat_log');
-var text_log = require('./lib/text_log');
-var client_info = require('./lib/client_info');
-
-var io = require('socket.io').listen(app);
 console.log("listen!!!");
 
 function getFullDate(date){
