@@ -2,6 +2,7 @@ var latest_login_list = []
 var suggest_obj = undefined;
 var LOGIN_COLOR_MAX = 10
 var COOKIE_NAME = "dev_hub_name";
+var COOKIE_EXPIRES = 365
 
 $(function() {
   init_websocket();
@@ -60,7 +61,7 @@ function init_websocket(){
   $('#form').submit(function() {
     var name = $('#name').val();
     var message = $('#message').val();
-    $.cookie(COOKIE_NAME,name);
+    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
 
     if ( message && name ){
       var send_msg = "[" + name + "] " + message;
@@ -85,7 +86,7 @@ function init_websocket(){
   $('#pomo').click(function(){
     var name = $('#name').val();
     var message = $('#message').val();
-    $.cookie(COOKIE_NAME,name);
+    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
 
     $('#message').attr('value', '');
     socket.emit('pomo', {name: name, msg: message});
@@ -95,7 +96,7 @@ function init_websocket(){
   $('#login').click(function(){
     var name = $('#login_name').val();
     if ( name != "" ){
-      $.cookie(COOKIE_NAME,name);
+      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
       socket.emit('name', {name: $.cookie(COOKIE_NAME)});
       $('#name').val($.cookie(COOKIE_NAME));
       $('#message').focus();
@@ -106,7 +107,7 @@ function init_websocket(){
   $('#login_form').submit(function(){
     var name = $('#login_name').val();
     if ( name != "" ){
-      $.cookie(COOKIE_NAME,name);
+      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
       socket.emit('name', {name: $.cookie(COOKIE_NAME)});
       $('#name').val($.cookie(COOKIE_NAME));
       $('#message').focus();
