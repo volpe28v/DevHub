@@ -239,12 +239,8 @@ function get_msg_body(data){
 
 function decorate_msg(msg){
   var deco_msg = msg;
-  var other_name = get_other_name(msg)
 
-  if ( is_login_name(other_name.name) ){
-    deco_msg = deco_msg.replace(other_name.area,function(){ return '<span style="color: red;">' + other_name.area + '</span>' ;});
-  }
-
+  deco_msg = deco_login_name(deco_msg)
   deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
 
   deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + RegExp.$1 + '</span>'});
@@ -253,23 +249,12 @@ function decorate_msg(msg){
   return deco_msg;
 };
 
-function get_other_name(msg){
-  var match_area = ""
-  var other_name = ""
-  msg.replace(/((>|＞)[ ]*(.+?)( |$))/,function(){ 
-    match_area = RegExp.$1
-    other_name = RegExp.$3
-  });
-  return {name: other_name, area: match_area }
-};
-
-function is_login_name(name){
+function deco_login_name(msg){
+  var deco_msg = msg;
   for(var i = 0; i < latest_login_list.length; ++i ){
-    if ( latest_login_list[i].name == name ){
-      return true;
-    }
+    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: blue;">' + RegExp.$1 + '</span>'});
   }
-  return false;
+  return deco_msg;
 }
 
 function get_id(name){
