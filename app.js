@@ -35,7 +35,6 @@ app.get('/notify', function(req, res) {
 });
 
 app.listen(port);
-
 console.log("listen!!!");
 
 function getFullDate(date){
@@ -57,8 +56,10 @@ io.sockets.on('connection', function(client) {
 
   if ( !text_log.empty() ){
     client.emit('text',text_log.get_latest());
-    client.emit('text_logs', text_log.get_logs());
   }
+
+  client.emit('text_logs', text_log.get_logs());
+  client.emit('favo_logs', text_log.get_favo_logs());
 
   client.on('name', function(data) {
     client_info.set_name(client, data.name);
@@ -164,11 +165,19 @@ io.sockets.on('connection', function(client) {
   client.on('add_favo_text', function(id) {
     text_log.add_favo(id);
 
+    client.emit('favo_logs', text_log.get_favo_logs());
+    client.broadcast.emit('favo_logs', text_log.get_favo_logs());
+
     console.log("add_favo_text: " + id );
   });
 
   client.on('remove_favo_text', function(id) {
     text_log.remove_favo(id);
+
+    client.broadcast.emit('text_logs', text_log.get_logs());
+
+    client.emit('favo_logs', text_log.get_favo_logs());
+    client.broadcast.emit('favo_logs', text_log.get_favo_logs());
 
     console.log("remove_favo_text: " + id );
   });

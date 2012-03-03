@@ -165,7 +165,7 @@ function init_websocket(){
             $(this).removeClass("favo_star")
                    .addClass("no_favo_star")
                    .text("☆")
-            socket.emit('add_favo_text', target_log_id);
+            socket.emit('remove_favo_text', target_log_id);
           }
         }()
       )
@@ -195,6 +195,49 @@ function init_websocket(){
     $('#update_log_notify').fadeOut(2000,function(){ $(this).hide()});
 
   });
+
+  socket.on('favo_logs', function(favo_logs){
+    var logs_dl = $("<dl/>")
+    for ( var i = 0; i < favo_logs.length; ++i){
+      var text_log_id = "favo_log_id_" + favo_logs[i].id
+      
+      var log_div = $("<div/>").attr("id", text_log_id)
+      var log_dt = $("<dt/>")
+      var writer_label = $("<span/>").addClass("label").text( favo_logs[i].name + " at " + favo_logs[i].date )
+      var icon = $("<i/>").addClass("icon-repeat")
+      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
+        var restore_text = favo_logs[i].text
+        return function(){
+          code_prev = $('#code_out').text();
+          $('#code').val(restore_text)
+          $('#share-memo-tab').click()
+          $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+      }())
+
+      var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
+        var target_dom_id = text_log_id
+        var target_log_id = favo_logs[i].id
+        return function(){
+          $('#' + target_dom_id).fadeOut()
+          socket.emit('remove_favo_text', target_log_id);
+          return false;
+        }
+      }())
+
+      var log_dd = $("<dd/>")
+      var log_pre = $("<pre/>").text(favo_logs[i].text)
+
+      log_dt.append(writer_label).append(restore_btn).append(remove_btn)
+      log_dd.append(log_pre)
+      log_div.append(log_dt).append(log_dd)
+      logs_dl.append(log_div)
+    }
+
+    $('#favo_logs').empty();
+    $('#favo_logs').append(logs_dl);
+  });
+
 
   var code_prev = $('#code').val();
   var loop = function() {
