@@ -149,26 +149,50 @@ function init_websocket(){
         }
       }())
 
-      var favo_star = $('<span/>').text('☆').addClass("no_favo_star").toggle(
-        function(){
-          var target_log_id = text_logs[i].id
-          return function(){
-            $(this).removeClass("no_favo_star")
-                   .addClass("favo_star")
-                   .text("★")
-            socket.emit('add_favo_text', target_log_id);
-          }
-        }(),
-        function(){
-          var target_log_id = text_logs[i].id
-          return function(){
-            $(this).removeClass("favo_star")
-                   .addClass("no_favo_star")
-                   .text("☆")
-            socket.emit('remove_favo_text', target_log_id);
-          }
-        }()
-      )
+      var favo_star = undefined;
+      if ( text_logs[i].favo ){
+        favo_star = $('<span/>').text('★').addClass("favo_star").toggle(
+          function(){
+            var target_log_id = text_logs[i].id
+            return function(){
+              $(this).removeClass("favo_star")
+                     .addClass("no_favo_star")
+                     .text("☆")
+              socket.emit('remove_favo_text', target_log_id);
+            }
+          }(),
+          function(){
+            var target_log_id = text_logs[i].id
+            return function(){
+              $(this).removeClass("no_favo_star")
+                     .addClass("favo_star")
+                     .text("★")
+              socket.emit('add_favo_text', target_log_id);
+            }
+          }()
+        )
+      }else{
+        favo_star = $('<span/>').text('☆').addClass("no_favo_star").toggle(
+          function(){
+            var target_log_id = text_logs[i].id
+            return function(){
+              $(this).removeClass("no_favo_star")
+                     .addClass("favo_star")
+                     .text("★")
+              socket.emit('add_favo_text', target_log_id);
+            }
+          }(),
+          function(){
+            var target_log_id = text_logs[i].id
+            return function(){
+              $(this).removeClass("favo_star")
+                     .addClass("no_favo_star")
+                     .text("☆")
+              socket.emit('remove_favo_text', target_log_id);
+            }
+          }()
+        )
+      }
 
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
@@ -203,7 +227,7 @@ function init_websocket(){
       
       var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
-      var writer_label = $("<span/>").addClass("label").text( favo_logs[i].name + " at " + favo_logs[i].date )
+      var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
       var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
         var restore_text = favo_logs[i].text

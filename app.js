@@ -165,6 +165,8 @@ io.sockets.on('connection', function(client) {
   client.on('add_favo_text', function(id) {
     text_log.add_favo(id);
 
+    client.broadcast.emit('text_logs', text_log.get_logs());
+
     client.emit('favo_logs', text_log.get_favo_logs());
     client.broadcast.emit('favo_logs', text_log.get_favo_logs());
 
@@ -174,6 +176,7 @@ io.sockets.on('connection', function(client) {
   client.on('remove_favo_text', function(id) {
     text_log.remove_favo(id);
 
+    client.emit('text_logs', text_log.get_logs());
     client.broadcast.emit('text_logs', text_log.get_logs());
 
     client.emit('favo_logs', text_log.get_favo_logs());
