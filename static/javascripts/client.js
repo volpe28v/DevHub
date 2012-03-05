@@ -294,7 +294,7 @@ function append_msg(data){
   //      切り替え可能にするかは検討する。
   if (data.name == "System") { return }
 
-  var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span style="color: #ccc;">(' + data.date + ')</span>');
+  var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
 
   $('#list').prepend(msg_li);
   msg_li.fadeIn('slow');
