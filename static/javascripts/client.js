@@ -305,25 +305,24 @@ function get_msg_body(data){
   var id = date.getTime();
 
   var name_class = "login-name";
-  var msg_color = "#555";
+  var msg_class = "msg";
 
   data.id = get_id(data.name)
 
   if ( data.name == "System" ){
     name_class = "login-name-system";
-    msg_color = "#aaa";
+    msg_class = "msg_ext"
   }else if ( data.name == "Ext" ){
     name_class = "login-name-ext";
-    msg_color = "#aaa";
+    msg_class = "msg_ext"
   }else if ( data.name == "Pomo" ){
     name_class = "login-name-pomosys";
-    msg_color = "orange";
+    msg_class = "msg_pomo"
   }else{
     name_class = "login-name" + data.id % LOGIN_COLOR_MAX
-    msg_color = "#555";
   }
 
-  return '<span class="' + name_class + '">' + data.name + '</span> <span class="msg_text" style="color: ' + msg_color + ';">' + decorate_msg(data.msg) + '</span>';
+  return '<span class="' + name_class + '">' + data.name + '</span> <span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
@@ -353,5 +352,10 @@ function get_id(name){
     }
   }
   return 0;
+}
+
+function change_style(css_file){
+  //console.log("change to " + css_file );
+  $("#devhub-style").attr('href','/stylesheets/' + css_file);
 }
 

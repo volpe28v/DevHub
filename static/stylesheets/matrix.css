@@ -1,3 +1,7 @@
+#body-main{
+  background-color: black;
+}
+
 a {
   color: dodgerblue;
 }
@@ -6,21 +10,9 @@ a:hover {
   color: deeppink;
 }
 
-.msg {
-  color: #555;
-}
-
-.msg_ext {
-  color: #aaa;
-}
-
-.msg_pomo {
-  color: orange;
-}
-
 #suggest {
   position: absolute;
-  background-color: #FFFFFF;
+  background-color: black;
   border: 1px solid #CCCCFF;
   width: 252px;
 }
@@ -42,17 +34,13 @@ a:hover {
   background-color: #99CCFF;
 }
 
-#sequence {
-  width: 100%;
-  background-color: #fff;
-  margin-bottom: 5px;
-}
-
 #code {
   width: 98%;
   height: 150px;
   padding: 5px;
-  background-color: aliceblue;
+  color: yellowgreen;
+  background-color: black;
+  border: solid 1px yellowgreen;
   margin-top: 2px;
   margin-bottom: 2px;
 }
@@ -61,15 +49,15 @@ a:hover {
   width: 98%;
   height: 800px;
   padding: 5px;
-  border: solid 1px whitesmoke;
-  background-color: ghostwhite; 
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
+  color: yellowgreen;
+  background-color: black;
+  border: solid 1px yellowgreen;
 }
 
 #name, #message {
-  background-color: aliceblue;
+  background-color: #222;
+  border: solid 1px yellowgreen;
+  color: yellowgreen;
 }
 
 #form {
@@ -80,11 +68,12 @@ a:hover {
   height: 1000px;
   padding: 4px 2px;
   overflow-y: auto;
-  border: solid 1px whitesmoke;
-  background-color: ghostwhite; 
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
+  border: solid 1px yellowgreen;
+  background-color: black; 
+}
+
+.msg {
+  color: yellowgreen;
 }
 
 #list {
@@ -113,12 +102,9 @@ a:hover {
 
 .login-name , .login-name-pomo , .login-name-system, .login-name-ext, .login-name-pomosys, .login-name0, .login-name1, .login-name2, .login-name3, .login-name4, .login-name5, .login-name6, .login-name7, .login-name8, .login-name9{
   font-weight: bold;
-  border: solid 1px lightgray;
+  border: solid 1px black;
   padding: 2px 4px;
   margin: 1px;
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
   color: dimgray;
 }
 
@@ -256,7 +242,7 @@ a:hover {
 }
 
 footer {
-  background: #fff;
+  background: black;
   width: 100%;
   margin-top: 4px;
   padding: 20px 0;

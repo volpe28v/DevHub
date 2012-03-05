@@ -19,7 +19,7 @@
     <script type="text/javascript" src="/javascripts/suggest.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
-    <link href="/stylesheets/devhub.css" media="screen" rel="stylesheet" type="text/css" />
+    <link id="devhub-style" href="/stylesheets/devhub.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
 
   </head>
@@ -39,7 +39,7 @@
   </div>
 </div>
 
-  <body style="padding-top: 50px">
+  <body id="body-main" style="padding-top: 50px">
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -47,7 +47,20 @@
           <ul class="nav">
             <li class="active">
             </li>
+            <li class="dropdown">
+              <a href="#"
+                 class="dropdown-toggle"
+                 data-toggle="dropdown">
+                 Style 
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a onclick="change_style('devhub.css');return false;" href="#">default</a></li>
+                <li><a onclick="change_style('matrix.css');return false;" href="#">Matrix</a></li>
+              </ul>
+            </li>
           </ul>
+
         </div>
       </div>
     </div>
