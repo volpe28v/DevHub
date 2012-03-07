@@ -2,10 +2,15 @@ var latest_login_list = []
 var suggest_obj = undefined;
 var LOGIN_COLOR_MAX = 10
 var COOKIE_NAME = "dev_hub_name";
+var COOKIE_CSS_NAME = "dev_hub_css_name";
 var COOKIE_EXPIRES = 365
+var CSS_DEFAULT_NAME = "bootstrap.min.css"
 
 $(function() {
   init_websocket();
+
+  var css_name = $.cookie(COOKIE_CSS_NAME) || CSS_DEFAULT_NAME;
+  $("#devhub-style").attr('href','/stylesheets/' + css_name );
 
   if ( $.cookie(COOKIE_NAME) == null  ){
     $('#name_in').modal("show")
@@ -357,5 +362,6 @@ function get_id(name){
 function change_style(css_file){
   //console.log("change to " + css_file );
   $("#devhub-style").attr('href','/stylesheets/' + css_file);
+  $.cookie(COOKIE_CSS_NAME,css_file,{ expires: COOKIE_EXPIRES });
 }
 
