@@ -56,9 +56,6 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a onclick="change_style('bootstrap.min.css');return false;" href="#">default</a></li>
-                <li><a onclick="change_style('bootstrap.cyborg.css');return false;" href="#">cyborg</a></li>
-                <li><a onclick="change_style('bootstrap.spruce.css');return false;" href="#">spruce</a></li>
-                <li><a onclick="change_style('bootstrap.slate.css');return false;" href="#">slate</a></li>
                 <li><a onclick="change_style('bootstrap.journal.css');return false;" href="#">journal</a></li>
                 <li><a onclick="change_style('bootstrap.united.css');return false;" href="#">united</a></li>
               </ul>
@@ -81,7 +78,7 @@
             <span id="pomo" class="btn btn-small btn-warning">Pomo</span>
             <div id="suggest" style="display: none;"></div>
           </form>
-          <div id="chat_body">
+          <div id="chat_body" class="well">
             <ul id="list"></ul>
           </div>
         </div>
@@ -101,7 +98,7 @@
                 <span id="update_log_notify" class="label label-success" style="display: none;">updated History</span>
                 <textarea id="code" placeholder="Write here"/></textarea>
                 <span id="text_writer" class="label label-info"></span>
-                <pre id="code_out"></pre>
+                <pre id="code_out" class="well"></pre>
               </div>
 
               <div id="auto-logs" class="tab-pane">
