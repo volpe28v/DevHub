@@ -120,7 +120,14 @@ function init_websocket(){
     $('#name_in').modal('hide')
     return false;
   });
-    
+
+  $("#code").focus(function(){
+    $(this).animate(
+      { height:"500px"}, 300);
+    }).blur(function(){
+      $(this).animate({ height:"60px"}, 300);
+    });
+
   // for share memo
   socket.on('text', function(text_log) {
     $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
