@@ -309,7 +309,7 @@ function append_msg(data){
   var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
 
   $('#list').prepend(msg_li);
-  msg_li.fadeIn('slow');
+  msg_li.fadeIn();
 };
 
 function get_msg_body(data){
