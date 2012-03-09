@@ -136,32 +136,32 @@ a:hover {
 
 .login-name1{
   background-color: mediumaquamarine;
-  background: -webkit-gradient(linear, left top, left bottom, from(aquamarine), to(mediumaquamarine));
-  background: -moz-linear-gradient(top, aquamarine,mediumaquamarine);
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(mediumaquamarine));
+  background: -moz-linear-gradient(top, ghostwhite,mediumaquamarine);
 }
 
 .login-name2{
   background-color: palegoldenrod;
-  background: -webkit-gradient(linear, left top, left bottom, from(lemonchiffon), to(palegoldenrod));
-  background: -moz-linear-gradient(top, lemonchiffon,palegoldenrod);
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(palegoldenrod));
+  background: -moz-linear-gradient(top, ghostwhite,palegoldenrod);
 }
 
 .login-name3{
   background-color: darkturquoise;
-  background: -webkit-gradient(linear, left top, left bottom, from(turquoise), to(darkturquoise));
-  background: -moz-linear-gradient(top, turquoise,darkturquoise);
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(darkturquoise));
+  background: -moz-linear-gradient(top, ghostwhite,darkturquoise);
 }
 
 .login-name4{
   background-color: burlywood;
-  background: -webkit-gradient(linear, left top, left bottom, from(wheat), to(burlywood));
-  background: -moz-linear-gradient(top, wheat,burlywood);
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(burlywood));
+  background: -moz-linear-gradient(top, ghostwhite,burlywood);
 }
 
 .login-name5{
   background-color: khaki;
-  background: -webkit-gradient(linear, left top, left bottom, from(lightgoldenrodyellow), to(khaki));
-  background: -moz-linear-gradient(top, lightgoldenrodyellow,khaki);
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(khaki));
+  background: -moz-linear-gradient(top, ghostwhite,khaki);
 }
 
 .login-name6{
