@@ -63,7 +63,7 @@ a:hover {
 
 #code_out {
   width: 98%;
-  height: 800px;
+  min-height: 500px;
   padding: 5px;
   border-radius: 4px;        /* CSS3草案 */  
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
@@ -79,7 +79,7 @@ a:hover {
 }
 
 #chat_body{
-  height: 1000px;
+  min-height: 620px;
   padding: 4px 2px;
   overflow-y: auto;
   border-radius: 4px;        /* CSS3草案 */  
