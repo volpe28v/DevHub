@@ -341,10 +341,10 @@ function decorate_msg(msg){
   var deco_msg = msg;
 
   deco_msg = deco_login_name(deco_msg)
-  deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + RegExp.$1 + '" target="_blank" >' + RegExp.$1 + '</a>' });
+  deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + arguments[1] + '" target="_blank" >' + arguments[1] + '</a>' });
 
-  deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + RegExp.$1 + '</span>'});
-  deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + RegExp.$1 + '</span>'});
+  deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + arguments[1] + '</span>'});
+  deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + arguments[1] + '</span>'});
 
   return deco_msg;
 };
@@ -352,7 +352,7 @@ function decorate_msg(msg){
 function deco_login_name(msg){
   var deco_msg = msg;
   for(var i = 0; i < latest_login_list.length; ++i ){
-    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: blue;">' + RegExp.$1 + '</span>'});
+    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: blue;">' + arguments[1] + '</span>'});
   }
   return deco_msg;
 }
