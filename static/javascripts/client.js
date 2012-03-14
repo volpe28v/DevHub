@@ -6,6 +6,9 @@ var COOKIE_CSS_NAME = "dev_hub_css_name";
 var COOKIE_EXPIRES = 365
 var CSS_DEFAULT_NAME = "bootstrap.min.css"
 
+// for share memo
+var writing_text = undefined;
+
 $(function() {
   init_websocket();
 
@@ -77,12 +80,12 @@ function init_websocket(){
   });
 
   $('#sync_text').click(function(){
-    $('#code').val($('#code_out').text());
+    $('#code').val(writing_text.text);
     $('#code').focus();
   });
 
   $('#suspend_text').click(function(){
-    code_prev = $('#code_out').text();
+    code_prev = writing_text.text;
     socket.emit('suspend_text');
     $('#code').val("");
     $('#code').focus();
@@ -130,6 +133,7 @@ function init_websocket(){
 
   // for share memo
   socket.on('text', function(text_log) {
+    writing_text = text_log;
     $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $('#text_writer').show();
     $('#code_out').text(text_log.text);
@@ -154,7 +158,7 @@ function init_websocket(){
       var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
         var restore_text = text_logs[i].text
         return function(){
-          code_prev = $('#code_out').text();
+          code_prev = writing_text.text;
           $('#code').val(restore_text)
           $('#share-memo-tab').click()
           $('html,body').animate({ scrollTop: 0 }, 'slow');
@@ -244,7 +248,7 @@ function init_websocket(){
       var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
         var restore_text = favo_logs[i].text
         return function(){
-          code_prev = $('#code_out').text();
+          code_prev = writing_text.text;
           $('#code').val(restore_text)
           $('#share-memo-tab').click()
           $('html,body').animate({ scrollTop: 0 }, 'slow');
@@ -278,7 +282,7 @@ function init_websocket(){
   var code_prev = $('#code').val();
   var loop = function() {
     var code = $('#code').val();
-    var code_out = $('#code_out').text();
+    var code_out = writing_text ? writing_text.text : "";
     if (code_prev != code && code_out != code) {
       socket.emit('text',code);
       code_prev = code;
