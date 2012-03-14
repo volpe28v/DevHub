@@ -134,13 +134,14 @@ function init_websocket(){
   // for share memo
   socket.on('text', function(text_log) {
     writing_text = text_log;
+    var text_body = decorate_text(text_log.text);
     $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $('#text_writer').show();
-    $('#code_out').text(text_log.text);
+    $('#code_out').html(text_body);
 
     var logs_dl = "<dl>"
     logs_dl += '<dt><span class="label label-info">' + text_log.name + " at " + text_log.date + '</span></dt>'
-    logs_dl += "<dd><pre>" + text_log.text + "</pre></dd>"
+    logs_dl += "<dd><pre>" + text_body + "</pre></dd>"
     logs_dl += "</dl>"
     $('#current_log').html(logs_dl);
  
@@ -150,13 +151,14 @@ function init_websocket(){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
       var text_log_id = "text_log_id_" + text_logs[i].id
-      
+      var text_body = decorate_text(text_logs[i].text);
+
       var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
       var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
-        var restore_text = text_logs[i].text
+        var restore_text = text_logs[i].text;
         return function(){
           code_prev = writing_text.text;
           $('#code').val(restore_text)
@@ -221,7 +223,7 @@ function init_websocket(){
       }())
 
       var log_dd = $("<dd/>")
-      var log_pre = $("<pre/>").text(text_logs[i].text)
+      var log_pre = $("<pre/>").html(text_body)
 
       log_dt.append(writer_label).append(restore_btn).append(favo_star).append(remove_btn)
       log_dd.append(log_pre)
@@ -240,13 +242,14 @@ function init_websocket(){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < favo_logs.length; ++i){
       var text_log_id = "favo_log_id_" + favo_logs[i].id
+      var text_body = decorate_text(favo_logs[i].text);
       
       var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
       var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
-        var restore_text = favo_logs[i].text
+        var restore_text = favo_logs[i].text;
         return function(){
           code_prev = writing_text.text;
           $('#code').val(restore_text)
@@ -266,7 +269,7 @@ function init_websocket(){
       }())
 
       var log_dd = $("<dd/>")
-      var log_pre = $("<pre/>").text(favo_logs[i].text)
+      var log_pre = $("<pre/>").html(text_body)
 
       log_dt.append(writer_label).append(restore_btn).append(remove_btn)
       log_dd.append(log_pre)
@@ -291,6 +294,11 @@ function init_websocket(){
   };
   loop();
 };
+
+function decorate_text( text ){
+  text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + arguments[1] + '" target="_blank" >' + arguments[1] + '</a>' });
+  return text;
+}
 
 function suggest_start(list){
   var suggest_list = []
