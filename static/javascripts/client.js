@@ -128,7 +128,7 @@ function init_websocket(){
     $(this).animate(
       { height:"500px"}, 300);
     }).blur(function(){
-      $(this).animate({ height:"60px"}, 300);
+      $(this).animate({ height:"20px"}, 300);
     });
 
   // for share memo
