@@ -305,8 +305,15 @@ function decorate_text( text ){
 function decorate_link_tag( text ){
   var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
       function(){
-        var first_link = arguments[1].split("&ensp;")[0];
-        return '<a href="' + first_link + '" target="_blank" >' + first_link + '</a>';
+        var matched_link = arguments[1];
+        var out_of_first_link_index = matched_link.indexOf("&ensp;");
+        if ( out_of_first_link_index == -1 ){
+          return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
+        }else{
+          var first_link = matched_link.substr(0, out_of_first_link_index);
+          return '<a href="' + first_link + '" target="_blank" >' + first_link + '</a>' 
+                 + decorate_link_tag( matched_link.substr(out_of_first_link_index));
+        }
       });
   return linked_text;
 }
