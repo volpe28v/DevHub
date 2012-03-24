@@ -135,16 +135,25 @@ function init_websocket(){
   socket.on('text', function(text_log) {
     writing_text = text_log;
     var text_body = decorate_text(text_log.text);
+
+    // for code_out
     $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $('#text_writer').show();
     $('#code_out').html(text_body);
 
-    var logs_dl = "<dl>"
-    logs_dl += '<dt><span class="label label-info">' + text_log.name + " at " + text_log.date + '</span></dt>'
-    logs_dl += "<dd><pre>" + text_body + "</pre></dd>"
-    logs_dl += "</dl>"
-    $('#current_log').html(logs_dl);
- 
+    // for current_log
+    var log_dl = $("<dl/>");
+    var log_dt = $("<dt/>");
+    var label_span = $("<span/>").addClass("label label-info").html(text_log.name + " at " + text_log.date);
+    var log_dd = $("<dd/>");
+    var log_pre = $("<pre/>").html(text_body)
+
+    log_dt.append(label_span);
+    log_dd.append(log_pre);
+    log_dl.append(log_dt).append(log_dd);
+
+    $('#current_log').empty();
+    $('#current_log').append(log_dl);
   });
 
   socket.on('text_logs', function(text_logs){
@@ -296,8 +305,6 @@ function init_websocket(){
 };
 
 function decorate_text( text ){
-  text = text.replace(/ /g,"&ensp;");
-  text = text.replace(/\n/g,'</br>\n');
   text = decorate_link_tag( text );
   return text;
 }
@@ -306,14 +313,7 @@ function decorate_link_tag( text ){
   var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
       function(){
         var matched_link = arguments[1];
-        var out_of_first_link_index = matched_link.indexOf("&ensp;");
-        if ( out_of_first_link_index == -1 ){
-          return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
-        }else{
-          var first_link = matched_link.substr(0, out_of_first_link_index);
-          return '<a href="' + first_link + '" target="_blank" >' + first_link + '</a>' 
-                 + decorate_link_tag( matched_link.substr(out_of_first_link_index));
-        }
+        return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
       });
   return linked_text;
 }
