@@ -296,8 +296,19 @@ function init_websocket(){
 };
 
 function decorate_text( text ){
-  text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + arguments[1] + '" target="_blank" >' + arguments[1] + '</a>' });
+  text = text.replace(/ /g,"&ensp;");
+  text = text.replace(/\n/g,'</br>\n');
+  text = decorate_link_tag( text );
   return text;
+}
+
+function decorate_link_tag( text ){
+  var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
+      function(){
+        var first_link = arguments[1].split("&ensp;")[0];
+        return '<a href="' + first_link + '" target="_blank" >' + first_link + '</a>';
+      });
+  return linked_text;
 }
 
 function suggest_start(list){

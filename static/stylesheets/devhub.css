@@ -62,6 +62,7 @@ a:hover {
 }
 
 #code_out {
+  font-family: monospace;
   width: 98%;
   min-height: 500px;
   padding: 5px;
