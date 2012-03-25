@@ -66,12 +66,13 @@ io.sockets.on('connection', function(client) {
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
 
-    if (chat_log.size() > 0 ){
-      //client.emit('latest_log',chat_log.get());
-      chat_log.get(function(logs){
-        client.emit('latest_log',logs);
-      });
-    }
+    chat_log.size(function(size){
+      if ( size > 0 ){
+        chat_log.get(function(logs){
+          client.emit('latest_log',logs);
+        });
+      }
+    });
   });
  
   client.on('message', function(data) {
