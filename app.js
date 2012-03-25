@@ -1,6 +1,5 @@
 var program = require('commander');
 var app = require('./lib/index');
-
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
 var client_info = require('./lib/client_info');
@@ -68,7 +67,10 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('list', client_info.ip_list());
 
     if (chat_log.size() > 0 ){
-      client.emit('latest_log',chat_log.get());
+      //client.emit('latest_log',chat_log.get());
+      chat_log.get(function(logs){
+        client.emit('latest_log',logs);
+      });
     }
   });
  
