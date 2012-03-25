@@ -53,6 +53,7 @@ a:hover {
 }
 
 #code {
+  font-family: Menlo,Monaco,"Courier New",monospace;
   width: 98%;
   height: 20px;
   padding: 5px;
