@@ -38,6 +38,7 @@ app.get('/notify', function(req, res) {
 // set db and listen app
 mongo_builder.ready(function(db){
   chat_log.set_db(db);
+  text_log.set_db(db);
   app.listen(port);
   console.log("listen!!!");
 });
