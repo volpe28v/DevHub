@@ -1,6 +1,6 @@
 var program = require('commander');
 
-// require my lis
+// require my libs
 var mongo_builder = require('./lib/mongo_builder'); 
 var app = require('./lib/index');
 var chat_log = require('./lib/chat_log');
