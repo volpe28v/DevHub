@@ -1,6 +1,7 @@
 var program = require('commander');
-var mongo = require('mongodb');
 
+// require my lis
+var mongo_builder = require('./lib/mongo_builder'); 
 var app = require('./lib/index');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
@@ -13,11 +14,10 @@ program
   .option('-p, --port <n>', 'port no. default is 3008.')
   .parse(process.argv);
 
-// 接続ポートを設定
 var port = program.port || process.env.PORT || 3000;
-
 console.log(' port : ' + port);
 
+// set routing
 app.get('/', function(req, res) {
   console.log('/');
   res.render('index');
@@ -35,21 +35,14 @@ app.get('/notify', function(req, res) {
   res.end('recved msg: ' + msg);
 });
 
-if ( process.env.MONGOLAB_URI ){
-  var db = mongo.connect(process.env.MONGOLAB_URI, {}, function(error, db){
-    chat_log.set_db(db);
-    app.listen(port);
-    console.log("listen!!!");
-  });
-}else{
-  var db = new mongo.Db('devhub_chat_db', new mongo.Server('localhost', mongo.Connection.DEFAULT_PORT, {}), {});
-  db.open(function(){
-    chat_log.set_db(db);
-    app.listen(port);
-    console.log("listen!!!");
-  });
-}
+// set db and listen app
+mongo_builder.ready(function(db){
+  chat_log.set_db(db);
+  app.listen(port);
+  console.log("listen!!!");
+});
 
+// util function
 function getFullDate(date){
   var yy = date.getYear();
   var mm = date.getMonth() + 1;
@@ -61,6 +54,7 @@ function getFullDate(date){
   return yy + '/' + mm + '/' + dd + ' ' + date.toLocaleTimeString();
 };
 
+// define socket.io events
 io.sockets.on('connection', function(client) {
   var client_ip = client_info.get_ip(client);
   console.log("New Connection from " + client_ip);
