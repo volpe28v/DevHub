@@ -1,4 +1,6 @@
 var program = require('commander');
+var mongo = require('mongodb');
+
 var app = require('./lib/index');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
@@ -33,8 +35,20 @@ app.get('/notify', function(req, res) {
   res.end('recved msg: ' + msg);
 });
 
-app.listen(port);
-console.log("listen!!!");
+if ( process.env.MONGOLAB_URI ){
+  var db = mongo.connect(process.env.MONGOLAB_URI, {}, function(error, db){
+    chat_log.set_db(db);
+    app.listen(port);
+    console.log("listen!!!");
+  });
+}else{
+  var db = new mongo.Db('devhub_chat_db', new mongo.Server('localhost', mongo.Connection.DEFAULT_PORT, {}), {});
+  db.open(function(){
+    chat_log.set_db(db);
+    app.listen(port);
+    console.log("listen!!!");
+  });
+}
 
 function getFullDate(date){
   var yy = date.getYear();
