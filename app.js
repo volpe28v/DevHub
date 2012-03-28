@@ -6,6 +6,7 @@ var app = require('./lib/index');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
 var client_info = require('./lib/client_info');
+var util = require('./lib/util');
 
 var io = require('socket.io').listen(app);
 
@@ -27,7 +28,7 @@ app.get('/notify', function(req, res) {
   console.log('/notify');
   var name = "Ext";
   var msg = req.query.msg;
-  var data = {name: name, msg: msg, date: getFullDate(new Date()) };
+  var data = {name: name, msg: msg, date: util.getFullDate(new Date()) };
 
   io.sockets.emit('message', data);
   chat_log.add(data);
@@ -42,18 +43,6 @@ mongo_builder.ready(function(db){
   app.listen(port);
   console.log("listen!!!");
 });
-
-// util function
-function getFullDate(date){
-  var yy = date.getYear();
-  var mm = date.getMonth() + 1;
-  var dd = date.getDate();
-  if (yy < 2000) { yy += 1900; }
-  if (mm < 10) { mm = "0" + mm; }
-  if (dd < 10) { dd = "0" + dd; }
-
-  return yy + '/' + mm + '/' + dd + ' ' + date.toLocaleTimeString();
-};
 
 // define socket.io events
 io.sockets.on('connection', function(client) {
@@ -87,7 +76,7 @@ io.sockets.on('connection', function(client) {
   client.on('message', function(data) {
     client_info.set_name(client, data.name);
 
-    data.date = getFullDate(new Date());
+    data.date = util.getFullDate(new Date());
 
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
@@ -106,7 +95,7 @@ io.sockets.on('connection', function(client) {
       pomo_msg = '「' + pomo_data.msg + '」'
     }
 
-    var data = {name: "Pomo", date: getFullDate(new Date())};
+    var data = {name: "Pomo", date: util.getFullDate(new Date())};
     if ( client_info.is_pomo(client) ){
       data.msg = client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
@@ -117,7 +106,7 @@ io.sockets.on('connection', function(client) {
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
-          var data = {name: "Pomo", date: getFullDate(new Date()), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
+          var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
           client.emit('message', data);
           client.broadcast.emit('message', data);
@@ -145,7 +134,7 @@ io.sockets.on('connection', function(client) {
 
     if ( text_log.is_change(msg) == false ){ return;}
 
-    var current_text_log = { name: name, text: msg, date: getFullDate(new Date()) }
+    var current_text_log = { name: name, text: msg, date: util.getFullDate(new Date()) }
 
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
