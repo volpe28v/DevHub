@@ -55,7 +55,9 @@ io.sockets.on('connection', function(client) {
     client.emit('text',text_log.get_latest());
   }
 
-  client.emit('text_logs', text_log.get_logs());
+  text_log.get_logs(function(logs){
+    client.emit('text_logs', logs);
+  });
   client.emit('favo_logs', text_log.get_favo_logs());
 
   client.on('name', function(data) {
@@ -140,8 +142,10 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('text', current_text_log);
 
     if ( text_log.add(current_text_log) ){
-      client.emit('text_logs', text_log.get_logs());
-      client.broadcast.emit('text_logs', text_log.get_logs());
+      text_log.get_logs(function(logs){
+        client.emit('text_logs', logs);
+        client.broadcast.emit('text_logs', logs);
+      });
     }
   });
 
@@ -149,8 +153,10 @@ io.sockets.on('connection', function(client) {
     var name = client_info.get_name(client)
 
     if ( text_log.add_on_suspend(name) ){
-      client.emit('text_logs', text_log.get_logs());
-      client.broadcast.emit('text_logs', text_log.get_logs());
+      text_log.get_logs(function(logs){
+        client.emit('text_logs', logs);
+        client.broadcast.emit('text_logs', logs);
+      });
     }
     console.log("suspend_text");
   });
@@ -158,7 +164,9 @@ io.sockets.on('connection', function(client) {
   client.on('remove_text', function(id) {
     text_log.remove(id)
 
-    client.broadcast.emit('text_logs', text_log.get_logs());
+    text_log.get_logs(function(logs){
+      client.broadcast.emit('text_logs', logs);
+    });
 
     console.log("remove_text");
   });
@@ -166,7 +174,9 @@ io.sockets.on('connection', function(client) {
   client.on('add_favo_text', function(id) {
     text_log.add_favo(id);
 
-    client.broadcast.emit('text_logs', text_log.get_logs());
+    text_log.get_logs(function(logs){
+      client.broadcast.emit('text_logs', logs);
+    });
 
     client.emit('favo_logs', text_log.get_favo_logs());
     client.broadcast.emit('favo_logs', text_log.get_favo_logs());
@@ -177,8 +187,10 @@ io.sockets.on('connection', function(client) {
   client.on('remove_favo_text', function(id) {
     text_log.remove_favo(id);
 
-    client.emit('text_logs', text_log.get_logs());
-    client.broadcast.emit('text_logs', text_log.get_logs());
+    text_log.get_logs(function(logs){
+      client.emit('text_logs', logs);
+      client.broadcast.emit('text_logs', logs);
+    });
 
     client.emit('favo_logs', text_log.get_favo_logs());
     client.broadcast.emit('favo_logs', text_log.get_favo_logs());
