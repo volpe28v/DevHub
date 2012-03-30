@@ -166,10 +166,10 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('remove_text', function(id) {
-    text_log.remove(id)
-
-    text_log.get_logs(function(logs){
-      client.broadcast.emit('text_logs', logs);
+    text_log.remove(id,function(){
+      text_log.get_logs(function(logs){
+        client.broadcast.emit('text_logs', logs);
+      });
     });
 
     console.log("remove_text");
