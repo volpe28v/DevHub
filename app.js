@@ -184,31 +184,32 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('add_favo_text', function(id) {
-    text_log.add_favo(id);
+    text_log.add_favo(id,function(){
+      text_log.get_logs(function(logs){
+        client.broadcast.emit('text_logs', logs);
+      });
 
-    text_log.get_logs(function(logs){
-      client.broadcast.emit('text_logs', logs);
-    });
-
-    text_log.get_favo_logs(function(logs){
-      client.emit('favo_logs', logs);
-      client.broadcast.emit('favo_logs', logs);
+      text_log.get_favo_logs(function(logs){
+        client.emit('favo_logs', logs);
+        client.broadcast.emit('favo_logs', logs);
+      });
     });
 
     console.log("add_favo_text: " + id );
   });
 
   client.on('remove_favo_text', function(id) {
-    text_log.remove_favo(id);
+    text_log.remove_favo(id,function(){
 
-    text_log.get_logs(function(logs){
-      client.emit('text_logs', logs);
-      client.broadcast.emit('text_logs', logs);
-    });
+      text_log.get_logs(function(logs){
+        client.emit('text_logs', logs);
+        client.broadcast.emit('text_logs', logs);
+      });
 
-    text_log.get_favo_logs(function(logs){
-      client.emit('favo_logs', logs);
-      client.broadcast.emit('favo_logs', logs);
+      text_log.get_favo_logs(function(logs){
+        client.emit('favo_logs', logs);
+        client.broadcast.emit('favo_logs', logs);
+      });
     });
 
     console.log("remove_favo_text: " + id );
