@@ -159,7 +159,7 @@ function init_websocket(){
   socket.on('text_logs', function(text_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
-      var text_log_id = "text_log_id_" + text_logs[i].id
+      var text_log_id = "text_log_id_" + text_logs[i]._id.toString();
       var text_body = decorate_text(text_logs[i].text);
 
       var log_div = $("<div/>").attr("id", text_log_id)
@@ -180,7 +180,7 @@ function init_websocket(){
       if ( text_logs[i].favo ){
         favo_star = $('<span/>').text('★').addClass("favo_star").toggle(
           function(){
-            var target_log_id = text_logs[i].id
+            var target_log_id = text_logs[i]._id.toString();
             return function(){
               $(this).removeClass("favo_star")
                      .addClass("no_favo_star")
@@ -189,7 +189,7 @@ function init_websocket(){
             }
           }(),
           function(){
-            var target_log_id = text_logs[i].id
+            var target_log_id = text_logs[i]._id.toString();
             return function(){
               $(this).removeClass("no_favo_star")
                      .addClass("favo_star")
@@ -201,7 +201,7 @@ function init_websocket(){
       }else{
         favo_star = $('<span/>').text('☆').addClass("no_favo_star").toggle(
           function(){
-            var target_log_id = text_logs[i].id
+            var target_log_id = text_logs[i]._id.toString();
             return function(){
               $(this).removeClass("no_favo_star")
                      .addClass("favo_star")
@@ -210,7 +210,7 @@ function init_websocket(){
             }
           }(),
           function(){
-            var target_log_id = text_logs[i].id
+            var target_log_id = text_logs[i]._id.toString;
             return function(){
               $(this).removeClass("favo_star")
                      .addClass("no_favo_star")
@@ -223,7 +223,7 @@ function init_websocket(){
 
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
-        var target_log_id = text_logs[i].id
+        var target_log_id = text_logs[i]._id.toString();
         return function(){
           $('#' + target_dom_id).fadeOut()
           socket.emit('remove_text', target_log_id);
@@ -250,7 +250,7 @@ function init_websocket(){
   socket.on('favo_logs', function(favo_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < favo_logs.length; ++i){
-      var text_log_id = "favo_log_id_" + favo_logs[i].id
+      var text_log_id = "favo_log_id_" + favo_logs[i]._id.toString();
       var text_body = decorate_text(favo_logs[i].text);
       
       var log_div = $("<div/>").attr("id", text_log_id)
@@ -269,7 +269,7 @@ function init_websocket(){
 
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
-        var target_log_id = favo_logs[i].id
+        var target_log_id = favo_logs[i]._id.toString();
         return function(){
           $('#' + target_dom_id).fadeOut()
           socket.emit('remove_favo_text', target_log_id);
