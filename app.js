@@ -58,7 +58,10 @@ io.sockets.on('connection', function(client) {
   text_log.get_logs(function(logs){
     client.emit('text_logs', logs);
   });
-  client.emit('favo_logs', text_log.get_favo_logs());
+
+  text_log.get_favo_logs(function(logs){
+    client.emit('favo_logs', logs);
+  });
 
   client.on('name', function(data) {
     client_info.set_name(client, data.name);
@@ -170,6 +173,11 @@ io.sockets.on('connection', function(client) {
       text_log.get_logs(function(logs){
         client.broadcast.emit('text_logs', logs);
       });
+
+      text_log.get_favo_logs(function(logs){
+        client.emit('favo_logs', logs);
+        client.broadcast.emit('favo_logs', logs);
+      });
     });
 
     console.log("remove_text");
@@ -182,8 +190,10 @@ io.sockets.on('connection', function(client) {
       client.broadcast.emit('text_logs', logs);
     });
 
-    client.emit('favo_logs', text_log.get_favo_logs());
-    client.broadcast.emit('favo_logs', text_log.get_favo_logs());
+    text_log.get_favo_logs(function(logs){
+      client.emit('favo_logs', logs);
+      client.broadcast.emit('favo_logs', logs);
+    });
 
     console.log("add_favo_text: " + id );
   });
@@ -196,8 +206,10 @@ io.sockets.on('connection', function(client) {
       client.broadcast.emit('text_logs', logs);
     });
 
-    client.emit('favo_logs', text_log.get_favo_logs());
-    client.broadcast.emit('favo_logs', text_log.get_favo_logs());
+    text_log.get_favo_logs(function(logs){
+      client.emit('favo_logs', logs);
+      client.broadcast.emit('favo_logs', logs);
+    });
 
     console.log("remove_favo_text: " + id );
   });

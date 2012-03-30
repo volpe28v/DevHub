@@ -210,7 +210,7 @@ function init_websocket(){
             }
           }(),
           function(){
-            var target_log_id = text_logs[i]._id.toString;
+            var target_log_id = text_logs[i]._id.toString();
             return function(){
               $(this).removeClass("favo_star")
                      .addClass("no_favo_star")
