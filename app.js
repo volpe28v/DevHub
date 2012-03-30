@@ -51,9 +51,11 @@ io.sockets.on('connection', function(client) {
 
   client_info.login(client_ip);
 
-  if ( !text_log.empty() ){
-    client.emit('text',text_log.get_latest());
-  }
+  text_log.get_latest(function(latest_text){
+    if (latest_text != ""){
+      client.emit('text',latest_text);
+    }
+  });
 
   text_log.get_logs(function(logs){
     client.emit('text_logs', logs);
