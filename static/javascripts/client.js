@@ -313,7 +313,11 @@ function decorate_link_tag( text ){
   var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
       function(){
         var matched_link = arguments[1];
-        return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
+        if ( matched_link.match(/[.jpg|.gif|.png]$/)){
+          return '<img src="' + matched_link + '"/>';
+        }else{
+          return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
+        }
       });
   return linked_text;
 }
