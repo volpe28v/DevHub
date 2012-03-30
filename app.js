@@ -141,24 +141,28 @@ io.sockets.on('connection', function(client) {
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
 
-    if ( text_log.add(current_text_log) ){
-      text_log.get_logs(function(logs){
-        client.emit('text_logs', logs);
-        client.broadcast.emit('text_logs', logs);
-      });
-    }
+    text_log.add(current_text_log, function(result){
+      if ( result ){
+        text_log.get_logs(function(logs){
+          client.emit('text_logs', logs);
+          client.broadcast.emit('text_logs', logs);
+        });
+      }
+    });
   });
 
   client.on('suspend_text', function() {
     var name = client_info.get_name(client)
 
-    if ( text_log.add_on_suspend(name) ){
-      text_log.get_logs(function(logs){
-        client.emit('text_logs', logs);
-        client.broadcast.emit('text_logs', logs);
-      });
-    }
-    console.log("suspend_text");
+    text_log.add_on_suspend(name,function(result){
+      if ( result ){
+        text_log.get_logs(function(logs){
+          client.emit('text_logs', logs);
+          client.broadcast.emit('text_logs', logs);
+        });
+      }
+      console.log("suspend_text");
+    });
   });
 
   client.on('remove_text', function(id) {
