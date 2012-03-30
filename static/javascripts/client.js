@@ -7,7 +7,7 @@ var COOKIE_EXPIRES = 365
 var CSS_DEFAULT_NAME = "bootstrap.min.css"
 
 // for share memo
-var writing_text = undefined;
+var writing_text = { text: "" };
 
 $(function() {
   init_websocket();
