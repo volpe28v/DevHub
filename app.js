@@ -2,7 +2,7 @@ var program = require('commander');
 
 // require my libs
 var mongo_builder = require('./lib/mongo_builder'); 
-var app = require('./lib/index');
+var app = require('./lib/server');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
 var client_info = require('./lib/client_info');
