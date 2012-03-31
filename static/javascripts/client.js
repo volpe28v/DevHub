@@ -1,10 +1,10 @@
-var latest_login_list = []
+var latest_login_list = [];
 var suggest_obj = undefined;
-var LOGIN_COLOR_MAX = 10
+var LOGIN_COLOR_MAX = 10;
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_CSS_NAME = "dev_hub_css_name";
-var COOKIE_EXPIRES = 365
-var CSS_DEFAULT_NAME = "bootstrap.min.css"
+var COOKIE_EXPIRES = 365;
+var CSS_DEFAULT_NAME = "bootstrap.min.css";
 
 // for share memo
 var writing_text = { text: "" };
