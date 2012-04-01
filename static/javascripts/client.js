@@ -101,7 +101,7 @@ function init_websocket(){
     return false;
   });
 
-  $('#login').click(function(){
+  var login_action = function(){
     var name = $('#login_name').val();
     if ( name != "" ){
       $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
@@ -110,17 +110,14 @@ function init_websocket(){
       $('#message').focus();
     }
     $('#name_in').modal('hide')
+  };
+ 
+  $('#login').click(function(){
+    login_action();
   });
 
   $('#login_form').submit(function(){
-    var name = $('#login_name').val();
-    if ( name != "" ){
-      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
-      $('#name').val($.cookie(COOKIE_NAME));
-      $('#message').focus();
-    }
-    $('#name_in').modal('hide')
+    login_action();
     return false;
   });
 
