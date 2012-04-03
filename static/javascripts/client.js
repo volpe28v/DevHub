@@ -16,7 +16,7 @@ $(function() {
   $("#devhub-style").attr('href','/stylesheets/' + css_name );
 
   if ( $.cookie(COOKIE_NAME) == null  ){
-    $('#name_in').modal("show")
+    $('#name_in').modal("show");
     $('#login_name').focus();
   }else{
     $('#name').val($.cookie(COOKIE_NAME));
