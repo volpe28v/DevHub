@@ -11,12 +11,16 @@ var util = require('./lib/util');
 var io = require('socket.io').listen(app);
 
 program
-  .version('0.0.1')
+  .version('0.0.2')
   .option('-p, --port <n>', 'port no. default is 3008.')
+  .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .parse(process.argv);
 
 var port = program.port || process.env.PORT || 3000;
 console.log(' port : ' + port);
+
+var db_name = program.db_name || 'devhub_db';
+console.log(' db_name : ' + db_name);
 
 // set routing
 app.get('/', function(req, res) {
@@ -37,7 +41,7 @@ app.get('/notify', function(req, res) {
 });
 
 // set db and listen app
-mongo_builder.ready(function(db){
+mongo_builder.ready(db_name, function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   app.listen(port);
