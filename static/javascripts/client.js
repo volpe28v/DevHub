@@ -337,7 +337,7 @@ function append_msg(data){
   //      切り替え可能にするかは検討する。
   if (data.name == "System") { return }
 
-  var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  var msg_li = get_msg_html(data);
 
   $('#list').append(msg_li);
   msg_li.fadeIn();
@@ -348,12 +348,15 @@ function prepend_msg(data){
   //      切り替え可能にするかは検討する。
   if (data.name == "System") { return }
 
-  var msg_li = $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  var msg_li = get_msg_html(data);
 
   $('#list').prepend(msg_li);
   msg_li.fadeIn();
 };
 
+function get_msg_html(data){
+  return $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+}
 
 function get_msg_body(data){
   var date = new Date();
