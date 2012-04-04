@@ -234,7 +234,7 @@ function init_websocket(){
       log_dt.append(writer_label).append(restore_btn).append(favo_star).append(remove_btn)
       log_dd.append(log_pre)
       log_div.append(log_dt).append(log_dd)
-      logs_dl.prepend(log_div)
+      logs_dl.append(log_div)
     }
     $('#history_logs').empty();
     $('#history_logs').append(logs_dl);
@@ -280,7 +280,7 @@ function init_websocket(){
       log_dt.append(writer_label).append(restore_btn).append(remove_btn)
       log_dd.append(log_pre)
       log_div.append(log_dt).append(log_dd)
-      logs_dl.prepend(log_div)
+      logs_dl.append(log_div)
     }
 
     $('#favo_logs').empty();
