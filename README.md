@@ -21,6 +21,9 @@
 * ポモドーロタイマーで作業に集中(ポモドーロ中は Growl 通知が来ないようになる)
 * DBへチャット履歴の保存
 
+## デモ
+http://dev-hub.herokuapp.com/
+
 ## install
 必要なもの
 
@@ -36,8 +39,10 @@ $ npm install
 * 起動
 
 <pre>
-$ node app.js -p 3000
+$ node app.js -p 3000 -d devhub_db
 </pre>
+* -p ポート番号
+* -d データベース名
 
 ## 外部サービスからの通知APIを叩く方法
 ### Jenkins
