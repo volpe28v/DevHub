@@ -128,15 +128,28 @@ function init_websocket(){
       $(this).animate({ height:"20px"}, 300);
     });
 
+  var update_timer = undefined;
   // for share memo
   socket.on('text', function(text_log) {
     writing_text = text_log;
     var text_body = decorate_text(text_log.text);
 
     // for code_out
-    $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $('#text_writer').html('Updating by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $('#text_writer').removeClass("label-info");
+    $('#text_writer').addClass("label-important");
     $('#text_writer').show();
     $('#code_out').html(text_body);
+
+    if (update_timer){
+      clearTimeout(update_timer);
+    }
+    update_timer = setTimeout(function(){
+      $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+      $('#text_writer').removeClass("label-important");
+      $('#text_writer').addClass("label-info");
+      },2000);
+
 
     // for current_log
     var log_dl = $("<dl/>");
