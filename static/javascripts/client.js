@@ -148,6 +148,7 @@ function init_websocket(){
       $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $('#text_writer').removeClass("label-important");
       $('#text_writer').addClass("label-info");
+      update_timer = undefined;
       },2000);
 
 
