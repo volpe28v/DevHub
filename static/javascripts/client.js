@@ -16,8 +16,12 @@ $(function() {
   $("#devhub-style").attr('href','/stylesheets/' + css_name );
 
   if ( $.cookie(COOKIE_NAME) == null  ){
-    $('#name_in').modal("show");
-    $('#login_name').focus();
+    setTimeout(function(){
+      $('#name_in').modal("show");
+      setTimeout(function(){
+          $('#login_name').focus();
+        },500);
+      },300);
   }else{
     $('#name').val($.cookie(COOKIE_NAME));
     $('#message').focus();
