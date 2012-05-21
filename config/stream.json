@@ -1,8 +1,0 @@
-{
-  "version": "0.0.3"
- ,"default": {
-    "port": 3000
-   ,"db": "devhub_db"
-  }
-}
-
