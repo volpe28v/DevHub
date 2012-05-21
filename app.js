@@ -11,7 +11,7 @@ var io = require('socket.io').listen(app);
 var stream_config = require('./config/stream')
 
 program
-  .version('0.0.2')
+  .version(stream_config.version)
   .option('-p, --port <n>', 'port no. default is ' + stream_config['default'].port + '.')
   .option('-d, --db_name [name]', 'db name. default is "' + stream_config['default'].db + '".')
   .parse(process.argv);
