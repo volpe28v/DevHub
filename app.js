@@ -14,6 +14,7 @@ program
   .version('0.0.2')
   .option('-p, --port <n>', 'port no. default is 3008.')
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
+  .option('-t, --title_name [name]', 'title name. default is "".')
   .parse(process.argv);
 
 var port = program.port || process.env.PORT || 3000;
@@ -22,10 +23,13 @@ console.log(' port : ' + port);
 var db_name = program.db_name || 'devhub_db';
 console.log(' db_name : ' + db_name);
 
+var title_name = program.title_name ? "for " + program.title_name : "";
+console.log(' title_name : ' + title_name);
+
 // set routing
 app.get('/', function(req, res) {
   console.log('/');
-  res.render('index');
+  res.render('index',{locals:{title_name:title_name}});
 });
 
 app.get('/notify', function(req, res) {
