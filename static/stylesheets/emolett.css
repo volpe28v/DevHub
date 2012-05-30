@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: Emolett;
+  src: url("../fonts/Emolett.woff") format("woff"),
+       url("../fonts/Emolett.otf") format("opentype");
+}
+
+.emolett,
+.emo {
+  font-family: Emolett;
+}
