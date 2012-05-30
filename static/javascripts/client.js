@@ -340,7 +340,7 @@ function decorate_link_tag( text ){
 function suggest_start(list){
   var suggest_list = []
   for (var i = 0; i < list.length; ++i){
-    suggest_list.push(">" + list[i].name);
+    suggest_list.push(">" + list[i].name + "さん");
   }
 
   if (suggest_obj == undefined){
