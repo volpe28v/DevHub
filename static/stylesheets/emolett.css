@@ -9,4 +9,8 @@
 .emolett,
 .emo {
   font-family: Emolett;
+  font-size: 18px;
+  font-weight: normal;
+  padding-right: 3px;
+  padding-left: 3px;
 }
