@@ -26,6 +26,8 @@ console.log(' db_name : ' + db_name);
 var title_name = program.title_name ? "for " + program.title_name : "";
 console.log(' title_name : ' + title_name);
 
+client_info.set_optional_title( title_name );
+
 // set routing
 app.get('/', function(req, res) {
   console.log('/');
