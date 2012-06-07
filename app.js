@@ -98,10 +98,11 @@ io.sockets.on('connection', function(client) {
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
 
-    client.emit('message', data);
-    client.broadcast.emit('message', data);
+    chat_log.add(data,function(latest_msg){
+      client.emit('message_own', latest_msg);
+      client.broadcast.emit('message', data);
+    });
 
-    chat_log.add(data)
     client_info.send_growl_without(client, data);
   });
 

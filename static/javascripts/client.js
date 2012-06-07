@@ -40,6 +40,10 @@ function init_websocket(){
   });
 
   // for chat
+  socket.on('message_own', function(data) {
+    prepend_own_msg(data)
+  });
+
   socket.on('message', function(data) {
     prepend_msg(data)
   });
@@ -361,6 +365,17 @@ function append_msg(data){
   msg_li.fadeIn();
 };
 
+function prepend_own_msg(data){
+  var msg_li = get_own_msg_html(data);
+  var msg_id = '#msg_' + data._id.toString();
+
+  $('#list').prepend(msg_li);
+  $(msg_id + ' .remove-msg').click(function(){
+    $(msg_id).fadeOut();
+  });
+  msg_li.fadeIn();
+};
+
 function prepend_msg(data){
   //TODO: System メッセージを非表示にする。
   //      切り替え可能にするかは検討する。
@@ -371,6 +386,10 @@ function prepend_msg(data){
   $('#list').prepend(msg_li);
   msg_li.fadeIn();
 };
+
+function get_own_msg_html(data){
+  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove-msg" href="#">x</a>');
+}
 
 function get_msg_html(data){
   return $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
