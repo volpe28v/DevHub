@@ -48,6 +48,10 @@ function init_websocket(){
     prepend_msg(data)
   });
 
+  socket.on('remove_message', function(data) {
+    $('#msg_' + data.id).fadeOut();
+  });
+
   socket.on('list', function(login_list) {
     $('#login_list_loader').hide();
     latest_login_list = login_list
@@ -370,11 +374,18 @@ function prepend_own_msg(data){
   var msg_id = '#msg_' + data._id.toString();
 
   $('#list').prepend(msg_li);
-  $(msg_id + ' .remove-msg').click(function(){
+  $(msg_id + ' .remove_msg').click(function(){
     $(msg_id).fadeOut();
+    send_remove_msg(data._id.toString());
   });
   msg_li.fadeIn();
 };
+
+function send_remove_msg(id){
+  var socket = io.connect('/');
+
+  socket.emit('remove_message', {id:id});
+}
 
 function prepend_msg(data){
   //TODO: System メッセージを非表示にする。
@@ -388,11 +399,11 @@ function prepend_msg(data){
 };
 
 function get_own_msg_html(data){
-  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove-msg" href="#">x</a>');
+  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
 }
 
 function get_msg_html(data){
-  return $('<li/>').attr('style','display:none').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
 }
 
 function get_msg_body(data){

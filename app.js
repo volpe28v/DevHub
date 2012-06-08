@@ -106,6 +106,11 @@ io.sockets.on('connection', function(client) {
     client_info.send_growl_without(client, data);
   });
 
+  client.on('remove_message', function(data) {
+    client.broadcast.emit('remove_message', data);
+    chat_log.remove(data.id);
+  });
+
   client.on('pomo', function(pomo_data){
     client_info.set_name(client, pomo_data.name);
     var pomo_msg = ""

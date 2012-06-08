@@ -248,7 +248,17 @@ a:hover {
   font-size: 16px;
 }
 
-.remove_text:hover{
+.remove_text:hover {
+  color: red;
+}
+
+.remove_msg {
+  margin: 0 0 0 5px;
+  color: gray;
+  font-size: 12px;
+}
+
+.remove_msg:hover {
   color: red;
 }
 
