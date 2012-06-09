@@ -98,8 +98,8 @@ io.sockets.on('connection', function(client) {
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
 
-    chat_log.add(data,function(latest_msg){
-      client.emit('message_own', latest_msg);
+    chat_log.add(data,function(){
+      client.emit('message_own', data);
       client.broadcast.emit('message', data);
     });
 
