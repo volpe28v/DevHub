@@ -352,7 +352,7 @@ function suggest_start(list){
   }
 
   if (suggest_obj == undefined){
-    suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {dispAllKey: false, prefix: true});
+    suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {interval: 200, dispAllKey: false, prefix: true, highlight: true});
   }else{
     suggest_obj.candidateList = suggest_list;
   }
