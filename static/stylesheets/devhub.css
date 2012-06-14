@@ -66,9 +66,6 @@ a:hover {
   width: 98%;
   min-height: 500px;
   padding: 5px;
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
 }
 
 #name, #message {
@@ -83,9 +80,6 @@ a:hover {
   min-height: 620px;
   padding: 4px 2px;
   overflow-y: auto;
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
 }
 
 #list {
@@ -103,6 +97,12 @@ a:hover {
 
 .msg_text{
   font-weight: bold;
+}
+
+.target_msg{
+  border-radius: 6px;        /* CSS3草案 */  
+  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 6px;   /* Firefox用 */  
 }
 
 #login_list {

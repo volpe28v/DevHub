@@ -1,4 +1,5 @@
 var latest_login_list = [];
+var login_name = '';
 var suggest_obj = undefined;
 var LOGIN_COLOR_MAX = 10;
 var COOKIE_NAME = "dev_hub_name";
@@ -23,7 +24,8 @@ $(function() {
         },500);
       },300);
   }else{
-    $('#name').val($.cookie(COOKIE_NAME));
+    login_name = $.cookie(COOKIE_NAME);
+    $('#name').val(login_name);
     $('#message').focus();
   }
 });
@@ -84,7 +86,7 @@ function init_websocket(){
     $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
 
     if ( message && name ){
-      var send_msg = "[" + name + "] " + message;
+      login_name = name;
       socket.emit('message', {name:name,msg:message});
       $('#message').attr('value', '');
     }
@@ -403,7 +405,11 @@ function get_own_msg_html(data){
 }
 
 function get_msg_html(data){
-  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  if (get_target_name(data.msg) == login_name){
+    return $('<li/>').addClass('target_msg').attr('style','display:none').attr('style','background-color:cornsilk').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  }else{
+    return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  }
 }
 
 function get_msg_body(data){
@@ -447,9 +453,20 @@ function decorate_msg(msg){
 function deco_login_name(msg){
   var deco_msg = msg;
   for(var i = 0; i < latest_login_list.length; ++i ){
-    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: blue;">' + arguments[1] + '</span>'});
+    var name_color = 'blue';
+    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: ' + name_color + ';">' + arguments[1] + '</span>'});
   }
   return deco_msg;
+}
+
+function get_target_name(msg){
+  for(var i = 0; i < latest_login_list.length; ++i ){
+    var name_reg = RegExp(">[ ]*" + latest_login_list[i].name);
+    if (msg.match(name_reg)){
+      return latest_login_list[i].name;
+    }
+  }
+  return '';
 }
 
 function get_id(name){
