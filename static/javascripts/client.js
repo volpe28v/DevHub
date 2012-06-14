@@ -56,7 +56,7 @@ function init_websocket(){
 
   socket.on('list', function(login_list) {
     $('#login_list_loader').hide();
-    latest_login_list = login_list
+    latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
 
     var out_list = ""
     for (var i = 0; i < login_list.length; ++i){
@@ -461,7 +461,7 @@ function deco_login_name(msg){
 
 function get_target_name(msg){
   for(var i = 0; i < latest_login_list.length; ++i ){
-    var name_reg = RegExp(">[ ]*" + latest_login_list[i].name);
+    var name_reg = RegExp("(>|＞)[ ]*" + latest_login_list[i].name + "( |　|さん|$)");
     if (msg.match(name_reg)){
       return latest_login_list[i].name;
     }
