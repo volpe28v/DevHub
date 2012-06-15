@@ -100,6 +100,7 @@ a:hover {
 }
 
 .target_msg{
+  background-color:cornsilk;
   border-radius: 6px;        /* CSS3草案 */  
   -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
   -moz-border-radius: 6px;   /* Firefox用 */  
@@ -112,7 +113,9 @@ a:hover {
   margin-bottom: 5px;
 }
 
-.login-name , .login-name-pomo , .login-name-system, .login-name-ext, .login-name-pomosys, .login-name0, .login-name1, .login-name2, .login-name3, .login-name4, .login-name5, .login-name6, .login-name7, .login-name8, .login-name9{
+.login-name-base,
+.login-elem
+{
   font-weight: bold;
   border: solid 1px lightgray;
   padding: 2px 4px;
@@ -122,6 +125,16 @@ a:hover {
   -moz-border-radius: 4px;   /* Firefox用 */  
   color: dimgray;
 }
+
+.login-elem{
+  cursor: pointer;
+}
+
+.login-elem:hover
+{
+  border: solid 2px lightsteelblue;
+}
+
 
 .login-name{
   background-color: lightsteelblue;

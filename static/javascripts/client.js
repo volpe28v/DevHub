@@ -415,7 +415,7 @@ function get_own_msg_html(data){
 
 function get_msg_html(data){
   if (get_target_name(data.msg) == login_name){
-    return get_msg_li_html(data).attr('style','background-color:cornsilk').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
   }else{
     return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
   }
@@ -451,7 +451,7 @@ function get_msg_body(data){
     name_class = "login-name" + data.id % LOGIN_COLOR_MAX
   }
 
-  return '<span class="' + name_class + '">' + data.name + '</span> <span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
+  return '<span class="login-name-base ' + name_class + '">' + data.name + '</span> <span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
 }
 
 function decorate_msg(msg){
