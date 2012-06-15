@@ -401,14 +401,22 @@ function prepend_msg(data){
 };
 
 function get_own_msg_html(data){
-  return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
+  return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
 }
 
 function get_msg_html(data){
   if (get_target_name(data.msg) == login_name){
-    return $('<li/>').addClass('target_msg').attr('style','display:none').attr('style','background-color:cornsilk').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).attr('style','background-color:cornsilk').html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
   }else{
-    return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+  }
+}
+
+function get_msg_li_html(data){
+  if ( data._id != undefined ){
+    return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString());
+  }else{
+    return $('<li/>').attr('style','display:none');
   }
 }
 

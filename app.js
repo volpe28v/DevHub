@@ -120,10 +120,10 @@ io.sockets.on('connection', function(client) {
 
     var data = {name: "Pomo", date: util.getFullDate(new Date())};
     if ( client_info.is_pomo(client) ){
-      data.msg = client_info.get_name(client) + ' がポモドーロを中止しました。' + pomo_msg;
+      data.msg = client_info.get_name(client) + 'さん がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
     }else{
-      data.msg = client_info.get_name(client) + ' がポモドーロを開始しました。' + pomo_msg;
+      data.msg = client_info.get_name(client) + 'さん がポモドーロを開始しました。' + pomo_msg;
 
       client_info.set_pomo(client,true, setInterval(function(){
         var current_min = client_info.update_pomo(client, 1);
