@@ -451,10 +451,11 @@ function decorate_msg(msg){
 };
 
 function deco_login_name(msg){
+  var target_name = get_target_name(msg);
   var deco_msg = msg;
-  for(var i = 0; i < latest_login_list.length; ++i ){
+  if (target_name != ''){
     var name_color = 'blue';
-    deco_msg = deco_msg.replace( RegExp("(" + latest_login_list[i].name + ")") , function(){ return '<span style="color: ' + name_color + ';">' + arguments[1] + '</span>'});
+    deco_msg = deco_msg.replace( RegExp("(" + target_name + ")"), function(){ return '<span style="color: ' + name_color + ';">' + arguments[1] + '</span>'});
   }
   return deco_msg;
 }
