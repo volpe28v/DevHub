@@ -415,7 +415,7 @@ function get_own_msg_html(data){
 
 function get_msg_html(data){
   if (get_target_name(data.msg) == login_name){
-    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span>');
   }else{
     return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
   }

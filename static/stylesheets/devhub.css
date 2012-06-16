@@ -22,6 +22,10 @@ a:hover {
   color: #ccc;
 }
 
+.target_msg_date {
+  color: wheat;
+}
+
 #suggest {
   position: absolute;
   background-color: #FFFFFF;
