@@ -415,7 +415,7 @@ function get_own_msg_html(data){
 }
 
 function get_msg_html(data){
-  if (get_target_name(data.msg) == login_name){
+  if (include_target_name(data.msg,login_name)){
     return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span>');
   }else{
     return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
@@ -469,23 +469,21 @@ function decorate_msg(msg){
 };
 
 function deco_login_name(msg){
-  var target_name = get_target_name(msg);
   var deco_msg = msg;
-  if (target_name != ''){
+  for(var i = 0; i < latest_login_list.length; ++i ){
     var name_color = 'blue';
-    deco_msg = deco_msg.replace( RegExp("(" + target_name + ")"), function(){ return '<span style="color: ' + name_color + ';">' + arguments[1] + '</span>'});
+    var name_reg = RegExp("(>|＞)[ ]*" + latest_login_list[i].name + "( |　|さん|$)", "g");
+    deco_msg = deco_msg.replace( name_reg, function(){ return '><span style="color: ' + name_color + ';">' + latest_login_list[i].name + '</span>さん'});
   }
   return deco_msg;
 }
 
-function get_target_name(msg){
-  for(var i = 0; i < latest_login_list.length; ++i ){
-    var name_reg = RegExp("(>|＞)[ ]*" + latest_login_list[i].name + "( |　|さん|$)");
-    if (msg.match(name_reg)){
-      return latest_login_list[i].name;
-    }
+function include_target_name(msg,name){
+  var name_reg = RegExp("(>|＞)[ ]*" + name + "( |　|さん|$)");
+  if (msg.match(name_reg)){
+    return true;
   }
-  return '';
+  return false;
 }
 
 function get_id(name){
