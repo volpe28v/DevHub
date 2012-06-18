@@ -56,7 +56,6 @@ function init_websocket(){
 
   socket.on('list', function(login_list) {
     $('#login_list_loader').hide();
-    latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
 
     var out_list = "";
     for (var i = 0; i < login_list.length; ++i){
@@ -81,6 +80,8 @@ function init_websocket(){
         $('#message').focus();
       });
     }
+
+    latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
   });
 
   socket.on('latest_log', function(msgs) {
