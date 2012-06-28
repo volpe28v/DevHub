@@ -59,11 +59,15 @@ function init_websocket(){
 
     var out_list = "";
     for (var i = 0; i < login_list.length; ++i){
-      var login_elem = {};
+      var login_elem = "";
+      var place = "";
+      if ( login_list[i].place != "" ){
+        place = "@" + login_list[i].place;
+      }
       if ( login_list[i].pomo_min > 0 ){
-        login_elem = '<span class="login-elem login-name-pomo"><span class="name">' + login_list[i].name + '</span> <span class="pomo-min">' + login_list[i].pomo_min + 'min</span></span>'
+        login_elem = '<span class="login-elem login-name-pomo"><span class="name">' + login_list[i].name + '</span>' + place + ' <span class="pomo-min">' + login_list[i].pomo_min + 'min</span></span>'
       }else{
-        login_elem = '<span class="login-elem login-name' + login_list[i].id % LOGIN_COLOR_MAX + '"><span class="name">' + login_list[i].name + '</span></span>'
+        login_elem = '<span class="login-elem login-name' + login_list[i].id % LOGIN_COLOR_MAX + '"><span class="name">' + login_list[i].name + '</span>' + place + '</span>'
       }
       out_list += login_elem;
     }
