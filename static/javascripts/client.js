@@ -69,8 +69,9 @@ function init_websocket(){
       }else{
         login_elem = '<span class="login-elem login-name' + login_list[i].id % LOGIN_COLOR_MAX + '"><span class="name">' + login_list[i].name + '</span>' + place + '</span>'
       }
-      out_list += login_elem;
+      out_list += login_elem + "<wbr>";
     }
+    out_list = "<nobr>" + out_list + "</nobr>";
       
     if ($('#login_list').html() != out_list){
       $('#login_list').html(out_list);
