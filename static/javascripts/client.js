@@ -416,12 +416,14 @@ function prepend_msg(data){
 };
 
 function get_own_msg_html(data){
-  return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
+  return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
 }
 
 function get_msg_html(data){
   if (include_target_name(data.msg,login_name)){
     return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span>');
+  }else if ( data.name == login_name ){
+    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span>');
   }else{
     return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
   }

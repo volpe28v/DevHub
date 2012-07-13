@@ -26,6 +26,10 @@ a:hover {
   color: wheat;
 }
 
+.own_msg_date {
+  color: paleturquoise;
+}
+
 #suggest {
   position: absolute;
   background-color: #FFFFFF;
@@ -105,6 +109,13 @@ a:hover {
 
 .target_msg{
   background-color:cornsilk;
+  border-radius: 6px;        /* CSS3草案 */  
+  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 6px;   /* Firefox用 */  
+}
+
+.own_msg{
+  background-color:lightcyan;
   border-radius: 6px;        /* CSS3草案 */  
   -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
   -moz-border-radius: 6px;   /* Firefox用 */  
