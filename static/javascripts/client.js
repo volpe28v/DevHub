@@ -449,7 +449,7 @@ function get_msg_body(data){
   if ( data.name == "System" ){
     name_class = "login-name-system";
     msg_class = "msg_ext"
-  }else if ( data.name == "Ext" ){
+  }else if ( data.ext == true ){
     name_class = "login-name-ext";
     msg_class = "msg_ext"
   }else if ( data.name == "Pomo" ){

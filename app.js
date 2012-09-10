@@ -36,9 +36,10 @@ app.get('/', function(req, res) {
 
 app.get('/notify', function(req, res) {
   console.log('/notify');
-  var name = "Ext";
+  console.log(req.query);
+  var name = req.query.name;
   var msg = req.query.msg;
-  var data = {name: name, msg: msg, date: util.getFullDate(new Date()) };
+  var data = {name: name, msg: msg, date: util.getFullDate(new Date()), ext: true};
 
   io.sockets.emit('message', data);
   chat_log.add(data);
