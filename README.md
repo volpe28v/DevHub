@@ -45,13 +45,18 @@ $ node app.js -p 3000 -d devhub_db
 * -d データベース名
 
 ## 外部サービスからの通知APIを叩く方法
+
+* クエリーとして以下が必須
+** name : サービス名
+** msg  : メッセージ
+
 ### Jenkins
 * Post build task　プラグインをインストール
 * 以下のスクリプトを実行するようにする
 
 <pre>
 RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]'`
-wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
+wget http://XXXXX:3000/notify?name=Jenkins&msg="($JOB_NAME): $RESULT"
 </pre>
 
 ### Subversion
@@ -61,7 +66,7 @@ wget http://XXXXX:3000/notify?msg="【Jenkins】 ($JOB_NAME): $RESULT"
 NAME=`svnlook author $REPOS -r $REV | nkf -w`
 CHANGE=`svnlook changed $REPOS -r $REV | nkf -w`
 LOG=`svnlook log $REPOS -r $REV | nkf -w`
-wget http://XXXXX:3000/notify?msg="SVN ($NAME): $LOG"
+wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 </pre>
 
 ## License
