@@ -47,8 +47,8 @@ $ node app.js -p 3000 -d devhub_db
 ## 外部サービスからの通知APIを叩く方法
 
 * クエリーとして以下が必須
-** name : サービス名
-** msg  : メッセージ
+* name : サービス名
+* msg  : メッセージ
 
 ### Jenkins
 * Post build task　プラグインをインストール
