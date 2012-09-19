@@ -41,10 +41,11 @@ app.get('/notify', function(req, res) {
   var msg = req.query.msg;
   var data = {name: name, msg: msg, date: util.getFullDate(new Date()), ext: true};
 
-  io.sockets.emit('message', data);
-  chat_log.add(data);
-  client_info.send_growl_all(data);
-  res.end('recved msg: ' + msg);
+  chat_log.add(data,function(){
+    io.sockets.emit('message', data);
+    client_info.send_growl_all(data);
+    res.end('recved msg: ' + msg);
+  });
 });
 
 // set db and listen app
