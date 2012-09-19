@@ -378,7 +378,8 @@ function suggest_start(list){
 function append_msg(data){
   //TODO: System メッセージを非表示にする。
   //      切り替え可能にするかは検討する。
-  if (data.name == "System") { return }
+  if (data.name == "System") { return };
+  if (exist_msg(data)){ return };
 
   var msg_li = get_msg_html(data);
 
@@ -387,6 +388,7 @@ function append_msg(data){
 };
 
 function prepend_own_msg(data){
+  if (exist_msg(data)){ return };
   var msg_li = get_own_msg_html(data);
   var msg_id = '#msg_' + data._id.toString();
 
@@ -408,12 +410,18 @@ function prepend_msg(data){
   //TODO: System メッセージを非表示にする。
   //      切り替え可能にするかは検討する。
   if (data.name == "System") { return }
+  if (exist_msg(data)){ return };
 
   var msg_li = get_msg_html(data);
 
   $('#list').prepend(msg_li);
   msg_li.fadeIn();
 };
+
+function exist_msg(data){
+  var id = '#msg_' + data._id.toString();
+  return $(id).size() > 0;
+}
 
 function get_own_msg_html(data){
   return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
