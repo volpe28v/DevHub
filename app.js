@@ -142,13 +142,14 @@ io.sockets.on('connection', function(client) {
         client.broadcast.emit('list', client_info.ip_list());
       }, 1 * 60000));
     }
-    client.emit('message', data);
-    client.broadcast.emit('message', data);
-    client_info.send_growl_without(client, data);
+    chat_log.add(data,function(){
+      client.emit('message', data);
+      client.broadcast.emit('message', data);
+      client_info.send_growl_without(client, data);
 
-    client.emit('list', client_info.ip_list());
-    client.broadcast.emit('list', client_info.ip_list());
- 
+      client.emit('list', client_info.ip_list());
+      client.broadcast.emit('list', client_info.ip_list());
+    });
   });
 
   client.on('text', function(msg) {
