@@ -133,9 +133,11 @@ io.sockets.on('connection', function(client) {
         if (current_min <= 0 ){
           var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
-          client.emit('message', data);
-          client.broadcast.emit('message', data);
-          client_info.send_growl_all(data);
+          chat_log.add(data,function(){
+            client.emit('message', data);
+            client.broadcast.emit('message', data);
+            client_info.send_growl_all(data);
+          });
         }
 
         client.emit('list', client_info.ip_list());
