@@ -29,6 +29,7 @@ http://dev-hub.herokuapp.com/
 
 * node 
 * mongoDB 
+* ruby-growl
 
 <pre>
 $ git clone git@github.com:volpe28v/DevHub.git
