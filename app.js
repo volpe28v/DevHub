@@ -131,7 +131,7 @@ io.sockets.on('connection', function(client) {
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
-          var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + " のポモドーロが終了しました。"};
+          var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + "さんのポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
           chat_log.add(data,function(){
             client.emit('message', data);
