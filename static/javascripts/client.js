@@ -423,16 +423,16 @@ function exist_msg(data){
 }
 
 function get_own_msg_html(data){
-  return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a>');
+  return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a></td></tr></table>');
 }
 
 function get_msg_html(data){
   if (include_target_name(data.msg,login_name)){
-    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span></td></tr></table>');
   }else if ( data.name == login_name ){
-    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span></td></tr></table>');
   }else{
-    return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span>');
+    return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span></td></tr></table>');
   }
 }
 
@@ -466,7 +466,7 @@ function get_msg_body(data){
     name_class = "login-name" + get_color_id_by_name_id(data.id);
   }
 
-  return '<span class="login-name-base ' + name_class + '">' + data.name + '</span> <span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
+  return '<table><tr><td nowrap><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td><span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
 }
 
 function get_color_id_by_name_id(id){
