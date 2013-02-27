@@ -151,11 +151,10 @@ function init_websocket(){
   });
 
   $("#code").focus(function(){
-    $(this).animate(
-      { height:"500px"}, 300);
-    }).blur(function(){
-      $(this).animate({ height:"20px"}, 300);
-    });
+    $(this).slideDown();
+  }).blur(function(){
+    $(this).slideUp();
+  });
 
   var update_timer = undefined;
   // for share memo
