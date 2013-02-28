@@ -48,6 +48,31 @@ app.get('/notify', function(req, res) {
   });
 });
 
+app.post('/notify_memo', function(req, res) {
+  console.log('/notify_memo');
+  var name = req.body.name;
+  var msg = req.body.msg;
+  console.log(name, msg);
+
+  msg = msg.replace(/\n/g,"\r\n");
+
+  if ( text_log.is_change(msg) == false ){
+      res.json({result: "success"});
+      return;
+  }
+  var current_text_log = { name: name, text: msg, date: util.getFullDate(new Date()) }
+  io.sockets.emit('text', current_text_log);
+
+  text_log.add(current_text_log, function(result){
+    if ( result ){
+      text_log.get_logs(function(logs){
+        io.sockets.emit('text_logs', logs);
+      });
+    }
+  });
+  res.json({result: "success"});
+});
+
 // set db and listen app
 mongo_builder.ready(db_name, function(db){
   chat_log.set_db(db);
@@ -91,7 +116,7 @@ io.sockets.on('connection', function(client) {
       }
     });
   });
- 
+
   client.on('message', function(data) {
     client_info.set_name(client, data.name);
 
