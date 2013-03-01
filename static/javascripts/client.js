@@ -466,7 +466,7 @@ function get_msg_body(data){
     name_class = "login-name" + get_color_id_by_name_id(data.id);
   }
 
-  return '<table><tr><td nowrap><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td><span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
+  return '<table><tr><td nowrap valign="top"><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td><span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
 }
 
 function get_color_id_by_name_id(id){
