@@ -72,7 +72,7 @@ function init_websocket(){
       out_list += login_elem + "<wbr>";
     }
     out_list = "<nobr>" + out_list + "</nobr>";
-      
+
     if ($('#login_list').html() != out_list){
       $('#login_list').html(out_list);
       $('#login_list').fadeIn();
@@ -291,7 +291,7 @@ function init_websocket(){
     for ( var i = 0; i < favo_logs.length; ++i){
       var text_log_id = "favo_log_id_" + favo_logs[i]._id.toString();
       var text_body = decorate_text(favo_logs[i].text);
-      
+
       var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )

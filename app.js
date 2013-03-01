@@ -54,8 +54,6 @@ app.post('/notify_memo', function(req, res) {
   var msg = req.body.msg;
   console.log(name, msg);
 
-  msg = msg.replace(/\n/g,"\r\n");
-
   if ( text_log.is_change(msg) == false ){
       res.json({result: "success"});
       return;
