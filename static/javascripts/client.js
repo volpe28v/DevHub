@@ -6,9 +6,11 @@ var COOKIE_NAME = "dev_hub_name";
 var COOKIE_CSS_NAME = "dev_hub_css_name";
 var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
+var TITLE_ORG = document.title;
 
 // for share memo
 var writing_text = { text: "" };
+var newest_count = 0;
 
 $(function() {
   init_websocket();
@@ -28,6 +30,9 @@ $(function() {
     $('#name').val(login_name);
     $('#message').focus();
   }
+
+  $('#message').focus(newest_off);
+
 });
 
 function init_websocket(){
@@ -43,11 +48,13 @@ function init_websocket(){
 
   // for chat
   socket.on('message_own', function(data) {
-    prepend_own_msg(data)
+    prepend_own_msg(data);
+    newest_mark();
   });
 
   socket.on('message', function(data) {
-    prepend_msg(data)
+    prepend_msg(data);
+    newest_mark();
   });
 
   socket.on('remove_message', function(data) {
@@ -416,6 +423,17 @@ function prepend_msg(data){
   $('#list').prepend(msg_li);
   msg_li.fadeIn();
 };
+
+function newest_mark(){
+  if ("message" == $(':focus').attr('id')){ newest_off(); return; }
+  newest_count++;
+  document.title = "(" + newest_count + ") " + TITLE_ORG;
+}
+
+function newest_off(){
+  newest_count = 0;
+  document.title = TITLE_ORG;
+}
 
 function exist_msg(data){
   var id = '#msg_' + data._id.toString();

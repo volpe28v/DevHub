@@ -21,23 +21,22 @@
     <link href="/stylesheets/devhub.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/emolett.css" media="screen" rel="stylesheet" type="text/css" />
     <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
-
   </head>
 
-<div class="modal hide fade" id="name_in">
-  <div class="modal-header">
-    <h3>DevHub</h3>
+  <div class="modal hide fade" id="name_in">
+    <div class="modal-header">
+      <h3>DevHub</h3>
+    </div>
+    <div class="modal-body">
+      <p>Please type your name.</p>
+      <form id="login_form">
+        <input type="text" id="login_name" class="span2" placeholder="Name"/>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button id="login" class="btn btn-primary">Login</button>
+    </div>
   </div>
-  <div class="modal-body">
-    <p>Please type your name.</p>
-    <form id="login_form">
-      <input type="text" id="login_name" class="span2" placeholder="Name"/>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button id="login" class="btn btn-primary">Login</button>
-  </div>
-</div>
 
   <body id="body-main" style="padding-top: 50px">
     <div class="navbar navbar-fixed-top">
