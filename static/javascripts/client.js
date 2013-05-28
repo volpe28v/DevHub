@@ -31,7 +31,9 @@ $(function() {
     $('#message').focus();
   }
 
-  $('#message').focus(newest_off);
+  $(window).on("blur focus", function(e) {
+    newest_off();
+  });
 
 });
 
