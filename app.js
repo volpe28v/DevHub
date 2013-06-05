@@ -34,6 +34,11 @@ app.get('/', function(req, res) {
   res.render('index',{locals:{title_name:title_name}});
 });
 
+app.get('/mobile', function(req, res) {
+  console.log('/mobile');
+  res.render('index_mobile',{locals:{title_name:title_name}});
+});
+
 app.get('/notify', function(req, res) {
   console.log('/notify');
   console.log(req.query);

@@ -1,0 +1,313 @@
+a {
+  color: dodgerblue;
+}
+
+a:hover {
+  color: deeppink;
+}
+
+.msg {
+  color: #555;
+}
+
+.msg_ext {
+  color: #aaa;
+}
+
+.msg_pomo {
+  color: orange;
+}
+
+.date {
+  color: #ccc;
+}
+
+.target_msg_date {
+  color: wheat;
+}
+
+.own_msg_date {
+  color: paleturquoise;
+}
+
+#suggest {
+  position: absolute;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCFF;
+  width: 252px;
+}
+
+#suggest div {
+  padding: 1px;
+  display: block;
+  width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#suggest div.select{
+  color: #FFFFFF;
+  background-color: #3366FF;
+}
+
+#suggest div.over{
+  background-color: #99CCFF;
+}
+
+#sequence {
+  width: 100%;
+  background-color: #fff;
+  margin-bottom: 5px;
+}
+
+#code {
+  font-family: Menlo,Monaco,"Courier New",monospace;
+  width: 98%;
+  height: 500px;
+  padding: 5px;
+  background-color: aliceblue;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+#code_out {
+  width: 98%;
+  min-height: 500px;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+#name, #message {
+  background-color: aliceblue;
+}
+
+#form {
+  margin: 2px 0px 6px 0px;
+}
+
+#chat_body{
+  min-height: 620px;
+  padding: 4px 2px;
+  overflow-y: auto;
+}
+
+#list {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+
+#list li{
+  color: #555;
+  line-height: 21px;
+  margin: 2px 2px;
+  padding: 0px;
+}
+
+.msg_text{
+  font-weight: bold;
+}
+
+.target_msg{
+  background-color:cornsilk;
+  border-radius: 6px;        /* CSS3草案 */  
+  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 6px;   /* Firefox用 */  
+}
+
+.own_msg{
+  background-color:lightcyan;
+  border-radius: 6px;        /* CSS3草案 */  
+  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 6px;   /* Firefox用 */  
+}
+
+#login_list {
+  width: 100%;
+  font-size: 11px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.login-name-base,
+.login-elem
+{
+  font-weight: bold;
+  border: solid 1px lightgray;
+  padding: 2px 4px;
+  margin: 1px;
+  border-radius: 4px;        /* CSS3草案 */  
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 4px;   /* Firefox用 */  
+  color: dimgray;
+}
+
+.login-elem{
+  cursor: pointer;
+}
+
+.login-elem:hover
+{
+  border: solid 2px lightsteelblue;
+}
+
+
+.login-name{
+  background-color: lightsteelblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(lavender), to(lightsteelblue));
+  background: -moz-linear-gradient(top, lavender,lightsteelblue);
+}
+
+.login-name0{
+  background-color: lightsteelblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(lavender), to(lightsteelblue));
+  background: -moz-linear-gradient(top, lavender,lightsteelblue);
+}
+
+.login-name1{
+  background-color: mediumaquamarine;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(mediumaquamarine));
+  background: -moz-linear-gradient(top, ghostwhite,mediumaquamarine);
+}
+
+.login-name2{
+  background-color: palegoldenrod;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(palegoldenrod));
+  background: -moz-linear-gradient(top, ghostwhite,palegoldenrod);
+}
+
+.login-name3{
+  background-color: darkturquoise;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(darkturquoise));
+  background: -moz-linear-gradient(top, ghostwhite,darkturquoise);
+}
+
+.login-name4{
+  background-color: burlywood;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(burlywood));
+  background: -moz-linear-gradient(top, ghostwhite,burlywood);
+}
+
+.login-name5{
+  background-color: khaki;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(khaki));
+  background: -moz-linear-gradient(top, ghostwhite,khaki);
+}
+
+.login-name6{
+  background-color: lightcoral;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightcoral));
+  background: -moz-linear-gradient(top, ghostwhite,lightcoral);
+}
+
+.login-name7{
+  background-color: lightskyblue;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightskyblue));
+  background: -moz-linear-gradient(top, ghostwhite,lightskyblue);
+}
+
+.login-name8{
+  background-color: peachpuff;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(peachpuff));
+  background: -moz-linear-gradient(top, ghostwhite,peachpuff);
+}
+
+.login-name9{
+  background-color: plum;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(plum));
+  background: -moz-linear-gradient(top, ghostwhite,plum);
+}
+
+.login-name-pomo{
+  background-color: tomato;
+  background: -webkit-gradient(linear, left top, left bottom, from(antiquewhite), to(tomato));
+  background: -moz-linear-gradient(top, antiquewhite,tomato);
+}
+
+.login-name-pomosys{
+  color: #baa;
+  background: -webkit-gradient(linear, left top, left bottom, from(snow), to(mistyrose));
+  background: -moz-linear-gradient(top, snow,mistyrose);
+}
+
+.login-name-system{
+  color: #baa;
+  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(gainsboro));
+  background: -moz-linear-gradient(top, ghostwhite,gainsboro);
+}
+
+.login-name-ext{
+  color: #baa;
+  background-color: lightgreen;
+  background: -webkit-gradient(linear, left top, left bottom, from(honeydew), to(lightgreen));
+  background: -moz-linear-gradient(top, honeydew,lightgreen);
+}
+
+.pomo-min{
+  color: mintcream;
+}
+
+#text_writer {
+  display: none;
+  margin: 6px 0px 4px 0px;
+}
+
+.restore_button {
+  margin: 0 0 0 4px;
+}
+
+.no_favo_star {
+  color: gray;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0 0 4px;
+}
+
+.favo_star {
+  color: orange;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0 0 4px;
+}
+
+.remove_text {
+  margin: 0 5px 0 0;
+  float: right;
+  color: gray;
+  font-size: 16px;
+}
+
+.remove_text:hover {
+  color: red;
+}
+
+.remove_msg {
+  margin: 0 0 0 5px;
+  color: gray;
+  font-size: 12px;
+}
+
+.remove_msg:hover {
+  color: red;
+}
+
+#history_logs dt, #current_log dt{
+  margin: 0px 0px 2px 4px;
+}
+
+footer {
+  background: #fff;
+  width: 100%;
+  margin-top: 4px;
+  padding: 20px 0;
+  text-align: right;
+  border-top: 1px solid #DDD;
+}
+
+footer span {
+  display: block;
+  margin-right: 30px;
+  color: #888;
+  font-size: 12px;
+}
+
