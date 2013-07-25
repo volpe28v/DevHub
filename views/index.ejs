@@ -23,22 +23,22 @@
     <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
 
-  <div class="modal hide fade" id="name_in">
-    <div class="modal-header">
-      <h3>DevHub</h3>
-    </div>
-    <div class="modal-body">
-      <p>Please type your name.</p>
-      <form id="login_form">
-        <input type="text" id="login_name" class="span2" placeholder="Name"/>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button id="login" class="btn btn-primary">Login</button>
-    </div>
-  </div>
-
   <body id="body-main" style="padding-top: 50px">
+    <div class="modal hide" id="name_in">
+      <div class="modal-header">
+        <h3>DevHub</h3>
+      </div>
+      <div class="modal-body">
+        <p>Please type your name.</p>
+        <form id="login_form">
+          <input type="text" id="login_name" class="span2" placeholder="Name"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="login" class="btn btn-primary">Login</button>
+      </div>
+    </div>
+
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -68,7 +68,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span5">
-          <img id="login_list_loader" src="/img/loader.gif"></img>
+          <img id="login_list_loader" src="/img/loader.gif"/>
           <div id="login_list" style="display:none"></div>
           <form id="form" class="form-inline">
             <input type="text" name="name" id="name" class="span1" placeholder="Name"/>
@@ -81,7 +81,7 @@
             <ul id="list"></ul>
           </div>
         </div>
- 
+
         <div class="span7">
           <div class="tabbable">
             <ul class="nav nav-tabs">
@@ -96,7 +96,7 @@
                 <button id="sync_text" class="btn"><i class="icon-edit"></i> Edit</button>
                 <span id="text_writer" class="label label-info"></span>
                 <span id="update_log_notify" class="label label-success" style="display: none;">updated History</span>
-                <textarea id="code" class="code-unselect" style="display: none" placeholder="Write here"/></textarea>
+                <textarea id="code" class="code-unselect" style="display: none" placeholder="Write here"></textarea>
                 <pre id="code_out"></pre>
               </div>
 
@@ -109,6 +109,7 @@
                 <div id="favo_logs"></div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>

@@ -18,13 +18,13 @@ $(function() {
   var css_name = $.cookie(COOKIE_CSS_NAME) || CSS_DEFAULT_NAME;
   $("#devhub-style").attr('href','/stylesheets/' + css_name );
 
-  if ( $.cookie(COOKIE_NAME) == null  ){
+  if ( $.cookie(COOKIE_NAME) == null ){
     setTimeout(function(){
       $('#name_in').modal("show");
       setTimeout(function(){
           $('#login_name').focus();
         },500);
-      },300);
+      },100);
   }else{
     login_name = $.cookie(COOKIE_NAME);
     $('#name').val(login_name);
@@ -34,7 +34,6 @@ $(function() {
   $(window).on("blur focus", function(e) {
     newest_off();
   });
-
 });
 
 function init_websocket(){
