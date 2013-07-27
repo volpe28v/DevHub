@@ -133,8 +133,7 @@ io.sockets.on('connection', function(client) {
       client.broadcast.emit('message', data);
     });
 
-    //client_info.send_growl_without(client, data);
-    client_info.send_growl_all(data);
+    client_info.send_growl_without(client, data);
   });
 
   client.on('remove_message', function(data) {
