@@ -159,9 +159,18 @@ function init_websocket(){
   });
 
   $("#code").focus(function(){
-    $(this).slideDown();
+    $(this).fadeIn();
+    $('#code_out').hide();
+    $('#fix_text').show();
+    $('#suspend_text').hide();
+    $('#sync_text').hide();
   }).blur(function(){
-    $(this).slideUp();
+    $(this).hide();
+    $('#code_out').fadeIn();
+    $('#fix_text').hide();
+    $('#suspend_text').show();
+    $('#sync_text').show();
+  }).blur(function(){
   });
 
   var update_timer = undefined;
@@ -185,7 +194,7 @@ function init_websocket(){
       $('#text_writer').removeClass("label-important");
       $('#text_writer').addClass("label-info");
       update_timer = undefined;
-      },2000);
+      },3000);
 
 
     // for current_log
