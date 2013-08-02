@@ -180,7 +180,7 @@ function init_websocket(){
   var update_timer = undefined;
   // for share memo
   socket.on('text', function(text_log) {
-    writing_text = text_log;
+    writing_text[text_log.no] = text_log;
     var text_body = decorate_text(text_log.text);
     var $target = $('#share_memo_' + text_log.no);
 
