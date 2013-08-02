@@ -60,7 +60,7 @@ a:hover {
   margin-bottom: 5px;
 }
 
-#code {
+.code {
   font-family: Menlo,Monaco,"Courier New",monospace;
   width: 98%;
   height: 500px;
@@ -70,7 +70,7 @@ a:hover {
   margin-bottom: 2px;
 }
 
-#code_out {
+.code-out {
   width: 98%;
   min-height: 500px;
   padding: 5px;

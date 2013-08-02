@@ -7,9 +7,10 @@ var COOKIE_CSS_NAME = "dev_hub_css_name";
 var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
+var CODE_NUM = 3
 
 // for share memo
-var writing_text = { text: "" };
+var writing_text = [];
 var newest_count = 0;
 
 $(function() {
@@ -116,9 +117,12 @@ function init_websocket(){
     return false;
   });
 
-  $('#sync_text').click(function(){
-    $('#code').val(writing_text.text);
-    $('#code').focus();
+  $('.share-memo').delegate('.sync-text','click', function(){
+    var no = $(this).parent().data('no');
+    writing_text[no] = writing_text[no] == undefined ? { text: "hoge" } : writing_text[no];
+
+    $(this).parent().children(".code").val(writing_text[no].text);
+    $(this).parent().children(".code").focus();
   });
 
   $('#suspend_text').click(function(){
@@ -158,19 +162,19 @@ function init_websocket(){
     return false;
   });
 
-  $("#code").focus(function(){
+  $(".share-memo").delegate('.code','focus',function(){
     $(this).fadeIn();
-    $('#code_out').hide();
-    $('#fix_text').show();
-    $('#suspend_text').hide();
-    $('#sync_text').hide();
-  }).blur(function(){
+    $(this).parent().children('.code-out').hide();
+    $(this).parent().children('.fix-text').show();
+    $(this).parent().children('.suspend-text').hide();
+    $(this).parent().children('.sync-text').hide();
+  });
+  $(".share-memo").delegate('.code','blur',function(){
     $(this).hide();
-    $('#code_out').fadeIn();
-    $('#fix_text').hide();
-    $('#suspend_text').show();
-    $('#sync_text').show();
-  }).blur(function(){
+    $(this).parent().children('.code-out').fadeIn();
+    $(this).parent().children('.fix-text').hide();
+    $(this).parent().children('.suspend-text').show();
+    $(this).parent().children('.sync-text').show();
   });
 
   var update_timer = undefined;
@@ -178,24 +182,24 @@ function init_websocket(){
   socket.on('text', function(text_log) {
     writing_text = text_log;
     var text_body = decorate_text(text_log.text);
+    var $target = $('#share_memo_' + text_log.no);
 
     // for code_out
-    $('#text_writer').html('Updating by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
-    $('#text_writer').removeClass("label-info");
-    $('#text_writer').addClass("label-important");
-    $('#text_writer').show();
-    $('#code_out').html(text_body);
+    $target.children('.text-writer').html('Updating by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $target.children('.text-writer').removeClass("label-info");
+    $target.children('.text-writer').addClass("label-important");
+    $target.children('.text-writer').show();
+    $target.children('.code-out').html(text_body);
 
     if (update_timer){
       clearTimeout(update_timer);
     }
     update_timer = setTimeout(function(){
-      $('#text_writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
-      $('#text_writer').removeClass("label-important");
-      $('#text_writer').addClass("label-info");
+      $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+      $target.children('.text-writer').removeClass("label-important");
+      $target.children('.text-writer').addClass("label-info");
       update_timer = undefined;
       },3000);
-
 
     // for current_log
     var log_dl = $("<dl/>");
@@ -346,15 +350,22 @@ function init_websocket(){
     $('#favo_logs').append(logs_dl);
   });
 
-
-  var code_prev = $('#code').val();
+  var code_prev = [];
+  var i = 1;
+  $('.code').each(function(){
+    code_prev[i++] = $(this).val();
+  });
   var loop = function() {
-    var code = $('#code').val();
-    var code_out = writing_text ? writing_text.text : "";
-    if (code_prev != code && code_out != code) {
-      socket.emit('text',code);
-      code_prev = code;
-    }
+    var i = 1;
+    $('.code').each(function(){
+      var code = $(this).val();
+      var code_out = writing_text[i] ? writing_text[i].text : "";
+      if (code_prev[i] != code && code_out != code) {
+        socket.emit('text',{no: i, body: code});
+        code_prev[i] = code;
+      }
+      i++;
+    });
     setTimeout(loop, 200);
   };
   loop();

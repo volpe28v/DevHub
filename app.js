@@ -184,16 +184,17 @@ io.sockets.on('connection', function(client) {
 
   client.on('text', function(msg) {
     var name = client_info.get_name(client)
-    msg = msg.replace(/\n/g,"\r\n");
+    msg.body = msg.body.replace(/\n/g,"\r\n");
 
-    console.log(msg);
+    console.log(msg.body);
 
     if ( text_log.is_change(msg) == false ){ return;}
 
-    var current_text_log = { name: name, text: msg, date: util.getFullDate(new Date()) }
+    var current_text_log = { name: name, no: msg.no, text: msg.body, date: util.getFullDate(new Date()) }
 
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
+    return; //TODO
 
     text_log.add(current_text_log, function(result){
       if ( result ){
