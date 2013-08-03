@@ -7,7 +7,6 @@ var COOKIE_CSS_NAME = "dev_hub_css_name";
 var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
-var CODE_NUM = 3
 
 // for share memo
 var writing_text = [];
@@ -125,13 +124,6 @@ function init_websocket(){
     $(this).parent().children(".code").focus();
   });
 
-  $('#suspend_text').click(function(){
-    code_prev = writing_text.text;
-    socket.emit('suspend_text');
-    $('#code').val("");
-    $('#code').focus();
-  });
-
   $('#pomo').click(function(){
     var name = $('#name').val();
     var message = $('#message').val();
@@ -180,9 +172,10 @@ function init_websocket(){
   var update_timer = [];
   // for share memo
   socket.on('text', function(text_log) {
-    writing_text[text_log.no] = text_log;
+    var no = text_log.no == undefined ? 1 : text_log.no;
+    writing_text[no] = text_log;
     var text_body = decorate_text(text_log.text);
-    var $target = $('#share_memo_' + text_log.no);
+    var $target = $('#share_memo_' + no);
 
     // for code_out
     $target.children('.text-writer').html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
@@ -190,39 +183,26 @@ function init_websocket(){
     $target.children('.text-writer').addClass("label-important");
     $target.children('.text-writer').show();
     $target.children('.code-out').html(text_body);
-    $('#share_memo_tab_' + text_log.no).children('span').addClass("label label-important");
-    $('#share_memo_tab_' + text_log.no).children('span').html(text_log.name);
+    $('#share_memo_tab_' + no).children('span').addClass("label label-important");
+    $('#share_memo_tab_' + no).children('span').html(text_log.name);
 
-    if (update_timer[text_log.no]){
-      clearTimeout(update_timer[text_log.no]);
+    if (update_timer[no]){
+      clearTimeout(update_timer[no]);
     }
-    update_timer[text_log.no] = setTimeout(function(){
+    update_timer[no] = setTimeout(function(){
       $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $target.children('.text-writer').removeClass("label-important");
       $target.children('.text-writer').addClass("label-info");
-      $('#share_memo_tab_' + text_log.no).children('span').removeClass("label label-important");
-      $('#share_memo_tab_' + text_log.no).children('span').html("");
-      update_timer[text_log.no] = undefined;
+      $('#share_memo_tab_' + no).children('span').removeClass("label label-important");
+      $('#share_memo_tab_' + no).children('span').html("");
+      update_timer[no] = undefined;
     },3000);
-
-    // for current_log
-    var log_dl = $("<dl/>");
-    var log_dt = $("<dt/>");
-    var label_span = $("<span/>").addClass("label label-info").html(text_log.name + " at " + text_log.date);
-    var log_dd = $("<dd/>");
-    var log_pre = $("<pre/>").html(text_body)
-
-    log_dt.append(label_span);
-    log_dd.append(log_pre);
-    log_dl.append(log_dt).append(log_dd);
-
-    $('#current_log').empty();
-    $('#current_log').append(log_dl);
   });
 
   socket.on('text_logs', function(text_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
+      var no = text_logs[i].no == undefined ? 1 : text_logs[i].no;
       var text_log_id = "text_log_id_" + text_logs[i]._id.toString();
       var text_body = decorate_text(text_logs[i].text);
 
@@ -230,12 +210,13 @@ function init_websocket(){
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
+      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore to ' + no + '</button>').click(function(){
         var restore_text = text_logs[i].text;
+        var restore_no = no;
         return function(){
-          code_prev = writing_text.text;
-          $('#code').val(restore_text)
-          $('#share-memo-tab').click()
+          code_prev[restore_no] = writing_text[restore_no].text;
+          $('#share_memo_' + restore_no).children('.code').val(restore_text)
+          $('#share_memo_tab_' + restore_no).click();
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
@@ -308,12 +289,12 @@ function init_websocket(){
 
     $('#update_log_notify').show();
     $('#update_log_notify').fadeOut(2000,function(){ $(this).hide()});
-
   });
 
   socket.on('favo_logs', function(favo_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < favo_logs.length; ++i){
+      var no = favo_logs[i].no == undefined ? 1 : favo_logs[i].no;
       var text_log_id = "favo_log_id_" + favo_logs[i]._id.toString();
       var text_body = decorate_text(favo_logs[i].text);
 
@@ -321,12 +302,13 @@ function init_websocket(){
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore</button>').click(function(){
+      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore to ' + no + '</button>').click(function(){
         var restore_text = favo_logs[i].text;
+        var restore_no = no;
         return function(){
-          code_prev = writing_text.text;
-          $('#code').val(restore_text)
-          $('#share-memo-tab').click()
+          code_prev[restore_no] = writing_text[restore_no].text;
+          $('#share_memo_' + restore_no).children('.code').val(restore_text)
+          $('#share_memo_tab_' + restore_no).click();
           $('html,body').animate({ scrollTop: 0 }, 'slow');
         }
       }())
