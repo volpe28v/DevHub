@@ -83,61 +83,51 @@
         </div>
 
         <div class="span7">
-          <div class="tabbable">
-            <ul class="nav nav-tabs">
-              <li class="active"><a id="share-memo-tab" href="#share-memo" data-toggle="tab">ShareMemo</a></li>
-              <li><a href="#auto-logs" data-toggle="tab">History</a></li>
-              <li><a href="#favo-logs" data-toggle="tab">Favorite</a></li>
-            </ul>
+          <div id="share-memo" class="tab-pane active">
+            <div class="tabbable">
+              <ul class="nav nav-tabs">
+                <li class="active"><a id="share_memo_tab_1" href="#share_memo_1" data-toggle="tab">1 <span></span></a></li>
+                <li><a id="share_memo_tab_2" href="#share_memo_2" data-toggle="tab">2 <span></span></a></li>
+                <li><a id="share_memo_tab_3" href="#share_memo_3" data-toggle="tab">3 <span></span></a></li>
+                <li><a href="#auto-logs" data-toggle="tab">History</a></li>
+                <li><a href="#favo-logs" data-toggle="tab">Favorite</a></li>
+              </ul>
 
-            <div class="tab-content">
-              <div id="share-memo" class="tab-pane active">
-                <div class="tabbable">
-                  <ul class="nav nav-tabs">
-                    <li class="active"><a id="share_memo_tab_1" href="#share_memo_1" data-toggle="tab">1</a></li>
-                    <li><a id="share_memo_tab_2" href="#share_memo_2" data-toggle="tab">2</a></li>
-                    <li><a id="share_memo_tab_3" href="#share_memo_3" data-toggle="tab">3</a></li>
-                  </ul>
-
-                  <div class="tab-content">
-                    <div id="share_memo_1" data-no="1" class="share-memo tab-pane active">
-                      <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
-                      <button class="suspend-text btn"><i class="icon-pencil"></i> New</button>
-                      <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
-                      <span class="text-writer label label-info"></span>
-                      <span class="update-log-notify label label-success" style="display: none;">updated History</span>
-                      <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
-                      <pre class="code-out"></pre>
-                    </div>
-                    <div id="share_memo_2" data-no="2" class="share-memo tab-pane">
-                      <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
-                      <button class="suspend-text btn"><i class="icon-pencil"></i> New</button>
-                      <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
-                      <span class="text-writer label label-info"></span>
-                      <span class="update-log-notify label label-success" style="display: none;">updated History</span>
-                      <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
-                      <pre class="code-out"></pre>
-                    </div>
-                    <div id="share_memo_3" data-no="3" class="share-memo tab-pane">
-                      <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
-                      <button class="suspend-text btn"><i class="icon-pencil"></i> New</button>
-                      <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
-                      <span class="text-writer label label-info"></span>
-                      <span class="update-log-notify label label-success" style="display: none;">updated History</span>
-                      <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
-                      <pre class="code-out"></pre>
-                    </div>
-                  </div>
+              <div class="tab-content">
+                <div id="share_memo_1" data-no="1" class="share-memo tab-pane active">
+                  <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
+<!--
+                  <button class="suspend-text btn"><i class="icon-pencil"></i> New</button>
+-->
+                  <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
+                  <span class="text-writer label label-info"></span>
+                  <span class="update-log-notify label label-success" style="display: none;">updated History</span>
+                  <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                  <pre class="code-out"></pre>
                 </div>
-              </div>
-
-              <div id="auto-logs" class="tab-pane">
-                <div id="current_log"></div>
-                <div id="history_logs"></div>
-              </div>
-
-              <div id="favo-logs" class="tab-pane">
-                <div id="favo_logs"></div>
+                <div id="share_memo_2" data-no="2" class="share-memo tab-pane">
+                  <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
+                  <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
+                  <span class="text-writer label label-info"></span>
+                  <span class="update-log-notify label label-success" style="display: none;">updated History</span>
+                  <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                  <pre class="code-out"></pre>
+                </div>
+                <div id="share_memo_3" data-no="3" class="share-memo tab-pane">
+                  <button class="sync-text btn btn-primary"><i class="icon-edit icon-white"></i> Edit</button>
+                  <button class="fix-text btn btn-info" style="display:none"><i class="icon-edit icon-white"></i> Done</button>
+                  <span class="text-writer label label-info"></span>
+                  <span class="update-log-notify label label-success" style="display: none;">updated History</span>
+                  <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                  <pre class="code-out"></pre>
+                </div>
+                <div id="auto-logs" class="tab-pane">
+                  <div id="current_log"></div>
+                  <div id="history_logs"></div>
+                </div>
+                <div id="favo-logs" class="tab-pane">
+                  <div id="favo_logs"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -145,12 +135,11 @@
       </div>
     </div>
 
-  <footer>
-    <span>
-    © 2012 Naoki KODAMA. All rights reserved.
-    </span>
-  </footer>
-
+    <footer>
+      <span>
+      © 2012 Naoki KODAMA. All rights reserved.
+      </span>
+    </footer>
   </body>
 </html>
 

@@ -185,11 +185,13 @@ function init_websocket(){
     var $target = $('#share_memo_' + text_log.no);
 
     // for code_out
-    $target.children('.text-writer').html('Updating by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $target.children('.text-writer').html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $target.children('.text-writer').removeClass("label-info");
     $target.children('.text-writer').addClass("label-important");
     $target.children('.text-writer').show();
     $target.children('.code-out').html(text_body);
+    $('#share_memo_tab_' + text_log.no).children('span').addClass("label label-important");
+    $('#share_memo_tab_' + text_log.no).children('span').html(text_log.name);
 
     if (update_timer[text_log.no]){
       clearTimeout(update_timer[text_log.no]);
@@ -198,8 +200,10 @@ function init_websocket(){
       $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $target.children('.text-writer').removeClass("label-important");
       $target.children('.text-writer').addClass("label-info");
+      $('#share_memo_tab_' + text_log.no).children('span').removeClass("label label-important");
+      $('#share_memo_tab_' + text_log.no).children('span').html("");
       update_timer[text_log.no] = undefined;
-      },3000);
+    },3000);
 
     // for current_log
     var log_dl = $("<dl/>");
