@@ -91,9 +91,11 @@ io.sockets.on('connection', function(client) {
 
   client_info.login(client_ip);
 
-  text_log.get_latest(function(latest_text){
-    if (latest_text != ""){
-      client.emit('text',latest_text);
+  text_log.get_latest(function(latest_texts){
+    console.log("latest_text: " + latest_texts.length);
+    var length = latest_texts.length;
+    for( var i = 0; i < length; i++){
+      client.emit('text',latest_texts[i]);
     }
   });
 
@@ -184,13 +186,13 @@ io.sockets.on('connection', function(client) {
 
   client.on('text', function(msg) {
     var name = client_info.get_name(client)
-    msg.body = msg.body.replace(/\n/g,"\r\n");
+    msg.text = msg.text.replace(/\n/g,"\r\n");
 
-    console.log(msg.body);
+    console.log(msg.text);
 
     if ( text_log.is_change(msg) == false ){ return;}
 
-    var current_text_log = { name: name, no: msg.no, text: msg.body, date: util.getFullDate(new Date()) }
+    var current_text_log = { name: name, no: msg.no, text: msg.text, date: util.getFullDate(new Date()) }
 
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);

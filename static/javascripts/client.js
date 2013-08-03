@@ -119,7 +119,7 @@ function init_websocket(){
 
   $('.share-memo').delegate('.sync-text','click', function(){
     var no = $(this).parent().data('no');
-    writing_text[no] = writing_text[no] == undefined ? { text: "hoge" } : writing_text[no];
+    writing_text[no] = writing_text[no] == undefined ? { text: "" } : writing_text[no];
 
     $(this).parent().children(".code").val(writing_text[no].text);
     $(this).parent().children(".code").focus();
@@ -361,7 +361,7 @@ function init_websocket(){
       var code = $(this).val();
       var code_out = writing_text[i] ? writing_text[i].text : "";
       if (code_prev[i] != code && code_out != code) {
-        socket.emit('text',{no: i, body: code});
+        socket.emit('text',{no: i, text: code});
         code_prev[i] = code;
       }
       i++;
