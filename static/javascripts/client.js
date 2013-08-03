@@ -177,7 +177,7 @@ function init_websocket(){
     $(this).parent().children('.sync-text').show();
   });
 
-  var update_timer = undefined;
+  var update_timer = [];
   // for share memo
   socket.on('text', function(text_log) {
     writing_text[text_log.no] = text_log;
@@ -191,14 +191,14 @@ function init_websocket(){
     $target.children('.text-writer').show();
     $target.children('.code-out').html(text_body);
 
-    if (update_timer){
-      clearTimeout(update_timer);
+    if (update_timer[text_log.no]){
+      clearTimeout(update_timer[text_log.no]);
     }
-    update_timer = setTimeout(function(){
+    update_timer[text_log.no] = setTimeout(function(){
       $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $target.children('.text-writer').removeClass("label-important");
       $target.children('.text-writer').addClass("label-info");
-      update_timer = undefined;
+      update_timer[text_log.no] = undefined;
       },3000);
 
     // for current_log
@@ -366,7 +366,7 @@ function init_websocket(){
       }
       i++;
     });
-    setTimeout(loop, 200);
+    setTimeout(loop, 300);
   };
   loop();
 };
