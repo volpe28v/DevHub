@@ -200,8 +200,7 @@ function init_websocket(){
       $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $target.children('.text-writer').removeClass("label-important");
       $target.children('.text-writer').addClass("label-info");
-      $('#share_memo_tab_' + no).children('span').removeClass("label label-important");
-      $('#share_memo_tab_' + no).children('span').html("");
+      $('#share_memo_tab_' + no).children('span').removeClass("label-important");
       update_timer[no] = undefined;
     },3000);
   });
@@ -213,21 +212,35 @@ function init_websocket(){
       var text_log_id = "text_log_id_" + text_logs[i]._id.toString();
       var text_body = decorate_text(text_logs[i].text);
 
-      var log_div = $("<div/>").attr("id", text_log_id)
-      var log_dt = $("<dt/>")
-      var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date )
-      var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore to ' + no + '</button>').click(function(){
-        var restore_text = text_logs[i].text;
-        var restore_no = no;
-        return function(){
-          $('#share_memo_' + restore_no).children('.code').val(restore_text)
-          $('#share_memo_tab_' + restore_no).click();
-          $('html,body').animate({ scrollTop: 0 }, 'slow');
+      var log_div = $("<div/>").attr("id", text_log_id);
+      var log_dt = $("<dt/>");
+      var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date );
+      var icon = $("<i/>").addClass("icon-repeat");
+  
+      var $restore_target_list = $("<ul/>").addClass("dropdown-menu");
+      $(".share-memo").each(function(){
+        var restore_target_no = $(this).data("no");
+        var log_no = i;
+        $restore_target_list.append(
+          $("<li/>").append(
+            $("<a/>").html(restore_target_no).click(function(){
+              var restore_text = text_logs[log_no].text;
+              var restore_no = restore_target_no;
+              return function(){
+                $('#share_memo_' + restore_no).children('.code').val(restore_text);
+                $('#share_memo_tab_' + restore_no).click();
+                $('html,body').animate({ scrollTop: 0 }, 'slow');
 
-          socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
-        }
-      }())
+                socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
+              }();
+            })
+          )
+        )
+      });
+      var restore_btn = $("<div/>").addClass("btn-group").append(
+                           $("<a/>").addClass("btn btn-mini dropdown-toggle").attr("data-toggle","dropdown").html('<i class="icon-share-alt"></i> Restore to ').append(
+                             $("<span/>").addClass("caret"))).append(
+                           $restore_target_list);
 
       var favo_star = undefined;
       if ( text_logs[i].favo ){
@@ -287,7 +300,16 @@ function init_websocket(){
       var log_dd = $("<dd/>")
       var log_pre = $("<pre/>").html(text_body)
 
-      log_dt.append(writer_label).append(restore_btn).append(favo_star).append(remove_btn)
+      log_dt.append(
+        $("<table/>").append(
+          $("<tr/>").append(
+            $("<td/>").append(
+              favo_star)).append(
+            $("<td/>").append(
+              writer_label)).append(
+            $("<td/>").append(
+              restore_btn)))).append(
+        remove_btn);
       log_dd.append(log_pre)
       log_div.append(log_dt).append(log_dd)
       logs_dl.append(log_div)
