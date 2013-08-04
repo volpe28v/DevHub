@@ -287,8 +287,8 @@ function init_websocket(){
     $('#history_logs').empty();
     $('#history_logs').append(logs_dl);
 
-    $('#update_log_notify').show();
-    $('#update_log_notify').fadeOut(2000,function(){ $(this).hide()});
+    $('.update-log-notify').show();
+    $('.update-log-notify').fadeOut(2000,function(){ $(this).hide()});
   });
 
   socket.on('favo_logs', function(favo_logs){

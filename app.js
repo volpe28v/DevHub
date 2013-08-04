@@ -197,6 +197,7 @@ io.sockets.on('connection', function(client) {
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
 
+    // 過去ログをとっておくか
     text_log.add(current_text_log, function(result){
       if ( result ){
         text_log.get_logs(function(logs){
