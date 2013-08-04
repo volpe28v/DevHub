@@ -118,10 +118,11 @@ function init_websocket(){
 
   $('.share-memo').delegate('.sync-text','click', function(){
     var no = $(this).parent().data('no');
-    writing_text[no] = writing_text[no] == undefined ? { text: "" } : writing_text[no];
+    writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
 
     $(this).parent().children(".code").val(writing_text[no].text);
     $(this).parent().children(".code").focus();
+    code_prev[no] = $(this).parent().children(".code").val();
   });
 
   $('#pomo').click(function(){
@@ -160,6 +161,7 @@ function init_websocket(){
     $(this).parent().children('.fix-text').show();
     $(this).parent().children('.suspend-text').hide();
     $(this).parent().children('.sync-text').hide();
+    writing_loop_start($(this).parent().data('no'));
   });
   $(".share-memo").delegate('.code','blur',function(){
     $(this).hide();
@@ -167,6 +169,7 @@ function init_websocket(){
     $(this).parent().children('.fix-text').hide();
     $(this).parent().children('.suspend-text').show();
     $(this).parent().children('.sync-text').show();
+    writing_loop_stop();
   });
 
   var update_timer = [];
@@ -175,6 +178,11 @@ function init_websocket(){
     var no = text_log.no == undefined ? 1 : text_log.no;
     writing_text[no] = text_log;
     var $target = $('#share_memo_' + no);
+
+    // 他ユーザの変更が来たらフォーカスを外す
+    if ( login_name != text_log.name ){
+      $target.children('.code').trigger('blur');
+    }
 
     // for code_out
     $target.children('.text-writer').html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
@@ -336,24 +344,28 @@ function init_websocket(){
   });
 
   var code_prev = [];
-  var i = 1;
-  $('.code').each(function(){
-    code_prev[i++] = $(this).val();
-  });
-  var loop = function() {
-    var i = 1;
-    $('.code').each(function(){
-      var code = $(this).val();
-      var code_out = writing_text[i] ? writing_text[i].text : "";
-      if (code_prev[i] != code && code_out != code) {
-        socket.emit('text',{no: i, text: code});
-        code_prev[i] = code;
+
+  writing_loop_timer = -1;
+  function writing_loop_start(no){
+    $target_code = $('#share_memo_' + no).children('.code');
+    var loop = function() {
+      var code = $target_code.val();
+      if (code_prev[no] != code) {
+        socket.emit('text',{no: no, text: code});
+        code_prev[no] = code;
       }
-      i++;
-    });
-    setTimeout(loop, 300);
-  };
-  loop();
+    };
+    // 念のためタイマー止めとく
+    if (writing_loop_timer != -1){
+      writing_loop_stop();
+    }
+    writing_loop_timer = setInterval(loop, 1000);
+  }
+
+  function writing_loop_stop(){
+    clearInterval(writing_loop_timer);
+    writing_loop_timer = -1;
+  }
 };
 
 function decorate_text( text ){
