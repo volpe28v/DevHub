@@ -333,17 +333,6 @@ function init_websocket(){
       var log_dt = $("<dt/>")
       var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
-      var restore_btn2 = $('<button class="btn btn-mini restore_button"><i class="icon-share-alt"></i> Restore to ' + no + '</button>').click(function(){
-        var restore_text = favo_logs[i].text;
-        var restore_no = no;
-        return function(){
-          $('#share_memo_' + restore_no).children('.code').val(restore_text)
-          $('#share_memo_tab_' + restore_no).click();
-          $('html,body').animate({ scrollTop: 0 }, 'slow');
-
-          socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
-        }
-      }())
 
       var $restore_target_list = $("<ul/>").addClass("dropdown-menu");
       $(".share-memo").each(function(){
