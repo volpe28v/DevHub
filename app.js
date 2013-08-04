@@ -188,8 +188,7 @@ io.sockets.on('connection', function(client) {
     var name = client_info.get_name(client)
     msg.text = msg.text.replace(/\n/g,"\r\n");
 
-    console.log(msg.text);
-
+//    console.log(msg.text);
     if ( text_log.is_change(msg) == false ){ return;}
 
     var current_text_log = { name: name, no: msg.no, text: msg.text, date: util.getFullDate(new Date()) }

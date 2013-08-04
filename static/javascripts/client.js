@@ -221,10 +221,11 @@ function init_websocket(){
         var restore_text = text_logs[i].text;
         var restore_no = no;
         return function(){
-          code_prev[restore_no] = writing_text[restore_no].text;
           $('#share_memo_' + restore_no).children('.code').val(restore_text)
           $('#share_memo_tab_' + restore_no).click();
           $('html,body').animate({ scrollTop: 0 }, 'slow');
+
+          socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
         }
       }())
 
@@ -313,10 +314,11 @@ function init_websocket(){
         var restore_text = favo_logs[i].text;
         var restore_no = no;
         return function(){
-          code_prev[restore_no] = writing_text[restore_no].text;
           $('#share_memo_' + restore_no).children('.code').val(restore_text)
           $('#share_memo_tab_' + restore_no).click();
           $('html,body').animate({ scrollTop: 0 }, 'slow');
+
+          socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
         }
       }())
 
@@ -359,7 +361,7 @@ function init_websocket(){
     if (writing_loop_timer != -1){
       writing_loop_stop();
     }
-    writing_loop_timer = setInterval(loop, 1000);
+    writing_loop_timer = setInterval(loop, 200);
   }
 
   function writing_loop_stop(){
