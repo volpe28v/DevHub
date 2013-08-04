@@ -110,7 +110,7 @@ function init_websocket(){
 
     if ( message && name ){
       login_name = name;
-      socket.emit('message', {name:name,msg:message});
+      socket.emit('message', {name:name, msg:message});
       $('#message').attr('value', '');
     }
     return false;
@@ -174,7 +174,6 @@ function init_websocket(){
   socket.on('text', function(text_log) {
     var no = text_log.no == undefined ? 1 : text_log.no;
     writing_text[no] = text_log;
-    var text_body = decorate_text(text_log.text);
     var $target = $('#share_memo_' + no);
 
     // for code_out
@@ -182,7 +181,7 @@ function init_websocket(){
     $target.children('.text-writer').removeClass("label-info");
     $target.children('.text-writer').addClass("label-important");
     $target.children('.text-writer').show();
-    $target.children('.code-out').html(text_body);
+    $target.children('.code-out').html(decorate_text(text_log.text));
     $('#share_memo_tab_' + no).children('span').addClass("label label-important");
     $('#share_memo_tab_' + no).children('span').html(text_log.name);
 
