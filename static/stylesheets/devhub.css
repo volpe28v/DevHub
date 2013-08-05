@@ -295,6 +295,14 @@ a:hover {
   margin: 0px 0px 2px 4px;
 }
 
+.silent-name {
+  color: #BBB;
+}
+
+.writing-name {
+  color: red !important;
+}
+
 footer {
   background: #fff;
   width: 100%;
