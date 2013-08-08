@@ -62,8 +62,8 @@ a:hover {
 
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;
-  width: 98%;
-  height: 500px;
+  width: 96%;
+  height: 700px;
   padding: 5px;
   background-color: aliceblue;
   margin-top: 2px;
@@ -71,9 +71,8 @@ a:hover {
 }
 
 .code-out {
-  width: 98%;
-  min-height: 500px;
-  padding: 5px;
+  width: 96%;
+  min-height: 700px;
   margin-top: 5px;
 }
 
@@ -247,9 +246,12 @@ a:hover {
   color: mintcream;
 }
 
-#text_writer {
-  display: none;
-  margin: 6px 0px 4px 0px;
+.text-writer {
+  margin: 6px 0px 4px 5px;
+}
+
+.update-log-notify {
+  margin: 6px 0px 4px 5px;
 }
 
 .restore_button {

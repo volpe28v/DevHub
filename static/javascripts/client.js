@@ -13,6 +13,7 @@ var writing_text = [];
 var newest_count = 0;
 
 $(function() {
+  init_sharememo();
   init_websocket();
 
   var css_name = $.cookie(COOKIE_CSS_NAME) || CSS_DEFAULT_NAME;
@@ -35,6 +36,18 @@ $(function() {
     newest_off();
   });
 });
+
+function init_sharememo(){
+  $(".share-memo").each(function(){
+    $(this).append(
+      $('<button/>').addClass("sync-text btn btn-primary").html('<i class="icon-edit icon-white"></i> Edit')).append(
+      $('<button/>').addClass("fix-text btn btn-info").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
+      $('<span/>').addClass("text-writer label label-info")).append(
+      $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
+      $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
+      $('<pre/>').addClass("code-out"));
+  });
+}
 
 function init_websocket(){
   var socket = io.connect('/');
@@ -315,8 +328,8 @@ function init_websocket(){
       log_div.append(log_dt).append(log_dd)
       logs_dl.append(log_div)
     }
-    $('#history_logs').empty();
-    $('#history_logs').append(logs_dl);
+    $('#auto_logs').empty();
+    $('#auto_logs').append(logs_dl);
 
     $('.update-log-notify').show();
     $('.update-log-notify').fadeOut(2000,function(){ $(this).hide()});
