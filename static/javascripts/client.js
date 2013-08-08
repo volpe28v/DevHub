@@ -38,6 +38,8 @@ $(function() {
 });
 
 function init_sharememo(){
+  $('.share-memo-tab').hide();
+
   $(".share-memo").each(function(){
     $(this).append(
       $('<button/>').addClass("sync-text btn btn-primary").html('<i class="icon-edit icon-white"></i> Edit')).append(
@@ -427,6 +429,21 @@ function init_websocket(){
     clearInterval(writing_loop_timer);
     writing_loop_timer = -1;
   }
+
+  $('#memo_number').bind('change',function(){
+    var num = $(this).val();
+    socket.emit('memo_number', {num: num});
+  });
+
+  socket.on('memo_number', function(data){
+    var num = data.num;
+    $('.share-memo-tab').hide();
+    for (var i = 1; i <= num; i++){
+      $('#share_memo_tab_' + i).show();
+      $('#share_memo_tab_' + i).css("display", "block");
+    }
+    $('#memo_number').val(num);
+  });
 };
 
 function decorate_text( text ){

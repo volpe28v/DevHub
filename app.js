@@ -91,6 +91,10 @@ io.sockets.on('connection', function(client) {
 
   client_info.login(client_ip);
 
+  text_log.get_active_number(function(number){
+    client.emit('memo_number',number);
+  });
+
   text_log.get_latest(function(latest_texts){
     console.log("latest_text: " + latest_texts.length);
     var length = latest_texts.length;
@@ -266,6 +270,12 @@ io.sockets.on('connection', function(client) {
     });
 
     console.log("remove_favo_text: " + id );
+  });
+
+  client.on('memo_number', function(data) {
+    client.emit('memo_number', data);
+    client.broadcast.emit('memo_number', data);
+    text_log.update_active_number(data);
   });
 
   client.on('disconnect', function() {
