@@ -20,14 +20,17 @@ a:hover {
 
 .date {
   color: #ccc;
+  float: right;
 }
 
 .target_msg_date {
   color: wheat;
+  float: right;
 }
 
 .own_msg_date {
   color: paleturquoise;
+  float: right;
 }
 
 #suggest {
@@ -284,9 +287,10 @@ a:hover {
 }
 
 .remove_msg {
-  margin: 0 0 0 5px;
+  margin: 0 3px 0 5px;
   color: gray;
   font-size: 12px;
+  float: right;
 }
 
 .remove_msg:hover {

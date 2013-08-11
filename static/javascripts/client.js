@@ -13,6 +13,7 @@ var writing_text = [];
 var newest_count = 0;
 
 $(function() {
+  init_chat();
   init_sharememo();
   init_websocket();
 
@@ -36,6 +37,15 @@ $(function() {
     newest_off();
   });
 });
+
+function init_chat(){
+  $('#list').delegate('.remove_msg', 'click', function(){
+    var id = "#" + $(this).closest('li').attr('id');
+    var data_id = $(this).closest('li').data('id');
+    $(id).fadeOut();
+    send_remove_msg(data_id);
+  });
+}
 
 function init_sharememo(){
   $('.share-memo-tab').hide();
@@ -497,10 +507,6 @@ function prepend_own_msg(data){
   var msg_id = '#msg_' + data._id.toString();
 
   $('#list').prepend(msg_li);
-  $(msg_id + ' .remove_msg').click(function(){
-    $(msg_id).fadeOut();
-    send_remove_msg(data._id.toString());
-  });
   msg_li.fadeIn();
 };
 
@@ -546,7 +552,7 @@ function get_msg_html(data){
   if (include_target_name(data.msg,login_name)){
     return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span></td></tr></table>');
   }else if ( data.name == login_name ){
-    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span></td></tr></table>');
+    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg" href="#">x</a></td></tr></table>');
   }else{
     return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span></td></tr></table>');
   }
@@ -554,7 +560,7 @@ function get_msg_html(data){
 
 function get_msg_li_html(data){
   if ( data._id != undefined ){
-    return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString());
+    return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).attr('data-id', data._id.toString());
   }else{
     return $('<li/>').attr('style','display:none');
   }
@@ -582,7 +588,7 @@ function get_msg_body(data){
     name_class = "login-name" + get_color_id_by_name_id(data.id);
   }
 
-  return '<table><tr><td nowrap valign="top"><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td><span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
+  return '<table><tr><td nowrap valign="top"><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + decorate_msg(data.msg) + '</span>';
 }
 
 function get_color_id_by_name_id(id){
