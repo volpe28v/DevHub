@@ -223,7 +223,8 @@ function init_websocket(){
   socket.on('text_logs', function(text_logs){
     var logs_dl = $("<dl/>")
     for ( var i = 0; i < text_logs.length; ++i){
-      var no = text_logs[i].no == undefined ? 1 : text_logs[i].no;
+      var no = text_logs[i].no == undefined ? 1 : text_logs[i].no; // マルチメモ対応前の救済処置。
+
       var text_log_id = "text_log_id_" + text_logs[i]._id.toString();
       var text_body = decorate_text(text_logs[i].text);
 
@@ -232,30 +233,13 @@ function init_websocket(){
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date );
       var icon = $("<i/>").addClass("icon-repeat");
   
-      var $restore_target_list = $("<ul/>").addClass("dropdown-menu");
-      $(".share-memo").each(function(){
-        var restore_target_no = $(this).data("no");
-        var log_no = i;
-        $restore_target_list.append(
-          $("<li/>").append(
-            $("<a/>").html(restore_target_no).click(function(){
-              var restore_text = text_logs[log_no].text;
-              var restore_no = restore_target_no;
-              return function(){
-                $('#share_memo_' + restore_no).children('.code').val(restore_text);
-                $('#share_memo_tab_' + restore_no).click();
-                $('html,body').animate({ scrollTop: 0 }, 'slow');
-
-                socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
-              }();
-            })
-          )
-        )
-      });
       var restore_btn = $("<div/>").addClass("btn-group").append(
-                           $("<a/>").addClass("btn btn-mini dropdown-toggle").attr("data-toggle","dropdown").html('<i class="icon-share-alt"></i> Restore to ').append(
+                           $("<a/>").addClass("restore-log-button btn btn-mini dropdown-toggle")
+                                    .attr("data-toggle","dropdown")
+                                    .attr("data-no",i)
+                                    .html('<i class="icon-share-alt"></i> Restore to ').append(
                              $("<span/>").addClass("caret"))).append(
-                           $restore_target_list);
+                           $("<ul/>").addClass("dropdown-menu"));
 
       var favo_star = undefined;
       if ( text_logs[i].favo ){
@@ -333,6 +317,14 @@ function init_websocket(){
     $('#auto_logs').empty();
     $('#auto_logs').append(logs_dl);
 
+    $('.restore-log-button').click(function(){
+      var $restore_target_list = $(this).parent().children('ul');
+      var log_no = $(this).data('no');
+      var restore_text = text_logs[log_no].text;
+      $restore_target_list.empty();
+      setRestoreToLists($restore_target_list, log_no, restore_text);
+    });
+
     $('.update-log-notify').show();
     $('.update-log-notify').fadeOut(2000,function(){ $(this).hide()});
   });
@@ -349,31 +341,13 @@ function init_websocket(){
       var writer_label = $("<span/>").addClass("label").addClass("label-warning").text( favo_logs[i].name + " at " + favo_logs[i].date )
       var icon = $("<i/>").addClass("icon-repeat")
 
-      var $restore_target_list = $("<ul/>").addClass("dropdown-menu");
-      $(".share-memo").each(function(){
-        var restore_target_no = $(this).data("no");
-        var log_no = i;
-        $restore_target_list.append(
-          $("<li/>").append(
-            $("<a/>").html(restore_target_no).click(function(){
-              var restore_text = favo_logs[log_no].text;
-              var restore_no = restore_target_no;
-              return function(){
-                $('#share_memo_' + restore_no).children('.code').val(restore_text);
-                $('#share_memo_tab_' + restore_no).click();
-                $('html,body').animate({ scrollTop: 0 }, 'slow');
-
-                socket.emit('text',{no: restore_no, text: $('#share_memo_' + restore_no).children('.code').val()});
-              }();
-            })
-          )
-        )
-      });
       var restore_btn = $("<div/>").addClass("btn-group").append(
-                           $("<a/>").addClass("btn btn-mini dropdown-toggle").attr("data-toggle","dropdown").html('<i class="icon-share-alt"></i> Restore to ').append(
+                           $("<a/>").addClass("restore-favo-button btn btn-mini dropdown-toggle")
+                                    .attr("data-toggle","dropdown")
+                                    .attr("data-no",i)
+                                    .html('<i class="icon-share-alt"></i> Restore to ').append(
                              $("<span/>").addClass("caret"))).append(
-                           $restore_target_list);
-
+                           $("<ul/>").addClass("dropdown-menu"));
 
       var remove_btn = $('<a href="#" class="remove_text">x</a>').click(function(){
         var target_dom_id = text_log_id
@@ -404,7 +378,35 @@ function init_websocket(){
 
     $('#favo_logs').empty();
     $('#favo_logs').append(logs_dl);
+
+    $('.restore-favo-button').click(function(){
+      var $restore_target_list = $(this).parent().children('ul');
+      var log_no = $(this).data('no');
+      var restore_text = favo_logs[log_no].text;
+
+      $restore_target_list.empty();
+      setRestoreToLists($restore_target_list, log_no, restore_text);
+    });
   });
+
+  function setRestoreToLists($restore_target_list, log_no, restore_text){
+    $(".share-memo-tab:visible").each(function(){
+      var restore_target_no = $(this).data('no');
+      $restore_target_list.append(
+        $("<li/>").append(
+          $("<a/>").html(restore_target_no).click(function(){
+            return function(){
+              $('#share_memo_' + restore_target_no).children('.code').val(restore_text);
+              $('#share_memo_tab_' + restore_target_no).click();
+              $('html,body').animate({ scrollTop: 0 }, 'slow');
+
+              socket.emit('text',{no: restore_target_no, text: $('#share_memo_' + restore_target_no).children('.code').val()});
+            }();
+          })
+        )
+      );
+    });
+  }
 
   var code_prev = [];
 
