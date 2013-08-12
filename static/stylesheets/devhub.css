@@ -291,6 +291,7 @@ a:hover {
   color: gray;
   font-size: 12px;
   float: right;
+  cursor: pointer;
 }
 
 .remove_msg:hover {
