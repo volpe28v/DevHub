@@ -304,6 +304,8 @@ a:hover {
 
 .silent-name {
   color: #BBB;
+  margin: 4px 0px 0px 10px;
+  font-size: 12px;
 }
 
 .writing-name {
