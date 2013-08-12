@@ -509,7 +509,7 @@ function prepend_own_msg(data){
   var msg_id = '#msg_' + data._id.toString();
 
   $('#list').prepend(msg_li);
-  msg_li.fadeIn();
+  msg_li.slideDown();
 };
 
 function send_remove_msg(id){
