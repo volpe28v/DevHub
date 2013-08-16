@@ -196,6 +196,15 @@ function init_websocket(){
     $(this).parent().children('.sync-text').show();
     writing_loop_stop();
   });
+  $(".share-memo").delegate('.code','keydown',function(event){
+    // Ctrl - S
+    if (event.ctrlKey == true && event.keyCode == 83) {
+      event.returnvalue = false;
+      $(this).trigger('blur');
+      writing_loop_stop();
+      return false;
+    }
+  });
 
   var update_timer = [];
   // for share memo
