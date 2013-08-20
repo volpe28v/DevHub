@@ -141,13 +141,21 @@ function init_websocket(){
     return false;
   });
 
-  $('.share-memo').delegate('.sync-text','click', function(){
-    var no = $(this).parent().data('no');
+  function switchEditShareMemo(target){
+    var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
 
-    $(this).parent().children(".code").val(writing_text[no].text);
-    $(this).parent().children(".code").focus();
-    code_prev[no] = $(this).parent().children(".code").val();
+    $(target).parent().children(".code").val(writing_text[no].text);
+    $(target).parent().children(".code").focus();
+    code_prev[no] = $(target).parent().children(".code").val();
+  }
+
+  $('.share-memo').delegate('.sync-text','click', function(){
+    switchEditShareMemo(this);
+  });
+
+  $('.share-memo').delegate('.code-out','dblclick', function(){
+    switchEditShareMemo(this);
   });
 
   $('#pomo').click(function(){
