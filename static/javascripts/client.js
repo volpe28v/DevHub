@@ -172,6 +172,10 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
+  $('.share-memo').delegate('.code','keyup', function(){
+    autofit($(this).get(0));
+  });
+
   $('#pomo').click(function(){
     var name = $('#name').val();
     var message = $('#message').val();
