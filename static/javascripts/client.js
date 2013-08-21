@@ -141,6 +141,17 @@ function init_websocket(){
     return false;
   });
 
+  function autofit(el){
+    if(el.scrollHeight > el.offsetHeight){
+      el.style.height = el.scrollHeight + 'px';
+    } else {
+      while (el.scrollHeight - 50 < parseInt(el.style.height)){
+        el.style.height = parseInt(el.style.height) - 50 + 'px';
+      }
+      arguments.callee(el);
+    }
+  }
+
   function switchEditShareMemo(target){
     var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
@@ -148,6 +159,9 @@ function init_websocket(){
     $(target).parent().children(".code").val(writing_text[no].text);
     $(target).parent().children(".code").focus();
     code_prev[no] = $(target).parent().children(".code").val();
+
+    var fit_target = $(target).parent().children(".code");
+    autofit(fit_target.get(0));
   }
 
   $('.share-memo').delegate('.sync-text','click', function(){
