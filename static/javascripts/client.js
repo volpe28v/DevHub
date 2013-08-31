@@ -172,8 +172,11 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
+  var edit_mode = false;
   $('.share-memo').delegate('.code','keyup', function(){
-    autofit($(this).get(0));
+    if (edit_mode){
+      autofit($(this).get(0));
+    }
   });
 
   $('#pomo').click(function(){
@@ -207,6 +210,7 @@ function init_websocket(){
   });
 
   $(".share-memo").delegate('.code','focus',function(){
+    edit_mode = true;
     $(this).fadeIn();
     $(this).parent().children('.code-out').hide();
     $(this).parent().children('.fix-text').show();
@@ -215,6 +219,7 @@ function init_websocket(){
     writing_loop_start($(this).parent().data('no'));
   });
   $(".share-memo").delegate('.code','blur',function(){
+    edit_mode = false;
     $(this).hide();
     $(this).parent().children('.code-out').fadeIn();
     $(this).parent().children('.fix-text').hide();
@@ -223,8 +228,9 @@ function init_websocket(){
     writing_loop_stop();
   });
   $(".share-memo").delegate('.code','keydown',function(event){
-    // Ctrl - S
-    if (event.ctrlKey == true && event.keyCode == 83) {
+    // Ctrl - S or Ctrl - enter
+    if ((event.ctrlKey == true && event.keyCode == 83) ||
+        (event.ctrlKey == true && event.keyCode == 13)) {
       event.returnvalue = false;
       $(this).trigger('blur');
       writing_loop_stop();
