@@ -40,7 +40,7 @@ $(function() {
 });
 
 function init_chat(){
-  $('#list').delegate('.remove_msg', 'click', function(){
+  $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
     var data_id = $(this).closest('li').data('id');
     $(id).fadeOut();
@@ -154,16 +154,16 @@ function init_websocket(){
     fit_target.autofit({'min_height': CODE_MIN_HEIGHT});
   }
 
-  $('.share-memo').delegate('.sync-text','click', function(){
+  $('.share-memo').on('click','.sync-text', function(){
     switchEditShareMemo(this);
   });
 
-  $('.share-memo').delegate('.code-out','dblclick', function(){
+  $('.share-memo').on('dblclick','.code-out', function(){
     switchEditShareMemo(this);
   });
 
   var edit_mode = false;
-  $('.share-memo').delegate('.code','keyup', function(){
+  $('.share-memo').on('keyup','.code', function(){
     if (edit_mode){
       $(this).autofit({'min_height': CODE_MIN_HEIGHT});
     }
@@ -199,7 +199,7 @@ function init_websocket(){
     return false;
   });
 
-  $(".share-memo").delegate('.code','focus',function(){
+  $(".share-memo").on('focus','.code',function(){
     edit_mode = true;
     $(this).fadeIn();
     $(this).parent().children('.code-out').hide();
@@ -208,7 +208,7 @@ function init_websocket(){
     $(this).parent().children('.sync-text').hide();
     writing_loop_start($(this).parent().data('no'));
   });
-  $(".share-memo").delegate('.code','blur',function(){
+  $(".share-memo").on('blur','.code',function(){
     edit_mode = false;
     $(this).hide();
     $(this).parent().children('.code-out').fadeIn();
@@ -217,7 +217,7 @@ function init_websocket(){
     $(this).parent().children('.sync-text').show();
     writing_loop_stop();
   });
-  $(".share-memo").delegate('.code','keydown',function(event){
+  $(".share-memo").on('keydown','.code',function(event){
     // Ctrl - S or Ctrl - enter
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
