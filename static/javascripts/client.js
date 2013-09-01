@@ -142,25 +142,6 @@ function init_websocket(){
     return false;
   });
 
-  function autofit(el, min_height){
-    if(el.scrollHeight > el.offsetHeight){
-      el.style.height = el.scrollHeight + 'px';
-    } else {
-      if (!isNaN(parseInt(el.style.height))){
-        while (el.scrollHeight - 50 < parseInt(el.style.height)){
-          if ( parseInt(el.style.height) < min_height){
-            el.style.height = min_height + 'px';
-            el.style.height = el.scrollHeight + 'px';
-            return;
-          }
-
-          el.style.height = parseInt(el.style.height) - 50 + 'px';
-        }
-        arguments.callee(el);
-      }
-    }
-  }
-
   function switchEditShareMemo(target){
     var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
@@ -170,7 +151,7 @@ function init_websocket(){
     code_prev[no] = $(target).parent().children(".code").val();
 
     var fit_target = $(target).parent().children(".code");
-    autofit(fit_target.get(0), CODE_MIN_HEIGHT);
+    fit_target.autofit({'min_height': CODE_MIN_HEIGHT});
   }
 
   $('.share-memo').delegate('.sync-text','click', function(){
@@ -184,7 +165,7 @@ function init_websocket(){
   var edit_mode = false;
   $('.share-memo').delegate('.code','keyup', function(){
     if (edit_mode){
-      autofit($(this).get(0),CODE_MIN_HEIGHT);
+      $(this).autofit({'min_height': CODE_MIN_HEIGHT});
     }
   });
 
