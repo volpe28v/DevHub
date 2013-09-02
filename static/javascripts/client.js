@@ -50,7 +50,6 @@ function init_chat(){
 
 function init_sharememo(){
   $('.share-memo-tab').hide();
-
   $(".share-memo").each(function(){
     $(this).append(
       $('<button/>').addClass("sync-text btn btn-primary").html('<i class="icon-edit icon-white"></i> Edit')).append(
@@ -142,6 +141,8 @@ function init_websocket(){
     return false;
   });
 
+  $(".code").autofit({min_height: CODE_MIN_HEIGHT});
+
   function switchEditShareMemo(target){
     var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
@@ -151,7 +152,7 @@ function init_websocket(){
     code_prev[no] = $(target).parent().children(".code").val();
 
     var fit_target = $(target).parent().children(".code");
-    fit_target.autofit({'min_height': CODE_MIN_HEIGHT});
+    fit_target.trigger('keyup'); //call autofit
   }
 
   $('.share-memo').on('click','.sync-text', function(){
@@ -160,13 +161,6 @@ function init_websocket(){
 
   $('.share-memo').on('dblclick','.code-out', function(){
     switchEditShareMemo(this);
-  });
-
-  var edit_mode = false;
-  $('.share-memo').on('keyup','.code', function(){
-    if (edit_mode){
-      $(this).autofit({'min_height': CODE_MIN_HEIGHT});
-    }
   });
 
   $('#pomo').click(function(){
@@ -200,7 +194,6 @@ function init_websocket(){
   });
 
   $(".share-memo").on('focus','.code',function(){
-    edit_mode = true;
     $(this).fadeIn();
     $(this).parent().children('.code-out').hide();
     $(this).parent().children('.fix-text').show();
@@ -209,7 +202,6 @@ function init_websocket(){
     writing_loop_start($(this).parent().data('no'));
   });
   $(".share-memo").on('blur','.code',function(){
-    edit_mode = false;
     $(this).hide();
     $(this).parent().children('.code-out').fadeIn();
     $(this).parent().children('.fix-text').hide();

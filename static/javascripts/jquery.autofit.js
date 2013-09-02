@@ -5,7 +5,7 @@
 (function($) {
   $.fn.autofit = function( options ){
     var defaults = {
-      'min_height' : 200
+      min_height: 200
     };
 
     // private method
@@ -20,7 +20,6 @@
               el.style.height = el.scrollHeight + 'px';
               return;
             }
-
             el.style.height = parseInt(el.style.height) - 50 + 'px';
           }
           arguments.callee(el, min_height);
@@ -33,7 +32,11 @@
     this.each(function(){
       $(this).css('overflow','hidden');
       var el = $(this).get(0);
-      _autofit(el, options.min_height);
+      $(this).on('keyup',function(){
+        if ($(this).is(':visible')){
+          _autofit(el, options.min_height);
+        }
+      });
     });
 
     return this;
