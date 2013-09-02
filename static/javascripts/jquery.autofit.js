@@ -29,8 +29,12 @@
     }
 
     var options = $.extend( defaults, options );
-    var el = $(this).get(0);
-    _autofit(el, options.min_height);
+
+    this.each(function(){
+      $(this).css('overflow','hidden');
+      var el = $(this).get(0);
+      _autofit(el, options.min_height);
+    });
 
     return this;
   }
