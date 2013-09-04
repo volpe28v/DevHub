@@ -565,6 +565,7 @@ function newest_off(){
 }
 
 function exist_msg(data){
+  if (data.msg == undefined) { data.msg = ""; }
   var id = '#msg_' + data._id.toString();
   return $(id).size() > 0;
 }

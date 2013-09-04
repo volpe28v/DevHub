@@ -1,0 +1,533 @@
+    1  ls
+    2  vi ~/.bashrc 
+    3  source ~/.bashrc 
+    4  ls
+    5  f
+    6  vi ~/.bashrc 
+    7  vim
+    8  yum install vim
+    9  su
+   10  vim
+   11  vi ~/.bashrc 
+   12  ls
+   13  source ~/.bashrc 
+   14  ls
+   15  vi .vimrc
+   16  ls
+   17  vi .vimrc 
+   18  ls
+   19  su
+   20  ls
+   21  whoami
+   22  su
+   23  su -
+   24  ls
+   25  git
+   26  su
+   27  su 0
+   28  su -
+   29  rvm
+   30  source /etc/profile.d/rvm.sh 
+   31  rvm
+   32  ls
+   33  su
+   34  ls
+   35  rvm
+   36  ruby -v
+   37  rails -v
+   38  ls
+   39  rvm install 1.9.3
+   40  bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+   41  exit
+   42  ls
+   43  bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+   44  su
+   45  su -
+   46  bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+   47   bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+   48  curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer 
+   49  wget https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer 
+   50  ls
+   51  vi rvm-installer 
+   52  bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer
+   53  bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+   54  bash < <(curl -sk https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+   55  la
+   56  bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
+   57  ls
+   58  la
+   59  vi rvm-installer 
+   60  UID
+   61  $UID
+   62  bash rvm-installer 
+   63  vi rvm-installer 
+   64  whoami
+   65  source rvm-installer 
+   66  exit
+   67  screen -t kanban-list
+   68  ls
+   69  exit
+   70  ls
+   71  bash rvm-installer 
+   72  vi .bashrc 
+   73  vi .bash_profile 
+   74  source .bash_profile 
+   75  ls
+   76  rvm
+   77  rvm install 1.9.3
+   78  git -v
+   79  ls
+   80  rm rvm-installer 
+   81  ls
+   82  ll
+   83  la
+   84  ls
+   85  git clone git@github.com:volpe28v/kanban-list.git
+   86  ssh-keygen -t rsa -C "naoki.koda@gmail.com"
+   87  ls
+   88  la
+   89  vi .ssh/id_rsa.pub 
+   90  git clone git@github.com:volpe28v/kanban-list.git
+   91  ls
+   92  cd kanban-list/
+   93  ls
+   94  cd ..
+   95  ls
+   96  cd kanban-list/
+   97  bundle install
+   98  ls
+   99  gem install pg
+  100  vi Gemfile
+  101  bundle install
+  102  su
+  103  bundle install
+  104  ls
+  105  rake db:migrate
+  106  ls
+  107  rails s -p 3000
+  108  screen 
+  109  ls
+  110  vi ~/.screenrc
+  111  ls
+  112  screen 
+  113  screen -r
+  114  ls
+  115  screen -r
+  116  kls
+  117  ls
+  118  screen -r
+  119  su -
+  120  screen -t kanban-list
+  121  cd
+  122  ls
+  123  whoami
+  124  su - 
+  125  ls
+  126  screen -t kpt
+  127  screen -t su
+  128  git config --global user.name "Naoki Kodama"
+  129  git config --global user.email naoki.kodama@trustia.jp
+  130  git config
+  131  git config -l
+  132  git clone git@github.com:volpe28v/kpt-list.git
+  133  ls
+  134  cd kpt-list/
+  135  ls
+  136  bundle install
+  137  vi Gemfile
+  138  bundle install
+  139  rake db:migrate
+  140  ls
+  141  rails s -p 3001
+  142  ls
+  143  rails s -p 3000
+  144  ls
+  145  screen
+  146  ls
+  147  screen 
+  148  :q
+  149  exit
+  150  ls
+  151  screen 
+  152  screen -r
+  153  ls
+  154  screen -r
+  155  ls
+  156  sceern -r
+  157  screen -r
+  158  ls
+  159  screen -r
+  160  ls
+  161  screen -r
+  162  ls
+  163  screen -r 
+  164  ls
+  165  screen -r
+  166  ls
+  167  dir
+  168  ls
+  169  which dir
+  170  ls
+  171  ll /usr/bin/dir
+  172  ls
+  173  screen -r
+  174  ls
+  175  screen -r
+  176  ls
+  177  screen -r
+  178  ls
+  179  screen -r
+  180  exit
+  181  ls
+  182  cd /var/www/html/
+  183  ls
+  184  cd redmine/
+  185  ls
+  186  pwd
+  187  cd /opt/
+  188  ls
+  189  cd sun/
+  190  ls
+  191  cd ..
+  192  ls
+  193  cd /var/
+  194  ls
+  195  cd /var/www/html/
+  196  ls
+  197  ll
+  198  cd /var/lib/
+  199  ls
+  200  cd redmine/
+  201  ls
+  202  git clone git://github.com/farend/redmine_theme_farend_basic.git public/themes/farend_basic
+  203  screen -f
+  204  screen -r
+  205  ls
+  206  screen -r
+  207  ls
+  208  screen -r
+  209  ls
+  210  sceen -r
+  211  screen -r
+  212  ls
+  213  screen -r
+  214  ls
+  215  screen -r
+  216  date
+  217  date -s "12/04 17:52 2012"
+  218  sudo date -s "12/04 17:52 2012"
+  219  screen -r
+  220  ls
+  221  screen -r
+  222  ls
+  223  screen -r 
+  224  ls
+  225  cd AirSlide/
+  226  ls
+  227  vi app.js 
+  228  gs
+  229  git config --global user.email
+  230  git config --global user.email naoki.koda@gmail.com
+  231  d
+  232  gd
+  233  git add .
+  234  git commit
+  235  a
+  236  alias
+  237  git push 
+  238  git pull
+  239  git push 
+  240  df
+  241  ls
+  242  screen -r
+  243  ls
+  244  screen -r
+  245  ls
+  246  screen -r
+  247  ls
+  248  screen -r
+  249  ls
+  250  screen -r
+  251  ls
+  252  screen -r
+  253  ls
+  254  screen -r
+  255  ls
+  256  screen -r
+  257  ls
+  258  screen -r
+  259  ls
+  260  screen -r
+  261  ls
+  262  screen -r
+  263  ls
+  264  screen 
+  265  date
+  266  date -s "02/06 18:48 2013"
+  267  su
+  268  ls
+  269  screen -r
+  270  exit
+  271  screen 
+  272  screen -r
+  273  ls
+  274  screen r
+  275  screen -r
+  276  ls
+  277  screen -r
+  278  ls
+  279  screen -r
+  280  ls
+  281  screen -r
+  282  ls
+  283  screen -r
+  284  ls
+  285  cd DevHub/
+  286  ls
+  287  node post_memo.js koda hoge
+  288  vi post_memo.js 
+  289  node post_memo.js koda hoge
+  290  ls
+  291  f
+  292  node post_memo.js koda hoge
+  293  f
+  294  node post_memo.js koda hoge
+  295  node post_memo.js koda hoge2
+  296  node post_memo.js koda hoge3
+  297  node post_memo.js koda hogehoge
+  298  node post_memo.js koda hogefuga
+  299  node post_memo.js koda hogefu
+  300  node post_memo.js koda hogef
+  301  node post_memo.js koda hoge
+  302  node post_memo.js koda hogef
+  303  node post_memo.js koda hogefa
+  304  node post_memo.js koda hogef
+  305  node post_memo.js koda hogefa
+  306  node post_memo.js koda hogef
+  307  node post_memo.js koda hoge
+  308  node post_memo.js koda hogeaa
+  309  node post_memo.js koda hogeaaccaa
+  310  node post_memo.js koda hogeaaccaabbbb
+  311  node post_memo.js koda hogeaaccaacc
+  312  node post_memo.js koda hogeaaccaa
+  313  node post_memo.js koda hogeaacc
+  314  node post_memo.js koda hoge
+  315  node post_memo.js koda hogeaa
+  316  node post_memo.js koda hogeaabb
+  317  node post_memo.js koda hogeaabbcc
+  318  node post_memo.js koda hogeaabbccdd
+  319  node post_memo.js koda hogeaabbccddee
+  320  node post_memo.js koda hogeaabbccddeeff
+  321  node post_memo.js koda いいかんじだねー
+  322  node post_memo.js koda いいかんじだねーnode post_memo.js koda いいかんじだねー!
+  323  node post_memo.js koda いいかんじだねーーーー
+  324  f
+  325  ls
+  326  gs
+  327  git add .
+  328  gs
+  329  git commit
+  330  git push
+  331  node post_memo.js koda いいかんじだね
+  332  ls
+  333  screen -r
+  334  ls
+  335  screen -r
+  336  ls
+  337  cd DevHub/
+  338  ls
+  339  vi post_memo.js 
+  340  vi app.js 
+  341  f
+  342  vi app.js 
+  343  ls
+  344  la
+  345  rm .app.js.swp 
+  346  vi app.js 
+  347  vi static/javascripts/client.js 
+  348  gs
+  349  gd
+  350  git add .
+  351  git commit
+  352  ls
+  353  vi static/javascripts/client.js 
+  354  gs
+  355  git add .
+  356  git commit
+  357  git push
+  358  ls
+  359  screen -r
+  360  sl
+  361  ls
+  362  screen -r
+  363  ls
+  364  screen -r
+  365  ls
+  366  screen -r
+  367  ls
+  368  h
+  369  screen -r
+  370  ls
+  371  screen -r
+  372  ls
+  373  screen -r
+  374  ls
+  375  screen -r
+  376  screen 
+  377  ls
+  378  time
+  379  date
+  380  date -s "05/14 12:18 2013"
+  381  sudo date -s "05/14 12:18 2013"
+  382  su
+  383  exit
+  384  ls
+  385  screen 
+  386  screen -r
+  387  ls
+  388  screen -r
+  389  ls
+  390  screen -r
+  391  ls
+  392  screen -r
+  393  ls
+  394  s
+  395  ls
+  396  screen -r
+  397  ls
+  398  screen  -r
+  399  cd
+  400  ls
+  401  rails
+  402  rails -v
+  403  rvm list
+  404  rvm gemset list
+  405  ls
+  406  git clone git@github.com:volpe28v/rollbook.git
+  407  ls
+  408  rm -rf rollbook
+  409  ls
+  410  exit
+  411  ls
+  412  screen -fr
+  413  screen -r
+  414  ls
+  415  git config -l
+  416  exit
+  417  ls
+  418  screen
+  419  ls
+  420  screen -r
+  421  ls
+  422  screen 
+  423  ls
+  424  cd kanban-list/
+  425  ls
+  426  rvm list
+  427  rvm gemset list
+  428  s
+  429  ls
+  430  rails s -p 3000
+  431  exit
+  432  screen -t kanban
+  433  exit
+  434  screen -r
+  435  screen -r 16390.pts-0.localhost
+  436  screen -r
+  437  screen -r  1629.pts-0.localhost
+  438  screen -r 31546.pts-0.localhost 
+  439  screen -r
+  440  screen -r  1629.pts-0.localhost
+  441  screen -r 16390.pts-0.localhost
+  442  ls
+  443  su
+  444  exit
+  445  ls
+  446  su
+  447  exit
+  448  ls
+  449  cd DevHub/
+  450  ls
+  451  node app.js -d tg_test -p 3001
+  452  node app.js -d tg_test -p 3002
+  453  node app.js -d tg_test -p 3003
+  454  ls
+  455  h
+  456  alias
+  457  h
+  458  h | grep mongo
+  459  ls
+  460  ailas
+  461  alias
+  462  mongod start
+  463  /etc/init.d/mongod start
+  464  /etc/init.d/mongod restart
+  465  su
+  466  s
+  467  node app.js -d tg_test -p 3003
+  468  exit
+  469  screen -t
+  470  screen -t devhub
+  471  screen -t mongo
+  472  exit
+  473  screen -r
+  474  screen -r 16390.pts-0.localhost
+  475  screen -r  1629.pts-0.localhost 
+  476  screen -r 16390.pts-0.localhost
+  477  screen -r
+  478  ls
+  479  screen -r
+  480  ls
+  481  screen -r
+  482  ls
+  483  screen -r
+  484  ls
+  485  screen -r
+  486  ls
+  487  screen -r
+  488  ls
+  489  screen -r
+  490  ls
+  491  screen -r
+  492  ls
+  493  screen -r
+  494  ls
+  495  screen -r
+  496  ls
+  497  screen -r
+  498  ls
+  499  screen -r 
+  500  ls
+  501  screen -r
+  502  ls
+  503  screen -r
+  504  ls
+  505  screen -r
+  506  ls
+  507  screen -r
+  508  ls
+  509  screen -r
+  510  ls
+  511  screen -r
+  512  ls
+  513  screen -r
+  514  ls
+  515  screen -r
+  516  ls
+  517  screen -r
+  518  ls
+  519  screen -r
+  520  ls
+  521  cd kanban-list/
+  522  ls
+  523  screen -r
+  524  screen
+  525  exit
+  526  ls
+  527  cd DevHub
+  528  ls
+  529  node app.js 3002
+  530  node app.js
+  531  ls
+  532  h
+  533  h > hist
