@@ -9,7 +9,10 @@
     };
 
     // private method
-    var _autofit = function(el, min_height){
+    var _autofit = function(that, min_height){
+      if (!$(that).is(':visible')){ return; }
+
+      var el = $(that).get(0);
       if(el.scrollHeight > el.offsetHeight){
         el.style.height = el.scrollHeight + 'px';
       } else {
@@ -22,7 +25,7 @@
             }
             el.style.height = parseInt(el.style.height) - 50 + 'px';
           }
-          arguments.callee(el, min_height);
+          arguments.callee(that, min_height);
         }
       }
     }
@@ -31,11 +34,12 @@
 
     this.each(function(){
       $(this).css('overflow','hidden');
-      var el = $(this).get(0);
+      $(this).css('height',options.min_height + 'px');
+
+      _autofit(this, options.min_height);
+
       $(this).on('keyup',function(){
-        if ($(this).is(':visible')){
-          _autofit(el, options.min_height);
-        }
+        _autofit(this, options.min_height);
       });
     });
 
