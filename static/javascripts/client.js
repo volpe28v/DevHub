@@ -147,12 +147,11 @@ function init_websocket(){
     var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
 
-    $(target).parent().children(".code").val(writing_text[no].text);
-    $(target).parent().children(".code").focus();
-    code_prev[no] = $(target).parent().children(".code").val();
-
-    var fit_target = $(target).parent().children(".code");
-    fit_target.trigger('keyup'); //call autofit
+    var $target_code = $(target).parent().children(".code");
+    $target_code.val(writing_text[no].text);
+    $target_code.focus();
+    code_prev[no] = $target_code.val();
+    target_code.trigger('keyup'); //call autofit
   }
 
   $('.share-memo').on('click','.sync-text', function(){
@@ -227,8 +226,8 @@ function init_websocket(){
     writing_text[no] = text_log;
     var $target = $('#share_memo_' + no);
 
-    // 他ユーザの変更が来たらフォーカスを外す
-    if ( login_name != text_log.name ){
+    // 編集中の共有メモに他ユーザの変更が来たらフォーカスを外す
+    if ( no == writing_loop_timer.code_no && login_name != text_log.name ){
       $target.children('.code').trigger('blur');
     }
 
@@ -406,6 +405,7 @@ function init_websocket(){
             $("<td/>").append(
               restore_btn)))).append(
         remove_btn);
+
       log_dd.append(log_pre)
       log_div.append(log_dt).append(log_dd)
       logs_dl.append(log_div)
@@ -445,7 +445,7 @@ function init_websocket(){
 
   var code_prev = [];
 
-  writing_loop_timer = -1;
+  var writing_loop_timer = { id: -1, code_no: 0};
   function writing_loop_start(no){
     $target_code = $('#share_memo_' + no).children('.code');
     var loop = function() {
@@ -456,15 +456,15 @@ function init_websocket(){
       }
     };
     // 念のためタイマー止めとく
-    if (writing_loop_timer != -1){
+    if (writing_loop_timer.id != -1){
       writing_loop_stop();
     }
-    writing_loop_timer = setInterval(loop, 200);
+    writing_loop_timer = {id: setInterval(loop, 200), code_no: no};
   }
 
   function writing_loop_stop(){
-    clearInterval(writing_loop_timer);
-    writing_loop_timer = -1;
+    clearInterval(writing_loop_timer.id);
+    writing_loop_timer = { id: -1, code_no: 0};
   }
 
   $('#memo_number').bind('change',function(){
