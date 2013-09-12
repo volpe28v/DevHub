@@ -225,6 +225,7 @@ function init_websocket(){
     var no = text_log.no == undefined ? 1 : text_log.no;
     writing_text[no] = text_log;
     var $target = $('#share_memo_' + no);
+    var $target_tab = $('#share_memo_tab_' + no);
 
     // 編集中の共有メモに他ユーザの変更が来たらフォーカスを外す
     if ( no == writing_loop_timer.code_no && login_name != text_log.name ){
@@ -232,17 +233,31 @@ function init_websocket(){
     }
 
     // for code_out
-    $target.children('.text-writer').html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
-    $target.children('.text-writer').removeClass("label-info");
-    $target.children('.text-writer').addClass("label-important");
-    $target.children('.text-writer').show();
+    var $text_writer = $target.children('.text-writer');
+    $text_writer.html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $text_writer.removeClass("label-info");
+    $text_writer.addClass("label-important");
+    $text_writer.show();
     $target.children('.code-out').html(decorate_text(text_log.text));
-    var title = $target.children('.code-out').text().split("\n")[0].substr(0,4);
-    $('#share_memo_tab_' + no).children('span').html(title);
 
-    var name = text_log.text != "" ? text_log.name : "";
-    $('#share_memo_tab_' + no).children('div').addClass("silent-name writing-name");
-    $('#share_memo_tab_' + no).children('div').html(name);
+    var title = $target.children('.code-out').text().split("\n")[0].substr(0,4);
+    $target_tab.children('span').html(title);
+
+    var $writer = $target_tab.children('.writer');
+    $writer.addClass("silent-name writing-name");
+    $writer.html(text_log.name);
+
+    var $timestamp = $target_tab.find('.timestamp');
+    $timestamp.attr("data-livestamp", text_log.date);
+
+    var is_blank = text_log.text == "";
+    if (is_blank){
+      $writer.hide();
+      $timestamp.hide();
+    }else{
+      $writer.show();
+      $timestamp.show();
+    }
 
     if (update_timer[no]){
       clearTimeout(update_timer[no]);
@@ -251,7 +266,7 @@ function init_websocket(){
       $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
       $target.children('.text-writer').removeClass("label-important");
       $target.children('.text-writer').addClass("label-info");
-      $('#share_memo_tab_' + no).children('div').removeClass("writing-name");
+      $('#share_memo_tab_' + no).children('.writer').removeClass("writing-name");
       update_timer[no] = undefined;
     },3000);
   });

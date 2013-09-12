@@ -312,6 +312,12 @@ a:hover {
   color: red !important;
 }
 
+.timestamp {
+  color: #BBB;
+  margin: 4px 0px 0px 20px;
+  font-size: 10px;
+}
+
 footer {
   background: #fff;
   width: 100%;
