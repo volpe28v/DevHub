@@ -237,10 +237,12 @@ function init_websocket(){
     $target.children('.text-writer').addClass("label-important");
     $target.children('.text-writer').show();
     $target.children('.code-out').html(decorate_text(text_log.text));
-    $('#share_memo_tab_' + no).children('div').addClass("silent-name writing-name");
-    $('#share_memo_tab_' + no).children('div').html(text_log.name);
     var title = $target.children('.code-out').text().split("\n")[0].substr(0,4);
     $('#share_memo_tab_' + no).children('span').html(title);
+
+    var name = text_log.text != "" ? text_log.name : "";
+    $('#share_memo_tab_' + no).children('div').addClass("silent-name writing-name");
+    $('#share_memo_tab_' + no).children('div').html(name);
 
     if (update_timer[no]){
       clearTimeout(update_timer[no]);
