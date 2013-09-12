@@ -263,10 +263,10 @@ function init_websocket(){
       clearTimeout(update_timer[no]);
     }
     update_timer[no] = setTimeout(function(){
-      $target.children('.text-writer').html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
-      $target.children('.text-writer').removeClass("label-important");
-      $target.children('.text-writer').addClass("label-info");
-      $('#share_memo_tab_' + no).children('.writer').removeClass("writing-name");
+      $text_writer.html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+      $text_writer.removeClass("label-important");
+      $text_writer.addClass("label-info");
+      $writer.removeClass("writing-name");
       update_timer[no] = undefined;
     },3000);
   });
