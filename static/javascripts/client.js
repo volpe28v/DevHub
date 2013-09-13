@@ -57,7 +57,7 @@ function init_sharememo(){
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
-      $('<pre/>').addClass("code-out"));
+      $('<pre/>').append($('<div/>').addClass("code-out")));
   });
 }
 
@@ -158,7 +158,7 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
-  $('.share-memo').on('dblclick','.code-out', function(){
+  $('.share-memo').on('dblclick','pre', function(){
     switchEditShareMemo(this);
   });
 
@@ -194,7 +194,7 @@ function init_websocket(){
 
   $(".share-memo").on('focus','.code',function(){
     $(this).fadeIn();
-    $(this).parent().children('.code-out').hide();
+    $(this).parent().find('.code-out').hide();
     $(this).parent().children('.fix-text').show();
     $(this).parent().children('.suspend-text').hide();
     $(this).parent().children('.sync-text').hide();
@@ -202,7 +202,7 @@ function init_websocket(){
   });
   $(".share-memo").on('blur','.code',function(){
     $(this).hide();
-    $(this).parent().children('.code-out').fadeIn();
+    $(this).parent().find('.code-out').fadeIn();
     $(this).parent().children('.fix-text').hide();
     $(this).parent().children('.suspend-text').show();
     $(this).parent().children('.sync-text').show();
@@ -238,9 +238,9 @@ function init_websocket(){
     $text_writer.removeClass("label-info");
     $text_writer.addClass("label-important");
     $text_writer.show();
-    $target.children('.code-out').html(decorate_text(text_log.text));
+    $target.find('.code-out').html(decorate_text(text_log.text));
 
-    var title = $target.children('.code-out').text().split("\n")[0].substr(0,4);
+    var title = $target.find('.code-out').text().split("\n")[0].substr(0,4);
     $target_tab.children('span').html(title);
 
     var $writer = $target_tab.children('.writer');
