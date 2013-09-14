@@ -49,7 +49,16 @@ function init_chat(){
 }
 
 function init_sharememo(){
-  $('.share-memo-tab').hide();
+  $(".share-memo-tab").each(function(){
+    var no = $(this).data('no');
+    $(this).append(
+      $('<a/>').html(no + " ").addClass("share-memo-tab-elem").attr('id',"share_memo_tab_" + no).attr('href',"#share_memo_" + no).attr('data-toggle',"tab").attr('data-no',no).append(
+        $('<span/>')).append(
+        $('<div/>').addClass("writer")).append(
+        $('<div/>').append(
+          $('<span/>').addClass("timestamp"))));
+  });
+
   $(".share-memo").each(function(){
     $(this).append(
       $('<button/>').addClass("sync-text btn btn-primary").html('<i class="icon-edit icon-white"></i> Edit')).append(
@@ -491,7 +500,7 @@ function init_websocket(){
 
   socket.on('memo_number', function(data){
     var num = data.num;
-    $('.share-memo-tab').hide();
+    $('.share-memo-tab-elem').hide();
     for (var i = 1; i <= num; i++){
       $('#share_memo_tab_' + i).show();
       $('#share_memo_tab_' + i).css("display", "block");
