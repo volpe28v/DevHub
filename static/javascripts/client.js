@@ -52,7 +52,12 @@ function init_sharememo(){
   $(".share-memo-tab").each(function(){
     var no = $(this).data('no');
     $(this).append(
-      $('<a/>').html(no + " ").addClass("share-memo-tab-elem").attr('id',"share_memo_tab_" + no).attr('href',"#share_memo_" + no).attr('data-toggle',"tab").attr('data-no',no).append(
+      $('<a/>').html(no + " ").addClass("share-memo-tab-elem")
+               .attr('id',"share_memo_tab_" + no)
+               .attr('href',"#share_memo_" + no)
+               .attr('data-toggle',"tab")
+               .attr('data-no',no)
+               .css('display','none').append(
         $('<span/>')).append(
         $('<div/>').addClass("writer")).append(
         $('<div/>').append(
@@ -502,7 +507,7 @@ function init_websocket(){
     var num = data.num;
     $('.share-memo-tab-elem').hide();
     for (var i = 1; i <= num; i++){
-      $('#share_memo_tab_' + i).show();
+      $('#share_memo_tab_' + i).fadeIn("fast");
       $('#share_memo_tab_' + i).css("display", "block");
     }
     $('#memo_number').val(num);
