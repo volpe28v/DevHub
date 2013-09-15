@@ -176,9 +176,9 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
-  function updateCheckboxStatus(share_memo_no, check_no, is_checked){
+  function updateCheckboxStatus(target_text, check_no, is_checked){
     var check_index = 0;
-    writing_text[share_memo_no].text = writing_text[share_memo_no].text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
+    return target_text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
       function(){
         var matched_check = arguments[0];
         var current_index = check_index++;
@@ -194,18 +194,19 @@ function init_websocket(){
       });
   }
 
-  $('.share-memo').on('click',':checkbox', function(){
-    var share_memo_no = $(this).closest('.share-memo').data('no');
-    var check_no = $(this).data('no');
-    var is_checked = $(this).attr("checked") ? true : false;
+  // デコレートされた html へのイベント登録
+  $('.share-memo').decora({
+    checkbox_callback: function(that, applyCheckStatus){
+      var share_memo_no = $(that).closest('.share-memo').data('no');
 
-    // チェック対象のテキストを更新する
-    updateCheckboxStatus(share_memo_no, check_no, is_checked);
+      // チェック対象のテキストを更新する
+      writing_text[share_memo_no].text = applyCheckStatus(writing_text[share_memo_no].text);
 
-    // 変更をサーバへ通知
-    var $target_code = $(this).closest('.share-memo').children('.code');
-    $target_code.val(writing_text[share_memo_no].text);
-    socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+      // 変更をサーバへ通知
+      var $target_code = $(that).closest('.share-memo').children('.code');
+      $target_code.val(writing_text[share_memo_no].text);
+      socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+    }
   });
 
   $('#pomo').click(function(){
@@ -284,7 +285,7 @@ function init_websocket(){
     $text_writer.removeClass("label-info");
     $text_writer.addClass("label-important");
     $text_writer.show();
-    $target.find('.code-out').html(decorate_text(text_log.text));
+    $target.find('.code-out').html($.decora.to_html(text_log.text));
 
     var title = $target.find('.code-out').text().split("\n")[0].substr(0,4);
     $target_tab.children('span').html(title);
@@ -323,7 +324,7 @@ function init_websocket(){
       var no = text_logs[i].no == undefined ? 1 : text_logs[i].no; // マルチメモ対応前の救済処置。
 
       var text_log_id = "text_log_id_" + text_logs[i]._id.toString();
-      var text_body = decorate_text(text_logs[i].text);
+      var text_body = $.decora.to_html(text_logs[i].text);
 
       var log_div = $("<div/>").attr("id", text_log_id);
       var log_dt = $("<dt/>");
@@ -431,7 +432,7 @@ function init_websocket(){
     for ( var i = 0; i < favo_logs.length; ++i){
       var no = favo_logs[i].no == undefined ? 1 : favo_logs[i].no;
       var text_log_id = "favo_log_id_" + favo_logs[i]._id.toString();
-      var text_body = decorate_text(favo_logs[i].text);
+      var text_body = $.decora.to_html(favo_logs[i].text);
 
       var log_div = $("<div/>").attr("id", text_log_id)
       var log_dt = $("<dt/>")
@@ -545,38 +546,6 @@ function init_websocket(){
     $('#memo_number').val(num);
   });
 };
-
-function decorate_text( text ){
-  text = decorate_link_tag( text );
-  text = decorate_checkbox( text );
-  return text;
-}
-
-function decorate_link_tag( text ){
-  var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
-      function(){
-        var matched_link = arguments[1];
-        if ( matched_link.match(/(\.jpg|\.gif|\.png|\.bmp)$/)){
-          return '<img src="' + matched_link + '"/>';
-        }else{
-          return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
-        }
-      });
-  return linked_text;
-}
-
-function decorate_checkbox( text ){
-  var check_index = 0;
-  var check_text = text.replace(/-[ ]*\[ \]|-[ ]*\[x]/g, function(){
-    var matched_text = arguments[0];
-    if ( matched_text.indexOf("x") > 0 ){
-      return '<input type="checkbox" data-no="' + check_index++ + '" checked />';
-    }else{
-      return '<input type="checkbox" data-no="' + check_index++ + '" />';
-    }
-  });
-  return check_text;
-}
 
 function suggest_start(list){
   var suggest_list = []
