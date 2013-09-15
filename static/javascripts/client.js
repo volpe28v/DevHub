@@ -176,6 +176,40 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
+  function updateCheckboxStatus(share_memo_no, check_no, is_checked){
+    console.log(share_memo_no + " " + check_no + " " + is_checked);
+
+    var check_index = 0;
+    writing_text[share_memo_no].text = writing_text[share_memo_no].text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
+      function(){
+        var matched_check = arguments[0];
+        var current_index = check_index++;
+        if ( check_no == current_index){
+          if (is_checked){
+            return "-[x]";
+          }else{
+            return "-[ ]";
+          }
+        }else{
+          return matched_check;
+        }
+      });
+  }
+
+  $('.share-memo').on('click',':checkbox', function(){
+    var share_memo_no = $(this).closest('.share-memo').data('no');
+    var check_no = $(this).data('no');
+    var is_checked = $(this).attr("checked") ? true : false;
+
+    // チェック対象のテキストを更新する
+    updateCheckboxStatus(share_memo_no, check_no, is_checked);
+
+    // 変更をサーバへ通知
+    var $target_code = $(this).closest('.share-memo').children('.code');
+    $target_code.val(writing_text[share_memo_no].text);
+    socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+  });
+
   $('#pomo').click(function(){
     var name = $('#name').val();
     var message = $('#message').val();
@@ -516,6 +550,7 @@ function init_websocket(){
 
 function decorate_text( text ){
   text = decorate_link_tag( text );
+  text = decorate_checkbox( text );
   return text;
 }
 
@@ -530,6 +565,19 @@ function decorate_link_tag( text ){
         }
       });
   return linked_text;
+}
+
+function decorate_checkbox( text ){
+  var check_index = 0;
+  var check_text = text.replace(/-[ ]*\[ \]|-[ ]*\[x]/g, function(){
+    var matched_text = arguments[0];
+    if ( matched_text.indexOf("x") > 0 ){
+      return '<input type="checkbox" data-no="' + check_index++ + '" checked />';
+    }else{
+      return '<input type="checkbox" data-no="' + check_index++ + '" />';
+    }
+  });
+  return check_text;
 }
 
 function suggest_start(list){
