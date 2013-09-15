@@ -1,9 +1,15 @@
 /*!
  * jQuery Decorate Text Plugin
  *
+ *  - auto link
+ *  - checkbox
  */
 
 (function($) {
+  var REG_CHECKBOX = /-[ ]?\[[ ]?\]|-[ ]?\[x\]/g,
+      SYM_CHECKED = "-[x]",
+      SYM_UNCHECKED = "-[ ]";
+
   $.fn.decora = function( options ){
     var defaults = {
       checkbox_callback: function(that, applyCheckStatus){}
@@ -27,15 +33,15 @@
 
     function _updateCheckboxStatus(check_no, is_checked, target_text){
       var check_index = 0;
-      return target_text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
+      return target_text.replace(REG_CHECKBOX,
         function(){
           var matched_check = arguments[0];
           var current_index = check_index++;
           if ( check_no == current_index){
             if (is_checked){
-              return "-[x]";
+              return SYM_CHECKED;
             }else{
-              return "-[ ]";
+              return SYM_UNCHECKED;
             }
           }else{
             return matched_check;
@@ -72,7 +78,7 @@
 
       function _decorate_checkbox( text ){
         var check_index = 0;
-        var check_text = text.replace(/-[ ]*\[ \]|-[ ]*\[x]/g, function(){
+        var check_text = text.replace(REG_CHECKBOX, function(){
           var matched_text = arguments[0];
           if ( matched_text.indexOf("x") > 0 ){
             return '<input type="checkbox" data-no="' + check_index++ + '" checked />';
