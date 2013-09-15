@@ -176,24 +176,6 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
-  function updateCheckboxStatus(target_text, check_no, is_checked){
-    var check_index = 0;
-    return target_text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
-      function(){
-        var matched_check = arguments[0];
-        var current_index = check_index++;
-        if ( check_no == current_index){
-          if (is_checked){
-            return "-[x]";
-          }else{
-            return "-[ ]";
-          }
-        }else{
-          return matched_check;
-        }
-      });
-  }
-
   // デコレートされた html へのイベント登録
   $('.share-memo').decora({
     checkbox_callback: function(that, applyCheckStatus){
