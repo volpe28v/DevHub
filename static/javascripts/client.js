@@ -177,8 +177,6 @@ function init_websocket(){
   });
 
   function updateCheckboxStatus(share_memo_no, check_no, is_checked){
-    console.log(share_memo_no + " " + check_no + " " + is_checked);
-
     var check_index = 0;
     writing_text[share_memo_no].text = writing_text[share_memo_no].text.replace(/-[ ]*\[ \]|-[ ]*\[x\]/g,
       function(){
