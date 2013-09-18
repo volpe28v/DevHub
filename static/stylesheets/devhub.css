@@ -272,6 +272,17 @@ a:hover {
   margin: 6px 0px 4px 5px;
 }
 
+.checkbox-count {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+}
+
+.checkbox-count-done {
+  color: green;
+}
+
 .restore_button {
   margin: 0 0 0 4px;
 }

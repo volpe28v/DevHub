@@ -70,6 +70,7 @@ function init_sharememo(){
       $('<button/>').addClass("fix-text btn btn-info").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
+      $('<span/>').addClass("checkbox-count").css("display","none")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
       $('<pre/>').append($('<div/>').addClass("code-out")));
   });
@@ -268,6 +269,21 @@ function init_websocket(){
     $text_writer.addClass("label-important");
     $text_writer.show();
     $target.find('.code-out').html($.decora.to_html(text_log.text));
+
+    // チェックボックスの進捗表示
+    var checked_count = $target.find("input:checked").length;
+    var checkbox_count = $target.find("input[type=checkbox]").length;
+    if (checkbox_count > 0){
+      $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
+      if (checked_count == checkbox_count){
+        $target.find('.checkbox-count').addClass('checkbox-count-done');
+      }else{
+        $target.find('.checkbox-count').removeClass('checkbox-count-done');
+      }
+
+    }else{
+      $target.find('.checkbox-count').hide();
+    }
 
     var title = $target.find('.code-out').text().split("\n")[0].substr(0,4);
     $target_tab.children('span').html(title);
