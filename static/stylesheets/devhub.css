@@ -121,8 +121,8 @@ a:hover {
 #list li{
   color: #555;
   line-height: 21px;
-  margin: 2px 2px;
-  padding: 0px;
+  margin: 0px;
+  padding: 1px;
 }
 
 .msg_text{
@@ -130,17 +130,11 @@ a:hover {
 }
 
 .target_msg{
-  background-color:cornsilk;
-  border-radius: 6px;        /* CSS3草案 */  
-  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 6px;   /* Firefox用 */  
+  background-color: cornsilk;
 }
 
 .own_msg{
-  background-color:lightcyan;
-  border-radius: 6px;        /* CSS3草案 */  
-  -webkit-border-radius: 6px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 6px;   /* Firefox用 */  
+  background-color: lightcyan;
 }
 
 #login_list {
