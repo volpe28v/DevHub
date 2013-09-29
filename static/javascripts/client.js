@@ -72,7 +72,7 @@ function init_sharememo(){
       $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
-      $('<pre/>').append($('<div/>').addClass("code-out")));
+      $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out")));
   });
 }
 
@@ -277,6 +277,9 @@ function init_websocket(){
       $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
       if (checked_count == checkbox_count){
         $target.find('.checkbox-count').addClass('checkbox-count-done');
+
+        $target.children('pre').addClass("text-highlight",0);
+        $target.children('pre').removeClass("text-highlight", 500);
       }else{
         $target.find('.checkbox-count').removeClass('checkbox-count-done');
       }
