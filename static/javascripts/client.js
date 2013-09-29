@@ -283,7 +283,6 @@ function init_websocket(){
       }else{
         $target.find('.checkbox-count').removeClass('checkbox-count-done');
       }
-
     }else{
       $target.find('.checkbox-count').hide();
     }
@@ -567,19 +566,21 @@ function append_msg(data){
   if (data.name == "System") { return };
   if (exist_msg(data)){ return };
 
-  var msg_li = get_msg_html(data);
+  var msg = get_msg_html(data);
 
-  $('#list').append(msg_li);
-  msg_li.fadeIn();
+  $('#list').append(msg.li.addClass(msg.css));
+  msg.li.fadeIn();
 };
 
 function prepend_own_msg(data){
   if (exist_msg(data)){ return };
-  var msg_li = get_own_msg_html(data);
-  var msg_id = '#msg_' + data._id.toString();
+  var msg = get_msg_html(data);
 
-  $('#list').prepend(msg_li);
-  msg_li.slideDown('fast');
+  $('#list').prepend(msg.li);
+  msg.li.addClass("text-highlight",0);
+  msg.li.slideDown('fast',function(){
+    msg.li.switchClass("text-highlight", msg.css, 500);
+  });
 };
 
 function send_remove_msg(id){
@@ -594,10 +595,13 @@ function prepend_msg(data){
   if (data.name == "System") { return }
   if (exist_msg(data)){ return };
 
-  var msg_li = get_msg_html(data);
+  var msg = get_msg_html(data);
 
-  $('#list').prepend(msg_li);
-  msg_li.slideDown('fast');
+  $('#list').prepend(msg.li);
+  msg.li.addClass("text-highlight",0);
+  msg.li.slideDown('fast',function(){
+    msg.li.switchClass("text-highlight", msg.css, 500);
+  });
 };
 
 function newest_mark(){
@@ -617,17 +621,22 @@ function exist_msg(data){
   return $(id).size() > 0;
 }
 
-function get_own_msg_html(data){
-  return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg">x</a></td></tr></table>');
-}
-
 function get_msg_html(data){
-  if (include_target_name(data.msg,login_name)){
-    return get_msg_li_html(data).addClass("target_msg").html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span></td></tr></table>');
-  }else if ( data.name == login_name ){
-    return get_msg_li_html(data).addClass("own_msg").html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg">x</a></td></tr></table>');
+  if ( data.name == login_name ){
+    return {
+      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg">x</a></td></tr></table>'),
+      css: "own_msg"
+    };
+  } else if (include_target_name(data.msg,login_name)){
+    return {
+      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span></td></tr></table>'),
+      css: "target_msg"
+    };
   }else{
-    return get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span></td></tr></table>');
+    return {
+      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span></td></tr></table>'),
+      css: null
+    };
   }
 }
 
