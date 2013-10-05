@@ -166,7 +166,7 @@ function init_websocket(){
     $target_code.val(writing_text[no].text);
     $target_code.focus();
     code_prev[no] = $target_code.val();
-    $target_code.trigger('keyup'); //call autofit
+    $target_code.keyup(); //call autofit
   }
 
   $('.share-memo').on('click','.sync-text', function(){
