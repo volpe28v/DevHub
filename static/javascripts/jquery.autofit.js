@@ -38,8 +38,12 @@
 
       _autofit(this, options.min_height);
 
-      $(this).on('keyup',function(){
-        _autofit(this, options.min_height);
+      $(this).on('keyup',function(event){
+        // 処理負荷を軽減するため、Enter時のみ実行する
+        // keyCode が undef の場合は明示的に呼ばれた場合とみなす
+        if (event.keyCode == undefined || event.keyCode == 13) {
+          _autofit(this, options.min_height);
+        }
       });
     });
 
