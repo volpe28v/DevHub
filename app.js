@@ -42,8 +42,8 @@ app.get('/mobile', function(req, res) {
 app.get('/notify', function(req, res) {
   console.log('/notify');
   console.log(req.query);
-  var name = req.query.name;
-  var msg = req.query.msg;
+  var name = decodeURI(req.query.name);
+  var msg = decodeURI(req.query.msg);
   var data = {name: name, msg: msg, date: util.getFullDate(new Date()), ext: true};
 
   chat_log.add(data,function(){
