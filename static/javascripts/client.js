@@ -635,17 +635,17 @@ function exist_msg(data){
 function get_msg_html(data){
   if ( data.name == login_name ){
     return {
-      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="own_msg_date">(' + data.date + ')</span><a class="remove_msg">x</a></td></tr></table>'),
+      li: get_msg_li_html(data).html(get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + data.date + '</span></td></tr></table>'),
       css: "own_msg"
     };
   } else if (include_target_name(data.msg,login_name)){
     return {
-      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="target_msg_date">(' + data.date + ')</span></td></tr></table>'),
+      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="target_msg_date">' + data.date + '</span></td></tr></table>'),
       css: "target_msg"
     };
   }else{
     return {
-      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">(' + data.date + ')</span></td></tr></table>'),
+      li: get_msg_li_html(data).html(get_msg_body(data) + ' <span class="date">' + data.date + '</span></td></tr></table>'),
       css: null
     };
   }

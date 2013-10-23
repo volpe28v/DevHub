@@ -21,11 +21,13 @@ a:hover {
 .date {
   color: #ccc;
   float: right;
+  margin-right: 14px;
 }
 
 .target_msg_date {
   color: wheat;
   float: right;
+  margin-right: 14px;
 }
 
 .own_msg_date {
@@ -308,6 +310,10 @@ a:hover {
 
 .remove_text:hover {
   color: red;
+}
+
+.remove-area {
+  width: 20px !important;
 }
 
 .remove_msg {
