@@ -49,6 +49,17 @@ function init_chat(){
 }
 
 function init_sharememo(){
+  $("#share_zen").click(function(){
+    if ($("#memo_area").hasClass("span7")){
+      $("#chat_area").hide();
+      $("#memo_area").removeClass("span7");
+      $("#memo_area").addClass("span11");
+    }else{
+      $("#chat_area").show();
+      $("#memo_area").removeClass("span11");
+      $("#memo_area").addClass("span7");
+    }
+  });
   $(".share-memo-tab").each(function(){
     var no = $(this).data('no');
     $(this).append(
