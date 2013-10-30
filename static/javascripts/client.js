@@ -82,7 +82,7 @@ function init_sharememo(){
       $('<button/>').addClass("sync-text btn btn-primary").css("float","left").html('<i class="icon-edit icon-white"></i> Edit')).append(
       $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
-        $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html("Index ").append(
+        $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu index-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
