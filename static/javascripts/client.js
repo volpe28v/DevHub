@@ -79,8 +79,12 @@ function init_sharememo(){
 
   $(".share-memo").each(function(){
     $(this).append(
-      $('<button/>').addClass("sync-text btn btn-primary").html('<i class="icon-edit icon-white"></i> Edit')).append(
-      $('<button/>').addClass("fix-text btn btn-info").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
+      $('<button/>').addClass("sync-text btn btn-primary").css("float","left").html('<i class="icon-edit icon-white"></i> Edit')).append(
+      $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
+      $('<div/>').addClass("btn-group").css("float","left").append(
+        $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html("Index ").append(
+          $('<span/>').addClass("caret"))).append(
+        $('<ul/>').addClass("dropdown-menu index-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
@@ -188,6 +192,25 @@ function init_websocket(){
 
   $('.share-memo').on('dblclick','pre', function(){
     switchEditShareMemo(this);
+  });
+
+  // 見出し表示
+  $('.share-memo').on('click','.index-button', function(){
+    var $index_list = $(this).closest('.share-memo').find('.index-list');
+    var $code_out = $(this).closest('.share-memo').find('.code-out');
+    $index_list.empty();
+    $code_out.children(":header").each(function(){
+      $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html($(this).text())));
+    });
+  });
+
+  // 見出しへスクロール移動
+  $('.share-memo').on('click','.index-li', function(){
+    var index = $(this).closest(".index-list").find(".index-li").index(this);
+    var $code_out = $(this).closest('.share-memo').find('.code-out');
+    var pos = $code_out.children(":header").eq(index).offset().top;
+    $('html,body').animate({ scrollTop: pos - 42 }, 'fast');
+    return true;
   });
 
   // デコレートされた html へのイベント登録
