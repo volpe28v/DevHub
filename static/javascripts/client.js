@@ -199,7 +199,7 @@ function init_websocket(){
     var $index_list = $(this).closest('.share-memo').find('.index-list');
     var $code_out = $(this).closest('.share-memo').find('.code-out');
     $index_list.empty();
-    $code_out.children(":header").each(function(){
+    $code_out.find(":header").each(function(){
       $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html($(this).text())));
     });
   });
@@ -208,7 +208,7 @@ function init_websocket(){
   $('.share-memo').on('click','.index-li', function(){
     var index = $(this).closest(".index-list").find(".index-li").index(this);
     var $code_out = $(this).closest('.share-memo').find('.code-out');
-    var pos = $code_out.children(":header").eq(index).offset().top;
+    var pos = $code_out.find(":header").eq(index).offset().top;
     $('html,body').animate({ scrollTop: pos - 42 }, 'fast');
     return true;
   });
