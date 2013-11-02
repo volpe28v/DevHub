@@ -298,13 +298,20 @@ function init_websocket(){
       $target.children('.code').trigger('blur');
     }
 
+    function setToTable(html){
+      var table_html = "<table><tr><td>";
+      table_html += html.replace(/[\n]/g,"</td></tr><tr><td>");
+      return table_html += "</td></tr></table>";
+    }
+
     // for code_out
     var $text_writer = $target.children('.text-writer');
     $text_writer.html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
     $text_writer.removeClass("label-info");
     $text_writer.addClass("label-important");
     $text_writer.show();
-    $target.find('.code-out').html($.decora.to_html(text_log.text));
+    //$target.find('.code-out').html($.decora.to_html(text_log.text));
+    $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
 
     // チェックボックスの進捗表示
     var checked_count = $target.find("input:checked").length;

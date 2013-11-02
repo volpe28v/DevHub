@@ -102,6 +102,7 @@ a:hover {
   width: 96%;
   min-height: 700px;
   margin-top: 0px;
+  line-height: 14px;
 }
 
 #name, #message {
