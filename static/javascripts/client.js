@@ -193,16 +193,10 @@ function init_websocket(){
 
     var $target_code = $(target).parent().children(".code");
     $target_code.val(writing_text[no].text);
+    $target_code.attr("clicked-row", row);
     $target_code.focus();
 
-    // キャレット位置をクリックされた位置に設定する
-    $target_code.caretLine(row);
-    setTimeout(function(){
-      $('html, body').scrollTop(row * 18 - 100);
-    },100);
-
     code_prev[no] = $target_code.val();
-    $target_code.keyup(); //call autofit
   }
 
   $('.share-memo').on('click','.sync-text', function(){
@@ -212,7 +206,7 @@ function init_websocket(){
   $('.share-memo').on('dblclick','pre tr', function(){
     // クリック時の行数を取得してキャレットに設定する
     var row = $(this).closest("table").find("tr").index(this);
-    switchEditShareMemo($(this).closest("pre"),row );
+    switchEditShareMemo($(this).closest("pre"),row);
     return false;
   });
 
@@ -288,7 +282,13 @@ function init_websocket(){
   });
 
   $(".share-memo").on('focus','.code',function(){
-    $(this).fadeIn();
+    var clicked_row = $(this).attr('clicked-row');
+    $(this).fadeIn('fast', function(){
+      $(this).keyup(); //call autofit
+      // 編集モード時に選択した行位置を表示する
+      $(this).caretLine(clicked_row);
+      $('html, body').scrollTop(clicked_row * 18 - 100);
+    });
     $(this).parent().children('pre').hide();
     $(this).parent().children('.fix-text').show();
     $(this).parent().children('.suspend-text').hide();
