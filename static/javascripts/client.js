@@ -196,14 +196,10 @@ function init_websocket(){
     $target_code.focus();
 
     // キャレット位置をクリックされた位置に設定する
-    var focus_pos = 0;
-    var target_text = writing_text[no].text;
-    for ( i = 0; i < row; i++){
-      focus_pos = target_text.indexOf("\n",focus_pos) + 1;
-    }
-    focus_pos -= row;
-    setCaretPos($target_code.get(0), focus_pos);
-    $('html, body').scrollTop(row * 18 );
+    $target_code.caretLine(row);
+    setTimeout(function(){
+      $('html, body').scrollTop(row * 18 );
+    },100);
 
     code_prev[no] = $target_code.val();
     $target_code.keyup(); //call autofit
