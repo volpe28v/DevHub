@@ -343,7 +343,6 @@ function init_websocket(){
     $text_writer.removeClass("label-info");
     $text_writer.addClass("label-important");
     $text_writer.show();
-    //$target.find('.code-out').html($.decora.to_html(text_log.text));
     $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
 
     // チェックボックスの進捗表示
