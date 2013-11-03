@@ -198,7 +198,7 @@ function init_websocket(){
     // キャレット位置をクリックされた位置に設定する
     $target_code.caretLine(row);
     setTimeout(function(){
-      $('html, body').scrollTop(row * 18 );
+      $('html, body').scrollTop(row * 18 - 100);
     },100);
 
     code_prev[no] = $target_code.val();
@@ -301,6 +301,12 @@ function init_websocket(){
     $(this).parent().children('.fix-text').hide();
     $(this).parent().children('.suspend-text').show();
     $(this).parent().children('.sync-text').show();
+
+    // 閲覧モード時に編集していたキャレット位置を表示する
+    var row = $(this).caretLine();
+    var $target_tr = $(this).parent().find('table tr').eq(row - 1);
+    $('html,body').scrollTop($target_tr.offset().top - 200);
+
     writing_loop_stop();
   });
   $(".share-memo").on('keydown','.code',function(event){

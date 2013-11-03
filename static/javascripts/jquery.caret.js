@@ -12,12 +12,20 @@
     return lines.length;
   }
 
-  var caretLine = function(row, callback) {
+  String.prototype.getCountfromLine = function(row){
+    var pos = 0;
+    for ( i = 0; i < row; i++){
+      pos = this.indexOf("\n",pos) + 1;
+    }
+    return pos;
+  }
+
+  var caretLine = function(row) {
     var item = this.get(0);
     if (row == null) {
       return get(item);
     } else {
-      set(item, row, callback);
+      set(item, row);
       return this;
     }
   };
@@ -36,12 +44,8 @@
 
     return item.value.getLinefromCount( start );
   };
-  var set = function(item, row, callback) {
-    var pos = 0;
-    var target_text = item.value;
-    for ( i = 0; i < row; i++){
-      pos = target_text.indexOf("\n",pos) + 1;
-    }
+  var set = function(item, row) {
+    var pos = item.value.getCountfromLine(row);
 
     if (item.setSelectionRange) {  // Firefox, Chrome
       item.setSelectionRange(pos, pos);
