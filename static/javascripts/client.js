@@ -175,13 +175,36 @@ function init_websocket(){
 
   $(".code").autofit({min_height: CODE_MIN_HEIGHT});
 
-  function switchEditShareMemo(target){
+  function setCaretPos(item, pos) {
+    if (item.setSelectionRange) {  // Firefox, Chrome
+      item.setSelectionRange(pos, pos);
+    } else if (item.createTextRange) { // IE
+      var range = item.createTextRange();
+      range.collapse(true);
+      range.moveEnd("character", pos);
+      range.moveStart("character", pos);
+      range.select();
+    }
+  };
+
+  function switchEditShareMemo(target, row){
     var no = $(target).parent().data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
 
     var $target_code = $(target).parent().children(".code");
     $target_code.val(writing_text[no].text);
     $target_code.focus();
+
+    // キャレット位置をクリックされた位置に設定する
+    var focus_pos = 0;
+    var target_text = writing_text[no].text;
+    for ( i = 0; i < row; i++){
+      focus_pos = target_text.indexOf("\n",focus_pos) + 1;
+    }
+    focus_pos -= row;
+    setCaretPos($target_code.get(0), focus_pos);
+    $('html, body').scrollTop(row * 18 );
+
     code_prev[no] = $target_code.val();
     $target_code.keyup(); //call autofit
   }
@@ -190,9 +213,19 @@ function init_websocket(){
     switchEditShareMemo(this);
   });
 
-  $('.share-memo').on('dblclick','pre', function(){
-    switchEditShareMemo(this);
+  $('.share-memo').on('dblclick','pre tr', function(){
+    // クリック時の行数を取得してキャレットに設定する
+    var row = $(this).closest("table").find("tr").index(this);
+    switchEditShareMemo($(this).closest("pre"),row );
+    return false;
   });
+
+  $('.share-memo').on('dblclick','pre', function(){
+    // 文字列が無い場合は最下部にキャレットを設定する
+    var row = $(this).find("table tr").length - 1;
+    switchEditShareMemo(this,row);
+  });
+
 
   // 見出し表示
   $('.share-memo').on('click','.index-button', function(){
