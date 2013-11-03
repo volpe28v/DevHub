@@ -293,7 +293,7 @@ function init_websocket(){
 
   $(".share-memo").on('focus','.code',function(){
     $(this).fadeIn();
-    $(this).parent().find('.code-out').hide();
+    $(this).parent().children('pre').hide();
     $(this).parent().children('.fix-text').show();
     $(this).parent().children('.suspend-text').hide();
     $(this).parent().children('.sync-text').hide();
@@ -301,7 +301,7 @@ function init_websocket(){
   });
   $(".share-memo").on('blur','.code',function(){
     $(this).hide();
-    $(this).parent().find('.code-out').fadeIn();
+    $(this).parent().children('pre').fadeIn();
     $(this).parent().children('.fix-text').hide();
     $(this).parent().children('.suspend-text').show();
     $(this).parent().children('.sync-text').show();
