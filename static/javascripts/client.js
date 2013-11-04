@@ -8,6 +8,8 @@ var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
+var CODE_OUT_ADJUST_HEIGHT = 200;
+var CODE_ADJUST_HEIGHT = 100;
 
 // for share memo
 var writing_text = [];
@@ -232,7 +234,7 @@ function init_websocket(){
     var index = $(this).closest(".index-list").find(".index-li").index(this);
     var $code_out = $(this).closest('.share-memo').find('.code-out');
     var pos = $code_out.find(":header").eq(index).offset().top;
-    $('html,body').animate({ scrollTop: pos - 42 }, 'fast');
+    $('html,body').animate({ scrollTop: pos - CODE_OUT_ADJUST_HEIGHT}, 'fast');
     return true;
   });
 
@@ -287,7 +289,7 @@ function init_websocket(){
       $(this).keyup(); //call autofit
       // 編集モード時に選択した行位置を表示する
       $(this).caretLine(clicked_row);
-      $('html, body').scrollTop(clicked_row * 18 - 100);
+      $('html, body').scrollTop(clicked_row * 18 - CODE_ADJUST_HEIGHT);
     });
     $(this).parent().children('pre').hide();
     $(this).parent().children('.fix-text').show();
@@ -305,7 +307,7 @@ function init_websocket(){
     // 閲覧モード時に編集していたキャレット位置を表示する
     var row = $(this).caretLine();
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
-    $('html,body').scrollTop($target_tr.offset().top - 200);
+    $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
 
     writing_loop_stop();
   });
