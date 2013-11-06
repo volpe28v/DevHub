@@ -762,9 +762,8 @@ function decorate_msg(msg){
 
   deco_msg = deco_login_name(deco_msg)
   deco_msg = deco_msg.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,function(){ return '<a href="' + arguments[1] + '" target="_blank" >' + arguments[1] + '</a>' });
-
-  deco_msg = deco_msg.replace(/(SUCCESS)/, function(){ return '<span style="color: limegreen;">' + arguments[1] + '</span>'});
-  deco_msg = deco_msg.replace(/(FAILURE)/, function(){ return '<span style="color: red;">' + arguments[1] + '</span>'});
+  deco_msg = deco_msg.replace(/(SUCCESS|OK)/, function(){ return '<span class="label label-success">' + arguments[1] + '</span>'});
+  deco_msg = deco_msg.replace(/(FAILURE|NG)/, function(){ return '<span class="label label-important">' + arguments[1] + '</span>'});
   deco_msg = deco_msg.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
 
   return deco_msg;
@@ -772,11 +771,8 @@ function decorate_msg(msg){
 
 function deco_login_name(msg){
   var deco_msg = msg;
-  for(var i = 0; i < latest_login_list.length; ++i ){
-    var name_color = 'blue';
-    var name_reg = RegExp("(>|＞)[ ]*" + latest_login_list[i].name + "( |　|さん|$)", "g");
-    deco_msg = deco_msg.replace( name_reg, function(){ return '><span style="color: ' + name_color + ';">' + latest_login_list[i].name + '</span>さん'});
-  }
+  var name_reg = RegExp("(>|＞)[ ]*.+?さん", "g");
+  deco_msg = deco_msg.replace( name_reg, function(){ return '<span class="label label-info">' + arguments[0] + '</span>'});
   return deco_msg;
 }
 
