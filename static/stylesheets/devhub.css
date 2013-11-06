@@ -162,12 +162,10 @@ a:hover {
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
   -moz-border-radius: 4px;   /* Firefox用 */  
   color: dimgray;
-}
-
-.login-elem{
   cursor: pointer;
 }
 
+.login-name-base:hover,
 .login-elem:hover
 {
   border: solid 2px lightsteelblue;

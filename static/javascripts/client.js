@@ -48,6 +48,11 @@ function init_chat(){
     $(id).fadeOut();
     send_remove_msg(data_id);
   });
+  $('#list').on('click', '.login-name-base', function(){
+    var name = $(this).text();
+    $('#message').val($('#message').val() + " > " + name + "さん ");
+    $('#message').focus();
+  });
 }
 
 function init_sharememo(){
@@ -148,7 +153,7 @@ function init_websocket(){
       // add click event for each login names.
       $('#login_list .login-elem').click(function(){
         var name = $(this).children(".name").text();
-        $('#message').val($('#message').val() + " >" + name + "さん ");
+        $('#message').val($('#message').val() + " > " + name + "さん ");
         $('#message').focus();
       });
     }
