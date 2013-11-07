@@ -81,11 +81,17 @@
           <img id="login_list_loader" src="/img/loader.gif"/>
           <div id="login_list" style="display:none"></div>
           <form id="form" class="form-inline">
-            <input type="text" name="name" id="name" class="span1" placeholder="Name"/>
-            <input type="text" name="message" id="message" class="span4" autocomplete="off" placeholder="Message"/>
-            <input type="submit" value="Send" class="btn btn-small btn-primary"/>
-            <span id="pomo" class="btn btn-small btn-warning">Pomo</span>
-            <div id="suggest" style="display: none;"></div>
+            <table>
+              <tr>
+                <td><input type="text" name="name" id="name" class="span1" placeholder="Name"/></td>
+                <td style="width: 100%; padding: 0 10px 0 0;">
+                  <input type="text" name="message" id="message" style="width: 100%;" autocomplete="off" placeholder="Message"/>
+                  <div id="suggest" style="display: none;"></div>
+                </td>
+                <td><input type="submit" value="Send" class="btn btn-small btn-primary"/></td>
+                <td><span id="pomo" class="btn btn-small btn-warning">Pomo</span></td>
+              </tr>
+            </table>
           </form>
           <div id="chat_body" class="text-base-style">
             <ul id="list"></ul>
