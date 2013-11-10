@@ -93,17 +93,16 @@ function init_sharememo(){
     $(this).append(
       $('<button/>').addClass("sync-text btn btn-primary").css("float","left").html('<i class="icon-edit icon-white"></i> Edit')).append(
       $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
-      $('<button/>').addClass("diff-done btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
+      $('<button/>').addClass("diff-done btn btn-info").css("float","left").css("display","none").html('<i class="icon-resize-vertical icon-white"></i> Done')).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
         $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu index-list"))).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
-        $('<a/>').addClass("btn dropdown-toggle diff-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Diff ').append(
+        $('<a/>').addClass("btn dropdown-toggle diff-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-resize-vertical"></i> Diff ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu diff-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
-      $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
       $('<div/>').addClass("diff-view").css("display","none")).append(
@@ -266,7 +265,7 @@ function init_websocket(){
         newTextLines: newtxt,
         opcodes: opcodes,
         baseTextName: "Current",
-        newTextName: text_logs[share_memo_no][index].date,
+        newTextName: text_logs[share_memo_no][index].date + " - " + text_logs[share_memo_no][index].name,
         viewType: 1
     }));
 
@@ -379,8 +378,9 @@ function init_websocket(){
     // 閲覧モード時に編集していたキャレット位置を表示する
     var row = $(this).caretLine();
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
-    $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
-
+    if ($target_tr.length > 0){
+      $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
+    }
     socket.emit('add_history',{no: $(this).parent().data('no')});
 
     writing_loop_stop();
@@ -579,9 +579,6 @@ function init_websocket(){
       $restore_target_list.empty();
       setRestoreToLists($restore_target_list, log_no, restore_text);
     });
-
-    $('.update-log-notify').show();
-    $('.update-log-notify').fadeOut(2000,function(){ $(this).hide()});
   });
 
   socket.on('favo_logs', function(favo_logs){

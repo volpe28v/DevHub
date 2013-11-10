@@ -105,6 +105,17 @@ a:hover {
   line-height: 14px;
 }
 
+.diff-view {
+  margin-top: 14px;
+}
+
+.diff-view .diff,
+.diff-view td {
+  width: 100%;
+  font-family: Menlo,Monaco,"Courier New",monospace;
+  font-size: 12px;
+}
+
 #name, #message {
   background-color: aliceblue;
 }
