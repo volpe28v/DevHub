@@ -108,14 +108,6 @@ io.sockets.on('connection', function(client) {
     }
   });
 
-//  text_log.get_logs(function(logs){
-//    client.emit('text_logs', logs);
-//  });
-
-//  text_log.get_favo_logs(function(logs){
-//    client.emit('favo_logs', logs);
-//  });
-
   client.on('name', function(data) {
     client_info.set_name(client, data.name);
 
