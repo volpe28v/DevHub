@@ -93,6 +93,11 @@ io.sockets.on('connection', function(client) {
 
   text_log.get_active_number(function(number){
     client.emit('memo_number',number);
+    for( var i = 0; i < number.num; i++){
+      text_log.get_logs_by_no(i, function(logs){
+        client.emit('text_logs_with_no', logs);
+      });
+    }
   });
 
   text_log.get_latest(function(latest_texts){
@@ -103,13 +108,13 @@ io.sockets.on('connection', function(client) {
     }
   });
 
-  text_log.get_logs(function(logs){
-    client.emit('text_logs', logs);
-  });
+//  text_log.get_logs(function(logs){
+//    client.emit('text_logs', logs);
+//  });
 
-  text_log.get_favo_logs(function(logs){
-    client.emit('favo_logs', logs);
-  });
+//  text_log.get_favo_logs(function(logs){
+//    client.emit('favo_logs', logs);
+//  });
 
   client.on('name', function(data) {
     client_info.set_name(client, data.name);
@@ -205,9 +210,8 @@ io.sockets.on('connection', function(client) {
   client.on('add_history', function(msg) {
     text_log.add_history(msg.no, function(result){
       text_log.get_logs_by_no(msg.no, function(logs){
-        msg.logs = logs;
-        client.emit('text_logs_with_no', msg);
-        client.broadcast.emit('text_logs_with_no', msg);
+        client.emit('text_logs_with_no', logs);
+        client.broadcast.emit('text_logs_with_no', logs);
       });
     });
   });
