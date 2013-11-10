@@ -13,6 +13,7 @@ var CODE_ADJUST_HEIGHT = 100;
 
 // for share memo
 var writing_text = [];
+var text_logs = [];
 var newest_count = 0;
 
 $(function() {
@@ -92,14 +93,20 @@ function init_sharememo(){
     $(this).append(
       $('<button/>').addClass("sync-text btn btn-primary").css("float","left").html('<i class="icon-edit icon-white"></i> Edit')).append(
       $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
+      $('<button/>').addClass("diff-done btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
         $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu index-list"))).append(
+      $('<div/>').addClass("btn-group").css("float","left").append(
+        $('<a/>').addClass("btn dropdown-toggle diff-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Diff ').append(
+          $('<span/>').addClass("caret"))).append(
+        $('<ul/>').addClass("dropdown-menu diff-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("update-log-notify label label-success").css("display","none").html("updated History")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
+      $('<div/>').addClass("diff-view").css("display","none")).append(
       $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out")));
   });
 }
@@ -227,6 +234,62 @@ function init_websocket(){
     switchEditShareMemo(this,row);
   });
 
+  // 差分リスト表示
+  $('.share-memo').on('click','.diff-button', function(){
+    var $diff_list = $(this).closest('.share-memo').find('.diff-list');
+    var share_memo_no = $(this).closest('.share-memo').data('no');
+    var text_log = text_logs[share_memo_no];
+    if (text_log == undefined){ return false; }
+
+    $diff_list.empty();
+    for (var i = 0; i < text_log.length; i++){
+      $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
+    }
+  });
+
+  // 差分を表示
+  $('.share-memo').on('click','.diff-li', function(){
+    var $share_memo = $(this).closest('.share-memo');
+    var $code_out = $share_memo.find('.code-out');
+    var share_memo_no = $share_memo.data('no');
+    var index = $(this).closest(".diff-list").find(".diff-li").index(this);
+
+    // diff 生成
+    var base   = difflib.stringAsLines(text_logs[share_memo_no][index].text);
+    var newtxt = difflib.stringAsLines(writing_text[share_memo_no].text);
+    var sm = new difflib.SequenceMatcher(base, newtxt);
+    var opcodes = sm.get_opcodes();
+    var $diff_out = $share_memo.find('.diff-view');
+    $diff_out.empty();
+    $diff_out.append(diffview.buildView({
+        baseTextLines: base,
+        newTextLines: newtxt,
+        opcodes: opcodes,
+        baseTextName: "Current",
+        newTextName: text_logs[share_memo_no][index].date,
+        viewType: 1
+    }));
+
+    // diff 画面を有効化
+    $diff_out.show();
+    $code_out.hide();
+
+    $share_memo.find('.diff-done').show();
+    $share_memo.find('.sync-text').hide();
+    $share_memo.find('.index-button').hide();
+    return true;
+  });
+
+  // 差分表示モード終了
+  $('.share-memo').on('click','.diff-done', function(){
+    var $share_memo = $(this).closest('.share-memo');
+    $share_memo.find('.code-out').show();
+    $share_memo.find('.diff-view').hide();
+
+    $share_memo.find('.diff-done').hide();
+    $share_memo.find('.sync-text').show();
+    $share_memo.find('.index-button').show();
+  });
 
   // 見出し表示
   $('.share-memo').on('click','.index-button', function(){
@@ -318,6 +381,8 @@ function init_websocket(){
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
     $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
 
+    socket.emit('add_history',{no: $(this).parent().data('no')});
+
     writing_loop_stop();
   });
   $(".share-memo").on('keydown','.code',function(event){
@@ -404,6 +469,10 @@ function init_websocket(){
       $writer.removeClass("writing-name");
       update_timer[no] = undefined;
     },3000);
+  });
+
+  socket.on('text_logs_with_no', function(data){
+    text_logs[data.no] = data.logs;
   });
 
   socket.on('text_logs', function(text_logs){

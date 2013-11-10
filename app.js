@@ -192,7 +192,6 @@ io.sockets.on('connection', function(client) {
     var name = client_info.get_name(client)
     msg.text = msg.text.replace(/\n/g,"\r\n");
 
-//    console.log(msg.text);
     if ( text_log.is_change(msg) == false ){ return;}
 
     var current_text_log = { name: name, no: msg.no, text: msg.text, date: util.getFullDate(new Date()) }
@@ -200,14 +199,16 @@ io.sockets.on('connection', function(client) {
     client.emit('text', current_text_log);
     client.broadcast.emit('text', current_text_log);
 
-    // 過去ログをとっておくか
-    text_log.add(current_text_log, function(result){
-      if ( result ){
-        text_log.get_logs(function(logs){
-          client.emit('text_logs', logs);
-          client.broadcast.emit('text_logs', logs);
-        });
-      }
+    text_log.update_latest_text(current_text_log);
+  });
+
+  client.on('add_history', function(msg) {
+    text_log.add_history(msg.no, function(result){
+      text_log.get_logs_by_no(msg.no, function(logs){
+        msg.logs = logs;
+        client.emit('text_logs_with_no', msg);
+        client.broadcast.emit('text_logs_with_no', msg);
+      });
     });
   });
 
