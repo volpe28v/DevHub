@@ -249,7 +249,7 @@ function init_websocket(){
   // 差分を表示
   $('.share-memo').on('click','.diff-li', function(){
     var $share_memo = $(this).closest('.share-memo');
-    var $code_out = $share_memo.find('.code-out');
+    var $code_out_pre = $share_memo.find('pre');
     var share_memo_no = $share_memo.data('no');
     var index = $(this).closest(".diff-list").find(".diff-li").index(this);
 
@@ -270,8 +270,8 @@ function init_websocket(){
     }));
 
     // diff 画面を有効化
-    $diff_out.show();
-    $code_out.hide();
+    $diff_out.fadeIn();
+    $code_out_pre.hide();
 
     $share_memo.find('.diff-done').show();
     $share_memo.find('.sync-text').hide();
@@ -282,7 +282,7 @@ function init_websocket(){
   // 差分表示モード終了
   $('.share-memo').on('click','.diff-done', function(){
     var $share_memo = $(this).closest('.share-memo');
-    $share_memo.find('.code-out').show();
+    $share_memo.find('pre').fadeIn();
     $share_memo.find('.diff-view').hide();
 
     $share_memo.find('.diff-done').hide();
