@@ -56,6 +56,10 @@ function init_chat(){
 }
 
 function init_sharememo(){
+  $("#scroll_top").click(function(){
+    $('html,body').animate({ scrollTop: 0 }, 'fast');
+  });
+
   $("#share_zen").click(function(){
     if ($("#memo_area").hasClass("span7")){
       $("#chat_area").fadeOut(function(){
