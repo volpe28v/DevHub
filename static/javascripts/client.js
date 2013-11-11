@@ -51,7 +51,7 @@ function init_chat(){
   });
   $('#list').on('click', '.login-name-base', function(){
     var name = $(this).text();
-    $('#message').val($('#message').val() + " > " + name + "さん ");
+    $('#message').val($('#message').val() + " @" + name + "さん ");
     $('#message').focus();
   });
 }
@@ -163,7 +163,7 @@ function init_websocket(){
       // add click event for each login names.
       $('#login_list .login-elem').click(function(){
         var name = $(this).children(".name").text();
-        $('#message').val($('#message').val() + " > " + name + "さん ");
+        $('#message').val($('#message').val() + " @" + name + "さん ");
         $('#message').focus();
       });
     }
@@ -704,7 +704,7 @@ function init_websocket(){
 function suggest_start(list){
   var suggest_list = []
   for (var i = 0; i < list.length; ++i){
-    suggest_list.push(">" + list[i].name + "さん");
+    suggest_list.push("@" + list[i].name + "さん");
   }
 
   if (suggest_obj == undefined){
@@ -846,13 +846,13 @@ function decorate_msg(msg){
 
 function deco_login_name(msg){
   var deco_msg = msg;
-  var name_reg = RegExp("(>|＞)[ ]*.+?さん", "g");
+  var name_reg = RegExp("(@)[ ]*.+?さん", "g");
   deco_msg = deco_msg.replace( name_reg, function(){ return '<span class="label label-info">' + arguments[0] + '</span>'});
   return deco_msg;
 }
 
 function include_target_name(msg,name){
-  var name_reg = RegExp("(>|＞)[ ]*" + name + "( |　|さん|$)");
+  var name_reg = RegExp("(@)[ ]*" + name + "( |　|さん|$)");
   if (msg.match(name_reg)){
     return true;
   }
