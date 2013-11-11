@@ -31,6 +31,7 @@ table.diff {
 	border-collapse:collapse;
 	border:1px solid darkgray;
 	white-space:pre-wrap
+  border-spacing: 0;
 }
 table.diff tbody { 
 	font-family:Courier, monospace
@@ -52,7 +53,8 @@ table.diff thead {
 	font-family:Verdana
 }
 table.diff thead th.texttitle {
-	text-align:left
+	text-align:left;
+  padding-left: 5px;
 }
 table.diff tbody td {
 	padding:0px .4em;
@@ -63,10 +65,10 @@ table.diff .empty {
 	background-color:#DDD;
 }
 table.diff .replace {
-	background-color:#FD8
+	background-color:#FD8;
 }
 table.diff .delete {
-	background-color:#E99;
+	background-color:#ffdddd;
 }
 table.diff .skip {
 	background-color:#EFEFEF;
@@ -74,10 +76,27 @@ table.diff .skip {
 	border-right:1px solid #BBC;
 }
 table.diff .insert {
-	background-color:#9E9
+	background-color:#ddffdd;
 }
 table.diff th.author {
 	text-align:right;
 	border-top:1px solid #BBC;
 	background:#EFEFEF
 }
+
+/* add */
+table.diff .equal{
+	background-color:#fbfbfc;
+}
+.diff-view {
+  margin-top: 14px;
+}
+
+.diff-view .diff,
+.diff-view td {
+  width: 100%;
+  font-family: Menlo,Monaco,"Courier New",monospace;
+  font-size: 12px;
+  height: 14px;
+}
+
