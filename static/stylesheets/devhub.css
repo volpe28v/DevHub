@@ -99,10 +99,14 @@ a:hover {
 }
 
 .code-out {
-  width: 96%;
+  width: 100%;
   min-height: 700px;
   margin-top: 0px;
   line-height: 14px;
+}
+
+.code-out table{
+  width: 100%;
 }
 
 #name, #message {
