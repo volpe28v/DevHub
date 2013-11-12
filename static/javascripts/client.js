@@ -10,6 +10,7 @@ var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_ADJUST_HEIGHT = 100;
+var SHARE_MEMO_NUMBER = 15;
 
 // for share memo
 var writing_text = [];
@@ -57,6 +58,11 @@ function init_chat(){
 }
 
 function init_sharememo(){
+  for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
+    $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
+    $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
+    $("#memo_number_option_top").after($('<option/>').attr('value',i).html(i));
+  }
   $("#scroll_top").click(function(){
     $('html,body').animate({ scrollTop: 0 }, 'fast');
   });
