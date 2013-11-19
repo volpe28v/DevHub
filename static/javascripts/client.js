@@ -322,7 +322,10 @@ function init_websocket(){
     var $code_out = $(this).closest('.share-memo').find('.code-out');
     $index_list.empty();
     $code_out.find(":header").each(function(){
-      $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html($(this).text())));
+      var h_num = parseInt($(this).get()[0].localName.replace("h",""));
+      var prefix = "";
+      for (var i = 1; i < h_num; i++){ prefix += "-"; }
+      $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html(prefix + " " + $(this).text())));
     });
   });
 
