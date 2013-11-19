@@ -114,6 +114,10 @@ a:hover {
   color: #ffffff !important;
 }
 
+.diff-view {
+  min-height: 700px;
+}
+
 #name, #message {
   background-color: aliceblue;
 }
