@@ -252,26 +252,6 @@ function init_websocket(){
     }
   });
 
-  $('.share-memo').on('mouseover','.diff-li', function(){
-    var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-    var index = diff_li_array.index(this);
-    diff_li_array.each(function(i, li){
-      if (i < index){
-        $(li).css('background-color','#ddffdd');
-      }else if(i > index){
-        $(li).css('background-color','');
-      }
-    });
-  });
-
-  $('.share-memo').on('mouseout','.diff-li', function(){
-    var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-    var index = diff_li_array.index(this);
-    diff_li_array.each(function(i, li){
-      $(li).css('background-color','');
-    });
-  });
-
   // 差分を表示
   $('.share-memo').on('click','.diff-li', function(){
     var $share_memo = $(this).closest('.share-memo');
@@ -370,7 +350,7 @@ function init_websocket(){
     }
     $('#name_in').modal('hide')
   };
-
+ 
   $('#login').click(function(){
     login_action();
   });
@@ -404,7 +384,9 @@ function init_websocket(){
     // 閲覧モード時に編集していたキャレット位置を表示する
     var row = $(this).caretLine();
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
-    $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
+    if ($target_tr.length > 0){
+      $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
+    }
     socket.emit('add_history',{no: $(this).parent().data('no')});
 
     writing_loop_stop();
@@ -511,7 +493,7 @@ function init_websocket(){
       var log_dt = $("<dt/>");
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date );
       var icon = $("<i/>").addClass("icon-repeat");
-
+  
       var restore_btn = $("<div/>").addClass("btn-group").append(
                            $("<a/>").addClass("restore-log-button btn btn-mini dropdown-toggle")
                                     .attr("data-toggle","dropdown")
