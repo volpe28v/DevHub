@@ -109,6 +109,11 @@ a:hover {
   width: 100%;
 }
 
+.in_diff_range {
+  background-color: #0088cc;
+  color: #ffffff !important;
+}
+
 #name, #message {
   background-color: aliceblue;
 }

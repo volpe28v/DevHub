@@ -244,10 +244,11 @@ function init_websocket(){
     var $diff_list = $(this).closest('.share-memo').find('.diff-list');
     var share_memo_no = $(this).closest('.share-memo').data('no');
     var text_log = text_logs[share_memo_no];
-    if (text_log == undefined){ return false; }
+    if (text_log == undefined || text_log.length == 0 ){ return; }
 
     $diff_list.empty();
-    for (var i = 0; i < text_log.length; i++){
+    $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
+    for (var i = 1; i < text_log.length; i++){
       $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
     }
   });
@@ -257,11 +258,9 @@ function init_websocket(){
     var index = diff_li_array.index(this);
     diff_li_array.each(function(i, li){
       if (i < index){
-        $(li).css('background-color','#0088cc');
-        $(li).css('color','#ffffff');
+        $(li).addClass("in_diff_range");
       }else if(i > index){
-        $(li).css('background-color','');
-        $(li).css('color','');
+        $(li).removeClass("in_diff_range");
       }
     });
   });
@@ -269,8 +268,7 @@ function init_websocket(){
   $('.share-memo').on('mouseout','.diff-li', function(){
     var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
     diff_li_array.each(function(i, li){
-      $(li).css('background-color','');
-      $(li).css('color','');
+      $(li).removeClass("in_diff_range");
     });
   });
 
