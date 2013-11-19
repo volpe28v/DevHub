@@ -245,6 +245,9 @@ function init_websocket(){
     var share_memo_no = $(this).closest('.share-memo').data('no');
     var text_log = text_logs[share_memo_no];
     if (text_log == undefined || text_log.length == 0 ){ return; }
+    if (writing_text[share_memo_no].date != text_log[0].date){
+      text_log.unshift(writing_text[share_memo_no]);
+    }
 
     $diff_list.empty();
     $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
