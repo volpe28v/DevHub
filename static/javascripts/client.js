@@ -266,7 +266,6 @@ function init_websocket(){
 
   $('.share-memo').on('mouseout','.diff-li', function(){
     var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-    var index = diff_li_array.index(this);
     diff_li_array.each(function(i, li){
       $(li).css('background-color','');
     });
