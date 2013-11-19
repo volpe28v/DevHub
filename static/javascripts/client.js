@@ -257,9 +257,11 @@ function init_websocket(){
     var index = diff_li_array.index(this);
     diff_li_array.each(function(i, li){
       if (i < index){
-        $(li).css('background-color','#ddffdd');
+        $(li).css('background-color','#0088cc');
+        $(li).css('color','#ffffff');
       }else if(i > index){
         $(li).css('background-color','');
+        $(li).css('color','');
       }
     });
   });
@@ -268,6 +270,7 @@ function init_websocket(){
     var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
     diff_li_array.each(function(i, li){
       $(li).css('background-color','');
+      $(li).css('color','');
     });
   });
 
