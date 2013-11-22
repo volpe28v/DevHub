@@ -1,3 +1,28 @@
+body{
+  width : 100%;
+  margin : 0px;
+  overflow : hidden;
+}
+
+#chat_area{
+  height : 100%;
+  left : 5px;
+  top : 0px;
+  position : absolute;
+  overflow: auto;
+  padding-top : 50px;
+  margin-bottom: 20px;
+}
+
+#memo_area{
+  height : 100%;
+  top : 0px;
+  left : 40%;
+  position : absolute;
+  overflow: auto;
+  padding-top : 50px;
+}
+
 a {
   color: dodgerblue;
 }
@@ -65,6 +90,10 @@ a:hover {
   margin-bottom: 5px;
 }
 
+#share-memo {
+  margin-bottom: 60px;
+}
+
 .share-memo pre {
   margin-top: 15px;
 }
@@ -125,6 +154,7 @@ a:hover {
   min-height: 620px;
   padding: 4px 2px;
   overflow-y: auto;
+  margin-bottom: 70px;
 }
 
 #list {

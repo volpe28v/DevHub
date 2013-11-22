@@ -64,7 +64,7 @@ function init_sharememo(){
     $("#memo_number_option_top").after($('<option/>').attr('value',i).html(i));
   }
   $("#scroll_top").click(function(){
-    $('html,body').animate({ scrollTop: 0 }, 'fast');
+    $('#memo_area').animate({ scrollTop: 0 }, 'fast');
   });
 
   $("#share_zen").click(function(){
@@ -337,7 +337,7 @@ function init_websocket(){
     var index = $(this).closest(".index-list").find(".index-li").index(this);
     var $code_out = $(this).closest('.share-memo').find('.code-out');
     var pos = $code_out.find(":header").eq(index).offset().top;
-    $('html,body').animate({ scrollTop: pos - CODE_OUT_ADJUST_HEIGHT}, 'fast');
+    $('#memo_area').animate({ scrollTop: pos - CODE_OUT_ADJUST_HEIGHT}, 'fast');
     return true;
   });
 
@@ -392,7 +392,7 @@ function init_websocket(){
       $(this).keyup(); //call autofit
       // 編集モード時に選択した行位置を表示する
       $(this).caretLine(clicked_row);
-      $('html, body').scrollTop(clicked_row * 18 - CODE_ADJUST_HEIGHT);
+      $('#memo_area').scrollTop(clicked_row * 18 - CODE_ADJUST_HEIGHT);
     });
     $(this).parent().children('pre').hide();
     $(this).parent().children('.fix-text').show();
@@ -411,7 +411,7 @@ function init_websocket(){
     var row = $(this).caretLine();
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
     if ($target_tr.length > 0){
-      $('html,body').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
+      $('#memo_area').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
     }
     socket.emit('add_history',{no: $(this).parent().data('no')});
 
