@@ -14,10 +14,19 @@ body{
   margin-bottom: 20px;
 }
 
-#memo_area{
+.memo-area{
   height : 100%;
   top : 0px;
   left : 40%;
+  position : absolute;
+  overflow: auto;
+  padding-top : 50px;
+}
+
+.memo-area-zen{
+  height : 100%;
+  top : 0px;
+  left : 5px;
   position : absolute;
   overflow: auto;
   padding-top : 50px;

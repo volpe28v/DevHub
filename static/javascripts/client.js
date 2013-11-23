@@ -8,7 +8,7 @@ var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
-var CODE_OUT_ADJUST_HEIGHT = 200;
+var CODE_OUT_ADJUST_HEIGHT = 100;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
 
@@ -68,14 +68,14 @@ function init_sharememo(){
   });
 
   $("#share_zen").click(function(){
-    if ($("#memo_area").hasClass("span7")){
+    if ($("#memo_area").hasClass("memo-area")){
       $("#chat_area").fadeOut(function(){
-        $("#memo_area").removeClass("span7");
-        $("#memo_area").addClass("span11");
+        $("#memo_area").removeClass("memo-area span7");
+        $("#memo_area").addClass("memo-area-zen span11");
       });
     }else{
-      $("#memo_area").removeClass("span11");
-      $("#memo_area").addClass("span7");
+      $("#memo_area").removeClass("memo-area-zen span11");
+      $("#memo_area").addClass("memo-area span7");
       $("#chat_area").fadeIn();
     }
   });
