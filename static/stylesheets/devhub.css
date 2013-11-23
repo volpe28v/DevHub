@@ -10,7 +10,7 @@ body{
   top : 0px;
   position : absolute;
   overflow: auto;
-  padding-top : 50px;
+  padding-top : 44px;
   margin-bottom: 20px;
 }
 
@@ -97,10 +97,6 @@ a:hover {
   width: 100%;
   background-color: #fff;
   margin-bottom: 5px;
-}
-
-#share-memo {
-  margin-bottom: 60px;
 }
 
 .share-memo pre {
@@ -402,9 +398,9 @@ footer {
   background: #fff;
   width: 100%;
   margin-top: 4px;
-  padding: 20px 0;
+  padding: 0px 0;
   text-align: right;
-  border-top: 1px solid #DDD;
+  margin-bottom: 60px;
 }
 
 footer span {
