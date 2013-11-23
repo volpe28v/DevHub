@@ -449,7 +449,7 @@ function init_websocket(){
 
     // for code_out
     var $text_writer = $target.children('.text-writer');
-    $text_writer.html('Writing by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+    $text_writer.html(text_log.date + ' by <span style="color: orange;">' + text_log.name + "</span>");
     $text_writer.removeClass("label-info");
     $text_writer.addClass("label-important");
     $text_writer.show();
@@ -495,7 +495,7 @@ function init_websocket(){
       clearTimeout(update_timer[no]);
     }
     update_timer[no] = setTimeout(function(){
-      $text_writer.html('Updated by <span style="color: orange;">' + text_log.name + "</span> at " + text_log.date);
+      $text_writer.html(text_log.date + ' by <span style="color: orange;">' + text_log.name + "</span>");
       $text_writer.removeClass("label-important");
       $text_writer.addClass("label-info");
       $writer.removeClass("writing-name");
