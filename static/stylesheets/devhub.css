@@ -6,11 +6,10 @@ body{
 
 #chat_area{
   height : 100%;
-  left : 5px;
   top : 0px;
+  left : 5px;
   position : absolute;
   overflow: auto;
-  padding-top : 44px;
   margin-bottom: 20px;
 }
 
@@ -20,7 +19,6 @@ body{
   left : 40%;
   position : absolute;
   overflow: auto;
-  padding-top : 50px;
 }
 
 .memo-area-zen{
@@ -29,7 +27,10 @@ body{
   left : 5px;
   position : absolute;
   overflow: auto;
-  padding-top : 50px;
+}
+
+.dummy-top-space {
+  height: 40px;
 }
 
 a {
@@ -97,6 +98,10 @@ a:hover {
   width: 100%;
   background-color: #fff;
   margin-bottom: 5px;
+}
+
+#share-memo {
+  padding-top: 10px;
 }
 
 .share-memo pre {
@@ -190,7 +195,7 @@ a:hover {
 #login_list {
   width: 100%;
   font-size: 11px;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 5px;
 }
 
