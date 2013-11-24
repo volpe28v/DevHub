@@ -111,8 +111,8 @@ function init_sharememo(){
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
-      $('<div/>').addClass("diff-view").css("display","none")).append(
-      $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out")));
+      $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out"))).append(
+      $('<div/>').addClass("diff-view").css("display","none"));
   });
 }
 
