@@ -44,6 +44,9 @@ $(function() {
 });
 
 function init_chat(){
+  $('#chat_area').perfectScrollbar({
+    wheelSpeed: 30
+  });
   $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
     var data_id = $(this).closest('li').data('id');
@@ -58,8 +61,9 @@ function init_chat(){
 }
 
 function init_sharememo(){
-  $('#chat_area').perfectScrollbar();
-  $('#memo_area').perfectScrollbar();
+  $('#memo_area').perfectScrollbar({
+    wheelSpeed: 30
+  });
 
   for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
     $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));

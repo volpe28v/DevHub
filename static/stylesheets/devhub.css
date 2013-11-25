@@ -10,7 +10,6 @@ body{
   left : 5px;
   position : absolute;
   overflow: hidden;
-  margin-bottom: 20px;
 }
 
 .memo-area{
@@ -26,7 +25,7 @@ body{
   top : 0px;
   left : 5px;
   position : absolute;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .dummy-top-space {
@@ -405,7 +404,7 @@ footer {
   margin-top: 4px;
   padding: 0px 0;
   text-align: right;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 }
 
 footer span {
