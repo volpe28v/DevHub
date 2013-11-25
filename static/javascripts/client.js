@@ -58,6 +58,9 @@ function init_chat(){
 }
 
 function init_sharememo(){
+  $('#chat_area').perfectScrollbar();
+  $('#memo_area').perfectScrollbar();
+
   for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
     $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
     $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
@@ -411,6 +414,7 @@ function init_websocket(){
     var row = $(this).caretLine();
     var $target_tr = $(this).parent().find('table tr').eq(row - 1);
     if ($target_tr.length > 0){
+      $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
     }
     socket.emit('add_history',{no: $(this).parent().data('no')});

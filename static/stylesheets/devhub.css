@@ -9,16 +9,16 @@ body{
   top : 0px;
   left : 5px;
   position : absolute;
-  overflow: auto;
+  overflow: hidden;
   margin-bottom: 20px;
 }
 
 .memo-area{
   height : 100%;
   top : 0px;
-  left : 40%;
+  left: 40%;
   position : absolute;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .memo-area-zen{
