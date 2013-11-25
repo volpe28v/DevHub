@@ -28,6 +28,10 @@ body{
   overflow: hidden;
 }
 
+.area-inner {
+  margin-right: 12px;
+}
+
 .dummy-top-space {
   height: 40px;
 }

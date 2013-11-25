@@ -84,58 +84,62 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div id="chat_area" class="span5">
-          <div class="dummy-top-space"></div>
-          <img id="login_list_loader" src="/img/loader.gif"/>
-          <div id="login_list" style="display:none"></div>
-          <form id="form" class="form-inline">
-            <table>
-              <tr>
-                <td><input type="text" name="name" id="name" class="span1" placeholder="Name"/></td>
-                <td style="width: 100%; padding: 0 10px 0 0;">
-                  <input type="text" name="message" id="message" style="width: 100%;" autocomplete="off" placeholder="Message"/>
-                  <div id="suggest" style="display: none;"></div>
-                </td>
-                <td><input type="submit" value="Send" class="btn btn-small btn-primary"/></td>
-                <td><span id="pomo" class="btn btn-small btn-warning">Pomo</span></td>
-              </tr>
-            </table>
-          </form>
-          <div id="chat_body" class="text-base-style">
-            <ul id="list"></ul>
+          <div class="area-inner">
+            <div class="dummy-top-space"></div>
+            <img id="login_list_loader" src="/img/loader.gif"/>
+            <div id="login_list" style="display:none"></div>
+            <form id="form" class="form-inline">
+              <table>
+                <tr>
+                  <td><input type="text" name="name" id="name" class="span1" placeholder="Name"/></td>
+                  <td style="width: 100%; padding: 0 10px 0 0;">
+                    <input type="text" name="message" id="message" style="width: 100%;" autocomplete="off" placeholder="Message"/>
+                    <div id="suggest" style="display: none;"></div>
+                  </td>
+                  <td><input type="submit" value="Send" class="btn btn-small btn-primary"/></td>
+                  <td><span id="pomo" class="btn btn-small btn-warning">Pomo</span></td>
+                </tr>
+              </table>
+            </form>
+            <div id="chat_body" class="text-base-style">
+              <ul id="list"></ul>
+            </div>
           </div>
         </div>
 
         <div id="memo_area" class="span7 memo-area">
-          <div class="dummy-top-space"></div>
-          <div id="share-memo">
-            <div class="tabbable tabs-left">
-              <ul class="nav nav-tabs">
-                <li id="share_memo_tab_top" class="share-memo-tab active" data-no="1"></li>
+          <div class="area-inner">
+            <div class="dummy-top-space"></div>
+            <div id="share-memo">
+              <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs">
+                  <li id="share_memo_tab_top" class="share-memo-tab active" data-no="1"></li>
 
-                <li><a id="settings_tab" href="#settings_memo" data-toggle="tab">Settings</a></li>
-              </ul>
+                  <li><a id="settings_tab" href="#settings_memo" data-toggle="tab">Settings</a></li>
+                </ul>
 
-              <div class="tab-content">
-                <div id="share_memo_1" data-no="1" class="share-memo tab-pane active"></div>
+                <div class="tab-content">
+                  <div id="share_memo_1" data-no="1" class="share-memo tab-pane active"></div>
 
-                <div id="settings_memo" class="tab-pane">
-                  <form class="form-horizontal">
-                    <div class="control-group">
-                      <label class="control-label">ShareMemo number</label>
-                      <div class="controls">
-                        <select id="memo_number" class="span1">
-                          <option id="memo_number_option_top" value="1">1</option>
-                        </select>
+                  <div id="settings_memo" class="tab-pane">
+                    <form class="form-horizontal">
+                      <div class="control-group">
+                        <label class="control-label">ShareMemo number</label>
+                        <div class="controls">
+                          <select id="memo_number" class="span1">
+                            <option id="memo_number_option_top" value="1">1</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <footer>
+            <footer>
             <span>© 2012 Naoki KODAMA. All rights reserved.</span>
-          </footer>
+            </footer>
+          </div>
         </div>
       </div>
     </div>
