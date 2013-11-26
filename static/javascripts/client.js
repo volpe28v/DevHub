@@ -8,7 +8,7 @@ var COOKIE_EXPIRES = 365;
 var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
-var CODE_OUT_ADJUST_HEIGHT = 100;
+var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
 
@@ -45,7 +45,7 @@ $(function() {
 
 function init_chat(){
   $('#chat_area').perfectScrollbar({
-    wheelSpeed: 30
+    wheelSpeed: 40
   });
   $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
@@ -62,7 +62,8 @@ function init_chat(){
 
 function init_sharememo(){
   $('#memo_area').perfectScrollbar({
-    wheelSpeed: 30
+    wheelSpeed: 40,
+    useKeyboard: false
   });
 
   for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
