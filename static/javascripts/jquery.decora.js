@@ -89,8 +89,19 @@
         return check_text;
       }
 
+      function _decorate_header( text ){
+        var header_index = 0;
+        var header_text = text.replace(/^(#+)[ ]*(.*)$/mg, function(){
+          var header_num = arguments[1].length < 4 ? arguments[1].length : 4;
+          var matched_text = arguments[2];
+          return '<h' + header_num + '>' + matched_text + '</h' + header_num + '>';
+        });
+        return header_text;
+      }
+
       target_text = _decorate_link_tag( target_text );
       target_text = _decorate_checkbox( target_text );
+      target_text = _decorate_header( target_text );
       return target_text;
     }
   };

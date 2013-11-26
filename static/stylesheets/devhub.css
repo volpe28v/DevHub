@@ -116,7 +116,7 @@ a:hover {
 }
 
 .text-base-style {
-  background-color: #fbfbfc;
+  background-color: #fefefe;
   border: 1px solid rgba(0, 0, 0, 0.05);
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -135,7 +135,7 @@ a:hover {
   width: 96%;
   height: 700px;
   padding: 5px;
-  background-color: aliceblue;
+  background-color: #fefefe;
   margin-top: 2px;
   margin-bottom: 2px;
 }
@@ -149,6 +149,40 @@ a:hover {
 
 .code-out table{
   width: 100%;
+}
+
+.code-out h1,
+.code-out h2,
+.code-out h3{
+  margin: 0 0 0px;
+  padding: 0;
+  font-weight: bold;
+  line-height: 1.5;
+  cursor: text;
+  position: relative;
+}
+
+.code-out h1{
+  font-size: 2.2em;
+  border-bottom: 1px solid #ddd;
+}
+
+.code-out h2 {
+  font-size: 1.7em;
+  border-bottom: 1px solid #eee;
+}
+
+.code-out h3 {
+  font-size: 1.4em;
+}
+
+.code-out h4 {
+  font-size: 1.2em;
+}
+
+.code-out {
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .diff-view {
