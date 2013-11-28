@@ -718,7 +718,7 @@ function init_websocket(){
     if (writing_loop_timer.id != -1){
       writing_loop_stop();
     }
-    writing_loop_timer = {id: setInterval(loop, 200), code_no: no};
+    writing_loop_timer = {id: setInterval(loop, 400), code_no: no};
   }
 
   function writing_loop_stop(){
