@@ -428,6 +428,7 @@ a:hover {
 
 .writing-name {
   color: red !important;
+  font-weight: bold !important;
 }
 
 .timestamp {
