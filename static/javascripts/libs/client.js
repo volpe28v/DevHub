@@ -335,7 +335,7 @@ function init_websocket(){
     $code_out.find(":header").each(function(){
       var h_num = parseInt($(this).get()[0].localName.replace("h",""));
       var prefix = "";
-      for (var i = 1; i < h_num; i++){ prefix += "-"; }
+      for (var i = 1; i < h_num; i++){ prefix += "&emsp;"; }
       $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html(prefix + " " + $(this).text())));
     });
   });
