@@ -214,7 +214,7 @@ a:hover {
   color: #555;
   line-height: 21px;
   margin: 0px;
-  padding: 1px;
+  padding: 0px;
 }
 
 .msg_text{
@@ -239,94 +239,72 @@ a:hover {
 .login-name-base,
 .login-elem
 {
-  font-weight: bold;
-  border: solid 1px lightgray;
+  font-size: 12px;
   padding: 2px 4px;
   margin: 1px;
   border-radius: 4px;        /* CSS3草案 */  
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
   -moz-border-radius: 4px;   /* Firefox用 */  
-  color: dimgray;
+  color: white;
   cursor: pointer;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .login-name-base:hover,
 .login-elem:hover
 {
-  border: solid 2px lightsteelblue;
+  border: solid 1px lightsteelblue;
 }
 
 
 .login-name{
   background-color: lightsteelblue;
-  background: -webkit-gradient(linear, left top, left bottom, from(lavender), to(lightsteelblue));
-  background: -moz-linear-gradient(top, lavender,lightsteelblue);
 }
 
 .login-name0{
-  background-color: lightsteelblue;
-  background: -webkit-gradient(linear, left top, left bottom, from(lavender), to(lightsteelblue));
-  background: -moz-linear-gradient(top, lavender,lightsteelblue);
+  background-color: #618e34;
 }
 
 .login-name1{
-  background-color: mediumaquamarine;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(mediumaquamarine));
-  background: -moz-linear-gradient(top, ghostwhite,mediumaquamarine);
+  background-color: #2e8b57;
 }
 
 .login-name2{
-  background-color: palegoldenrod;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(palegoldenrod));
-  background: -moz-linear-gradient(top, ghostwhite,palegoldenrod);
+  background-color: #a0522d;
 }
 
 .login-name3{
-  background-color: darkturquoise;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(darkturquoise));
-  background: -moz-linear-gradient(top, ghostwhite,darkturquoise);
+  background-color: #a52a2a;
 }
 
 .login-name4{
-  background-color: burlywood;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(burlywood));
-  background: -moz-linear-gradient(top, ghostwhite,burlywood);
+  background-color: #bc763c;
 }
 
 .login-name5{
-  background-color: khaki;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(khaki));
-  background: -moz-linear-gradient(top, ghostwhite,khaki);
+  background-color: #bb5535;
 }
 
 .login-name6{
-  background-color: lightcoral;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightcoral));
-  background: -moz-linear-gradient(top, ghostwhite,lightcoral);
+  background-color: #c89932;
 }
 
 .login-name7{
-  background-color: lightskyblue;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(lightskyblue));
-  background: -moz-linear-gradient(top, ghostwhite,lightskyblue);
+  background-color: #69821b;
 }
 
 .login-name8{
-  background-color: peachpuff;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(peachpuff));
-  background: -moz-linear-gradient(top, ghostwhite,peachpuff);
+  background-color: #3eb370;
 }
 
 .login-name9{
-  background-color: plum;
-  background: -webkit-gradient(linear, left top, left bottom, from(ghostwhite), to(plum));
-  background: -moz-linear-gradient(top, ghostwhite,plum);
+  background-color: #866629;
 }
 
 .login-name-pomo{
   background-color: tomato;
-  background: -webkit-gradient(linear, left top, left bottom, from(antiquewhite), to(tomato));
-  background: -moz-linear-gradient(top, antiquewhite,tomato);
 }
 
 .login-name-pomosys{
@@ -364,11 +342,11 @@ a:hover {
   float: right;
   font-size: 24px;
   font-weight: bold;
-  color: red;
+  color: #b7282e;
 }
 
 .checkbox-count-done {
-  color: green;
+  color: #228b22;
 }
 
 .restore_button {
