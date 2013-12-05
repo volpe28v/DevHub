@@ -239,6 +239,7 @@ a:hover {
 .login-name-base,
 .login-elem
 {
+  font-weight: bold;
   font-size: 12px;
   padding: 2px 4px;
   margin: 1px;
@@ -272,7 +273,7 @@ a:hover {
 }
 
 .login-name2{
-  background-color: #a0522d;
+  background-color: #aa4f37;
 }
 
 .login-name3{
@@ -284,7 +285,7 @@ a:hover {
 }
 
 .login-name5{
-  background-color: #bb5535;
+  background-color: #26499d;
 }
 
 .login-name6{
@@ -296,7 +297,7 @@ a:hover {
 }
 
 .login-name8{
-  background-color: #3eb370;
+  background-color: #522886;
 }
 
 .login-name9{
@@ -309,8 +310,7 @@ a:hover {
 
 .login-name-pomosys{
   color: #baa;
-  background: -webkit-gradient(linear, left top, left bottom, from(snow), to(mistyrose));
-  background: -moz-linear-gradient(top, snow,mistyrose);
+  background-color: mistyrose;
 }
 
 .login-name-system{
@@ -322,8 +322,6 @@ a:hover {
 .login-name-ext{
   color: #baa;
   background-color: lightgreen;
-  background: -webkit-gradient(linear, left top, left bottom, from(honeydew), to(lightgreen));
-  background: -moz-linear-gradient(top, honeydew,lightgreen);
 }
 
 .pomo-min{
