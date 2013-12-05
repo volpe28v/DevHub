@@ -457,7 +457,7 @@ function init_websocket(){
 
     // 編集中の共有メモに他ユーザの変更が来たらフォーカスを外す
     if ( no == writing_loop_timer.code_no && login_name != text_log.name ){
-      $target.children('.code').trigger('blur');
+      switchFixShareMemo($target, $target.children('.code').caretLine());
     }
 
     function setToTable(html){
