@@ -218,39 +218,54 @@ function init_websocket(){
     }
   };
 
-  function switchEditShareMemo(target, row){
-    var no = $(target).parent().data('no');
+  function switchEditShareMemo($share_memo, row){
+    var no = $share_memo.data('no');
     writing_text[no] = writing_text[no] ? writing_text[no] : { text: "" };
 
-    var $target_code = $(target).parent().children(".code");
+    var $target_code = $share_memo.children(".code");
     $target_code.val(writing_text[no].text);
-    $target_code.attr("clicked-row", row);
-    $target_code.focus();
-
+    $target_code.fadeIn('fast', function(){
+      $target_code.keyup(); //call autofit
+      // 編集モード時に選択した行位置を表示する
+      $target_code.caretLine(row);
+      $('#memo_area').scrollTop(row * 18 - CODE_ADJUST_HEIGHT);
+    });
+    $share_memo.children('pre').hide();
+    $share_memo.children('.fix-text').show();
+    $share_memo.children('.suspend-text').hide();
+    $share_memo.children('.sync-text').hide();
+    writing_loop_start(no);
+ 
     code_prev[no] = $target_code.val();
   }
 
   $('.share-memo').on('click','.sync-text', function(){
-    switchEditShareMemo(this,0);
+    var $share_memo = $(this).closest('.share-memo');
+    switchEditShareMemo($share_memo, 0);
   });
 
   $('.share-memo').on('dblclick','pre tr', function(){
     // クリック時の行数を取得してキャレットに設定する
+    var $share_memo = $(this).closest('.share-memo');
     var row = $(this).closest("table").find("tr").index(this);
-    switchEditShareMemo($(this).closest("pre"),row);
+    switchEditShareMemo($share_memo, row);
     return false;
   });
 
   $('.share-memo').on('dblclick','pre', function(){
     // 文字列が無い場合は最下部にキャレットを設定する
+    var $share_memo = $(this).closest('.share-memo');
     var row = $(this).find("table tr").length - 1;
-    switchEditShareMemo(this,row);
+    switchEditShareMemo($share_memo, row);
   });
 
   // 差分リスト表示
   $('.share-memo').on('click','.diff-button', function(){
-    var $diff_list = $(this).closest('.share-memo').find('.diff-list');
-    var share_memo_no = $(this).closest('.share-memo').data('no');
+    var $share_memo = $(this).closest('.share-memo');
+    switchFixShareMemo($share_memo,1);
+
+    var $diff_list = $share_memo.find('.diff-list');
+    var share_memo_no = $share_memo.data('no');
     var text_log = text_logs[share_memo_no];
     if (text_log == undefined || text_log.length == 0 ){ return; }
     if (writing_text[share_memo_no].date != text_log[0].date){
@@ -329,8 +344,11 @@ function init_websocket(){
 
   // 見出し表示
   $('.share-memo').on('click','.index-button', function(){
-    var $index_list = $(this).closest('.share-memo').find('.index-list');
-    var $code_out = $(this).closest('.share-memo').find('.code-out');
+    var $share_memo = $(this).closest('.share-memo');
+    switchFixShareMemo($share_memo,1);
+
+    var $index_list = $share_memo.find('.index-list');
+    var $code_out = $share_memo.find('.code-out');
     $index_list.empty();
     $code_out.find(":header").each(function(){
       var h_num = parseInt($(this).get()[0].localName.replace("h",""));
@@ -394,45 +412,33 @@ function init_websocket(){
     return false;
   });
 
-  $(".share-memo").on('focus','.code',function(){
-    var clicked_row = $(this).attr('clicked-row');
-    $(this).fadeIn('fast', function(){
-      $(this).keyup(); //call autofit
-      // 編集モード時に選択した行位置を表示する
-      $(this).caretLine(clicked_row);
-      $('#memo_area').scrollTop(clicked_row * 18 - CODE_ADJUST_HEIGHT);
-    });
-    $(this).parent().children('pre').hide();
-    $(this).parent().children('.fix-text').show();
-    $(this).parent().children('.suspend-text').hide();
-    $(this).parent().children('.sync-text').hide();
-    writing_loop_start($(this).parent().data('no'));
-  });
-  $(".share-memo").on('blur','.code',function(){
-    $(this).hide();
-    $(this).parent().children('pre').fadeIn();
-    $(this).parent().children('.fix-text').hide();
-    $(this).parent().children('.suspend-text').show();
-    $(this).parent().children('.sync-text').show();
+  function switchFixShareMemo($share_memo, row){
+    $share_memo.children('.code').hide();
+    $share_memo.children('pre').fadeIn();
+    $share_memo.children('.fix-text').hide();
+    $share_memo.children('.suspend-text').show();
+    $share_memo.children('.sync-text').show();
 
     // 閲覧モード時に編集していたキャレット位置を表示する
-    var row = $(this).caretLine();
-    var $target_tr = $(this).parent().find('table tr').eq(row - 1);
+    var $target_tr = $share_memo.find('table tr').eq(row - 1);
     if ($target_tr.length > 0){
       $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
     }
-    socket.emit('add_history',{no: $(this).parent().data('no')});
-
+    socket.emit('add_history',{no: $share_memo.data('no')});
     writing_loop_stop();
+  }
+
+  $('.share-memo').on('click','.fix-text', function(){
+    switchFixShareMemo($(this).parent(),1);
   });
+
   $(".share-memo").on('keydown','.code',function(event){
     // Ctrl - S or Ctrl - enter
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
       event.returnvalue = false;
-      $(this).trigger('blur');
-      writing_loop_stop();
+      switchFixShareMemo($(this).parent(), $(this).caretLine());
       return false;
     }
   });
