@@ -429,6 +429,10 @@ function init_websocket(){
     writing_loop_stop();
   }
 
+  $('.share-memo').on('dblclick','.code', function(){
+      switchFixShareMemo($(this).parent(), $(this).caretLine());
+  });
+
   $('.share-memo').on('click','.fix-text', function(){
     switchFixShareMemo($(this).parent(),1);
   });
