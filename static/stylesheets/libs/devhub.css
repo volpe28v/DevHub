@@ -242,7 +242,7 @@ a:hover {
   font-weight: bold;
   font-size: 12px;
   padding: 2px 4px;
-  margin: 1px;
+  margin: 1px 3px 1px 1px;
   border-radius: 4px;        /* CSS3草案 */  
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
   -moz-border-radius: 4px;   /* Firefox用 */  
