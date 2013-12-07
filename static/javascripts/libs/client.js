@@ -31,7 +31,7 @@ $(function() {
       setTimeout(function(){
           $('#login_name').focus();
         },500);
-      },100);
+      },500);
   }else{
     login_name = $.cookie(COOKIE_NAME);
     $('#name').val(login_name);
