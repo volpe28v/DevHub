@@ -59,10 +59,6 @@ app.post('/notify_memo', function(req, res) {
   var msg = req.body.msg;
   console.log(name, msg);
 
-  if ( text_log.is_change(msg) == false ){
-      res.json({result: "success"});
-      return;
-  }
   var current_text_log = { name: name, text: msg, date: util.getFullDate(new Date()) }
   io.sockets.emit('text', current_text_log);
 
@@ -188,8 +184,6 @@ io.sockets.on('connection', function(client) {
   client.on('text', function(msg) {
     var name = client_info.get_name(client)
     msg.text = msg.text.replace(/\n/g,"\r\n");
-
-    if ( text_log.is_change(msg) == false ){ return;}
 
     var current_text_log = { name: name, no: msg.no, text: msg.text, date: util.getFullDate(new Date()) }
 
