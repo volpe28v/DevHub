@@ -7,6 +7,7 @@ var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
 var client_info = require('./lib/client_info');
 var util = require('./lib/util');
+var bots = require('./lib/bots');
 
 var io = require('socket.io').listen(app);
 
@@ -132,12 +133,18 @@ io.sockets.on('connection', function(client) {
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());
 
-    chat_log.add(data,function(){
-      client.emit('message_own', data);
-      client.broadcast.emit('message', data);
-    });
-
+    chat_log.add(data);
+    client.emit('message_own', data);
+    client.broadcast.emit('message', data);
     client_info.send_growl_without(client, data);
+
+    // for bot
+    bots.action(data, function(reply){
+      chat_log.add(reply);
+      client.emit('message_own', reply);
+      client.broadcast.emit('message', reply);
+      client_info.send_growl_without(client, reply);
+    });
   });
 
   client.on('remove_message', function(data) {
