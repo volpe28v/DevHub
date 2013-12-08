@@ -34,13 +34,21 @@ $ cd DevHub
 $ npm install 
 </pre>
 
-* 起動
+## 起動
 
 <pre>
-$ node app.js -p 3000 -d devhub_db
+$ node app.js -p 3000 -d devhub_db -t title
 </pre>
-* -p ポート番号
-* -d データベース名
+* -p ポート番号(default 3000)
+* -d データベース名(default devhub_db)
+* -t タイトル(default '')
+
+### Basic認証をかける
+<pre>
+$ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -t title
+</pre>
+* NODE_DEVHUB_USER ユーザ名
+* NODE_DEVHUB_PASS パスワード
 
 ## 外部サービスからの通知APIを叩く方法
 
@@ -65,6 +73,27 @@ NAME=`svnlook author $REPOS -r $REV | nkf -w`
 CHANGE=`svnlook changed $REPOS -r $REV | nkf -w`
 LOG=`svnlook log $REPOS -r $REV | nkf -w`
 wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
+</pre>
+
+## bot を追加する
+/lib/bots 配下に js ファイルを追加する。実装例は david.js を参照。
+<pre>
+var util = require('../util');
+module.exports.action = function(data, callback){
+  if (data.msg.match(/David/i)){ //自分の名前が呼ばれたら
+    // 返答を生成
+    var reply = {
+      name: "David",
+      date: util.getFullDate(new Date()),
+      msg: "@" + data.name + "さん ん、なんか用かい？ 俺は今ホームパーティーで忙しいんだ。出来れば後にしてくれないか。"
+    };
+
+    // 1秒後に返答する
+    setTimeout(function(){
+      callback(reply);
+    },1000);
+  }
+};
 </pre>
 
 ## License
