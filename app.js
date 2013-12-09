@@ -140,6 +140,7 @@ io.sockets.on('connection', function(client) {
 
     // for bot
     bots.action(data, function(reply){
+      reply.date = util.getFullDate(new Date());
       chat_log.add(reply);
       client.emit('message_own', reply);
       client.broadcast.emit('message', reply);
