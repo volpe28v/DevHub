@@ -140,11 +140,13 @@ io.sockets.on('connection', function(client) {
 
     // for bot
     bots.action(data, function(reply){
-      reply.date = util.getFullDate(new Date());
-      chat_log.add(reply);
-      client.emit('message_own', reply);
-      client.broadcast.emit('message', reply);
-      client_info.send_growl_without(client, reply);
+      setTimeout(function(){
+        reply.date = util.getFullDate(new Date());
+        chat_log.add(reply);
+        client.emit('message_own', reply);
+        client.broadcast.emit('message', reply);
+        client_info.send_growl_without(client, reply);
+      },reply.interval * 1000);
     });
   });
 
