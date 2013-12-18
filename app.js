@@ -57,6 +57,16 @@ app.get('/notify', function(req, res) {
     client_info.send_growl_all(data);
     res.end('recved msg: ' + msg);
   });
+
+  // for bot
+  bots.action(data, function(reply){
+    setTimeout(function(){
+      reply.date = util.getFullDate(new Date());
+      chat_log.add(reply);
+      io.sockets.emit('message', reply);
+      client_info.send_growl_all(reply);
+    },reply.interval * 1000);
+  });
 });
 
 app.post('/notify_memo', function(req, res) {
