@@ -232,7 +232,6 @@ function init_websocket(){
     });
     $share_memo.children('pre').hide();
     $share_memo.children('.fix-text').show();
-    $share_memo.children('.suspend-text').hide();
     $share_memo.children('.sync-text').hide();
     writing_loop_start(no);
  
@@ -418,7 +417,6 @@ function init_websocket(){
     $share_memo.children('.code').hide();
     $share_memo.children('pre').fadeIn();
     $share_memo.children('.fix-text').hide();
-    $share_memo.children('.suspend-text').show();
     $share_memo.children('.sync-text').show();
 
     // 閲覧モード時に編集していたキャレット位置を表示する

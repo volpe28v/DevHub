@@ -227,20 +227,6 @@ io.sockets.on('connection', function(client) {
     });
   });
 
-  client.on('suspend_text', function() {
-    var name = client_info.get_name(client)
-
-    text_log.add_on_suspend(name,function(result){
-      if ( result ){
-        text_log.get_logs(function(logs){
-          client.emit('text_logs', logs);
-          client.broadcast.emit('text_logs', logs);
-        });
-      }
-      console.log("suspend_text");
-    });
-  });
-
   client.on('memo_number', function(data) {
     client.emit('memo_number', data);
     client.broadcast.emit('memo_number', data);
