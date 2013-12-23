@@ -15,6 +15,15 @@
     "interval": 4
   },
   {
+    "text": "俺もそう思うよ",
+    "interval": 3
+  },
+  {
+    "keyword": ["おはよう"],
+    "text": "元気いいな",
+    "interval": 4
+  },
+  {
     "text": "出来れば後にしてくれないか。",
     "interval": 7
   }
