@@ -9,6 +9,7 @@ var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 200;
+var CODE_INDEX_ADJUST_HEIGHT = 50;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
 
@@ -362,7 +363,7 @@ function init_websocket(){
     var index = $(this).closest(".index-list").find(".index-li").index(this);
     var $code_out = $(this).closest('.share-memo').find('.code-out');
     var pos = $code_out.find(":header").eq(index).offset().top;
-    $('#memo_area').animate({ scrollTop: pos - CODE_OUT_ADJUST_HEIGHT}, 'fast');
+    $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 'fast');
     return true;
   });
 
