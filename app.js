@@ -1,7 +1,7 @@
 var program = require('commander');
 
 // require my libs
-var mongo_builder = require('./lib/mongo_builder'); 
+var mongo_builder = require('./lib/mongo_builder');
 var app = require('./lib/server');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
@@ -174,36 +174,24 @@ io.sockets.on('connection', function(client) {
 
     var data = {name: "Pomo", date: util.getFullDate(new Date())};
     if ( client_info.is_pomo(client) ){
-      data.msg = client_info.get_name(client) + 'さん がポモドーロを中止しました。' + pomo_msg;
       client_info.set_pomo(client,false);
     }else{
-      data.msg = client_info.get_name(client) + 'さん がポモドーロを開始しました。' + pomo_msg;
-
       client_info.set_pomo(client,true, setInterval(function(){
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
           var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + "さんのポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
-          chat_log.add(data,function(){
-            client.emit('message', data);
-            client.broadcast.emit('message', data);
-            client_info.send_growl_all(data);
-          });
+          client_info.send_growl_to(client,data);
         }
 
         client.emit('list', client_info.ip_list());
         client.broadcast.emit('list', client_info.ip_list());
       }, 1 * 60000));
     }
-    chat_log.add(data,function(){
-      client.emit('message', data);
-      client.broadcast.emit('message', data);
-      client_info.send_growl_without(client, data);
 
-      client.emit('list', client_info.ip_list());
-      client.broadcast.emit('list', client_info.ip_list());
-    });
+    client.emit('list', client_info.ip_list());
+    client.broadcast.emit('list', client_info.ip_list());
   });
 
   client.on('text', function(msg) {
