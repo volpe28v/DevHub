@@ -176,18 +176,20 @@ io.sockets.on('connection', function(client) {
     if ( client_info.is_pomo(client) ){
       client_info.set_pomo(client,false);
     }else{
-      client_info.set_pomo(client,true, setInterval(function(){
+      client_info.set_pomo(client,true);
+      var pomo_id = setInterval(function(){
         var current_min = client_info.update_pomo(client, 1);
 
         if (current_min <= 0 ){
           var data = {name: "Pomo", date: util.getFullDate(new Date()), msg: client_info.get_name(client) + "さんのポモドーロが終了しました。"};
           client_info.set_pomo(client,false);
           client_info.send_growl_to(client,data);
+          clearInterval(pomo_id);
         }
 
         client.emit('list', client_info.ip_list());
         client.broadcast.emit('list', client_info.ip_list());
-      }, 1 * 60000));
+      }, 1 * 60000);
     }
 
     client.emit('list', client_info.ip_list());
