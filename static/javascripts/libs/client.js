@@ -905,13 +905,19 @@ function decorate_msg(msg){
 
 function deco_login_name(msg){
   var deco_msg = msg;
-  var name_reg = RegExp("(@)[ ]*.+?さん", "g");
-  deco_msg = deco_msg.replace( name_reg, function(){ return '<span class="label label-info">' + arguments[0] + '</span>'});
+  var name_reg = RegExp("@(.+?)さん", "g");
+  deco_msg = deco_msg.replace( name_reg, function(){
+    if (arguments[1] == login_name){
+      return '<span class="label label-important">' + arguments[0] + '</span>'
+    }else{
+      return '<span class="label label-info">' + arguments[0] + '</span>'
+    }
+  });
   return deco_msg;
 }
 
 function include_target_name(msg,name){
-  var name_reg = RegExp("(@)[ ]*" + name + "( |　|さん|$)");
+  var name_reg = RegExp("@" + name + "( |　|さん|$)");
   if (msg.match(name_reg)){
     return true;
   }
