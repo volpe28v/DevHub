@@ -94,14 +94,29 @@
         var header_text = text.replace(/^(#+)[ ]*(.*)$/mg, function(){
           var header_num = arguments[1].length < 4 ? arguments[1].length : 4;
           var matched_text = arguments[2];
-          return '<h' + header_num + '>' + matched_text + '</h' + header_num + '>';
+          return '<h' + header_num + '>' + _decorate_line_color(matched_text) + '</h' + header_num + '>';
         });
         return header_text;
       }
 
+      function _decorate_line_color( text ){
+        var color_text = text.replace(/^(.+)[ 　]#([a-z]+)$/mg, function(){
+          var matched_text = arguments[1];
+          var color_name = arguments[2];
+          if (color_name == "r"){ color_name = "red"; }
+          if (color_name == "g"){ color_name = "green"; }
+          if (color_name == "b"){ color_name = "blue"; }
+          return '<font color="' + color_name + '">' + matched_text + '</font>';
+        });
+        return color_text;
+      }
+
+
       target_text = _decorate_link_tag( target_text );
       target_text = _decorate_checkbox( target_text );
       target_text = _decorate_header( target_text );
+      target_text = _decorate_line_color( target_text );
+
       return target_text;
     }
   };
