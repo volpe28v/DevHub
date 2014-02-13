@@ -122,6 +122,9 @@ io.sockets.on('connection', function(client) {
 
   client.on('name', function(data) {
     client_info.set_name(client, data.name);
+    if (data.name == null || data.name == ""){
+      client.emit('set_name', client_info.get_name(client));
+    }
 
     client.emit('list', client_info.ip_list());
     client.broadcast.emit('list', client_info.ip_list());

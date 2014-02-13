@@ -136,6 +136,11 @@ function init_websocket(){
     //console.log('disconnect');
   });
 
+  socket.on('set_name', function(name) {
+    $('#name').val(name);
+    $('#login_name').val(name);
+  });
+
   // for chat
   socket.on('message_own', function(data) {
     prepend_own_msg(data);
