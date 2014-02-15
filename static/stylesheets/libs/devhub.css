@@ -145,7 +145,8 @@ a:hover {
   width: 100%;
   min-height: 700px;
   margin-top: 0px;
-  line-height: 14px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .code-out table{
@@ -179,11 +180,6 @@ a:hover {
 
 .code-out h4 {
   font-size: 1.2em;
-}
-
-.code-out {
-  font-size: 14px;
-  line-height: 1.5;
 }
 
 .diff-view {
