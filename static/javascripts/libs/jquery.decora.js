@@ -68,12 +68,26 @@
             function(){
               var matched_link = arguments[1];
               if ( matched_link.match(/(\.jpg|\.gif|\.png|\.bmp)$/)){
-                return '<img src="' + matched_link + '"/>';
+                return matched_link;
               }else{
                 return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
               }
             });
         return linked_text;
+      }
+
+      function _decorate_img_tag( text ){
+        var img_text = text.replace(/((.+(\.jpg|\.gif|\.png|\.bmp))([ ]+[0-9]*)?)/g,
+            function(){
+              var matched_link = arguments[2];
+              var width = arguments[4];
+              if (width){
+                return '<img src="' + matched_link + '" style="max-width:' + width + 'px" />';
+              }else{
+                return '<img src="' + matched_link + '"/>';
+              }
+            });
+        return img_text;
       }
 
       function _decorate_checkbox( text ){
@@ -113,6 +127,7 @@
 
 
       target_text = _decorate_link_tag( target_text );
+      target_text = _decorate_img_tag( target_text );
       target_text = _decorate_checkbox( target_text );
       target_text = _decorate_header( target_text );
       target_text = _decorate_line_color( target_text );

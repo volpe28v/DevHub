@@ -13,6 +13,8 @@ var CODE_INDEX_ADJUST_HEIGHT = 50;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
 
+var socket = io.connect('/');
+
 // for share memo
 var writing_text = [];
 var text_logs = [];
@@ -126,8 +128,8 @@ function init_sharememo(){
   });
 }
 
+
 function init_websocket(){
-  var socket = io.connect('/');
   socket.on('connect', function() {
     //console.log('connect');
     socket.emit('name', {name: $.cookie(COOKIE_NAME)});
@@ -803,8 +805,6 @@ function prepend_own_msg(data){
 };
 
 function send_remove_msg(id){
-  var socket = io.connect('/');
-
   socket.emit('remove_message', {id:id});
 }
 
@@ -967,6 +967,7 @@ function init_dropzone(){
   $dropzone.bind("dragover", cancelEvent);
 
   $dropzone.on('drop', function(event) {
+    var that = this;
     var file = event.originalEvent.dataTransfer.files[0];
     var formData = new FormData();
     formData.append('file', file);
@@ -981,19 +982,19 @@ function init_dropzone(){
         console.log('upload error');
       },
       success: function(res) {
-        //TODO: 画像をどうにかして全クライアントへ配る
-//        addImage(res.fileName);
+        var share_memo_no = $(that).closest('.share-memo').data('no');
+
+        // チェック対象のテキストを更新する
+        writing_text[share_memo_no].text = res.fileName + ' 400\n' + writing_text[share_memo_no].text;
+
+        // 変更をサーバへ通知
+        var $target_code = $(that).closest('.share-memo').children('.code');
+        $target_code.val(writing_text[share_memo_no].text);
+        socket.emit('text',{no: share_memo_no, text: $target_code.val()});
       }
     });
 
     return false;
   }); 
-
-  function addImage(fileName){
-    $('#image_place').append(
-        $('<div>').addClass("col-xs-4").append(
-          $('<a>').attr("href","#").addClass("thumbnail").append(
-            $('<img>').attr('src', fileName))));
-  }
 }
 
