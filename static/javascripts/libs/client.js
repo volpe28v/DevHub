@@ -946,23 +946,19 @@ function change_style(css_file){
 }
 
 function init_dropzone(){
-  /// for D&D
-  var $dropzone = $(".code-out");
-
   // File API が使用できない場合は諦めます.
   if(!window.FileReader) {
-    alert("File API がサポートされていません。");
     return false;
   }
 
-  // イベントをキャンセルするハンドラです.
+  var $dropzone = $(".code-out");
+
   var cancelEvent = function(event) {
     event.preventDefault();
     event.stopPropagation();
     return false;
   }
 
-  // dragenter, dragover イベントのデフォルト処理をキャンセルします.
   $dropzone.bind("dradenter", cancelEvent);
   $dropzone.bind("dragover", cancelEvent);
 
@@ -984,7 +980,7 @@ function init_dropzone(){
       success: function(res) {
         var share_memo_no = $(that).closest('.share-memo').data('no');
 
-        // チェック対象のテキストを更新する
+        // メモの先頭に画像を差し込む
         writing_text[share_memo_no].text = res.fileName + ' 400\n' + writing_text[share_memo_no].text;
 
         // 変更をサーバへ通知
