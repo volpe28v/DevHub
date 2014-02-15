@@ -8,8 +8,10 @@ var text_log = require('./lib/text_log');
 var client_info = require('./lib/client_info');
 var util = require('./lib/util');
 var bots = require('./lib/bots');
+var http = require('http');
 
-var io = require('socket.io').listen(app);
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
 
 program
   .version('0.0.3')
@@ -69,6 +71,11 @@ app.get('/notify', function(req, res) {
   });
 });
 
+var routes = {
+  upload : require('./routes/upload')
+};
+app.post('/upload', routes.upload.post);
+
 app.post('/notify_memo', function(req, res) {
   console.log('/notify_memo');
   var name = req.body.name;
@@ -92,7 +99,7 @@ app.post('/notify_memo', function(req, res) {
 mongo_builder.ready(db_name, function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
-  app.listen(port);
+  server.listen(port);
   console.log("listen!!!");
 });
 

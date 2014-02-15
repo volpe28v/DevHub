@@ -22,6 +22,7 @@ $(function() {
   init_chat();
   init_sharememo();
   init_websocket();
+  init_dropzone();
 
   var css_name = $.cookie(COOKIE_CSS_NAME) || CSS_DEFAULT_NAME;
   $("#devhub-style").attr('href','/stylesheets/' + css_name );
@@ -942,5 +943,57 @@ function change_style(css_file){
   //console.log("change to " + css_file );
   $("#devhub-style").attr('href','/stylesheets/' + css_file);
   $.cookie(COOKIE_CSS_NAME,css_file,{ expires: COOKIE_EXPIRES });
+}
+
+function init_dropzone(){
+  /// for D&D
+  var $dropzone = $(".code-out");
+
+  // File API が使用できない場合は諦めます.
+  if(!window.FileReader) {
+    alert("File API がサポートされていません。");
+    return false;
+  }
+
+  // イベントをキャンセルするハンドラです.
+  var cancelEvent = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
+
+  // dragenter, dragover イベントのデフォルト処理をキャンセルします.
+  $dropzone.bind("dradenter", cancelEvent);
+  $dropzone.bind("dragover", cancelEvent);
+
+  $dropzone.on('drop', function(event) {
+    var file = event.originalEvent.dataTransfer.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+
+    console.log("drop");
+    $.ajax('/upload' , {
+      type: 'POST',
+      contentType: false,
+      processData: false,
+      data: formData,
+      error: function() {
+        console.log('upload error');
+      },
+      success: function(res) {
+        //TODO: 画像をどうにかして全クライアントへ配る
+//        addImage(res.fileName);
+      }
+    });
+
+    return false;
+  }); 
+
+  function addImage(fileName){
+    $('#image_place').append(
+        $('<div>').addClass("col-xs-4").append(
+          $('<a>').attr("href","#").addClass("thumbnail").append(
+            $('<img>').attr('src', fileName))));
+  }
 }
 
