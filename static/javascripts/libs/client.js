@@ -12,6 +12,7 @@ var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
+var DROP_IMAGE_WIDTH = 400;
 
 var socket = io.connect('/');
 
@@ -965,10 +966,17 @@ function init_dropzone(){
   $dropzone.on('drop', function(event) {
     var that = this;
     var file = event.originalEvent.dataTransfer.files[0];
+    if (file.type != "image/jpeg" && file.type != "image/gif" && file.type != "image/png"){
+      alert("このファイルはサポートしていません");
+      return;
+    }
+
     var formData = new FormData();
     formData.append('file', file);
 
-    console.log("drop");
+    console.log(formData);
+    console.log(file);
+
     $.ajax('/upload' , {
       type: 'POST',
       contentType: false,
@@ -981,7 +989,7 @@ function init_dropzone(){
         var share_memo_no = $(that).closest('.share-memo').data('no');
 
         // メモの先頭に画像を差し込む
-        writing_text[share_memo_no].text = res.fileName + ' 400\n' + writing_text[share_memo_no].text;
+        writing_text[share_memo_no].text = res.fileName + ' ' + DROP_IMAGE_WIDTH + '\n' + writing_text[share_memo_no].text;
 
         // 変更をサーバへ通知
         var $target_code = $(that).closest('.share-memo').children('.code');
