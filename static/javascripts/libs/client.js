@@ -984,7 +984,8 @@ function init_dropzone(){
   $dropzone.on('drop', function(event) {
     var that = this;
     var file = event.originalEvent.dataTransfer.files[0];
-    if (file.type != "image/jpeg" && file.type != "image/gif" && file.type != "image/png"){
+    var validTypes = ["image/jpeg", "image/gif", "image/png", "image/bmp"];
+    if ($.inArray(file.type,validTypes) < 0){
       show_share_memo_alert('Drop error', 'This file type is not supported. Please select the type of "jpg","gif","png","bmp"');
       return false;
     }
