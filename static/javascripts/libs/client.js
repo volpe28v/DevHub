@@ -946,9 +946,27 @@ function change_style(css_file){
   $.cookie(COOKIE_CSS_NAME,css_file,{ expires: COOKIE_EXPIRES });
 }
 
+function show_share_memo_alert(title, text){
+  $('.share-memo-alert').remove();
+  var $alert = $('<div>').addClass('share-memo-alert alert alert-error').css('display','none')
+    .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
+    .prependTo($('#share-memo'))
+    .slideDown('normal', function(){
+      var that = this;
+      setTimeout(function(){
+        if ($(that)){
+          $(that).slideUp('normal',function(){
+            $(this).remove();
+          });
+        }
+      }, 5000);
+    });
+}
+
 function init_dropzone(){
   // File API が使用できない場合は諦めます.
   if(!window.FileReader) {
+    show_share_memo_alert('Drop image', 'This browser does not support dropping image files.');
     return false;
   }
 
@@ -967,15 +985,12 @@ function init_dropzone(){
     var that = this;
     var file = event.originalEvent.dataTransfer.files[0];
     if (file.type != "image/jpeg" && file.type != "image/gif" && file.type != "image/png"){
-      alert("このファイルはサポートしていません");
-      return;
+      show_share_memo_alert('Drop error', 'This file type is not supported. Please select the type of "jpg","gif","png","bmp"');
+      return false;
     }
 
     var formData = new FormData();
     formData.append('file', file);
-
-    console.log(formData);
-    console.log(file);
 
     $.ajax('/upload' , {
       type: 'POST',
@@ -983,7 +998,7 @@ function init_dropzone(){
       processData: false,
       data: formData,
       error: function() {
-        console.log('upload error');
+        show_share_memo_alert('Drop error', 'failed to file upload.');
       },
       success: function(res) {
         var share_memo_no = $(that).closest('.share-memo').data('no');
