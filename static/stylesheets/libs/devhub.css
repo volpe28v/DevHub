@@ -186,6 +186,12 @@ a:hover {
   min-height: 700px;
 }
 
+.thumbnail {
+  display: inline-block !important;
+  margin-right: 7px;
+
+}
+
 #name, #message {
   background-color: aliceblue;
 }

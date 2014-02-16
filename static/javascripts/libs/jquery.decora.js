@@ -77,14 +77,14 @@
       }
 
       function _decorate_img_tag( text ){
-        var img_text = text.replace(/((.+(\.jpg|\.gif|\.png|\.bmp))([ ]+[0-9]*)?)/g,
+        var img_text = text.replace(/((.+?(\.jpg|\.gif|\.png|\.bmp))([ ]+[0-9]*)?)/g,
             function(){
               var matched_link = arguments[2];
               var width = arguments[4];
               if (width){
-                return '<img src="' + matched_link + '" style="max-width:' + width + 'px" />';
+                return '<a href="#" class="thumbnail"><img src="' + matched_link + '" style="max-width:' + width + 'px"/></a>';
               }else{
-                return '<img src="' + matched_link + '"/>';
+                return '<a href="#" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
               }
             });
         return img_text;
