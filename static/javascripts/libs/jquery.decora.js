@@ -82,9 +82,9 @@
               var matched_link = arguments[2];
               var width = arguments[4];
               if (width){
-                return '<a href="#" class="thumbnail"><img src="' + matched_link + '" style="max-width:' + width + 'px"/></a>';
+                return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="max-width:' + width + 'px"/></a>';
               }else{
-                return '<a href="#" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
+                return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
               }
             });
         return img_text;
