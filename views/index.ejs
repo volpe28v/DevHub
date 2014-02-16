@@ -45,8 +45,6 @@
         <div class="container-fluid">
           <a class="brand" href="/">DevHub <%= title_name %></a>
           <ul class="nav">
-            <li class="active">
-            </li>
             <li class="dropdown">
               <a href="#"
                  class="dropdown-toggle"
@@ -60,6 +58,9 @@
                 <li><a onclick="change_style('bootstrap.united.css');return false;" href="#">united</a></li>
               </ul>
             </li>
+            <% menu_links.forEach(function(val){ %>
+            <li><a href="<%= val.url %>" target="_blank"><%= val.name %></a></li>
+            <% }) %>
           </ul>
 
           <ul class="nav pull-right">

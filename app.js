@@ -39,7 +39,16 @@ client_info.set_optional_title( title_name );
 // set routing
 app.get('/', function(req, res) {
   console.log('/');
-  res.render('index',{locals:{title_name:title_name}});
+
+  var menu_links = [];
+  try{
+    // メニューにリンクを表示したい場合は以下のファイルに json で記載
+    // [{"name": "Google", "url": "https://www.google.co.jp/"}]
+    menu_links = require('./lib/menu_links.json');
+  }catch(e){
+    // ファイルが無ければメニューリンクなし
+  }
+  res.render('index',{locals:{title_name:title_name, menu_links: menu_links}});
 });
 
 app.get('/mobile', function(req, res) {
