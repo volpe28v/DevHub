@@ -75,6 +75,17 @@ LOG=`svnlook log $REPOS -r $REV | nkf -w`
 wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 </pre>
 
+## メニューバーにリンクを追加する
+* よく行くサイトのリンクをDevhubの上部メニューに表示しておくことができる。
+* /lib/menu_links.json を追加する。
+
+<pre>
+[
+  {"name": "Google", "url": "https://www.google.co.jp/"},
+  {"name": "FaceBook", "url": "https://www.facebook.com/"}
+]
+</pre>
+
 ## bot を追加する
 /lib/bots 配下に js ファイルを追加する。実装例は david.js を参照。
 <pre>
