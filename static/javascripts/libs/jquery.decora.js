@@ -73,13 +73,13 @@
     return linked_text;
   }
 
-  function _decorate_img_tag( text, default_width ){
+  function _decorate_img_tag( text, default_height){
     var img_text = text.replace(/((\S+?(\.jpg|\.gif|\.png|\.bmp))($|\s([0-9]+)|\s))/g,
         function(){
           var matched_link = arguments[2];
-          var width = arguments[5] != undefined ? arguments[5] : default_width;
-          if (width){
-            return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="max-width:' + width + 'px"/></a>';
+          var height = arguments[5] != undefined ? arguments[5] : default_height;
+          if (height){
+            return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="max-height:' + height+ 'px"/></a>';
           }else{
             return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
           }
@@ -139,7 +139,7 @@
       target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
  
       target_text = _decorate_link_tag( target_text );
-      target_text = _decorate_img_tag( target_text, 100 );
+      target_text = _decorate_img_tag( target_text, 50 );
       target_text = _decorate_line_color( target_text );
 
       return target_text;

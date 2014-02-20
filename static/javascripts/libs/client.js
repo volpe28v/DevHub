@@ -12,7 +12,8 @@ var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 15;
-var DROP_IMAGE_WIDTH = 400;
+var DROP_IMAGE_HEIGHT = 200;
+var DROP_IMAGE_CHAT_HEIGHT = 60;
 
 var socket = io.connect('/');
 
@@ -967,21 +968,21 @@ function init_dropzone(){
     return false;
   }
 
-  var $dropzone = $(".code-out");
-
   var cancelEvent = function(event) {
     event.preventDefault();
     event.stopPropagation();
     return false;
   }
 
+  var validTypes = ["image/jpeg", "image/gif", "image/png", "image/bmp"];
+
+  var $dropzone = $(".code-out");
   $dropzone.bind("dradenter", cancelEvent);
   $dropzone.bind("dragover", cancelEvent);
 
   $dropzone.on('drop', function(event) {
     var that = this;
     var file = event.originalEvent.dataTransfer.files[0];
-    var validTypes = ["image/jpeg", "image/gif", "image/png", "image/bmp"];
     if ($.inArray(file.type,validTypes) < 0){
       show_share_memo_alert('Drop error', 'This file type is not supported. Please select the type of "jpg","gif","png","bmp"');
       return false;
@@ -1002,12 +1003,43 @@ function init_dropzone(){
         var share_memo_no = $(that).closest('.share-memo').data('no');
 
         // メモの先頭に画像を差し込む
-        writing_text[share_memo_no].text = res.fileName + ' ' + DROP_IMAGE_WIDTH + '\n' + writing_text[share_memo_no].text;
+        writing_text[share_memo_no].text = res.fileName + ' ' + DROP_IMAGE_HEIGHT + '\n' + writing_text[share_memo_no].text;
 
         // 変更をサーバへ通知
         var $target_code = $(that).closest('.share-memo').children('.code');
         $target_code.val(writing_text[share_memo_no].text);
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+      }
+    });
+
+    return false;
+  }); 
+
+  var $dropchatzone = $("#chat_area");
+  $dropchatzone.bind("dradenter", cancelEvent);
+  $dropchatzone.bind("dragover", cancelEvent);
+
+  $dropchatzone.on('drop', function(event) {
+    var that = this;
+    var file = event.originalEvent.dataTransfer.files[0];
+    if ($.inArray(file.type,validTypes) < 0){
+      show_share_memo_alert('Drop error', 'This file type is not supported. Please select the type of "jpg","gif","png","bmp"');
+      return false;
+    }
+
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax('/upload' , {
+      type: 'POST',
+      contentType: false,
+      processData: false,
+      data: formData,
+      error: function() {
+        show_share_memo_alert('Drop error', 'failed to file upload.');
+      },
+      success: function(res) {
+        $('#message').val($('#message').val() + ' ' + res.fileName + ' ' + DROP_IMAGE_CHAT_HEIGHT);
       }
     });
 
