@@ -79,7 +79,7 @@
           var matched_link = arguments[2];
           var height = arguments[5] != undefined ? arguments[5] : default_height;
           if (height){
-            return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="max-height:' + height+ 'px"/></a>';
+            return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
           }else{
             return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
           }
