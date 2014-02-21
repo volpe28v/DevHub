@@ -1039,7 +1039,7 @@ function init_dropzone(){
         show_share_memo_alert('Drop error', 'failed to file upload.');
       },
       success: function(res) {
-        $('#message').val($('#message').val() + ' ' + res.fileName + ' ' + DROP_IMAGE_CHAT_HEIGHT);
+        $('#message').val($('#message').val() + ' ' + res.fileName + ' ' + DROP_IMAGE_CHAT_HEIGHT + ' ');
       }
     });
 
