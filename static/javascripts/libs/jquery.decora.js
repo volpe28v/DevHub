@@ -64,7 +64,7 @@
     var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
         function(){
           var matched_link = arguments[1];
-          if ( matched_link.match(/(\.jpg|\.gif|\.png|\.bmp)$/)){
+          if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
             return matched_link;
           }else{
             return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
@@ -74,7 +74,7 @@
   }
 
   function _decorate_img_tag( text, default_height){
-    var img_text = text.replace(/((\S+?(\.jpg|\.gif|\.png|\.bmp))($|\s([0-9]+)|\s))/g,
+    var img_text = text.replace(/((\S+?(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP))($|\s([0-9]+)|\s))/g,
         function(){
           var matched_link = arguments[2];
           var height = arguments[5] != undefined ? arguments[5] : default_height;
