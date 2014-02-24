@@ -44,6 +44,7 @@ $(function() {
 
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
   change_style(style_name);
+
   $('a[id^="style-"]').click(function(e) {
     e.preventDefault();
     var new_style_name = $(e.target).attr('id').replace(/^style-/, '');
@@ -964,15 +965,13 @@ function change_style(style_name) {
 
   var style = STYLE_CONFIG[style_name];
   var css_file = style.css_file;
-  //console.log("change to " + css_file );
   $("#devhub-style").attr('href','/stylesheets/' + css_file);
   $.cookie(COOKIE_STYLE_NAME, style_name, { expires: COOKIE_EXPIRES });
 
   var navbar_icons = $('.nav i[class^="icon-"]');
   if (style.white_icon) {
     navbar_icons.addClass('icon-white');
-  }
-  else {
+  }else{
     navbar_icons.removeClass('icon-white');
   }
 }
