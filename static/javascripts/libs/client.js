@@ -3,9 +3,8 @@ var login_name = '';
 var suggest_obj = undefined;
 var LOGIN_COLOR_MAX = 9;
 var COOKIE_NAME = "dev_hub_name";
-var COOKIE_CSS_NAME = "dev_hub_css_name";
+var COOKIE_STYLE_NAME = "dev_hub_style_name";
 var COOKIE_EXPIRES = 365;
-var CSS_DEFAULT_NAME = "bootstrap.min.css";
 var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 200;
@@ -14,6 +13,21 @@ var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 20;
 var DROP_IMAGE_HEIGHT = 200;
 var DROP_IMAGE_CHAT_HEIGHT = 60;
+var DEFAULT_STYLE_NAME = 'default';
+var STYLE_CONFIG = {
+  'default': {
+    white_icon: true,
+    css_file: 'bootstrap.min.css'
+  },
+  'journal': {
+    white_icon: false,
+    css_file: 'bootstrap.journal.css'
+  },
+  'united': {
+    white_icon: true,
+    css_file: 'bootstrap.united.css'
+  }
+};
 
 var socket = io.connect('/');
 
@@ -28,8 +42,13 @@ $(function() {
   init_websocket();
   init_dropzone();
 
-  var css_name = $.cookie(COOKIE_CSS_NAME) || CSS_DEFAULT_NAME;
-  $("#devhub-style").attr('href','/stylesheets/' + css_name );
+  var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
+  change_style(style_name);
+  $('a[id^="style-"]').click(function(e) {
+    e.preventDefault();
+    var new_style_name = $(e.target).attr('id').replace(/^style-/, '');
+    change_style(new_style_name);
+  });
 
   if ( $.cookie(COOKIE_NAME) == null ){
     setTimeout(function(){
@@ -59,7 +78,7 @@ function init_chat(){
     $(id).fadeOut();
     send_remove_msg(data_id);
   });
-  $('#list').on('click', '.login-name-base', function(){
+  $('#list').click('.login-name-base', function(){
     var name = $(this).text();
     $('#message').val($('#message').val() + " @" + name + "さん ");
     $('#message').focus();
@@ -245,7 +264,7 @@ function init_websocket(){
     $share_memo.children('.fix-text').show();
     $share_memo.children('.sync-text').hide();
     writing_loop_start(no);
- 
+
     code_prev[no] = $target_code.val();
   }
 
@@ -556,7 +575,7 @@ function init_websocket(){
       var log_dt = $("<dt/>");
       var writer_label = $("<span/>").addClass("label").text( text_logs[i].name + " at " + text_logs[i].date );
       var icon = $("<i/>").addClass("icon-repeat");
-  
+
       var restore_btn = $("<div/>").addClass("btn-group").append(
                            $("<a/>").addClass("restore-log-button btn btn-mini dropdown-toggle")
                                     .attr("data-toggle","dropdown")
@@ -938,10 +957,24 @@ function get_id(name){
   return 0;
 }
 
-function change_style(css_file){
+function change_style(style_name) {
+  if (!(style_name in STYLE_CONFIG)) {
+    throw Error('invalid style name: ' + style_name);
+  }
+
+  var style = STYLE_CONFIG[style_name];
+  var css_file = style.css_file;
   //console.log("change to " + css_file );
   $("#devhub-style").attr('href','/stylesheets/' + css_file);
-  $.cookie(COOKIE_CSS_NAME,css_file,{ expires: COOKIE_EXPIRES });
+  $.cookie(COOKIE_STYLE_NAME, style_name, { expires: COOKIE_EXPIRES });
+
+  var navbar_icons = $('.nav i[class^="icon-"]');
+  if (style.white_icon) {
+    navbar_icons.addClass('icon-white');
+  }
+  else {
+    navbar_icons.removeClass('icon-white');
+  }
 }
 
 function show_share_memo_alert(title, text){
@@ -1031,4 +1064,3 @@ function init_dropzone(){
     $('#message').val($('#message').val() + ' ' + res.fileName + ' ' + DROP_IMAGE_CHAT_HEIGHT + ' ');
   }));
 }
-

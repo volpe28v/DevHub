@@ -53,9 +53,10 @@
                 <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
-                <li><a onclick="change_style('bootstrap.min.css');return false;" href="#">default</a></li>
-                <li><a onclick="change_style('bootstrap.journal.css');return false;" href="#">journal</a></li>
-                <li><a onclick="change_style('bootstrap.united.css');return false;" href="#">united</a></li>
+                <li><a id="style-default" href="#">default</a></li>
+                <li><a id="style-journal" href="#">journal</a></li>
+                <li><a id="style-united" href="#">united</a></li>
+                </li>
               </ul>
             </li>
             <% menu_links.forEach(function(val){ %>
