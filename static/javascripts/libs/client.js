@@ -73,13 +73,15 @@ function init_chat(){
   $('#chat_area').perfectScrollbar({
     wheelSpeed: 40
   });
+
   $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
     var data_id = $(this).closest('li').data('id');
     $(id).fadeOut();
     send_remove_msg(data_id);
   });
-  $('#list').click('.login-name-base', function(){
+
+  $('#list').on('click','.login-name-base', function(){
     var name = $(this).text();
     $('#message').val($('#message').val() + " @" + name + "さん ");
     $('#message').focus();
