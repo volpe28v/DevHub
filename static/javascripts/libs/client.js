@@ -531,7 +531,7 @@ function init_websocket(){
       $target.find('.checkbox-count').hide();
     }
 
-    var title = $target.find('.code-out').text().split("\n")[0].substr(0,4);
+    var title = $target.find('.code-out').text().split("\n")[0];
     $target_tab.children('span').html(title);
 
     var $writer = $target_tab.children('.writer');
