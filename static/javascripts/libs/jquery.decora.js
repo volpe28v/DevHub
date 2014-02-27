@@ -73,6 +73,20 @@
     return linked_text;
   }
 
+  function _decorate_download_tag( text ){
+    var img_text = text.replace(/(\/uploads\/(\S+))/g,
+        function(){
+          var matched_link = arguments[1];
+          var matched_name = arguments[2];
+          if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
+            return matched_link;
+          }else{
+            return '<a href="' + matched_link + '"><i class="icon-download-alt"></i>' + matched_name + '</a>';
+          }
+        });
+    return img_text;
+  }
+
   function _decorate_img_tag( text, default_height){
     var img_text = text.replace(/((\S+?(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP))($|\s([0-9]+)|\s))/g,
         function(){
@@ -126,7 +140,8 @@
   $.decora = {
     to_html: function(target_text){
       target_text = _decorate_link_tag( target_text );
-      target_text = _decorate_img_tag( target_text );
+      target_text = _decorate_download_tag( target_text );
+      target_text = _decorate_img_tag( target_text, 200 );
       target_text = _decorate_checkbox( target_text );
       target_text = _decorate_header( target_text );
       target_text = _decorate_line_color( target_text );
@@ -139,6 +154,7 @@
       target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
  
       target_text = _decorate_link_tag( target_text );
+      target_text = _decorate_download_tag( target_text );
       target_text = _decorate_img_tag( target_text, 50 );
       target_text = _decorate_line_color( target_text );
 

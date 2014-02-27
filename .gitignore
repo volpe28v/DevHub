@@ -15,6 +15,7 @@ lib-cov
 pids
 logs
 results
+static/uploads/*
 
 node_modules
 npm-debug.log

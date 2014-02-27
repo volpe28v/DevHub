@@ -11,8 +11,6 @@ var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
 var CODE_ADJUST_HEIGHT = 100;
 var SHARE_MEMO_NUMBER = 20;
-var DROP_IMAGE_HEIGHT = 200;
-var DROP_IMAGE_CHAT_HEIGHT = 60;
 var DEFAULT_STYLE_NAME = 'default';
 var STYLE_CONFIG = {
   'default': {
@@ -995,6 +993,20 @@ function show_share_memo_alert(title, text){
     });
 }
 
+function show_share_memo_uploading(title, text){
+  $('.share-memo-alert').remove();
+  var $alert = $('<div>').addClass('share-memo-alert alert alert-info').css('display','none')
+    .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
+    .prependTo($('#share-memo'))
+    .slideDown('normal');
+}
+
+function hide_share_memo_alert(){
+  $('.share-memo-alert').slideUp('normal',function(){
+    $(this).remove();
+  });
+}
+
 function init_dropzone(){
   // File API が使用できない場合は諦めます.
   if(!window.FileReader) {
@@ -1014,10 +1026,8 @@ function init_dropzone(){
     return function(event){
       var that = this;
       var file = event.originalEvent.dataTransfer.files[0];
-      if ($.inArray(file.type,validTypes) < 0){
-        show_share_memo_alert('Drop error', 'This file type is not supported. Please select the type of "jpg","gif","png","bmp"');
-        return false;
-      }
+
+      show_share_memo_uploading('Uploading', 'now uploading "' + file.name + '" ... ');
 
       var formData = new FormData();
       formData.append('file', file);
@@ -1031,6 +1041,7 @@ function init_dropzone(){
           show_share_memo_alert('Drop error', 'failed to file upload.');
         },
         success: function(res) {
+          hide_share_memo_alert();
           call_back(that, res);
         }
       });
@@ -1048,7 +1059,7 @@ function init_dropzone(){
     var share_memo_no = $(that).closest('.share-memo').data('no');
 
     // メモの先頭に画像を差し込む
-    writing_text[share_memo_no].text = res.fileName + ' ' + DROP_IMAGE_HEIGHT + '\n' + writing_text[share_memo_no].text;
+    writing_text[share_memo_no].text = res.fileName + ' ' + '\n' + writing_text[share_memo_no].text;
 
     // 変更をサーバへ通知
     var $target_code = $(that).closest('.share-memo').children('.code');
@@ -1062,6 +1073,6 @@ function init_dropzone(){
   $dropchatzone.bind("dragover", cancelEvent);
 
   $dropchatzone.on('drop', drop_image_action(function(that, res){
-    $('#message').val($('#message').val() + ' ' + res.fileName + ' ' + DROP_IMAGE_CHAT_HEIGHT + ' ');
+    $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
   }));
 }
