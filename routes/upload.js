@@ -1,7 +1,7 @@
 var fs = require('fs');
 exports.post = function(req, res) {
   var tmp_path = req.files.file.path;
-  var file_name = req.files.file.name.replace(/ /g,'_');
+  var file_name = req.files.file.name.replace(/[ 　]/g,'_'); // 半角・全角スペースを置き換え
   var target_path = './static/uploads/' + file_name;
   var access_path = '/uploads/' + file_name;
 
