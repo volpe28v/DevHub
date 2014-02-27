@@ -112,6 +112,19 @@ a:hover {
   margin-top: 15px;
 }
 
+.share-memo-tab-elem {
+  width: 74px;
+}
+
+.share-memo-tab-elem > span{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 63px;
+  display: inline-block;
+  vertical-align: top;
+}
+
 .index-button {
   margin-left: 5px !important;
 }
