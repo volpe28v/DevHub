@@ -42,12 +42,17 @@ $ node app.js -p 3000 -d devhub_db -t title
 * -d データベース名(default devhub_db)
 * -t タイトル(default '')
 
-### growlの設定方法
+### Basic認証をかける
+<pre>
+$ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -t title
+</pre>
+* NODE_DEVHUB_USER ユーザ名
+* NODE_DEVHUB_PASS パスワード
 
+## growlの設定方法
 growlを設定すると、ブラウザを開いていなくても、チャットの通知が受け取れます。
 
-#### Windows
-
+### Windows
 1.サーバ側にruby-growlをインストールする。
 
 <pre>
@@ -63,12 +68,6 @@ $ gem install ruby-growl
 * Security > Allow network notificationsにチェックする。
 * password managerにパスワード「growl」を追加。
 
-### Basic認証をかける
-<pre>
-$ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -t title
-</pre>
-* NODE_DEVHUB_USER ユーザ名
-* NODE_DEVHUB_PASS パスワード
 
 ## 外部サービスからの通知APIを叩く方法
 
