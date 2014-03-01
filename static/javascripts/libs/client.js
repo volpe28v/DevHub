@@ -43,7 +43,8 @@ $(function() {
   // for smartphone
   // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
   // js側でやらないといけないので解像度で切り分ける
-  if ($(window).width() >= 768){
+  var window_width = $(window).width();
+  if (window_width >= 768){
     $('body').addClass("perfect-scrollbar-body-style");
 
     $('#chat_area').addClass("perfect-scrollbar-style");
@@ -58,16 +59,18 @@ $(function() {
     });
   }else{
     // モバイルの場合はフリックイベントでチャットとメモを切り替える
-    $('body').on('flick', function(e) {
-      if (e.orientation != 'horizontal'){ return; }
-      if ($('#chat_area').hasClass("hidden-phone")){
-        $('#chat_area').removeClass("hidden-phone");
-        $('#memo_area').addClass("hidden-phone");
-      }else{
-        $('#chat_area').addClass("hidden-phone");
-        $('#memo_area').removeClass("hidden-phone");
-      }
-    });
+    $('.hidden-phone').remove();
+    $('.index-button').remove();
+    $('.diff-button').remove();
+    $('.text-writer').remove();
+    $('.checkbox-count').remove();
+
+    // フリック用のサイズ調整
+    $('.viewport').css('width',window_width + 'px').css('overflow','hidden').css('padding',0);
+    $('.flipsnap').css('width',window_width * 2 + 'px');
+    $('#chat_area').css('width',window_width + 'px').css('float','left').css('margin',0);
+    $('#memo_area').css('width',window_width + 'px').css('float','left').css('margin',0);
+    Flipsnap('.flipsnap');
   }
 
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
@@ -165,6 +168,7 @@ function init_sharememo(){
         $('<ul/>').addClass("dropdown-menu diff-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
       $('<span/>').addClass("checkbox-count").css("display","none")).append(
+      $('<div/>').addClass('clearfix')).append(
       $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
       $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out"))).append(
       $('<div/>').addClass("diff-view").css("display","none"));
