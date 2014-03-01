@@ -56,6 +56,18 @@ $(function() {
       wheelSpeed: 40,
       useKeyboard: false
     });
+  }else{
+    // モバイルの場合はフリックイベントでチャットとメモを切り替える
+    $('body').on('flick', function(e) {
+      if (e.orientation != 'horizontal'){ return; }
+      if ($('#chat_area').hasClass("hidden-phone")){
+        $('#chat_area').removeClass("hidden-phone");
+        $('#memo_area').addClass("hidden-phone");
+      }else{
+        $('#chat_area').addClass("hidden-phone");
+        $('#memo_area').removeClass("hidden-phone");
+      }
+    });
   }
 
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
