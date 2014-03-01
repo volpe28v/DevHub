@@ -1,6 +1,9 @@
 body{
   width : 100%;
   margin : 0px;
+}
+
+.perfect-scrollbar-body-style {
   overflow : hidden;
 }
 
@@ -8,6 +11,9 @@ body{
   height : 100%;
   top : 0px;
   left : 5px;
+}
+
+.perfect-scrollbar-style {
   position : absolute;
   overflow: hidden;
 }
@@ -16,8 +22,6 @@ body{
   height : 100%;
   top : 0px;
   left: 40%;
-  position : absolute;
-  overflow: hidden;
 }
 
 .memo-area-zen{
@@ -146,7 +150,7 @@ a:hover {
 
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;
-  width: 96%;
+  width: 93%;
   height: 700px;
   padding: 5px;
   background-color: #fefefe;

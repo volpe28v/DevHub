@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>DevHub <%= title_name %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <meta name="description" content="DevHub">
+    <meta name="author" content="Naoki Kodama">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -21,6 +21,7 @@
     <link href="/stylesheets/perfect-scrollbar-0.4.5.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/devhub.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
   </head>
 
@@ -40,7 +41,7 @@
       </div>
     </div>
 
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top hidden-phone">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="/">DevHub <%= title_name %></a>
@@ -76,14 +77,14 @@
       <div class="row-fluid">
         <div id="chat_area" class="span5">
           <div class="area-inner">
-            <div class="dummy-top-space"></div>
+            <div class="dummy-top-space hidden-phone"></div>
             <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
             <div id="alert_chat_area"></div>
             <div id="login_list" style="display:none"></div>
             <form id="form" class="form-inline">
               <table>
                 <tr>
-                  <td><input type="text" name="name" id="name" class="span1" placeholder="Name"/></td>
+                  <td style=""><input type="text" name="name" id="name" style="width:50px" placeholder="Name"/></td>
                   <td style="width: 100%; padding: 0 10px 0 0;">
                     <input type="text" name="message" id="message" style="width: 100%;" autocomplete="off" placeholder="Message"/>
                     <div id="suggest" style="display: none;"></div>
@@ -99,9 +100,9 @@
           </div>
         </div>
 
-        <div id="memo_area" class="span7 memo-area">
+        <div id="memo_area" class="span7 memo-area hidden-phone">
           <div class="area-inner">
-            <div class="dummy-top-space"></div>
+            <div class="dummy-top-space hidden-phone"></div>
             <div id="alert_memo_area"></div>
             <div id="share-memo">
               <div class="tabbable tabs-left">

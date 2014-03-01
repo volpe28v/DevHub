@@ -40,6 +40,24 @@ $(function() {
   init_websocket();
   init_dropzone();
 
+  // for smartphone
+  // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
+  // js側でやらないといけないので解像度で切り分ける
+  if ($(window).width() >= 768){
+    $('body').addClass("perfect-scrollbar-body-style");
+
+    $('#chat_area').addClass("perfect-scrollbar-style");
+    $('#chat_area').perfectScrollbar({
+      wheelSpeed: 40
+    });
+
+    $('#memo_area').addClass("perfect-scrollbar-style");
+    $('#memo_area').perfectScrollbar({
+      wheelSpeed: 40,
+      useKeyboard: false
+    });
+  }
+
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
   change_style(style_name);
 
@@ -68,10 +86,6 @@ $(function() {
 });
 
 function init_chat(){
-  $('#chat_area').perfectScrollbar({
-    wheelSpeed: 40
-  });
-
   $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
     var data_id = $(this).closest('li').data('id');
@@ -87,11 +101,6 @@ function init_chat(){
 }
 
 function init_sharememo(){
-  $('#memo_area').perfectScrollbar({
-    wheelSpeed: 40,
-    useKeyboard: false
-  });
-
   for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
     $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
     $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
