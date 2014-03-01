@@ -239,6 +239,7 @@ a:hover {
 
 .msg_text{
   font-weight: bold;
+  word-break: break-all;
 }
 
 .target_msg{
