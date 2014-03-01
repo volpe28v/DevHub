@@ -81,7 +81,7 @@
           if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
             return matched_link;
           }else{
-            return '<a href="' + matched_link + '"><i class="icon-download-alt"></i>' + matched_name + '</a>';
+            return '<a href="' + matched_link + '" class="btn btn-default btn-mini" ><i class="icon-download-alt"></i>' + matched_name + '</a>';
           }
         });
     return img_text;

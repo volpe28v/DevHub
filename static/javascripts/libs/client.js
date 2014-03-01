@@ -976,11 +976,10 @@ function change_style(style_name) {
   }
 }
 
-function show_share_memo_alert(title, text){
-  $('.share-memo-alert').remove();
+function show_share_memo_alert($target, title, text){
   var $alert = $('<div>').addClass('share-memo-alert alert alert-error').css('display','none')
     .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
-    .prependTo($('#share-memo'))
+    .prependTo($target)
     .slideDown('normal', function(){
       var that = this;
       setTimeout(function(){
@@ -989,20 +988,19 @@ function show_share_memo_alert(title, text){
             $(this).remove();
           });
         }
-      }, 5000);
+      }, 10000);
     });
 }
 
-function show_share_memo_uploading(title, text){
-  $('.share-memo-alert').remove();
-  var $alert = $('<div>').addClass('share-memo-alert alert alert-info').css('display','none')
+function show_share_memo_uploading($target, title, text){
+  return $alert = $('<div>').addClass('share-memo-alert alert alert-info').css('display','none')
     .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
-    .prependTo($('#share-memo'))
+    .prependTo($target)
     .slideDown('normal');
 }
 
-function hide_share_memo_alert(){
-  $('.share-memo-alert').slideUp('normal',function(){
+function hide_share_memo_alert($alert){
+  $alert.slideUp('normal',function(){
     $(this).remove();
   });
 }
@@ -1020,14 +1018,12 @@ function init_dropzone(){
     return false;
   }
 
-  var validTypes = ["image/jpeg", "image/gif", "image/png", "image/bmp"];
-
-  var drop_image_action = function(call_back){
+  var drop_image_action = function($target, call_back){
     return function(event){
       var that = this;
       var file = event.originalEvent.dataTransfer.files[0];
 
-      show_share_memo_uploading('Uploading', 'now uploading "' + file.name + '" ... ');
+      var $alert = show_share_memo_uploading($target, 'Uploading', 'now uploading "' + file.name + '" ... ');
 
       var formData = new FormData();
       formData.append('file', file);
@@ -1038,10 +1034,11 @@ function init_dropzone(){
         processData: false,
         data: formData,
         error: function() {
-          show_share_memo_alert('Drop error', 'failed to file upload.');
+          hide_share_memo_alert($alert);
+          show_share_memo_alert($target, 'Drop error', 'failed to file upload.');
         },
         success: function(res) {
-          hide_share_memo_alert();
+          hide_share_memo_alert($alert);
           call_back(that, res);
         }
       });
@@ -1055,7 +1052,7 @@ function init_dropzone(){
   $dropzone.bind("dradenter", cancelEvent);
   $dropzone.bind("dragover", cancelEvent);
 
-  $dropzone.on('drop', drop_image_action(function(that, res){
+  $dropzone.on('drop', drop_image_action($('#alert_memo_area'), function(that, res){
     var share_memo_no = $(that).closest('.share-memo').data('no');
 
     // メモの先頭に画像を差し込む
@@ -1072,7 +1069,7 @@ function init_dropzone(){
   $dropchatzone.bind("dradenter", cancelEvent);
   $dropchatzone.bind("dragover", cancelEvent);
 
-  $dropchatzone.on('drop', drop_image_action(function(that, res){
+  $dropchatzone.on('drop', drop_image_action($('#alert_chat_area'), function(that, res){
     $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
   }));
 }
