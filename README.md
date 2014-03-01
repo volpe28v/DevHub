@@ -26,7 +26,6 @@ http://dev-hub.herokuapp.com/
 
 * node 
 * mongoDB 
-* ruby-growl
 
 <pre>
 $ git clone git@github.com:volpe28v/DevHub.git
@@ -49,6 +48,26 @@ $ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -
 </pre>
 * NODE_DEVHUB_USER ユーザ名
 * NODE_DEVHUB_PASS パスワード
+
+## growlの設定方法
+growlを設定すると、ブラウザを開いていなくても、チャットの通知が受け取れます。
+
+### Windows
+1.サーバ側にruby-growlをインストールする。
+
+<pre>
+$ gem install ruby-growl
+</pre>
+
+2.各クライアントに Growl for windowsをインストールする。
+
+* http://www.growlforwindows.com/gfw/
+
+3.ネットワーク通知をオンにする。
+
+* Security > Allow network notificationsにチェックする。
+* password managerにパスワード「growl」を追加。
+
 
 ## 外部サービスからの通知APIを叩く方法
 
