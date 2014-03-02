@@ -68,8 +68,8 @@ $(function() {
     // フリック用のサイズ調整
     $('.viewport').css('width',window_width + 'px').css('overflow','hidden').css('padding',0);
     $('.flipsnap').css('width',window_width * 2 + 'px');
-    $('#chat_area').css('width',window_width + 'px').css('float','left').css('margin',0);
-    $('#memo_area').css('width',window_width + 'px').css('float','left').css('margin',0);
+    $('#chat_area').css('width',window_width + 'px').css('margin',0);
+    $('#memo_area').css('width',window_width + 'px').css('margin',0);
     Flipsnap('.flipsnap');
   }
 
