@@ -71,7 +71,10 @@ $(function() {
 
     // フリック用のサイズ調整
     adjust_display_size_for_mobile();
-    Flipsnap('.flipsnap');
+
+    $(window).resize(function(){
+      adjust_display_size_for_mobile();
+    });
   }
 
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
@@ -108,6 +111,7 @@ function adjust_display_size_for_mobile(){
     $('.flipsnap').css('width',window_width * 2 + 'px');
     $('#chat_area').css('width',window_width + 'px').css('margin',0);
     $('#memo_area').css('width',window_width + 'px').css('margin',0);
+    Flipsnap('.flipsnap').refresh();
 }
 
 function init_chat(){
