@@ -64,8 +64,7 @@ $(function() {
   }else{
     // モバイルの場合はフリックイベントでチャットとメモを切り替える
     $('.hidden-phone').remove();
-    $('.index-button').remove();
-    $('.diff-button').remove();
+    $('.visible-phone').show();
     $('.text-writer').remove();
     $('.checkbox-count').remove();
 
@@ -173,11 +172,11 @@ function init_sharememo(){
       $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
       $('<button/>').addClass("diff-done btn btn-info").css("float","left").css("display","none").html('<i class="icon-resize-vertical icon-white"></i> Done')).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
-        $('<a/>').addClass("btn dropdown-toggle index-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
+        $('<a/>').addClass("btn dropdown-toggle index-button hidden-phone").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu index-list"))).append(
       $('<div/>').addClass("btn-group").css("float","left").append(
-        $('<a/>').addClass("btn dropdown-toggle diff-button").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-resize-vertical"></i> Diff ').append(
+        $('<a/>').addClass("btn dropdown-toggle diff-button hidden-phone").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-resize-vertical"></i> Diff ').append(
           $('<span/>').addClass("caret"))).append(
         $('<ul/>').addClass("dropdown-menu diff-list"))).append(
       $('<span/>').addClass("text-writer label label-info")).append(
@@ -1057,41 +1056,54 @@ function init_dropzone(){
     return false;
   }
 
-  var drop_image_action = function($target, call_back){
+  var drop_file_action = function($target, call_back){
     return function(event){
       var that = this;
       var file = event.originalEvent.dataTransfer.files[0];
 
-      var $alert = show_share_memo_uploading($target, 'Uploading', 'now uploading "' + file.name + '" ... ');
-
-      var formData = new FormData();
-      formData.append('file', file);
-
-      $.ajax('/upload' , {
-        type: 'POST',
-        contentType: false,
-        processData: false,
-        data: formData,
-        error: function() {
-          hide_share_memo_alert($alert);
-          show_share_memo_alert($target, 'Drop error', 'failed to file upload.');
-        },
-        success: function(res) {
-          hide_share_memo_alert($alert);
-          call_back(that, res);
-        }
-      });
-
+      upload_file_with_ajax(that, file, $target, call_back);
       return false;
     }
   }
 
+  var select_file_action = function($target, call_back){
+    return function(event){
+      var that = this;
+      var file = $(that).prop('files')[0];
+
+      upload_file_with_ajax(that, file, $target, call_back);
+      return false;
+    }
+  }
+
+  function upload_file_with_ajax(that, file, $target, call_back){
+    var $alert = show_share_memo_uploading($target, 'Uploading', 'now uploading "' + file.name + '" ... ');
+
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax('/upload' , {
+      type: 'POST',
+      contentType: false,
+      processData: false,
+      data: formData,
+      error: function() {
+        hide_share_memo_alert($alert);
+        show_share_memo_alert($target, 'Drop error', 'failed to file upload.');
+      },
+      success: function(res) {
+        hide_share_memo_alert($alert);
+        call_back(that, res);
+      }
+    });
+  }
+ 
   // 共有メモエリアへの画像ドロップ処理
   var $dropzone = $(".code-out");
   $dropzone.bind("dradenter", cancelEvent);
   $dropzone.bind("dragover", cancelEvent);
 
-  $dropzone.on('drop', drop_image_action($('#alert_memo_area'), function(that, res){
+  $dropzone.on('drop', drop_file_action($('#alert_memo_area'), function(that, res){
     var share_memo_no = $(that).closest('.share-memo').data('no');
 
     // メモの先頭に画像を差し込む
@@ -1108,7 +1120,17 @@ function init_dropzone(){
   $dropchatzone.bind("dradenter", cancelEvent);
   $dropchatzone.bind("dragover", cancelEvent);
 
-  $dropchatzone.on('drop', drop_image_action($('#alert_chat_area'), function(that, res){
+  $dropchatzone.on('drop', drop_file_action($('#alert_chat_area'), function(that, res){
+    $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
+  }));
+
+  // アップロードボタン
+  $('#upload_chat_button').click(function(){
+    $('#upload_chat').click();
+    return false;
+  });
+
+  $('#upload_chat').on('change', select_file_action($('#alert_chat_area'), function(that, res){
     $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
   }));
 }
