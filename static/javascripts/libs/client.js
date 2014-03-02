@@ -28,6 +28,7 @@ var STYLE_CONFIG = {
 };
 
 var socket = io.connect('/');
+var is_mobile = false;
 
 // for share memo
 var writing_text = [];
@@ -35,6 +36,10 @@ var text_logs = [];
 var newest_count = 0;
 
 $(function() {
+  if ($(window).width() < 768){
+    is_mobile = true;
+  }
+
   init_chat();
   init_sharememo();
   init_websocket();
@@ -43,8 +48,7 @@ $(function() {
   // for smartphone
   // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
   // js側でやらないといけないので解像度で切り分ける
-  var window_width = $(window).width();
-  if (window_width >= 768){
+  if (!is_mobile){
     $('body').addClass("perfect-scrollbar-body-style");
 
     $('#chat_area').addClass("perfect-scrollbar-style");
@@ -66,10 +70,7 @@ $(function() {
     $('.checkbox-count').remove();
 
     // フリック用のサイズ調整
-    $('.viewport').css('width',window_width + 'px').css('overflow','hidden').css('padding',0);
-    $('.flipsnap').css('width',window_width * 2 + 'px');
-    $('#chat_area').css('width',window_width + 'px').css('margin',0);
-    $('#memo_area').css('width',window_width + 'px').css('margin',0);
+    adjust_display_size_for_mobile();
     Flipsnap('.flipsnap');
   }
 
@@ -82,7 +83,7 @@ $(function() {
     change_style(new_style_name);
   });
 
-  if ( $.cookie(COOKIE_NAME) == null ){
+  if ( $.cookie(COOKIE_NAME) == null && !is_mobile){
     setTimeout(function(){
       $('#name_in').modal("show");
       setTimeout(function(){
@@ -99,6 +100,15 @@ $(function() {
     newest_off();
   });
 });
+
+function adjust_display_size_for_mobile(){
+    // フリック用のサイズ調整
+    var window_width = $(window).width();
+    $('.viewport').css('width',window_width + 'px').css('overflow','hidden').css('padding',0);
+    $('.flipsnap').css('width',window_width * 2 + 'px');
+    $('#chat_area').css('width',window_width + 'px').css('margin',0);
+    $('#memo_area').css('width',window_width + 'px').css('margin',0);
+}
 
 function init_chat(){
   $('#list').on('click', '.remove_msg', function(){
