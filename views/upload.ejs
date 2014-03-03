@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DevHub</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <meta name="description" content="DevHub">
+    <meta name="author" content="Naoki Kodama">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script type="text/javascript" src="/javascripts/html5.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/upload.js"></script>
+    <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/upload.css" media="screen" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  </head>
+  <body style=":
+    background-color: white;
+    background-attachment: fixed;
+    background-position: center top;
+    background-repeat:  repeat;
+    padding-top: 60px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">DevHub - uploads</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div class="all-size"><span id="all_size_mb"><%= (file_info['all_size']/1024/1024).toFixed(2) %></span>MB</div>
+          <table class="table table-condensed">
+            <tr><th>Delete</th><th>File name</th><th class="file-size">Size (MB)</th></tr>
+            <% file_info['files'].forEach(function(file){ %>
+            <tr>
+              <td><button class="btn btn-danger btn-mini delete-button" data-name="<%= file['name'] %>">Delete</button></td>
+              <td><a href="/uploads/<%= file['name'] %>" target="_blank"><%= file['name'] %></a></td>
+              <td class="file-size"><%= (file['size']/1024/1024).toFixed(3) %></td></tr>
+            <% }); %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

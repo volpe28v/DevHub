@@ -19,3 +19,23 @@ exports.post = function(req, res) {
     });
   });
 };
+
+exports.get = function(req, res){
+  util.getFileListAndSize('./static/uploads/',function(file_info){
+    res.render('upload',{locals:{file_info: file_info}});
+  });
+};
+
+exports.delete = function(req, res) {
+  var path = './static/uploads/' + req.body.file;
+  fs.unlink(path, function(err) {
+    if (err) {
+      throw err;
+    }
+    util.getFileListAndSize('./static/uploads/',function(file_info){
+      res.send({all_size: file_info['all_size']});
+    });
+  });
+};
+
+

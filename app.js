@@ -76,9 +76,11 @@ app.get('/notify', function(req, res) {
 });
 
 var routes = {
-  upload : require('./routes/upload')
+  upload : require('./routes/upload'),
 };
 app.post('/upload', routes.upload.post);
+app.get('/upload', routes.upload.get); 
+app.delete('/upload', routes.upload.delete); 
 
 app.post('/notify_memo', function(req, res) {
   console.log('/notify_memo');
