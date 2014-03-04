@@ -31,7 +31,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/">DevHub - uploads</a>
+          <a class="brand" href="/">DevHub - uploads <span id="all_size_mb"><%= (file_info['all_size']/1024/1024).toFixed(2) %></span>MB</a>
         </div>
       </div>
     </div>
@@ -39,7 +39,6 @@
     <div class="container">
       <div class="row">
         <div class="span12">
-          <div class="all-size"><span id="all_size_mb"><%= (file_info['all_size']/1024/1024).toFixed(2) %></span>MB</div>
           <table class="table table-condensed">
             <tr><th>Delete</th><th>File name</th><th class="file-size">Size (MB)</th></tr>
             <% file_info['files'].forEach(function(file){ %>
