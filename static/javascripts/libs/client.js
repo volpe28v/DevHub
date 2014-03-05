@@ -44,6 +44,7 @@ $(function() {
   init_sharememo();
   init_websocket();
   init_dropzone();
+  init_notification();
 
   // for smartphone
   // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
@@ -212,6 +213,7 @@ function init_websocket(){
 
   socket.on('message', function(data) {
     prepend_msg(data);
+    do_notification(data);
     newest_mark();
   });
 
@@ -1134,3 +1136,77 @@ function init_dropzone(){
     $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
   }));
 }
+
+function init_notification(){
+  if(window.localStorage){
+    if(window.localStorage.popupNotification == 'true'){
+      $('#notification').attr('checked', 'checked');
+    }
+
+    $('#notification').on('click', function(){
+      if($(this).attr('checked') == 'checked'){
+        window.localStorage.popupNotification = 'true';
+      }else{
+        window.localStorage.popupNotification = 'false';
+      }
+    });
+
+    if (window.localStorage.notificationSeconds){
+      $('#notification_seconds').val(window.localStorage.notificationSeconds);
+    }else{
+      $('#notification_seconds').val(5);
+    } 
+    $('#notification_seconds').on('change',function(){
+      window.localStorage.notificationSeconds = $(this).val();
+    });
+  }else{
+    $('#notification').attr('disabled', 'disabled');
+  }
+}
+
+function do_notification(data){
+  var notif_title = data.name + ' からのDevHub新着!';
+  var notif_icon = 'notification.png';
+  var notif_msg = data.msg;
+
+  if(window.localStorage.popupNotification == 'true'){
+    if (window.webkitNotifications){
+      var havePermission = window.webkitNotifications.checkPermission();
+      if (havePermission == 0) {
+        var notification = window.webkitNotifications.createNotification(
+            notif_icon,
+            notif_title,
+            notif_msg
+            );
+        notification.onclick = function () {
+          notification.close();
+        }
+        notification.show();
+        setTimeout(function(){
+          notification.cancel();
+        }, window.localStorage.notificationSeconds * 1000);
+        console.log("notify");
+      } else {
+        window.webkitNotifications.requestPermission();
+      }
+    }else if(Notification){
+      Notification.requestPermission(function(permission){
+        if(Notification.permission == "granted"){
+          switch(Notification.permission){
+            case "granted":
+            case "default":
+              new Notification(notif_title, {
+                icon:notif_icon,
+                  body:notif_msg,
+                  tag:"notification-test",
+              });
+              break;
+            case "denied":
+              break;
+          }
+        }
+      });
+    }
+  }
+}
+

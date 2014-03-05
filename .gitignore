@@ -7,10 +7,6 @@ lib-cov
 *.pid
 *.gz
 *.swp
-*.jpg
-*.gif
-*.png
-*.bmp
 
 pids
 logs

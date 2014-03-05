@@ -120,7 +120,34 @@
                   <div id="settings_memo" class="tab-pane">
                     <form class="form-horizontal">
                       <div class="control-group">
-                        <label class="control-label">ShareMemo number</label>
+                        <legend>Notifications</legend>
+                        <label class="control-label">Show notifications</label>
+                        <div class="controls">
+                          <input type="checkbox" id="notification"/> (Works on Chrome and Firefox)
+                        </div>
+                      </div>
+                      <div class="control-group">
+                        <label class="control-label">Close automatically in</label>
+                        <div class="controls">
+                          <select id="notification_seconds" class="span1">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                          </select>
+                          seconds.
+                        </div>
+                      </div>
+
+                      <div class="control-group">
+                       <legend>ShareMemo</legend>
+                        <label class="control-label">Number</label>
                         <div class="controls">
                           <select id="memo_number" class="span1">
                             <option id="memo_number_option_top" value="1">1</option>
