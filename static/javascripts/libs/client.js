@@ -1165,7 +1165,7 @@ function init_notification(){
 }
 
 function do_notification(data){
-  var notif_title = data.name + ' からのDevHub新着!';
+  var notif_title = data.name;
   var notif_icon = 'notification.png';
   var notif_msg = data.msg;
 
