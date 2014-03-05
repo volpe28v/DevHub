@@ -1155,6 +1155,7 @@ function init_notification(){
       $('#notification_seconds').val(window.localStorage.notificationSeconds);
     }else{
       $('#notification_seconds').val(5);
+      window.localStorage.notificationSeconds = 5;
     } 
     $('#notification_seconds').on('change',function(){
       window.localStorage.notificationSeconds = $(this).val();
