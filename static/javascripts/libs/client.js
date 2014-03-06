@@ -35,6 +35,9 @@ var writing_text = [];
 var text_logs = [];
 var newest_count = 0;
 
+// for favicon
+var favicon = null;
+
 $(function() {
   if ($(window).width() < 768){
     is_mobile = true;
@@ -45,6 +48,10 @@ $(function() {
   init_websocket();
   init_dropzone();
   init_notification();
+
+  favicon = new Favico({
+    animation:'none'
+  });
 
   // for smartphone
   // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
@@ -889,11 +896,13 @@ function newest_mark(){
   if ("message" == $(':focus').attr('id')){ newest_off(); return; }
   newest_count++;
   document.title = "(" + newest_count + ") " + TITLE_ORG;
+  favicon.badge(newest_count);
 }
 
 function newest_off(){
   newest_count = 0;
   document.title = TITLE_ORG;
+  favicon.badge(newest_count);
 }
 
 function exist_msg(data){
