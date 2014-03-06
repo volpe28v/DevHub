@@ -91,7 +91,10 @@
     var img_text = text.replace(/((\S+?(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP))($|\s([0-9]+)|\s))/g,
         function(){
           var matched_link = arguments[2];
-          var height = arguments[5] != undefined ? arguments[5] : default_height;
+          var height = arguments[5];
+          if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
+            height = default_height;
+          }
           if (height){
             return '<a href="' + matched_link + '" target="_blank" class="thumbnail"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
           }else{
