@@ -1,11 +1,11 @@
 function FaviconNumber(data) {
   var userAgent = window.navigator.userAgent.toLowerCase();
 
-  this.isUseFavico = false;
+  this.canUseFavico = false;
   if (userAgent.indexOf('chrome') != -1) {
-    this.isUseFavico = true;
+    this.canUseFavico = true;
   } else if (userAgent.indexOf('firefox') != -1) {
-    this.isUseFavico = true;
+    this.canUseFavico = true;
   }
 
   this.newest_count = 0;
@@ -22,7 +22,7 @@ FaviconNumber.prototype = {
         if (this.focus_id == $(':focus').attr('id')){ this.off(); return; }
         this.newest_count++;
 
-        if (this.isUseFavico){
+        if (this.canUseFavico){
           this.favicon.badge(this.newest_count);
         }else{
           document.title = "(" + this.newest_count + ") " + this.title;
@@ -31,7 +31,7 @@ FaviconNumber.prototype = {
   off: function(){
          this.newest_count = 0;
 
-         if (this.isUseFavico){
+         if (this.canUseFavico){
            this.favicon.badge(this.newest_count);
          }else{
            document.title = this.title;
