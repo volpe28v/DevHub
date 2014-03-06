@@ -5,7 +5,6 @@ var LOGIN_COLOR_MAX = 9;
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_STYLE_NAME = "dev_hub_style_name";
 var COOKIE_EXPIRES = 365;
-var TITLE_ORG = document.title;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 200;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
@@ -33,10 +32,9 @@ var is_mobile = false;
 // for share memo
 var writing_text = [];
 var text_logs = [];
-var newest_count = 0;
 
 // for favicon
-var favicon = null;
+var faviconNumber = null;
 
 $(function() {
   if ($(window).width() < 768){
@@ -49,8 +47,8 @@ $(function() {
   init_dropzone();
   init_notification();
 
-  favicon = new Favico({
-    animation:'none'
+  faviconNumber = new FaviconNumber({
+    focus_id: "message"
   });
 
   // for smartphone
@@ -107,7 +105,7 @@ $(function() {
   }
 
   $(window).on("blur focus", function(e) {
-    newest_off();
+    faviconNumber.off();
   });
 });
 
@@ -215,13 +213,13 @@ function init_websocket(){
   // for chat
   socket.on('message_own', function(data) {
     prepend_own_msg(data);
-    newest_mark();
+    faviconNumber.up();
   });
 
   socket.on('message', function(data) {
     prepend_msg(data);
     do_notification(data);
-    newest_mark();
+    faviconNumber.up();
   });
 
   socket.on('remove_message', function(data) {
@@ -891,19 +889,6 @@ function prepend_msg(data){
     msg.li.switchClass("text-highlight", msg.css, 500);
   });
 };
-
-function newest_mark(){
-  if ("message" == $(':focus').attr('id')){ newest_off(); return; }
-  newest_count++;
-  document.title = "(" + newest_count + ") " + TITLE_ORG;
-  favicon.badge(newest_count);
-}
-
-function newest_off(){
-  newest_count = 0;
-  document.title = TITLE_ORG;
-  favicon.badge(newest_count);
-}
 
 function exist_msg(data){
   if (data.msg == undefined) { data.msg = ""; }
