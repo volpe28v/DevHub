@@ -212,12 +212,14 @@ function init_websocket(){
 
   // for chat
   socket.on('message_own', function(data) {
-    prepend_own_msg(data);
+    var $msg = prepend_own_msg(data);
+    setColorbox($msg.find('.thumbnail'));
     faviconNumber.up();
   });
 
   socket.on('message', function(data) {
-    prepend_msg(data);
+    var $msg = prepend_msg(data);
+    setColorbox($msg.find('.thumbnail'));
     do_notification(data);
     faviconNumber.up();
   });
@@ -265,6 +267,8 @@ function init_websocket(){
     for ( var i = 0 ; i < msgs.length; i++){
       append_msg(msgs[i])
     }
+
+    setColorbox($('#chat_body').find('.thumbnail'));
   });
 
   $('#form').submit(function() {
@@ -559,6 +563,7 @@ function init_websocket(){
     $text_writer.addClass("label-important");
     $text_writer.show();
     $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
+    setColorbox($target.find('.thumbnail'));
 
     // チェックボックスの進捗表示
     var checked_count = $target.find("input:checked").length;
@@ -869,6 +874,8 @@ function prepend_own_msg(data){
   msg.li.slideDown('fast',function(){
     msg.li.switchClass("text-highlight", msg.css, 500);
   });
+
+  return msg.li;
 };
 
 function send_remove_msg(id){
@@ -888,6 +895,8 @@ function prepend_msg(data){
   msg.li.slideDown('fast',function(){
     msg.li.switchClass("text-highlight", msg.css, 500);
   });
+
+  return msg.li;
 };
 
 function exist_msg(data){
@@ -1205,3 +1214,13 @@ function do_notification(data){
   }
 }
 
+function setColorbox($dom){
+    $dom.colorbox({
+      transition: "none",
+      rel: "img",
+      maxWidth: "100%",
+      maxHeight: "100%",
+      initialWidth: "200px",
+      initialHeight: "200px"
+    });
+}
