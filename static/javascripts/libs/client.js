@@ -1169,7 +1169,7 @@ function init_notification(){
 }
 
 function do_notification(data){
-  var notif_title = data.name;
+  var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "");
   var notif_icon = 'notification.png';
   var notif_msg = data.msg;
 
@@ -1189,7 +1189,6 @@ function do_notification(data){
         setTimeout(function(){
           notification.cancel();
         }, window.localStorage.notificationSeconds * 1000);
-        console.log("notify");
       } else {
         window.webkitNotifications.requestPermission();
       }
