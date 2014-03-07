@@ -199,6 +199,10 @@ a:hover {
   font-size: 1.2em;
 }
 
+.header-tr {
+  line-height: 0.2 !important;
+}
+
 .diff-view {
   min-height: 700px;
 }

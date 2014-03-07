@@ -563,6 +563,7 @@ function init_websocket(){
     $text_writer.addClass("label-important");
     $text_writer.show();
     $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
+    $target.find('tr:has(:header)').addClass("header-tr");
     setColorbox($target.find('.thumbnail'));
 
     // チェックボックスの進捗表示
