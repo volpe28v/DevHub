@@ -160,13 +160,13 @@ function init_sharememo(){
   $(".share-memo-tab").each(function(){
     var no = $(this).data('no');
     $(this).append(
-      $('<a/>').html(no + " ").addClass("share-memo-tab-elem")
+      $('<a/>').addClass("share-memo-tab-elem")
                .attr('id',"share_memo_tab_" + no)
                .attr('href',"#share_memo_" + no)
                .attr('data-toggle',"tab")
                .attr('data-no',no)
                .css('display','none').append(
-        $('<span/>')).append(
+        $('<span/>').html(" - No." + no + " - ")).append(
         $('<div/>').addClass("writer")).append(
         $('<div/>').append(
           $('<span/>').addClass("timestamp"))));
@@ -581,6 +581,9 @@ function init_websocket(){
     }
 
     var title = $target.find('.code-out').text().split("\n")[0];
+    if (!title.match(/\S/g)){
+      title = " - No." + no + " - ";
+    }
     $target_tab.children('span').html(title);
 
     var $writer = $target_tab.children('.writer');
