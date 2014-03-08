@@ -6,3 +6,7 @@
 .file-size {
   text-align: right !important;
 }
+
+.thumbnail {
+  display: inline-block!important;
+}
