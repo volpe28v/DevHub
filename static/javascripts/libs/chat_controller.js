@@ -75,6 +75,10 @@ ChatController.prototype = {
     $('#message').focus();
   },
 
+  setWidth: function(width){
+    $('#chat_area').css('width',width + 'px').css('margin',0);
+  },
+
   init_socket: function(){
     var that = this;                    
     this.socket.on('message_own', function(data) {
