@@ -48,6 +48,21 @@ function ChatController(param){
     that.socket.emit('pomo', {name: name, msg: message});
     return false;
   });
+
+  this.dropZone = new DropZone({
+    dropTarget: $('#chat_area'),
+    fileTarget: $('#upload_chat'),
+    alertTarget: $('#alert_chat_area'),
+    uploadedAction: function(that, res){
+      $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
+    }
+  });
+
+  // アップロードボタン
+  $('#upload_chat_button').click(function(){
+    $('#upload_chat').click();
+    return false;
+  });
 }
 
 ChatController.prototype = {

@@ -586,125 +586,22 @@ function change_style(style_name) {
   }
 }
 
-function show_share_memo_alert($target, title, text){
-  var $alert = $('<div>').addClass('share-memo-alert alert alert-error').css('display','none')
-    .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
-    .prependTo($target)
-    .slideDown('normal', function(){
-      var that = this;
-      setTimeout(function(){
-        if ($(that)){
-          $(that).slideUp('normal',function(){
-            $(this).remove();
-          });
-        }
-      }, 10000);
-    });
-}
-
-function show_share_memo_uploading($target, title, text){
-  return $alert = $('<div>').addClass('share-memo-alert alert alert-info').css('display','none')
-    .html('<a class="close" data-dismiss="alert">x</a><strong>' + title + '</strong> ' + text )
-    .prependTo($target)
-    .slideDown('normal');
-}
-
-function hide_share_memo_alert($alert){
-  $alert.slideUp('normal',function(){
-    $(this).remove();
-  });
-}
-
 function init_dropzone(){
-  // File API が使用できない場合は諦めます.
-  if(!window.FileReader) {
-    show_share_memo_alert('Drop image', 'This browser does not support dropping image files.');
-    return false;
-  }
+  var dropZone = new DropZone({
+    dropTarget: $('.code-out'),
+    alertTarget: $('#alert_memo_area'),
+    uploadedAction: function(that, res){
+      var share_memo_no = $(that).closest('.share-memo').data('no');
 
-  var cancelEvent = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  }
+      // メモの先頭に画像を差し込む
+      writing_text[share_memo_no].text = res.fileName + ' ' + '\n' + writing_text[share_memo_no].text;
 
-  var drop_file_action = function($target, call_back){
-    return function(event){
-      var that = this;
-      var file = event.originalEvent.dataTransfer.files[0];
-
-      upload_file_with_ajax(that, file, $target, call_back);
-      return false;
+      // 変更をサーバへ通知
+      var $target_code = $(that).closest('.share-memo').children('.code');
+      $target_code.val(writing_text[share_memo_no].text);
+      socket.emit('text',{no: share_memo_no, text: $target_code.val()});
     }
-  }
-
-  var select_file_action = function($target, call_back){
-    return function(event){
-      var that = this;
-      var file = $(that).prop('files')[0];
-
-      upload_file_with_ajax(that, file, $target, call_back);
-      return false;
-    }
-  }
-
-  function upload_file_with_ajax(that, file, $target, call_back){
-    var $alert = show_share_memo_uploading($target, 'Uploading', 'now uploading "' + file.name + '" ... ');
-
-    var formData = new FormData();
-    formData.append('file', file);
-
-    $.ajax('/upload' , {
-      type: 'POST',
-      contentType: false,
-      processData: false,
-      data: formData,
-      error: function() {
-        hide_share_memo_alert($alert);
-        show_share_memo_alert($target, 'Drop error', 'failed to file upload.');
-      },
-      success: function(res) {
-        hide_share_memo_alert($alert);
-        call_back(that, res);
-      }
-    });
-  }
- 
-  // 共有メモエリアへの画像ドロップ処理
-  var $dropzone = $(".code-out");
-  $dropzone.bind("dragenter", cancelEvent);
-  $dropzone.bind("dragover", cancelEvent);
-
-  $dropzone.on('drop', drop_file_action($('#alert_memo_area'), function(that, res){
-    var share_memo_no = $(that).closest('.share-memo').data('no');
-
-    // メモの先頭に画像を差し込む
-    writing_text[share_memo_no].text = res.fileName + ' ' + '\n' + writing_text[share_memo_no].text;
-
-    // 変更をサーバへ通知
-    var $target_code = $(that).closest('.share-memo').children('.code');
-    $target_code.val(writing_text[share_memo_no].text);
-    socket.emit('text',{no: share_memo_no, text: $target_code.val()});
-  }));
-
-  // チャットエリアへの画像ドロップ処理
-  var $dropchatzone = $("#chat_area");
-  $dropchatzone.bind("dragenter", cancelEvent);
-  $dropchatzone.bind("dragover", cancelEvent);
-
-  $dropchatzone.on('drop', drop_file_action($('#alert_chat_area'), function(that, res){
-    $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
-  }));
-
-  // アップロードボタン
-  $('#upload_chat_button').click(function(){
-    $('#upload_chat').click();
-    return false;
   });
-
-  $('#upload_chat').on('change', select_file_action($('#alert_chat_area'), function(that, res){
-    $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
-  }));
 }
 
 function setColorbox($dom){
