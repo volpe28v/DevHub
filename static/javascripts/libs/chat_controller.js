@@ -5,67 +5,63 @@ function ChatController(param){
 
   this.latest_login_list = [];
 
+  this.init_chat();
   this.init_notification();
   this.init_socket();
-
-  var that = this;
-  $('#list').on('click', '.remove_msg', function(){
-    var id = "#" + $(this).closest('li').attr('id');
-    var data_id = $(this).closest('li').data('id');
-    $(id).fadeOut();
-    that.send_remove_msg(data_id);
-  });
-
-  $('#list').on('click','.login-name-base', function(){
-    var name = $(this).text();
-    $('#message').val($('#message').val() + " @" + name + "さん ");
-    $('#message').focus();
-  });
-
-  $('#form').submit(function() {
-    var name = $('#name').val();
-    var message = $('#message').val();
-    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-
-    if ( message && name ){
-      that.socket.emit('message', {name:name, msg:message});
-      $('#message').attr('value', '');
-
-      if (that.login_name != name){
-        that.login_name = name;
-        that.changedLoginName(name);
-      }
-    }
-    return false;
-  });
-
-  $('#pomo').click(function(){
-    var name = $('#name').val();
-    var message = $('#message').val();
-    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-
-    $('#message').attr('value', '');
-    that.socket.emit('pomo', {name: name, msg: message});
-    return false;
-  });
-
-  this.dropZone = new DropZone({
-    dropTarget: $('#chat_area'),
-    fileTarget: $('#upload_chat'),
-    alertTarget: $('#alert_chat_area'),
-    uploadedAction: function(that, res){
-      $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
-    }
-  });
-
-  // アップロードボタン
-  $('#upload_chat_button').click(function(){
-    $('#upload_chat').click();
-    return false;
-  });
+  this.init_dropzone();
 }
 
 ChatController.prototype = {
+  init_chat: function(){
+    var that = this;
+    $('#list').on('click', '.remove_msg', function(){
+      var id = "#" + $(this).closest('li').attr('id');
+      var data_id = $(this).closest('li').data('id');
+      $(id).fadeOut();
+      that.send_remove_msg(data_id);
+    });
+
+    $('#list').on('click','.login-name-base', function(){
+      var name = $(this).text();
+      $('#message').val($('#message').val() + " @" + name + "さん ");
+      $('#message').focus();
+    });
+
+    $('#form').submit(function() {
+      var name = $('#name').val();
+      var message = $('#message').val();
+      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
+
+      if ( message && name ){
+        that.socket.emit('message', {name:name, msg:message});
+        $('#message').attr('value', '');
+
+        if (that.login_name != name){
+          that.login_name = name;
+          that.changedLoginName(name);
+        }
+      }
+      return false;
+    });
+
+    $('#pomo').click(function(){
+      var name = $('#name').val();
+      var message = $('#message').val();
+      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
+
+      $('#message').attr('value', '');
+      that.socket.emit('pomo', {name: name, msg: message});
+      return false;
+    });
+
+    // アップロードボタン
+    $('#upload_chat_button').click(function(){
+      $('#upload_chat').click();
+      return false;
+    });
+  },
+
+
   setName: function(name){
     this.login_name = name;
     $('#name').val(name);
@@ -130,7 +126,7 @@ ChatController.prototype = {
         });
       }
 
-      this.latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
+      that.latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
     });
 
     this.socket.on('latest_log', function(msgs) {
@@ -138,7 +134,18 @@ ChatController.prototype = {
         that.append_msg(msgs[i])
       }
 
-      setColorbox($('#chat_body').find('.thumbnail'));
+      that.setColorbox($('#chat_body').find('.thumbnail'));
+    });
+  },
+
+  init_dropzone: function(){
+    this.dropZone = new DropZone({
+      dropTarget: $('#chat_area'),
+      fileTarget: $('#upload_chat'),
+      alertTarget: $('#alert_chat_area'),
+      uploadedAction: function(that, res){
+        $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
+      }
     });
   },
 
