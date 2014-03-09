@@ -1,5 +1,3 @@
-var login_name = '';
-var LOGIN_COLOR_MAX = 9;
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_STYLE_NAME = "dev_hub_style_name";
 var COOKIE_EXPIRES = 365;
@@ -48,7 +46,6 @@ $(function() {
     socket: socket,
     faviconNumber: faviconNumber,
     changedLoginName: function(name){
-      login_name = name;
       shareMemoController.setName(name);
     }
   });
@@ -101,10 +98,8 @@ $(function() {
         },500);
       },500);
   }else{
-    login_name = $.cookie(COOKIE_NAME);
-    chatController.setName(login_name);
+    chatController.setName($.cookie(COOKIE_NAME));
     chatController.focus();
-    shareMemoController.setName(login_name);
   }
 
   $(window).on("blur focus", function(e) {
@@ -132,7 +127,7 @@ function adjust_display_size_for_mobile(){
     $('.flipsnap').css('width',window_width * 2 + 'px');
 
     chatController.setWidth(window_width);
-    $('#memo_area').css('width',window_width + 'px').css('margin',0);
+    shareMemoController.setWidth(window_width);
     Flipsnap('.flipsnap').refresh();
 }
 
@@ -148,7 +143,6 @@ function init_websocket(){
 
   socket.on('set_name', function(name) {
     chatController.setName(name);
-    $('#login_name').val(name);
   });
 
   var login_action = function(){

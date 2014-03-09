@@ -19,6 +19,10 @@ ShareMemoController.prototype = {
   setName: function(name){
     this.login_name = name;
   },
+  
+  setWidth: function(width){
+    $('#memo_area').css('width',width + 'px').css('margin',0);
+  },
 
   init_sharememo: function(){
     for (var i = SHARE_MEMO_NUMBER; i > 1; i--){

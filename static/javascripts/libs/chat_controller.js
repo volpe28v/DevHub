@@ -1,3 +1,5 @@
+var LOGIN_COLOR_MAX = 9;
+
 function ChatController(param){
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
@@ -65,6 +67,7 @@ ChatController.prototype = {
   setName: function(name){
     this.login_name = name;
     $('#name').val(name);
+    this.changedLoginName(name);
   },
 
   focus: function(){
