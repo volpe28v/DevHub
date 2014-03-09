@@ -32,7 +32,6 @@ ChatController.prototype = {
     $('#form').submit(function() {
       var name = $('#name').val();
       var message = $('#message').val();
-      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
 
       if ( message && name ){
         that.socket.emit('message', {name:name, msg:message});
@@ -48,11 +47,16 @@ ChatController.prototype = {
 
     $('#pomo').click(function(){
       var name = $('#name').val();
-      var message = $('#message').val();
-      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
 
-      $('#message').attr('value', '');
-      that.socket.emit('pomo', {name: name, msg: message});
+      if (name){
+        $('#message').attr('value', '');
+        that.socket.emit('pomo', {name: name, msg: ''});
+
+        if (that.login_name != name){
+          that.login_name = name;
+          that.changedLoginName(name);
+        }
+      }
       return false;
     });
 

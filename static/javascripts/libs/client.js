@@ -47,6 +47,7 @@ $(function() {
     faviconNumber: faviconNumber,
     changedLoginName: function(name){
       shareMemoController.setName(name);
+      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
     }
   });
 
