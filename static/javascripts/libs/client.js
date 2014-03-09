@@ -143,6 +143,7 @@ function init_websocket(){
 
   socket.on('set_name', function(name) {
     chatController.setName(name);
+    $('#login_name').val(name);
   });
 
   var login_action = function(){
