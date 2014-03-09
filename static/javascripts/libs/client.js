@@ -48,7 +48,10 @@ $(function() {
 
   chatController = new ChatController({
     socket: socket,
-    faviconNumber: faviconNumber
+    faviconNumber: faviconNumber,
+    changedLoginName: function(name){
+      login_name = name;
+    }
   });
 
   init_sharememo();
@@ -104,8 +107,8 @@ $(function() {
       },500);
   }else{
     login_name = $.cookie(COOKIE_NAME);
-    $('#name').val(login_name);
-    $('#message').focus();
+    chatController.setName(login_name);
+    chatController.focus();
   }
 
   $(window).on("blur focus", function(e) {
@@ -195,12 +198,9 @@ function init_websocket(){
   });
 
   socket.on('set_name', function(name) {
-    $('#name').val(name);
+    chatController.setName(name);
     $('#login_name').val(name);
   });
-
-  // for chat
-  chatController.bindSocketEvent();
 
   // for share memo
   $(".code").autofit({min_height: CODE_MIN_HEIGHT});
@@ -380,23 +380,13 @@ function init_websocket(){
     }
   });
 
-  $('#pomo').click(function(){
-    var name = $('#name').val();
-    var message = $('#message').val();
-    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-
-    $('#message').attr('value', '');
-    socket.emit('pomo', {name: name, msg: message});
-    return false;
-  });
-
   var login_action = function(){
     var name = $('#login_name').val();
     if ( name != "" ){
       $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-      socket.emit('name', {name: $.cookie(COOKIE_NAME)});
-      $('#name').val($.cookie(COOKIE_NAME));
-      $('#message').focus();
+      socket.emit('name', {name: name});
+      chatController.setName(name);
+      chatController.focus();
     }
     $('#name_in').modal('hide')
   };
@@ -682,7 +672,7 @@ function init_dropzone(){
  
   // 共有メモエリアへの画像ドロップ処理
   var $dropzone = $(".code-out");
-  $dropzone.bind("dradenter", cancelEvent);
+  $dropzone.bind("dragenter", cancelEvent);
   $dropzone.bind("dragover", cancelEvent);
 
   $dropzone.on('drop', drop_file_action($('#alert_memo_area'), function(that, res){
@@ -699,7 +689,7 @@ function init_dropzone(){
 
   // チャットエリアへの画像ドロップ処理
   var $dropchatzone = $("#chat_area");
-  $dropchatzone.bind("dradenter", cancelEvent);
+  $dropchatzone.bind("dragenter", cancelEvent);
   $dropchatzone.bind("dragover", cancelEvent);
 
   $dropchatzone.on('drop', drop_file_action($('#alert_chat_area'), function(that, res){

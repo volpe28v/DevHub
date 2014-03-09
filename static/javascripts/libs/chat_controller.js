@@ -1,8 +1,13 @@
 function ChatController(param){
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
+  this.changedLoginName = param.changedLoginName;
 
   this.latest_login_list = [];
+
+  this.init_notification();
+  this.init_socket();
+
   var that = this;
   $('#list').on('click', '.remove_msg', function(){
     var id = "#" + $(this).closest('li').attr('id');
@@ -17,12 +22,45 @@ function ChatController(param){
     $('#message').focus();
   });
 
-  this.init_notification();
+  $('#form').submit(function() {
+    var name = $('#name').val();
+    var message = $('#message').val();
+    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
+
+    if ( message && name ){
+      that.socket.emit('message', {name:name, msg:message});
+      $('#message').attr('value', '');
+
+      if (that.login_name != name){
+        that.login_name = name;
+        that.changedLoginName(name);
+      }
+    }
+    return false;
+  });
+
+  $('#pomo').click(function(){
+    var name = $('#name').val();
+    var message = $('#message').val();
+    $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
+
+    $('#message').attr('value', '');
+    that.socket.emit('pomo', {name: name, msg: message});
+    return false;
+  });
 }
 
 ChatController.prototype = {
-  // public
-  bindSocketEvent: function(){
+  setName: function(name){
+    this.login_name = name;
+    $('#name').val(name);
+  },
+
+  focus: function(){
+    $('#message').focus();
+  },
+
+  init_socket: function(){
     var that = this;                    
     this.socket.on('message_own', function(data) {
       var $msg = that.prepend_own_msg(data);
@@ -83,22 +121,8 @@ ChatController.prototype = {
 
       setColorbox($('#chat_body').find('.thumbnail'));
     });
-
-    $('#form').submit(function() {
-      var name = $('#name').val();
-      var message = $('#message').val();
-      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-
-      if ( message && name ){
-        login_name = name;
-        socket.emit('message', {name:name, msg:message});
-        $('#message').attr('value', '');
-      }
-      return false;
-    });
   },
 
-  // private
   suggest_start: function(list){
     var suggest_list = []
       for (var i = 0; i < list.length; ++i){
@@ -161,12 +185,12 @@ ChatController.prototype = {
   },
 
   get_msg_html: function(data){
-    if ( data.name == login_name ){
+    if ( data.name == this.login_name ){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + data.date + '</span></td></tr></table>'),
         css: "own_msg"
       };
-    } else if (this.include_target_name(data.msg,login_name)){
+    } else if (this.include_target_name(data.msg,this.login_name)){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + data.date + '</span></td></tr></table>'),
           css: "target_msg"
@@ -230,7 +254,7 @@ ChatController.prototype = {
     var deco_msg = msg;
     var name_reg = RegExp("@(.+?)さん", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == login_name){
+      if (arguments[1] == this.login_name){
         return '<span class="label label-important">' + arguments[0] + '</span>'
       }else{
         return '<span class="label label-info">' + arguments[0] + '</span>'
