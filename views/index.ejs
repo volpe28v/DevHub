@@ -170,6 +170,16 @@
         </div>
       </div>
     </div>
+
+    <!-- JsRender Templates -->
+    <script id="loginNameTmpl" type="text/x-jsrender">
+      {{if pomo_min == 0}}
+      <span class="login-elem login-name{{>color_id}}"><span class="name">{{>name}}</span>{{>place}}</span><wbr>
+      {{else}}
+      <span class="login-elem login-name-pomo"><span class="name">{{>name}}</span>{{>place}} <span class="pomo-min">{{>pomo_min}}min</span></span><wbr>
+      {{/if}}
+    </script>
+
   </body>
 </html>
 

@@ -105,20 +105,21 @@ ChatController.prototype = {
       $('#login_list_loader').hide();
 
       var out_list = "";
+      var login_elem_list = new Array();
       for (var i = 0; i < login_list.length; ++i){
-        var login_elem = "";
         var place = "";
         if ( login_list[i].place != "" ){
           place = "@" + login_list[i].place;
         }
-        if ( login_list[i].pomo_min > 0 ){
-          login_elem = '<span class="login-elem login-name-pomo"><span class="name">' + login_list[i].name + '</span>' + place + ' <span class="pomo-min">' + login_list[i].pomo_min + 'min</span></span>'
-        }else{
-          login_elem = '<span class="login-elem login-name' + that.get_color_id_by_name_id(login_list[i].id) + '"><span class="name">' + login_list[i].name + '</span>' + place + '</span>'
-        }
-        out_list += login_elem + "<wbr>";
+
+        login_elem_list.push({
+          color_id: that.get_color_id_by_name_id(login_list[i].id),
+          name: login_list[i].name,
+          place: place,
+          pomo_min: login_list[i].pomo_min
+        });
       }
-      out_list = "<nobr>" + out_list + "</nobr>";
+      out_list = "<nobr>" + $('#loginNameTmpl').render(login_elem_list) + "</nobr>";
 
       if ($('#login_list').html() != out_list){
         $('#login_list').html(out_list);
