@@ -10,7 +10,7 @@
   }
 
   function sanitize(html, whitelist) {
-    whitelist = whitelist || {'font': ['color'], 'strong': [], 'b': [], 'i': [], 'br': [] };
+    whitelist = whitelist || {'font': ['color','size'], 'b': [], 'br': [], 'h1':[], 'h2':[], 'h3':[]};
     var output = $('<div>'+html+'</div>');
     output.find('*').each(function() {
       var allowedAttrs = whitelist[this.nodeName.toLowerCase()];
