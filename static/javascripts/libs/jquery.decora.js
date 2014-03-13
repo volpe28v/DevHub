@@ -142,6 +142,7 @@
 
   $.decora = {
     to_html: function(target_text){
+      target_text = sanitize(target_text);
       target_text = _decorate_link_tag( target_text );
       target_text = _decorate_download_tag( target_text );
       target_text = _decorate_img_tag( target_text, 200 );
@@ -152,6 +153,7 @@
       return target_text;
     },
     message_to_html: function(target_text){
+      target_text = sanitize(target_text);
       target_text = target_text.replace(/(^|\s+)+(SUCCESS|OK|YES)($|\s)+/, function(){ return ' <span class="label label-success">' + arguments[2] + '</span> '});
       target_text = target_text.replace(/(^|\s+)+(FAILURE|NG|NO)($|\s)+/, function(){ return ' <span class="label label-important">' + arguments[1] + '</span> '});
       target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
