@@ -163,11 +163,15 @@ a:hover {
   min-height: 700px;
   margin-top: 0px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 21px;
 }
 
 .code-out table{
   width: 100%;
+}
+
+.code-out table tr{
+  height: 21px;
 }
 
 .code-out h1,
