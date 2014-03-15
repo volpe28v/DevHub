@@ -40,24 +40,7 @@ ShareMemoController.prototype = {
     });
 
     $(".share-memo").each(function(){
-      $(this).append(
-        $('<button/>').addClass("sync-text btn btn-primary").css("float","left").html('<i class="icon-edit icon-white"></i> Edit')).append(
-        $('<button/>').addClass("fix-text btn btn-info").css("float","left").css("display","none").html('<i class="icon-edit icon-white"></i> Done')).append(
-        $('<button/>').addClass("diff-done btn btn-info").css("float","left").css("display","none").html('<i class="icon-resize-vertical icon-white"></i> Done')).append(
-        $('<div/>').addClass("btn-group").css("float","left").append(
-          $('<a/>').addClass("btn dropdown-toggle index-button hidden-phone").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-align-left"></i> Index ').append(
-            $('<span/>').addClass("caret"))).append(
-          $('<ul/>').addClass("dropdown-menu index-list"))).append(
-        $('<div/>').addClass("btn-group").css("float","left").append(
-          $('<a/>').addClass("btn dropdown-toggle diff-button hidden-phone").attr('data-toggle',"dropdown").attr('href',"#").html('<i class="icon-resize-vertical"></i> Diff ').append(
-            $('<span/>').addClass("caret"))).append(
-          $('<ul/>').addClass("dropdown-menu diff-list"))).append(
-        $('<span/>').addClass("text-writer label label-info")).append(
-        $('<span/>').addClass("checkbox-count").css("display","none")).append(
-        $('<div/>').addClass('clearfix')).append(
-        $('<textarea/>').addClass("code code-unselect").css("display","none").attr("placeholder", "Write here")).append(
-        $('<pre/>').addClass("text-base-style").append($('<div/>').addClass("code-out"))).append(
-        $('<div/>').addClass("diff-view").css("display","none"));
+      $(this).append($('#shareMemoTmpl').render());
     });
   },
 
@@ -261,7 +244,7 @@ ShareMemoController.prototype = {
     $('#share-memo').on('click','.share-memo-tab-elem', function(){
       var writing_no = writing_loop_timer.code_no;
       if ( writing_no != 0){
-        $share_memo= $('#share_memo_' + writing_no);
+        $share_memo = $('#share_memo_' + writing_no);
         switchFixShareMemo($share_memo, 1);
       }
       $('#memo_area').animate({ scrollTop: 0 }, 'fast');
@@ -330,7 +313,7 @@ ShareMemoController.prototype = {
         $target.find('.checkbox-count').hide();
       }
 
-      var title = $target.find('.code-out').text().split("\n")[0];
+      var title = $target.find('td:first').text();
       if (!title.match(/\S/g)){
         title = " - No." + no + " - ";
       }

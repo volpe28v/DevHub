@@ -114,6 +114,7 @@ a:hover {
 
 .share-memo pre {
   margin-top: 2px;
+  line-height: 0;
 }
 
 .share-memo-tab-elem {

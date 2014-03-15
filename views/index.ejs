@@ -182,14 +182,48 @@
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">
       <a class="share-memo-tab-elem" id="share_memo_tab_{{>no}}" href="#share_memo_{{>no}}" data-toggle="tab" data-no="{{>no}}" style="display:none">
-        <span> - No.{{>no}} - 
-          <div class="writer"></div>
-          <div>
-            <span class="timestamp"></span>
-          </div>
-        </span>
+        <span> - No.{{>no}} - </span>
+        <div class="writer"></div>
+        <div>
+          <span class="timestamp"></span>
+        </div>
       </a>
     </script>
+
+    <script id="shareMemoTmpl" type="text/x-jsrender">
+      <button class="sync-text btn btn-primary" style="float: left">
+        <i class="icon-edit icon-white"></i> Edit
+      </button>
+      <button class="fix-text btn btn-info" style="float: left; display: none">
+        <i class="icon-edit icon-white"></i> Done
+      </button>
+      <button class="diff-done btn btn-info" style="float: left; display: none">
+        <i class="icon-resize-vertical icon-white"></i> Done
+      </button>
+      <div class="btn-group" style="float: left">
+        <a class="btn dropdown-toggle index-button hidden-phone" data-toggle="dropdown" href="#">
+          <i class="icon-align-left"></i> Index
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu index-list"></ul>
+      </div>
+      <div class="btn-group" style="float: left">
+        <a class="btn dropdown-toggle diff-button hidden-phone" data-toggle="dropdown" href="#">
+          <i class="icon-resize-vertical"></i> Diff
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu diff-list"></ul>
+      </div>
+      <span class="text-writer label label-info"></span>
+      <span class="checkbox-count" style="display: none"></span>
+      <div class="clearfix"></div>
+      <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+      <pre class="text-base-style">
+        <div class="code-out"></div>
+      </pre>
+      <div class="diff-view" style="display: none"></div>
+    </script>
+
   </body>
 </html>
 
