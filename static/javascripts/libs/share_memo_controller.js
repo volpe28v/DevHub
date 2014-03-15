@@ -36,17 +36,7 @@ ShareMemoController.prototype = {
 
     $(".share-memo-tab").each(function(){
       var no = $(this).data('no');
-      $(this).append(
-        $('<a/>').addClass("share-memo-tab-elem")
-        .attr('id',"share_memo_tab_" + no)
-        .attr('href',"#share_memo_" + no)
-        .attr('data-toggle',"tab")
-        .attr('data-no',no)
-        .css('display','none').append(
-          $('<span/>').html(" - No." + no + " - ")).append(
-          $('<div/>').addClass("writer")).append(
-          $('<div/>').append(
-            $('<span/>').addClass("timestamp"))));
+      $(this).append($('#shareMemoTabTmpl').render({no: no}));
     });
 
     $(".share-memo").each(function(){

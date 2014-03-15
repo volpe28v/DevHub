@@ -180,6 +180,16 @@
       {{/if}}
     </script>
 
+    <script id="shareMemoTabTmpl" type="text/x-jsrender">
+      <a class="share-memo-tab-elem" id="share_memo_tab_{{>no}}" href="#share_memo_{{>no}}" data-toggle="tab" data-no="{{>no}}" style="display:none">
+        <span> - No.{{>no}} - 
+          <div class="writer"></div>
+          <div>
+            <span class="timestamp"></span>
+          </div>
+        </span>
+      </a>
+    </script>
   </body>
 </html>
 
