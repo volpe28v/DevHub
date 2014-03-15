@@ -232,7 +232,7 @@ ChatController.prototype = {
     }else{
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + data.date + '</span></td></tr></table>'),
-          css: null
+          css: "normal_msg"
       };
     }
   },

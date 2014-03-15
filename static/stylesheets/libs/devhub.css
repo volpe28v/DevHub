@@ -49,7 +49,7 @@ a:hover {
   color: deeppink;
 }
 
-.msg {
+.normal_msg {
   color: #555;
 }
 
@@ -68,7 +68,7 @@ a:hover {
 }
 
 .target_msg_date {
-  color: wheat;
+  color: #d8cbcc;
   float: right;
   margin-right: 14px;
 }
@@ -240,7 +240,6 @@ a:hover {
 }
 
 #list li{
-  color: #555;
   line-height: 21px;
   margin: 0px;
   padding: 0px;
@@ -253,11 +252,13 @@ a:hover {
 }
 
 .target_msg{
-  background-color: cornsilk;
+  background-color: #f8ebec;
+  color: #c1454f;
 }
 
 .own_msg{
   background-color: lightcyan;
+  color: #336699;
 }
 
 #login_list {
