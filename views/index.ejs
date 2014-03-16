@@ -22,6 +22,7 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="/javascripts/perfect-scrollbar-0.4.5.with-mousewheel.min.js"></script>
+    <script type="text/javascript" src="http://www.jsviews.com/download/jsviews.min.js"></script>
     <script type="text/javascript" src="/javascripts/devhub.min.js"></script>
     <link href="/stylesheets/perfect-scrollbar-0.4.5.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/devhub.min.css" media="screen" rel="stylesheet" type="text/css" />
@@ -85,7 +86,9 @@
             <div class="dummy-top-space hidden-phone"></div>
             <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
             <div id="alert_chat_area"></div>
-            <div id="login_list" style="display:none"></div>
+            <div id="login_list">
+              <span id="login_list_body" style="display:none"></span>
+            </div>
             <form id="form" class="form-inline">
               <table>
                 <tr>

@@ -23,8 +23,8 @@ ChatController.prototype = {
       that.send_remove_msg(data_id);
     });
 
-    $('#list').on('click','.login-name-base', function(){
-      var name = $(this).text();
+    $('#chat_area').on('click', '.login-elem', function(){
+      var name = $(this).children(".name").text();
       $('#message').val($('#message').val() + " @" + name + "さん ");
       $('#message').focus();
     });
@@ -121,17 +121,10 @@ ChatController.prototype = {
       }
       out_list = "<nobr>" + $('#loginNameTmpl').render(login_elem_list) + "</nobr>";
 
-      if ($('#login_list').html() != out_list){
-        $('#login_list').html(out_list);
-        $('#login_list').fadeIn();
+      if ($('#login_list_body').html() != out_list){
+        $('#login_list_body').html(out_list);
+        $('#login_list_body').fadeIn();
         that.suggest_start(login_list);
-
-        // add click event for each login names.
-        $('#login_list .login-elem').click(function(){
-          var name = $(this).children(".name").text();
-          $('#message').val($('#message').val() + " @" + name + "さん ");
-          $('#message').focus();
-        });
       }
 
       that.latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
@@ -267,7 +260,7 @@ ChatController.prototype = {
       name_class = "login-name" + this.get_color_id_by_name_id(data.id);
     }
 
-    return '<table><tr><td nowrap valign="top"><span class="login-name-base ' + name_class + '">' + data.name + '</span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+    return '<table><tr><td nowrap valign="top"><span class="login-elem ' + name_class + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
   },
 
   get_color_id_by_name_id: function(id){
