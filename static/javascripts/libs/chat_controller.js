@@ -5,8 +5,10 @@ function ChatController(param){
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
 
-  this.latest_login_list = [];
+  // Models
+  this.loginElemList = [];
 
+  // initialize
   this.init_chat();
   this.init_notification();
   this.init_socket();
@@ -16,6 +18,10 @@ function ChatController(param){
 ChatController.prototype = {
   init_chat: function(){
     var that = this;
+
+    // ログインリストのバインディング
+    $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
+
     $('#list').on('click', '.remove_msg', function(){
       var id = "#" + $(this).closest('li').attr('id');
       var data_id = $(this).closest('li').data('id');
@@ -104,30 +110,22 @@ ChatController.prototype = {
     this.socket.on('list', function(login_list) {
       $('#login_list_loader').hide();
 
-      var out_list = "";
-      var login_elem_list = new Array();
+      var login_elems = [];
       for (var i = 0; i < login_list.length; ++i){
         var place = "";
         if ( login_list[i].place != "" ){
           place = "@" + login_list[i].place;
         }
 
-        login_elem_list.push({
-          color_id: that.get_color_id_by_name_id(login_list[i].id),
+        login_elems.push({
+          id: login_list[i].id,
+          color_id: "login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
           name: login_list[i].name,
           place: place,
           pomo_min: login_list[i].pomo_min
         });
       }
-      out_list = "<nobr>" + $('#loginNameTmpl').render(login_elem_list) + "</nobr>";
-
-      if ($('#login_list_body').html() != out_list){
-        $('#login_list_body').html(out_list);
-        $('#login_list_body').fadeIn();
-        that.suggest_start(login_list);
-      }
-
-      that.latest_login_list = login_list.sort(function(a,b){ return b.name.length - a.name.length });
+      $.observable(that.loginElemList).refresh(login_elems);
     });
 
     this.socket.on('latest_log', function(msgs) {
@@ -299,9 +297,9 @@ ChatController.prototype = {
   },
 
   get_id: function(name){
-    for(var i = 0; i < this.latest_login_list.length; ++i ){
-      if ( this.latest_login_list[i].name == name ){
-        return this.latest_login_list[i].id;
+    for(var i = 0; i < this.loginElemList.length; ++i ){
+      if ( this.loginElemList[i].name == name ){
+        return this.loginElemList[i].id;
       }
     }
     return 0;

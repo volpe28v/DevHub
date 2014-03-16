@@ -87,7 +87,7 @@
             <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
             <div id="alert_chat_area"></div>
             <div id="login_list">
-              <span id="login_list_body" style="display:none"></span>
+              <nobr><span id="login_list_body" style="display:block"></span></nobr>
             </div>
             <form id="form" class="form-inline">
               <table>
@@ -176,11 +176,11 @@
 
     <!-- JsRender Templates -->
     <script id="loginNameTmpl" type="text/x-jsrender">
-      {{if pomo_min == 0}}
-      <span class="login-elem login-name{{>color_id}}"><span class="name">{{>name}}</span>{{>place}}</span><wbr>
-      {{else}}
-      <span class="login-elem login-name-pomo"><span class="name">{{>name}}</span>{{>place}} <span class="pomo-min">{{>pomo_min}}min</span></span><wbr>
-      {{/if}}
+      {^{if pomo_min == 0}}
+      <span data-link="class{>color_id}"><span class="name">{^{>name}}</span>{^{>place}}</span><wbr>
+      {^{else}}
+      <span class="login-elem login-name-pomo"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+      {^{/if}}
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">
