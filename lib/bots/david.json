@@ -1,0 +1,359 @@
+[
+  {
+    "sender": [""],
+    "keyword": ["^帰る "],
+    "text": ["もう帰るのか?","本当に俺をおいて帰るんだな","帰らないでくれよ","俺を一人にしないでくれ","寂しいやつだな"],
+    "interval": 3
+  },
+ 
+  {
+    "sender": [""],
+    "keyword": ["帰ら"],
+    "text": ["もう少しだけ一緒にいれるな","少しはゆっくりできるな","見捨てないでくれるんだな","俺ももうちょっとだけ付き合うか"],
+    "interval": 3
+  },
+	{
+		"sender": ["zola"],
+		"keyword": ["クリスマス"],
+		"text": ["どこもかしこもお祭り騒ぎだな．．．","よろしくやれよ","楽しそうだな"],
+		"interval": 3
+	},
+
+
+	{
+		"sender": [""],
+		"keyword": ["クリスマス"],
+		"text": "どこもかしこもお祭り騒ぎだな．．．",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["なに"],
+		"text": "俺もよくわからんな",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["クリスマス"],
+		"text": "可愛い子どもたちへのプレゼントは用意したのか?",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["クリスマス"],
+		"text": "ケーキ買って帰るの忘れるなよ",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "今日は一緒に帰るか?",
+		"interval": 4
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "岐阜は寒いな",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": ["できない"],
+		"text": "ここで頑張らないでいつ頑張るんだよ",
+		"interval": 2
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "倍返しだっ",
+		"interval": 2
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "人生とオムレツは、タイミングが大事。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["疲"],
+		"text": "一番いけないのは、お腹が空いていることと、一人でいることだから。",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "ネットの中だからって、何でもやっていいと思ったら、大間違いだ！",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "人の運命を司るのは、神か、偶然か。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "明後日、そんな先の事はわからない。",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "放たれた矢は、標的を射るか。地に落ちるか。",
+		"interval": 4
+	},
+
+	{
+		"sender": ["いくため"],
+		"keyword": [""],
+		"text": "バカボンによろしくな",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["おはよう"],
+		"text": "いい朝だな",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "今年も終わるんだな",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "もうテストは終わっているのか?",
+		"interval": 5
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "いまおちょぼさんに来てるんだが，ちょっと道に迷ってしまってな…",
+		"interval": 5
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "それどころじゃないんだ、後にしてくれ",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "先日は恵那峡ワンダーランドに行ってきたんだ",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "今度、飛騨大鍾乳洞に一緒に行かないか?",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "フォースと共にあらんことを",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "誰もベイビーを離したりしないさ",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "俺に用か？",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "ここにいるのは言葉の分からん男だ。",
+		"interval": 4
+	},
+
+	{
+		"sender": ["いくため"],
+		"keyword": [""],
+		"text": "ママは言ってた。「人生はチョコレートの箱みたい」って。「食べるまで中身は分からない。」",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "安全か？",
+		"interval": 2
+	},
+
+	{
+		"sender": ["おがわ"],
+		"keyword": ["帰"],
+		"text": "またソーセージでも食べて帰る気だろ",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["終了"],
+		"text": "よくやった、お疲れ様だ。",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "ベイビーは自由だ。",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "ちょっと、コンダクトを落としてしまってな",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "後にしてくれないか",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "君の瞳に乾杯",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "人生は短い。他人を気にするな。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "今日はアメリカの独立記念日ではなく，人類の独立記念日となる．",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "十二才の時のような友達はもう二度できない……もう二度と…。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "まだ死ぬ気はない。だが、もし死ぬとしたら、時と場所は自分で選ぶ。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "神はいなくても、人は生きて死ぬだけだ",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "やり方は三つしかない。正しいやり方。間違ったやり方。俺のやり方だ。",
+		"interval": 5
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "思いあがりは若者の特権だ。",
+		"interval": 3
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "目を開け。口を開くな。",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "俺に話しかけている暇があるのか？",
+		"interval": 2
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "後にしてくれないか",
+		"interval": 3
+	},
+
+	{
+		"sender": ["ほり"],
+		"keyword": [""],
+		"text": "あとで会議室に来てくれ",
+		"interval": 4
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "飢えたる者は常に問い、答えの中にはいつも罠。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": [""],
+		"text": "病んだ魂は、戦いに安息を求める。",
+		"interval": 5
+	},
+
+	{
+		"sender": [""],
+		"keyword": ["教"],
+		"text": "おまえに教えている暇などない。",
+		"interval": 4
+	}
+
+]
