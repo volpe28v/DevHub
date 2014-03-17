@@ -78,7 +78,7 @@
         function(){
           var matched_link = arguments[1];
           var matched_name = arguments[2];
-          if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
+          if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP|\.xap)$/)){
             return matched_link;
           }else{
             return '<a href="' + matched_link + '" class="btn btn-default btn-mini" ><i class="icon-download-alt"></i>' + matched_name + '</a>';
@@ -100,6 +100,33 @@
           }else{
             return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
           }
+        });
+    return img_text;
+  }
+
+  // for SilverLight
+  function _decorate_xap_tag( text, default_width, default_height){
+    var img_text = text.replace(/((\S+?(\.xap))($|\s([0-9]+)\s([0-9]+)|\s))/g, // xxx.xap 180 90
+        function(){
+          var matched_link = arguments[2];
+          var width = arguments[5];
+          var height = arguments[6];
+          if (width == "" || !isFinite(width)){ // firefox では空文字になるので判定が必要
+            width = default_width;
+          }
+          if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
+            height = default_height;
+          }
+          return '<object data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="' + width + '" height="' + height + '">' +
+                 '  <param name="source" value="' + matched_link + '"/>' +
+                 '  <param name="onError" value="onSilverlightError" />' +
+                 '  <param name="background" value="white" />' +
+                 '  <param name="minRuntimeVersion" value="5.0.61118.0" />' +
+                 '  <param name="autoUpgrade" value="true" />' +
+                 '  <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=5.0.61118.0" style="text-decoration:none">' +
+                 '    <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Microsoft Silverlight の取得" style="border-style:none"/>' +
+                 '  </a>' +
+                 '</object>';
         });
     return img_text;
   }
@@ -146,6 +173,7 @@
       target_text = _decorate_link_tag( target_text );
       target_text = _decorate_download_tag( target_text );
       target_text = _decorate_img_tag( target_text, 200 );
+      target_text = _decorate_xap_tag( target_text, 200, 200 );
       target_text = _decorate_checkbox( target_text );
       target_text = _decorate_header( target_text );
       target_text = _decorate_line_color( target_text );
@@ -157,7 +185,6 @@
       target_text = target_text.replace(/(^|\s+)+(SUCCESS|OK|YES)($|\s)+/, function(){ return ' <span class="label label-success">' + arguments[2] + '</span> '});
       target_text = target_text.replace(/(^|\s+)+(FAILURE|NG|NO)($|\s)+/, function(){ return ' <span class="label label-important">' + arguments[1] + '</span> '});
       target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
- 
       target_text = _decorate_link_tag( target_text );
       target_text = _decorate_download_tag( target_text );
       target_text = _decorate_img_tag( target_text, 50 );
