@@ -298,6 +298,7 @@ ShareMemoController.prototype = {
       $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
       $target.find('tr:has(:header)').addClass("header-tr");
       that.setColorbox($target.find('.thumbnail'));
+      emojify.run($target.find('.code-out').get(0));
 
       // チェックボックスの進捗表示
       var checked_count = $target.find("input:checked").length;

@@ -71,8 +71,11 @@ ChatController.prototype = {
       $('#upload_chat').click();
       return false;
     });
-  },
 
+    emojify.setConfig({
+      img_dir          : 'img/emoji',  // Directory for emoji images
+    });
+  },
 
   setName: function(name){
     this.login_name = name;
@@ -93,12 +96,14 @@ ChatController.prototype = {
     this.socket.on('message_own', function(data) {
       var $msg = that.prepend_own_msg(data);
       that.setColorbox($msg.find('.thumbnail'));
+      emojify.run($msg.get(0));
       that.faviconNumber.up();
     });
 
     this.socket.on('message', function(data) {
       var $msg = that.prepend_msg(data);
       that.setColorbox($msg.find('.thumbnail'));
+      emojify.run($msg.get(0));
       that.do_notification(data);
       that.faviconNumber.up();
     });
@@ -134,6 +139,7 @@ ChatController.prototype = {
       }
 
       that.setColorbox($('#chat_body').find('.thumbnail'));
+      emojify.run($('#chat_body').get(0));
     });
   },
 
