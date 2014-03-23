@@ -71,7 +71,7 @@ $(function() {
     // モバイルの場合はフリックイベントでチャットとメモを切り替える
     $('.hidden-phone').remove();
     $('.visible-phone').show();
-    $('.text-writer').remove();
+    $('.text-date').remove();
     $('.checkbox-count').remove();
 
     // フリック用のサイズ調整

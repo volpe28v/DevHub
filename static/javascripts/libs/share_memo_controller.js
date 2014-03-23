@@ -75,9 +75,9 @@ ShareMemoController.prototype = {
       $share_memo.children('pre').hide();
       $share_memo.children('.fix-text').show();
       $share_memo.children('.sync-text').hide();
-      writing_loop_start(no);
 
-      code_prev[no] = $target_code.val();
+      code_prev = $target_code.val();
+      writing_loop_start(no);
     }
 
     $('.share-memo').on('click','.sync-text', function(){
@@ -226,6 +226,9 @@ ShareMemoController.prototype = {
     function switchFixShareMemo($share_memo, row){
       if ($share_memo.children('.code').css('display') == "none"){ return; }
 
+      var no = writing_loop_timer.code_no;
+      updateShareMemoBody($share_memo, that.writing_text[no].text);
+
       $share_memo.children('.code').hide();
       $share_memo.children('pre').fadeIn();
       $share_memo.children('.fix-text').hide();
@@ -241,6 +244,33 @@ ShareMemoController.prototype = {
       writing_loop_stop();
     }
 
+    function setToTable(html){
+      var table_html = "<table><tr><td>";
+      table_html += html.replace(/[\n]/g,"</td></tr><tr><td>");
+      return table_html += "</td></tr></table>";
+    }
+
+    function updateShareMemoBody($target, text){
+      $target.find('.code-out').html(setToTable($.decora.to_html(text)));
+      $target.find('tr:has(:header)').addClass("header-tr");
+      that.setColorbox($target.find('.thumbnail'));
+      emojify.run($target.find('.code-out').get(0));
+
+      // チェックボックスの進捗表示
+      var checked_count = $target.find("input:checked").length;
+      var checkbox_count = $target.find("input[type=checkbox]").length;
+      if (checkbox_count > 0){
+        $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
+        if (checked_count == checkbox_count){
+          $target.find('.checkbox-count').addClass('checkbox-count-done');
+        }else{
+          $target.find('.checkbox-count').removeClass('checkbox-count-done');
+        }
+      }else{
+        $target.find('.checkbox-count').hide();
+      }
+    }
+ 
     $('#share-memo').on('click','.share-memo-tab-elem', function(){
       var writing_no = writing_loop_timer.code_no;
       if ( writing_no != 0){
@@ -278,43 +308,24 @@ ShareMemoController.prototype = {
       var $target = $('#share_memo_' + no);
       var $target_tab = $('#share_memo_tab_' + no);
 
-      // 編集中の共有メモに他ユーザの変更が来たらフォーカスを外す
-      if ( no == writing_loop_timer.code_no && that.login_name != text_log.name ){
-        switchFixShareMemo($target, $target.children('.code').caretLine());
-      }
-
-      function setToTable(html){
-        var table_html = "<table><tr><td>";
-        table_html += html.replace(/[\n]/g,"</td></tr><tr><td>");
-        return table_html += "</td></tr></table>";
-      }
-
-      // for code_out
-      var $text_writer = $target.children('.text-writer');
-      $text_writer.html(text_log.date);
-      $text_writer.removeClass("label-info");
-      $text_writer.addClass("label-important");
-      $text_writer.show();
-      $target.find('.code-out').html(setToTable($.decora.to_html(text_log.text)));
-      $target.find('tr:has(:header)').addClass("header-tr");
-      that.setColorbox($target.find('.thumbnail'));
-      emojify.run($target.find('.code-out').get(0));
-
-      // チェックボックスの進捗表示
-      var checked_count = $target.find("input:checked").length;
-      var checkbox_count = $target.find("input[type=checkbox]").length;
-      if (checkbox_count > 0){
-        $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
-        if (checked_count == checkbox_count){
-          $target.find('.checkbox-count').addClass('checkbox-count-done');
-        }else{
-          $target.find('.checkbox-count').removeClass('checkbox-count-done');
+      if ( no == writing_loop_timer.code_no ){
+        // 編集中の共有メモに他ユーザの変更が来たら編集終了
+        if( that.login_name != text_log.name ){
+          switchFixShareMemo($target, $target.children('.code').caretLine());
         }
       }else{
-        $target.find('.checkbox-count').hide();
+        // 同共有メモを編集していない場合はメモ本文を更新
+        updateShareMemoBody($target, text_log.text);
       }
 
-      var title = $target.find('td:first').text();
+      // for writer 
+      var $text_date = $target.children('.text-date');
+      $text_date.html(text_log.date);
+      $text_date.removeClass("label-info");
+      $text_date.addClass("label-important");
+      $text_date.show();
+
+      var title = $('<div/>').html($.decora.to_html(text_log.text.split("\n")[0])).text();
       if (!title.match(/\S/g)){
         title = " - No." + no + " - ";
       }
@@ -340,9 +351,9 @@ ShareMemoController.prototype = {
         clearTimeout(update_timer[no]);
       }
       update_timer[no] = setTimeout(function(){
-        $text_writer.html(text_log.date);
-        $text_writer.removeClass("label-important");
-        $text_writer.addClass("label-info");
+        $text_date.html(text_log.date);
+        $text_date.removeClass("label-important");
+        $text_date.addClass("label-info");
         $writer.removeClass("writing-name");
         update_timer[no] = undefined;
       },3000);
@@ -352,16 +363,16 @@ ShareMemoController.prototype = {
       that.text_logs[data.no] = data.logs;
     });
 
-    var code_prev = [];
+    var code_prev = "";
 
     var writing_loop_timer = { id: -1, code_no: 0};
     function writing_loop_start(no){
       $target_code = $('#share_memo_' + no).children('.code');
       var loop = function() {
         var code = $target_code.val();
-        if (code_prev[no] != code) {
+        if (code_prev != code) {
           socket.emit('text',{no: no, text: code});
-          code_prev[no] = code;
+          code_prev = code;
         }
       };
       // 念のためタイマー止めとく
