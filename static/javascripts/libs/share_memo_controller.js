@@ -19,7 +19,7 @@ ShareMemoController.prototype = {
   setName: function(name){
     this.login_name = name;
   },
-  
+
   setWidth: function(width){
     $('#memo_area').css('width',width + 'px').css('margin',0);
   },
@@ -270,7 +270,7 @@ ShareMemoController.prototype = {
         $target.find('.checkbox-count').hide();
       }
     }
- 
+
     $('#share-memo').on('click','.share-memo-tab-elem', function(){
       var writing_no = writing_loop_timer.code_no;
       if ( writing_no != 0){
@@ -318,7 +318,7 @@ ShareMemoController.prototype = {
         updateShareMemoBody($target, text_log.text);
       }
 
-      // for writer 
+      // for writer
       var $text_date = $target.children('.text-date');
       $text_date.html(text_log.date);
       $text_date.removeClass("label-info");
@@ -329,7 +329,8 @@ ShareMemoController.prototype = {
       if (!title.match(/\S/g)){
         title = " - No." + no + " - ";
       }
-      $target_tab.children('span').html(title);
+      var $tab_title = $target_tab.children('span').html(title);
+      emojify.run($tab_title.get(0));
 
       var $writer = $target_tab.children('.writer');
       $writer.addClass("silent-name writing-name");
