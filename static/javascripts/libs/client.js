@@ -59,7 +59,8 @@ $(function() {
 
     $('#chat_area').addClass("perfect-scrollbar-style");
     $('#chat_area').perfectScrollbar({
-      wheelSpeed: 40
+      wheelSpeed: 40,
+      useKeyboard: false
     });
 
     $('#memo_area').addClass("perfect-scrollbar-style");

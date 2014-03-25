@@ -19,6 +19,26 @@ ChatController.prototype = {
   init_chat: function(){
     var that = this;
 
+    $('#message').textcomplete([
+      {
+        //match: /\B:([\-+\w]*)$/,
+        match: /\B:([\-+\w]*)$/,
+        search: function (term, callback) {
+            callback($.map(emojies, function (emoji) {
+                return emoji.indexOf(term) === 0 ? emoji : null;
+            }));
+        },
+        template: function (value) {
+            return '<img class="emoji-suggest" src="img/emoji/' + value + '.png"></img> ' + value;
+        },
+        replace: function (value) {
+            return ':' + value + ': ';
+        },
+        index: 1,
+        maxCount: 8
+      }
+    ]);
+
     // ログインリストのバインディング
     $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
 
@@ -152,19 +172,6 @@ ChatController.prototype = {
         $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
       }
     });
-  },
-
-  suggest_start: function(list){
-    var suggest_list = []
-      for (var i = 0; i < list.length; ++i){
-        suggest_list.push("@" + list[i].name + "さん");
-      }
-
-    if (this.suggest_obj == undefined){
-      this.suggest_obj = new Suggest.LocalMulti("message", "suggest", suggest_list, {interval: 200, dispAllKey: false, prefix: true, highlight: true});
-    }else{
-      this.suggest_obj.candidateList = suggest_list;
-    }
   },
 
   append_msg: function(data){

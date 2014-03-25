@@ -1,8 +1,8 @@
 var SHARE_MEMO_NUMBER = 20;
 var CODE_MIN_HEIGHT = 700;
-var CODE_OUT_ADJUST_HEIGHT = 200;
+var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
-var CODE_ADJUST_HEIGHT = 100;
+var CODE_ADJUST_HEIGHT = 200;
 
 function ShareMemoController(param){
   this.socket = param.socket;

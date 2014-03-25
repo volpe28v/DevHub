@@ -218,6 +218,17 @@ a:hover {
 
 }
 
+.textcomplete-wrapper {
+  width: 100%;
+}
+
+.emoji-suggest {
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-block;
+  margin-bottom: -0.3em;
+}
+
 #name, #message {
   background-color: aliceblue;
 }
