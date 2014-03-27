@@ -117,6 +117,7 @@ ChatController.prototype = {
       var $msg = that.prepend_own_msg(data);
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
+      that.play_sound(data.msg);
       that.faviconNumber.up();
     });
 
@@ -125,6 +126,7 @@ ChatController.prototype = {
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
       that.do_notification(data);
+      that.play_sound(data.msg);
       that.faviconNumber.up();
     });
 
@@ -331,6 +333,21 @@ ChatController.prototype = {
       initialWidth: "200px",
       initialHeight: "200px"
     });
+  },
+
+  play_sound: function(text){
+    var matched = text.match(/play:(.+)/);
+    if (RegExp.$1){
+      console.log(RegExp.$1);
+      $.ionSound({
+            sounds: [
+                RegExp.$1
+            ],
+            path: "/uploads/",
+            volume: "0.5"
+      });
+      $.ionSound.play(RegExp.$1);
+    }
   },
 
   init_notification: function(){
