@@ -431,7 +431,9 @@ ShareMemoController.prototype = {
         var share_memo_no = $(context).closest('.share-memo').data('no');
 
         // メモの先頭に画像を差し込む
-        that.writing_text[share_memo_no].text = res.fileName + ' ' + '\n' + that.writing_text[share_memo_no].text;
+        var text_array = that.writing_text[share_memo_no].text.split("\n");
+        text_array.splice($(context).caretLine()-1,0,res.fileName);
+        that.writing_text[share_memo_no].text = text_array.join("\n");
 
         // 変更をサーバへ通知
         var $target_code = $(context).closest('.share-memo').children('.code');
