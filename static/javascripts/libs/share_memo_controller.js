@@ -406,7 +406,8 @@ ShareMemoController.prototype = {
 
   init_dropzone: function(){
     var that = this;
-    var dropZone = new DropZone({
+    // メモ閲覧モード
+    new DropZone({
       dropTarget: $('.code-out'),
       alertTarget: $('#alert_memo_area'),
       uploadedAction: function(context, res){
@@ -419,6 +420,22 @@ ShareMemoController.prototype = {
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+      }
+    });
+
+    // メモ編集モード
+    new DropZone({
+      dropTarget: $('.code'),
+      alertTarget: $('#alert_memo_area'),
+      uploadedAction: function(context, res){
+        var share_memo_no = $(context).closest('.share-memo').data('no');
+
+        // メモの先頭に画像を差し込む
+        that.writing_text[share_memo_no].text = res.fileName + ' ' + '\n' + that.writing_text[share_memo_no].text;
+
+        // 変更をサーバへ通知
+        var $target_code = $(context).closest('.share-memo').children('.code');
+        $target_code.val(that.writing_text[share_memo_no].text);
       }
     });
   },
