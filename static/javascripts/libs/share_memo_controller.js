@@ -455,7 +455,7 @@ ShareMemoController.prototype = {
 
         // メモのキャレット位置にファイルを差し込む
         var text_array = that.writing_text[share_memo_no].text.split("\n");
-        text_array.splice(row - 1,0,res.fileName);
+        text_array.splice(row - 1,0,res.fileName + ' ');
         that.writing_text[share_memo_no].text = text_array.join("\n");
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
