@@ -245,8 +245,8 @@ ShareMemoController.prototype = {
     }
 
     function setToTable(html){
-      var table_html = "<table><tr><td>";
-      table_html += html.replace(/[\n]/g,"</td></tr><tr><td>");
+      var table_html = '<table><tr class="code-out-tr"><td>';
+      table_html += html.replace(/[\n]/g,'</td></tr class="code-out-tr"><tr class="code-out-tr"><td>');
       return table_html += "</td></tr></table>";
     }
 
@@ -406,7 +406,29 @@ ShareMemoController.prototype = {
 
   init_dropzone: function(){
     var that = this;
-    // メモ閲覧モード
+
+    // 閲覧モードの行指定でドロップ
+    new DropZone({
+      dropTarget: $('.code-out'),
+      dropChildSelector: '.code-out-tr',
+      alertTarget: $('#alert_memo_area'),
+      uploadedAction: function(context, res){
+        var share_memo_no = $(context).closest('.share-memo').data('no');
+        var row = $(context).closest("table").find("tr").index(context);
+
+        // ドロップ位置にファイルを差し込む
+        var text_array = that.writing_text[share_memo_no].text.split("\n");
+        text_array.splice(row + 1,0,res.fileName + " ");
+        that.writing_text[share_memo_no].text = text_array.join("\n");
+        var $target_code = $(context).closest('.share-memo').children('.code');
+        $target_code.val(that.writing_text[share_memo_no].text);
+
+        // 変更をサーバへ通知
+        socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+      }
+    });
+
+    // 閲覧モードの行以外の部分にドロップ
     new DropZone({
       dropTarget: $('.code-out'),
       alertTarget: $('#alert_memo_area'),
@@ -422,20 +444,19 @@ ShareMemoController.prototype = {
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
       }
     });
-
-    // メモ編集モード
+ 
+    // 編集モードへのドロップ
     new DropZone({
       dropTarget: $('.code'),
       alertTarget: $('#alert_memo_area'),
       uploadedAction: function(context, res){
         var share_memo_no = $(context).closest('.share-memo').data('no');
+        var row = $(context).caretLine();
 
-        // メモの先頭に画像を差し込む
+        // メモのキャレット位置にファイルを差し込む
         var text_array = that.writing_text[share_memo_no].text.split("\n");
-        text_array.splice($(context).caretLine()-1,0,res.fileName);
+        text_array.splice(row - 1,0,res.fileName);
         that.writing_text[share_memo_no].text = text_array.join("\n");
-
-        // 変更をサーバへ通知
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
       }

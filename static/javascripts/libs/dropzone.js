@@ -7,7 +7,12 @@ function DropZone(param){
   param.dropTarget.bind("dragenter", this.cancel_event);
   param.dropTarget.bind("dragover", this.cancel_event);
 
-  param.dropTarget.on('drop', this.drop_file_action(param.alertTarget, param.uploadedAction));
+  if (param.dropChildSelector == undefined){
+    param.dropTarget.on('drop', this.drop_file_action(param.alertTarget, param.uploadedAction));
+  }else{
+    // 子要素指定がある場合は子要素それぞれをバインドする
+    param.dropTarget.on('drop', param.dropChildSelector, this.drop_file_action(param.alertTarget, param.uploadedAction));
+  }
 
   if (param.fileTarget != undefined){
     param.fileTarget.on('change', this.select_file_action(param.alertTarget, param.uploadedAction));
