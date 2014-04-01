@@ -60,6 +60,10 @@
   }
 
   // private method
+  function _decorate_raw_tag( text ){
+    return text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
+  }
+
   function _decorate_link_tag( text ){
     var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
         function(){
@@ -169,16 +173,26 @@
 
   $.decora = {
     to_html: function(target_text){
-      target_text = sanitize(target_text);
-      target_text = _decorate_link_tag( target_text );
-      target_text = _decorate_download_tag( target_text );
-      target_text = _decorate_img_tag( target_text, 200 );
-      target_text = _decorate_xap_tag( target_text, 200, 200 );
-      target_text = _decorate_checkbox( target_text );
-      target_text = _decorate_header( target_text );
-      target_text = _decorate_line_color( target_text );
+      var bq_sepa_array = target_text.split("```");
+      for ( i = 0; i < bq_sepa_array.length; i++){
+        if (i%2 == 0){
+          // 装飾有り
+          var deco_text = sanitize(bq_sepa_array[i]);
+          deco_text = _decorate_link_tag( deco_text );
+          deco_text = _decorate_download_tag( deco_text );
+          deco_text = _decorate_img_tag( deco_text, 200 );
+          deco_text = _decorate_xap_tag( deco_text, 200, 200 );
+          deco_text = _decorate_checkbox( deco_text );
+          deco_text = _decorate_header( deco_text );
+          deco_text = _decorate_line_color( deco_text );
+          bq_sepa_array[i] = deco_text;
+        }else{
+          // 装飾無し
+          bq_sepa_array[i] = _decorate_raw_tag(bq_sepa_array[i]);
+        }
+      }
 
-      return target_text;
+      return bq_sepa_array.join('');
     },
     message_to_html: function(target_text){
       target_text = sanitize(target_text);
