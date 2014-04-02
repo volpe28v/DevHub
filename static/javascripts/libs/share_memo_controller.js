@@ -253,6 +253,9 @@ ShareMemoController.prototype = {
     function updateShareMemoBody($target, text){
       $target.find('.code-out').html(setToTable($.decora.to_html(text)));
       $target.find('tr:has(:header)').addClass("header-tr");
+      $target.find('td:has(.code-out-pre)').addClass("code-out-pre-td");
+      $target.find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
+      $target.find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
       that.setColorbox($target.find('.thumbnail'));
       emojify.run($target.find('.code-out').get(0));
 
