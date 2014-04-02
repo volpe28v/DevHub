@@ -220,15 +220,21 @@ ShareMemoController.prototype = {
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
-                         }
+      }
     });
 
     function switchFixShareMemo($share_memo, row){
       if ($share_memo.children('.code').css('display') == "none"){ return; }
 
+      // 最新の状態をサーバへ送信する
       var no = writing_loop_timer.code_no;
-      updateShareMemoBody($share_memo, that.writing_text[no].text);
+      var code = $share_memo.children('.code').val();
+      if (code_prev != code){
+        socket.emit('text',{no: no, text: code});
+      }
 
+      // 見栄えを閲覧モードへ
+      updateShareMemoBody($share_memo, that.writing_text[no].text);
       $share_memo.children('.code').hide();
       $share_memo.children('pre').fadeIn();
       $share_memo.children('.fix-text').hide();
