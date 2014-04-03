@@ -291,13 +291,15 @@ ChatController.prototype = {
   },
 
   deco_login_name: function(msg){
+    var that = this;
     var deco_msg = msg;
     var name_reg = RegExp("@(.+?)さん", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == this.login_name){
-        return '<span class="label label-important">' + arguments[0] + '</span>'
+      if (arguments[1] == that.login_name){
+        //return '<span class="label label-important">' + arguments[0] + '</span>'
+        return '<span class="target-me">' + arguments[0] + '</span>'
       }else{
-        return '<span class="label label-info">' + arguments[0] + '</span>'
+        return '<span class="target-other">' + arguments[0] + '</span>'
       }
     });
     return deco_msg;
@@ -336,8 +338,7 @@ ChatController.prototype = {
   },
 
   play_sound: function(text){
-    var matched = text.match(/play:(.+)/);
-    if (RegExp.$1){
+    if(text.match(/play:(.+)/)){
       console.log(RegExp.$1);
       $.ionSound.destroy();
       $.ionSound({

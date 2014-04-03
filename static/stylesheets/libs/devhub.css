@@ -403,6 +403,28 @@ a:hover {
   background-color: lightgreen;
 }
 
+.target-me {
+  background-color: white;
+  border: 1px solid #c1454f;
+  color: #c1454f;
+  font-size: 12px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 1px 2px;
+}
+
+.target-other{
+  background-color: white;
+  border: 1px solid #369;
+  color: #369;
+  font-size: 12px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 1px 2px;
+}
+ 
 .pomo-min{
   color: mintcream;
 }
