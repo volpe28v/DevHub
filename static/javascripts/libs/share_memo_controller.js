@@ -30,6 +30,19 @@ ShareMemoController.prototype = {
       $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
       $("#memo_number_option_top").after($('<option/>').attr('value',i).html(i));
     }
+
+    $("#tab_change").click(function(){
+      if ($('#share_memo_tabbable').hasClass("tabs-left")){
+        $('#share_memo_tabbable').removeClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-tabs");
+        $('#share_memo_nav').addClass("nav-pills");
+      }else{
+        $('#share_memo_tabbable').addClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-pills");
+        $('#share_memo_nav').addClass("nav-tabs");
+      }
+    });
+
     $("#scroll_top").click(function(){
       $('#memo_area').animate({ scrollTop: 0 }, 'fast');
     });
