@@ -361,6 +361,11 @@ ChatController.prototype = {
       $('#notification').on('click', function(){
         if($(this).attr('checked') == 'checked'){
           window.localStorage.popupNotification = 'true';
+          if (window.webkitNotifications){
+            window.webkitNotifications.requestPermission();
+          }else if(Notification){
+            Notification.requestPermission();
+          }
         }else{
           window.localStorage.popupNotification = 'false';
         }
