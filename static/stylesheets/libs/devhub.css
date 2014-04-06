@@ -119,6 +119,7 @@ a:hover {
 
 .share-memo-tab-elem {
   width: 74px;
+  height: 42px;
 }
 
 .share-memo-tab-elem > span{
@@ -322,9 +323,9 @@ a:hover {
   font-size: 12px;
   padding: 2px 4px;
   margin: 1px 0px;
-  border-radius: 4px;        /* CSS3草案 */  
-  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */  
-  -moz-border-radius: 4px;   /* Firefox用 */  
+  border-radius: 4px;        /* CSS3草案 */
+  -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */
+  -moz-border-radius: 4px;   /* Firefox用 */
   color: white;
   cursor: pointer;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
@@ -424,7 +425,7 @@ a:hover {
   border-radius: 4px;
   padding: 1px 2px;
 }
- 
+
 .pomo-min{
   color: mintcream;
 }
@@ -517,4 +518,3 @@ footer span {
   color: #888;
   font-size: 12px;
 }
-
