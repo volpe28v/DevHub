@@ -112,7 +112,7 @@ ChatController.prototype = {
   },
 
   init_socket: function(){
-    var that = this;                    
+    var that = this;
     this.socket.on('message_own', function(data) {
       var $msg = that.prepend_own_msg(data);
       that.setColorbox($msg.find('.thumbnail'));
