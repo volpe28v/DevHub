@@ -119,7 +119,8 @@ a:hover {
 
 .share-memo-tab-elem {
   width: 74px;
-  height: 42px;
+  height: 50px;
+  border: 1px solid #ccc;
 }
 
 .share-memo-tab-elem > span{
