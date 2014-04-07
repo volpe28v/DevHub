@@ -120,6 +120,9 @@ a:hover {
 .share-memo-tab-elem {
   width: 74px;
   height: 50px;
+}
+
+.nav-pills .share-memo-tab-elem {
   border: 1px solid #ccc;
   background-color: #fefefe;
 }
