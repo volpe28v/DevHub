@@ -33,13 +33,19 @@ ShareMemoController.prototype = {
 
     $("#tab_change").click(function(){
       if ($('#share_memo_tabbable').hasClass("tabs-left")){
-        $('#share_memo_tabbable').removeClass("tabs-left");
-        $('#share_memo_nav').removeClass("nav-tabs");
-        $('#share_memo_nav').addClass("nav-pills");
+        $('#share_memo_nav').fadeOut("fast",function(){
+          $('#share_memo_tabbable').removeClass("tabs-left");
+          $('#share_memo_nav').removeClass("nav-tabs");
+          $('#share_memo_nav').addClass("nav-pills");
+          $('#share_memo_nav').fadeIn();
+        });
       }else{
-        $('#share_memo_tabbable').addClass("tabs-left");
-        $('#share_memo_nav').removeClass("nav-pills");
-        $('#share_memo_nav').addClass("nav-tabs");
+        $('#share_memo_nav').fadeOut("fast",function(){
+          $('#share_memo_tabbable').addClass("tabs-left");
+          $('#share_memo_nav').removeClass("nav-pills");
+          $('#share_memo_nav').addClass("nav-tabs");
+          $('#share_memo_nav').fadeIn();
+        });
       }
     });
 
