@@ -81,6 +81,12 @@ $(function() {
     $(window).resize(function(){
       adjust_display_size_for_mobile();
     });
+
+    $('#share_memo_nav').hide();
+    $('#share_memo_tabbable').removeClass("tabs-left");
+    $('#share_memo_nav').removeClass("nav-tabs");
+    $('#share_memo_nav').addClass("nav-pills");
+    $('#share_memo_nav').show();
   }
 
   var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;

@@ -118,7 +118,7 @@ a:hover {
 }
 
 .share-memo-tab-elem {
-  width: 74px;
+  width: 72px;
   height: 50px;
 }
 
@@ -127,11 +127,12 @@ a:hover {
   background-color: #fefefe;
 }
 
-.share-memo-tab-elem > span{
+.share-memo-tab-elem > span,
+.share-memo-tab-elem .writer{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 74px;
+  width: 72px;
   display: inline-block;
   vertical-align: top;
 }
