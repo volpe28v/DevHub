@@ -306,7 +306,7 @@ ChatController.prototype = {
 
   include_target_name: function(msg,name){
     var name_reg = RegExp("@" + name + "( |　|さん|$)");
-    if (msg.match(name_reg)){
+    if (msg.match(name_reg) || msg.match("@みなさん")){
       return true;
     }
     return false;
