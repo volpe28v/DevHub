@@ -21,7 +21,6 @@ ChatController.prototype = {
 
     $('#message').textcomplete([
       {
-        //match: /\B:([\-+\w]*)$/,
         match: /\B:([\-+\w]*)$/,
         search: function (term, callback) {
             callback($.map(emojies, function (emoji) {
