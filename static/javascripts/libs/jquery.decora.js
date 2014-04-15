@@ -148,17 +148,16 @@
     return img_text;
   }
 
-  function _decorate_checkbox( text ){
-    var check_index = 0;
+  function _decorate_checkbox( text, no ){
     var check_text = text.replace(REG_CHECKBOX, function(){
       var matched_text = arguments[0];
       if ( matched_text.indexOf("x") > 0 ){
-        return '<input type="checkbox" data-no="' + check_index++ + '" checked />';
+        return '<input type="checkbox" data-no="' + no++ + '" checked />';
       }else{
-        return '<input type="checkbox" data-no="' + check_index++ + '" />';
+        return '<input type="checkbox" data-no="' + no++ + '" />';
       }
     });
-    return check_text;
+    return {text: check_text, no: no};
   }
 
   function _decorate_header( text ){
@@ -187,6 +186,7 @@
   $.decora = {
     to_html: function(target_text){
       var bq_sepa_array = target_text.split("```");
+      var checkbox_no = 0;
       for ( i = 0; i < bq_sepa_array.length; i++){
         if (i%2 == 0){
           // 装飾有り
@@ -195,8 +195,9 @@
           deco_text = _decorate_download_tag( deco_text );
           deco_text = _decorate_img_tag( deco_text, 200 );
           deco_text = _decorate_xap_tag( deco_text, 200, 200 );
-          deco_text = _decorate_checkbox( deco_text );
-          deco_text = _decorate_header( deco_text );
+          var check_result = _decorate_checkbox( deco_text, checkbox_no );
+          checkbox_no = check_result.no;
+          deco_text = _decorate_header( check_result.text );
           deco_text = _decorate_line_color( deco_text );
           bq_sepa_array[i] = deco_text;
         }else{
