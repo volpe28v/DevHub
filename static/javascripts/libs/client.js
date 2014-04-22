@@ -114,33 +114,18 @@ $(function() {
     faviconNumber.off();
   });
 
+  // ナビバー消去
   $("#share_zen").click(function(){
-    if ($("#memo_area").hasClass("memo-area")){
-      $(".navbar").fadeOut();
-      $(".dummy-top-space").fadeOut();
-      $("#chat_area").fadeOut(function(){
-        $("#memo_area").removeClass("memo-area span7");
-        $("#memo_area").addClass("memo-area-zen span11");
-      });
-    }else{
-      $("#memo_area").removeClass("memo-area-zen span11");
-      $("#memo_area").addClass("memo-area span7");
-      $("#chat_area").fadeIn();
-    }
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
   });
 
   $(document).on("keyup", function (e) {
     if (e.keyCode == 27){ // ESC key return zen mode.
-      if (!$("#memo_area").hasClass("memo-area")){
-        $(".navbar").fadeIn();
-        $(".dummy-top-space").fadeIn();
-
-        $("#memo_area").removeClass("memo-area-zen span11");
-        $("#memo_area").addClass("memo-area span7");
-        $("#chat_area").fadeIn();
-      }
+      $(".navbar").fadeIn();
+      $(".dummy-top-space").fadeIn();
     }
-  }); 
+  });
 });
 
 function adjust_display_size_for_mobile(){
