@@ -115,15 +115,39 @@ $(function() {
   });
 
   // ナビバー消去
-  $("#share_zen").click(function(){
+  $("#both_zen").click(function(){
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
+  });
+
+  $("#memo_zen").click(function(){
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
+    $("#chat_area").fadeOut();
+    $("#memo_area").removeClass("span7 memo-area");
+    $("#memo_area").addClass("span12 memo-area-zen");
+  });
+
+  $("#chat_zen").click(function(){
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
+    $("#memo_area").fadeOut();
+    $("#chat_area").removeClass("span5");
+    $("#chat_area").addClass("span12");
   });
 
   $(document).on("keyup", function (e) {
     if (e.keyCode == 27){ // ESC key return zen mode.
       $(".navbar").fadeIn();
       $(".dummy-top-space").fadeIn();
+
+      $("#memo_area").removeClass("span12 memo-area-zen");
+      $("#memo_area").addClass("span7 memo-area");
+      $("#chat_area").removeClass("span12");
+      $("#chat_area").addClass("span5");
+
+      $("#memo_area").fadeIn();
+      $("#chat_area").fadeIn();
     }
   });
 });
