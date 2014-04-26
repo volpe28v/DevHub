@@ -123,7 +123,7 @@ $(function() {
   $("#memo_zen").click(function(){
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
-    $("#chat_area").fadeOut();
+    $("#chat_area").hide();
     $("#memo_area").removeClass("span7 memo-area");
     $("#memo_area").addClass("span12 memo-area-zen");
   });
@@ -131,7 +131,7 @@ $(function() {
   $("#chat_zen").click(function(){
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
-    $("#memo_area").fadeOut();
+    $("#memo_area").hide();
     $("#chat_area").removeClass("span5");
     $("#chat_area").addClass("span12");
   });
