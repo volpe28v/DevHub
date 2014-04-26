@@ -65,14 +65,16 @@
     raw_text = raw_text.split("\n");
     $.each(raw_text, function(i, val){
       var class_name = "code-out-pre ";
-      if (i == 0){
+      if (i == 1){
         class_name += "code-out-pre-top ";
       }
-      if (i == raw_text.length - 1 ){
+      if (i == raw_text.length - 2 ){
         class_name += "code-out-pre-bottom ";
       }
 
-      raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+      if (i != 0 && i != raw_text.length - 1){
+        raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+      }
     });
     return raw_text.join("\n");
   }
