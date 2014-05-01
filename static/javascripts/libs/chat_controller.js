@@ -91,6 +91,15 @@ ChatController.prototype = {
       return false;
     });
 
+    // ログ追加読み込みボタン
+    $('#load_message_button').click(function(){
+      $('#message_loader').show();
+      $(this).hide();
+
+      var last_msg_id = $('#list').find('li').filter(':last').data("id");
+      that.socket.emit('load_log_more', {id: last_msg_id});
+    });
+
     emojify.setConfig({
       img_dir          : 'img/emoji',  // Directory for emoji images
     });
@@ -155,6 +164,8 @@ ChatController.prototype = {
     });
 
     this.socket.on('latest_log', function(msgs) {
+      $('#message_loader').hide();
+      $('#load_message_button').show();
       for ( var i = 0 ; i < msgs.length; i++){
         that.append_msg(msgs[i])
       }

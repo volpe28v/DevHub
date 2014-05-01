@@ -162,6 +162,12 @@ io.sockets.on('connection', function(client) {
     chat_log.remove(data.id);
   });
 
+  client.on('load_log_more', function(data) {
+    chat_log.get_older(data.id, function(logs){
+      client.emit('latest_log',logs);
+    });
+  });
+
   client.on('pomo', function(pomo_data){
     client_info.set_name(client, pomo_data.name);
     var pomo_msg = ""

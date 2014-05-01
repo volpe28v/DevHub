@@ -288,6 +288,9 @@ a:hover {
   min-height: 620px;
   padding: 4px 2px;
   overflow-y: auto;
+}
+
+.load-more{
   margin-bottom: 70px;
 }
 
@@ -528,3 +531,15 @@ footer span {
   color: #888;
   font-size: 12px;
 }
+
+/* for bootstrap */
+.btn-block {
+  display: block;
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
