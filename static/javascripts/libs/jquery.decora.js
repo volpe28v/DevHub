@@ -80,13 +80,14 @@
   }
 
   function _decorate_link_tag( text ){
-    var linked_text = text.replace(/((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
+    var linked_text = text.replace(/(\[(.+)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+))[\)]?/g,
         function(){
-          var matched_link = arguments[1];
+          var matched_link = arguments[3];
           if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
             return matched_link;
           }else{
-            return '<a href="' + matched_link + '" target="_blank" >' + matched_link + '</a>';
+            var title_text = arguments[2] ? arguments[2] : matched_link;
+            return '<a href="' + matched_link + '" target="_blank" >' + title_text + '</a>';
           }
         });
     return linked_text;
