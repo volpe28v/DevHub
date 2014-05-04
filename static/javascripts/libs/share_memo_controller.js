@@ -25,23 +25,16 @@ ShareMemoController.prototype = {
   },
 
   init_sharememo: function(){
-    // 前回の状態を復元する
-    if ( window.localStorage ){
-      // タブスタイル
-      if ( window.localStorage.tabChanged == 'true' ){
-        $('#share_memo_nav').hide();
-        $('#share_memo_tabbable').removeClass("tabs-left");
-        $('#share_memo_nav').removeClass("nav-tabs");
-        $('#share_memo_nav').addClass("nav-pills");
-        $('#share_memo_nav').show();
-      }
-    }
-
     for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
       $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
       $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
       $("#memo_number_option_top").after($('<option/>').attr('value',i).html(i));
     }
+
+    // タブ選択のIDを記憶する
+    $("#share_memo_nav").on('click',".share-memo-tab-elem",function(){
+      window.localStorage.tabSelectedID = "#" + $(this).attr("id");
+    });
 
     $("#tab_change").click(function(){
       if ($('#share_memo_tabbable').hasClass("tabs-left")){
@@ -75,6 +68,22 @@ ShareMemoController.prototype = {
     $(".share-memo").each(function(){
       $(this).append($('#shareMemoTmpl').render());
     });
+
+    // 前回の状態を復元する
+    if ( window.localStorage ){
+      // タブスタイル
+      if ( window.localStorage.tabChanged == 'true' ){
+        $('#share_memo_nav').hide();
+        $('#share_memo_tabbable').removeClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-tabs");
+        $('#share_memo_nav').addClass("nav-pills");
+        $('#share_memo_nav').show();
+      }
+      // タブ選択状態
+      if ( window.localStorage.tabSelectedID ){
+        $(window.localStorage.tabSelectedID).click();
+      }
+    }
   },
 
   init_socket: function(){
