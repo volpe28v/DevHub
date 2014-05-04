@@ -25,6 +25,18 @@ ShareMemoController.prototype = {
   },
 
   init_sharememo: function(){
+    // 前回の状態を復元する
+    if ( window.localStorage ){
+      // タブスタイル
+      if ( window.localStorage.tabChanged == 'true' ){
+        $('#share_memo_nav').hide();
+        $('#share_memo_tabbable').removeClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-tabs");
+        $('#share_memo_nav').addClass("nav-pills");
+        $('#share_memo_nav').show();
+      }
+    }
+
     for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
       $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
       $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
@@ -39,6 +51,7 @@ ShareMemoController.prototype = {
           $('#share_memo_nav').addClass("nav-pills");
           $('#share_memo_nav').fadeIn();
         });
+        window.localStorage.tabChanged = 'true';
       }else{
         $('#share_memo_nav').fadeOut("fast",function(){
           $('#share_memo_tabbable').addClass("tabs-left");
@@ -46,6 +59,7 @@ ShareMemoController.prototype = {
           $('#share_memo_nav').addClass("nav-tabs");
           $('#share_memo_nav').fadeIn();
         });
+        window.localStorage.tabChanged = 'false';
       }
     });
 
