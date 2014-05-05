@@ -300,11 +300,20 @@ ShareMemoController.prototype = {
 
     function updateShareMemoBody($target, text){
       $target.find('.code-out').html(setToTable($.decora.to_html(text)));
+
       $target.find('tr:has(:header)').addClass("header-tr");
+
+      // pre 表示対応
+      $target.find('tr:has(.code-out-pre-border)').addClass("code-out-pre-tr");
       $target.find('td:has(.code-out-pre)').addClass("code-out-pre-td");
       $target.find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
       $target.find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
+//      prettyPrint(null, $target.get(0));
+
+      // 画像表示
       that.setColorbox($target.find('.thumbnail'));
+
+      // 絵文字表示
       emojify.run($target.find('.code-out').get(0));
 
       // チェックボックスの進捗表示

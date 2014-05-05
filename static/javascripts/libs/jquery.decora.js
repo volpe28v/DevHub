@@ -61,21 +61,67 @@
 
   // private method
   function _decorate_raw_tag( text ){
-    var raw_text = text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
-    raw_text = raw_text.split("\n");
-    $.each(raw_text, function(i, val){
-      var class_name = "code-out-pre ";
-      if (i == 1){
-        class_name += "code-out-pre-top ";
-      }
-      if (i == raw_text.length - 2 ){
-        class_name += "code-out-pre-bottom ";
-      }
+    var is_code = text.split("\n")[0].indexOf("code") != -1;
+    if (is_code){
+      // コードに色付け
+      var raw_text = text.replace(/^code/,"");
+      var $pretty_tmp_span = $('<span/>').addClass("prettyprint").text(raw_text);
+      var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_span);
 
-      if (i != 0 && i != raw_text.length - 1){
+      prettyPrint(null, $pretty_tmp_div.get(0));
+      raw_text = $pretty_tmp_span.html();
+      $pretty_tmp_div.empty();
+      raw_text = raw_text.split("\n");
+
+      var first_raw = raw_text[0].replace(/\r\n/g,"").replace(/\n/g,"");
+      raw_text[1] = first_raw + raw_text[1];
+      raw_text.splice(0,1);
+
+      var last_class_name = '';
+      $.each(raw_text, function(i, val){
+        var class_name = "code-out-pre ";
+        if (raw_text.length == 1){
+          class_name += "code-out-pre-top code-out-pre-bottom";
+        }else if (i == 0){
+          class_name += "code-out-pre-top ";
+          val = val + '</span>';
+        }else if (i == raw_text.length - 1){
+          class_name += "code-out-pre-bottom ";
+          val = '<span class ="' + last_class_name + '">' + val ;
+        }else{
+          val = '<span class ="' + last_class_name + '">' + val + '</span>';
+        }
+
         raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
-      }
-    });
+        last_class_name = $("<div/>").html(raw_text[i]).find(":last").get(0).className;
+      });
+
+      raw_text.unshift('<span class="code-out-pre-border"></span>');
+      raw_text.push('<span class="code-out-pre-border"></span>');
+    }else{
+      // 色付けなし
+      var raw_text = text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
+      raw_text = raw_text.split("\n");
+      $.each(raw_text, function(i, val){
+        var class_name = "code-out-pre ";
+        if (i == 1){
+          if (raw_text.length == 3){
+            class_name += "code-out-pre-top code-out-pre-bottom";
+          }else{
+            class_name += "code-out-pre-top ";
+          }
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }else if (i == raw_text.length - 2){
+          class_name += "code-out-pre-bottom ";
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }else if (i == 0 || i == raw_text.length - 1){
+          raw_text[i] = '<span class="code-out-pre-border"></span>';
+        }else {
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }
+      });
+    }
+
     return raw_text.join("\n");
   }
 

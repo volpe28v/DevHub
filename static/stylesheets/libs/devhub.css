@@ -251,6 +251,10 @@ a:hover {
   margin-right: 10px;
 }
 
+.code-out-pre-tr {
+  height: 6px !important;
+}
+
 .header-tr {
   line-height: 0.2 !important;
 }
