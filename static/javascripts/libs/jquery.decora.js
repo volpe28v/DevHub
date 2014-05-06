@@ -77,6 +77,10 @@
       raw_text[1] = first_raw + raw_text[1];
       raw_text.splice(0,1);
 
+      // 以下のようなクラスを付加する
+      // コード  -> code-out-pre code-out-pre-top
+      // コード  -> code-out-pre
+      // コード  -> code-out-pre code-out-pre-bottom
       var last_class_name = '';
       $.each(raw_text, function(i, val){
         var class_name = "code-out-pre ";
@@ -96,12 +100,21 @@
         last_class_name = $("<div/>").html(raw_text[i]).find(":last").get(0).className;
       });
 
+      // コードの前後に空行を追加する
+      // (空行)  -> code-out-pre-boder
       raw_text.unshift('<span class="code-out-pre-border"></span>');
       raw_text.push('<span class="code-out-pre-border"></span>');
     }else{
       // 色付けなし
       var raw_text = text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
       raw_text = raw_text.split("\n");
+
+      // 以下のようなクラスを付加する
+      // (空行)  -> code-out-pre-boder
+      // コード  -> code-out-pre code-out-pre-top
+      // コード  -> code-out-pre
+      // コード  -> code-out-pre code-out-pre-bottom
+      // (空行)  -> code-out-pre-boder
       $.each(raw_text, function(i, val){
         var class_name = "code-out-pre ";
         if (i == 1){
