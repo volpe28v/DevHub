@@ -139,7 +139,7 @@
   }
 
   function _decorate_link_tag( text ){
-    var linked_text = text.replace(/(\[(.+)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+))[\)]?/g,
+    var linked_text = text.replace(/(\[(.+?)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+))[\)]?/g,
         function(){
           var matched_link = arguments[3];
           if ( matched_link.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
