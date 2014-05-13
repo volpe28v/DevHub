@@ -139,11 +139,19 @@
 
                   <div id="settings_memo" class="tab-pane">
                     <form class="form-horizontal">
-                      <div class="control-group">
+                      <div class="control-group notify-radio">
                         <legend>Personal Settings</legend>
                         <label class="control-label">Show notifications</label>
                         <div class="controls">
-                          <input type="checkbox" id="notification"/> (Works on Chrome, Safari and Firefox)
+                          <label class="radio inline">
+                            <input type="radio" name="notificaton" id="notify_disable" value="disable" checked> Disable
+                          </label>
+                          <label class="radio inline">
+                            <input type="radio" name="notificaton" id="notify_all" value="true"> All
+                          </label>
+                          <label class="radio inline">
+                            <input type="radio" name="notificaton" id="notify_mention" value="mention"> Mention only
+                          </label>
                         </div>
                       </div>
                       <div class="control-group">
@@ -174,6 +182,7 @@
                           <select id="memo_number" class="span1">
                             <option id="memo_number_option_top" value="1">1</option>
                           </select>
+                          tabs.
                         </div>
                       </div>
                     </form>

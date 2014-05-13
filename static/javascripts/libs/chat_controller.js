@@ -303,10 +303,11 @@ ChatController.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@(.+?)さん", "g");
+    var name_reg = RegExp("@(.+?)さん|@all", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.login_name){
-        //return '<span class="label label-important">' + arguments[0] + '</span>'
+      if (arguments[1] == that.login_name ||
+          arguments[0] == "@みなさん"     ||
+          arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
       }else{
         return '<span class="target-other">' + arguments[0] + '</span>'
@@ -317,7 +318,9 @@ ChatController.prototype = {
 
   include_target_name: function(msg,name){
     var name_reg = RegExp("@" + name + "( |　|さん|$)");
-    if (msg.match(name_reg) || msg.match("@みなさん")){
+    if (msg.match(name_reg)    ||
+        msg.match("@みなさん") ||
+        msg.toLowerCase().match("@all")){
       return true;
     }
     return false;
@@ -365,19 +368,20 @@ ChatController.prototype = {
   init_notification: function(){
     if(window.localStorage){
       if(window.localStorage.popupNotification == 'true'){
-        $('#notification').attr('checked', 'checked');
+        $('#notify_all').attr('checked', 'checked');
+      }else if (window.localStorage.popupNotification == 'mention'){
+        $('#notify_mention').attr('checked', 'checked');
       }
 
-      $('#notification').on('click', function(){
-        if($(this).attr('checked') == 'checked'){
-          window.localStorage.popupNotification = 'true';
+      $('.notify-radio').on('change', "input", function(){
+        var mode = $(this).val();
+        window.localStorage.popupNotification = mode; 
+        if (mode != "disable"){
           if (window.webkitNotifications){
             window.webkitNotifications.requestPermission();
           }else if(Notification){
             Notification.requestPermission();
           }
-        }else{
-          window.localStorage.popupNotification = 'false';
         }
       });
 
@@ -400,7 +404,8 @@ ChatController.prototype = {
     var notif_icon = 'notification.png';
     var notif_msg = data.msg;
 
-    if (window.localStorage.popupNotification == 'true'){
+    if (window.localStorage.popupNotification == 'true' ||
+        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.login_name))){
       if (window.webkitNotifications){
         var havePermission = window.webkitNotifications.checkPermission();
         if (havePermission == 0) {
