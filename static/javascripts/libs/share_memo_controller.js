@@ -9,6 +9,9 @@ function ShareMemoController(param){
   this.isEditMode = false;
   this.memo_number = 1;
 
+  this.doing_up = false;
+  this.doing_down = false;
+
   this.writing_text = [];
   this.text_logs = [];
 
@@ -38,6 +41,24 @@ ShareMemoController.prototype = {
 
   top: function(){
     $('#memo_area').animate({ scrollTop: 0 }, 'fast');
+  },
+
+  down: function(){
+    var that = this;
+    if (!this.doing_down){
+      $('#memo_area').animate({ scrollTop: $('#memo_area').scrollTop() + 400 }, 'fast', function(){
+        that.doing_down = false;
+      });
+    }
+  },
+
+  up: function(){
+    var that = this;
+    if (!this.doing_up){
+      $('#memo_area').animate({ scrollTop: $('#memo_area').scrollTop() - 400 }, 'fast', function(){
+      that.doing_up = false;
+      });
+    }
   },
 
   prev: function(){

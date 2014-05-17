@@ -160,6 +160,10 @@ $(function() {
         shareMemoController.next();
       } else if (e.keyCode == 48){ // Ctrl - 0: move top share memo
         shareMemoController.top();
+      } else if (e.keyCode == 74){ // Ctrl - j: move down share memo
+        shareMemoController.down();
+      } else if (e.keyCode == 75){ // Ctrl - j: move down share memo
+        shareMemoController.up();
       }
     }
   });
