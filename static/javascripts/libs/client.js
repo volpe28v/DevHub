@@ -136,8 +136,9 @@ $(function() {
     $("#chat_area").addClass("span12");
   });
 
+  // ショートカットキー
   $(document).on("keyup", function (e) {
-    if (e.keyCode == 27){ // ESC key return zen mode.
+    if (e.keyCode == 27){ // ESC key return fullscreen mode.
       $(".navbar").fadeIn();
       $(".dummy-top-space").fadeIn();
 
@@ -148,6 +149,18 @@ $(function() {
 
       $("#memo_area").fadeIn();
       $("#chat_area").fadeIn();
+    } else if (e.ctrlKey && e.ctrlKey == true ){
+      if (e.keyCode == 73){ // Ctrl - i : focus chat form
+        $('#message').focus();
+      } else if (e.keyCode == 77){ // Ctrl - m : focus current memo form
+        shareMemoController.setFocus();
+      } else if (e.keyCode == 72){ // Ctrl - h: select prev share memo
+        shareMemoController.prev();
+      } else if (e.keyCode == 76){ // Ctrl - l: select next share memo
+        shareMemoController.next();
+      } else if (e.keyCode == 48){ // Ctrl - 0: move top share memo
+        shareMemoController.top();
+      }
     }
   });
 });

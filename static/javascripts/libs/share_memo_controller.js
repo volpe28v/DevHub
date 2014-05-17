@@ -6,6 +6,8 @@ var CODE_ADJUST_HEIGHT = 200;
 
 function ShareMemoController(param){
   this.socket = param.socket;
+  this.isEditMode = false;
+  this.memo_number = 1;
 
   this.writing_text = [];
   this.text_logs = [];
@@ -22,6 +24,38 @@ ShareMemoController.prototype = {
 
   setWidth: function(width){
     $('#memo_area').css('width',width + 'px').css('margin',0);
+  },
+
+  setFocus: function(){
+    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    if (this.isEditMode){
+      $('#share_memo_' + data_no).find(".code").focus();
+    }else{
+      var $share_memo = $('#share_memo_' + data_no);
+      this.switchEditShareMemo($share_memo, -1);
+    }
+  },
+
+  top: function(){
+    $('#memo_area').animate({ scrollTop: 0 }, 'fast');
+  },
+
+  prev: function(){
+    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    data_no -= 1;
+    if (data_no <= 0){
+      data_no = this.memo_number;
+    }
+    $("#share_memo_tab_" + data_no).click();
+  },
+
+  next: function(){
+    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    data_no += 1;
+    if (data_no > this.memo_number){
+      data_no = 1;
+    }
+    $("#share_memo_tab_" + data_no).click();
   },
 
   init_sharememo: function(){
@@ -102,17 +136,25 @@ ShareMemoController.prototype = {
       }
     };
 
-    function switchEditShareMemo($share_memo, row){
+    this.switchEditShareMemo = function($share_memo, row){
+      that.isEditMode = true;
       var no = $share_memo.data('no');
       that.writing_text[no] = that.writing_text[no] ? that.writing_text[no] : { text: "" };
 
       var $target_code = $share_memo.children(".code");
       $target_code.val(that.writing_text[no].text);
+      $('#memo_area').scrollTop(row * 18 - CODE_ADJUST_HEIGHT);
+
       $target_code.fadeIn('fast', function(){
         $target_code.keyup(); //call autofit
         // 編集モード時に選択した行位置を表示する
-        $target_code.caretLine(row);
-        $('#memo_area').scrollTop(row * 18 - CODE_ADJUST_HEIGHT);
+        if (row >= 0){
+          $target_code.caretLine(row);
+        }else{
+          // キャレット位置指定なしの場合は前回の場所を復元
+          $target_code.focus();
+          row = $target_code.caretLine();
+        }
       });
       $share_memo.children('pre').hide();
       $share_memo.children('.fix-text').show();
@@ -124,14 +166,14 @@ ShareMemoController.prototype = {
 
     $('.share-memo').on('click','.sync-text', function(){
       var $share_memo = $(this).closest('.share-memo');
-      switchEditShareMemo($share_memo, 0);
+      that.switchEditShareMemo($share_memo, 0);
     });
 
     $('.share-memo').on('dblclick','pre tr', function(){
       // クリック時の行数を取得してキャレットに設定する
       var $share_memo = $(this).closest('.share-memo');
       var row = $(this).closest("table").find("tr").index(this);
-      switchEditShareMemo($share_memo, row);
+      that.switchEditShareMemo($share_memo, row);
       return false;
     });
 
@@ -139,7 +181,7 @@ ShareMemoController.prototype = {
       // 文字列が無い場合は最下部にキャレットを設定する
       var $share_memo = $(this).closest('.share-memo');
       var row = $(this).find("table tr").length - 1;
-      switchEditShareMemo($share_memo, row);
+      that.switchEditShareMemo($share_memo, row);
     });
 
     // 差分リスト表示
@@ -266,6 +308,7 @@ ShareMemoController.prototype = {
     });
 
     function switchFixShareMemo($share_memo, row){
+      that.isEditMode = false;
       if ($share_memo.children('.code').css('display') == "none"){ return; }
 
       // 最新の状態をサーバへ送信する
@@ -454,13 +497,13 @@ ShareMemoController.prototype = {
     });
 
     socket.on('memo_number', function(data){
-      var num = data.num;
+      that.memo_number = data.num;
       $('.share-memo-tab-elem').hide();
-      for (var i = 1; i <= num; i++){
+      for (var i = 1; i <= that.memo_number; i++){
         $('#share_memo_tab_' + i).fadeIn("fast");
         $('#share_memo_tab_' + i).css("display", "block");
       }
-      $('#memo_number').val(num);
+      $('#memo_number').val(that.memo_number);
     });
   },
 
