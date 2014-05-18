@@ -128,6 +128,8 @@ io.sockets.on('connection', function(client) {
         chat_log.get(function(logs){
           client.emit('latest_log',logs);
         });
+      }else{
+        client.emit('latest_log',[]);
       }
     });
   });
