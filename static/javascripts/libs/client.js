@@ -150,6 +150,7 @@ $(function() {
       $("#memo_area").fadeIn();
       $("#chat_area").fadeIn();
     } else if (e.ctrlKey && e.ctrlKey == true ){
+      /*
       if (e.keyCode == 73){ // Ctrl - i : focus chat form
         $('#message').focus();
       } else if (e.keyCode == 77){ // Ctrl - m : focus current memo form
@@ -165,6 +166,7 @@ $(function() {
       } else if (e.keyCode == 75){ // Ctrl - j: move down share memo
         shareMemoController.up();
       }
+      */
     }
   });
 });
