@@ -61,7 +61,7 @@ app.get('/notify', function(req, res) {
   chat_log.add(data,function(){
     io.sockets.emit('message', data);
     client_info.send_growl_all(data);
-    res.end('recved msg: ' + msg);
+    res.end('received msg');
   });
 
   // for bot
@@ -75,12 +75,37 @@ app.get('/notify', function(req, res) {
   });
 });
 
+app.get('/memo', function(req, res) {
+  console.log('/memo');
+  console.log(req.query);
+
+  var data = {
+    name: decodeURI(req.query.name),
+    text: decodeURI(req.query.msg),
+    no: Number(req.query.no || 1),
+    line: Number(req.query.line || 0),
+    date: util.getFullDate(new Date())
+  };
+
+  text_log.insert_latest_text(data,function(latest_log){
+    io.sockets.emit('text', latest_log);
+    text_log.add_history(latest_log.no, function(result){
+      text_log.get_logs_by_no(latest_log.no, function(logs){
+        io.sockets.emit('text_logs_with_no', logs);
+      });
+    });
+  });
+
+  res.end('received memo');
+});
+
+
 var routes = {
   upload : require('./routes/upload'),
 };
 app.post('/upload', routes.upload.post);
-app.get('/upload', routes.upload.get); 
-app.delete('/upload', routes.upload.delete); 
+app.get('/upload', routes.upload.get);
+app.delete('/upload', routes.upload.delete);
 
 // set db and listen app
 mongo_builder.ready(db_name, function(db){
@@ -99,7 +124,7 @@ io.sockets.on('connection', function(client) {
 
   text_log.get_active_number(function(number){
     client.emit('memo_number',number);
-    for( var i = 0; i < number.num; i++){
+    for( var i = 1; i <= number.num; i++){
       text_log.get_logs_by_no(i, function(logs){
         client.emit('text_logs_with_no', logs);
       });
