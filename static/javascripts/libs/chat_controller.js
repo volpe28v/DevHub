@@ -352,7 +352,6 @@ ChatController.prototype = {
 
   play_sound: function(text){
     if(text.match(/play:(.+)/)){
-      console.log(RegExp.$1);
       $.ionSound.destroy();
       $.ionSound({
             sounds: [
