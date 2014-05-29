@@ -425,22 +425,19 @@ ChatController.prototype = {
           window.webkitNotifications.requestPermission();
         }
       }else if(Notification){
-        Notification.requestPermission(function(permission){
-          if(Notification.permission == "granted"){
-            switch(Notification.permission){
-              case "granted":
-              case "default":
-                new Notification(notif_title, {
-                  icon:notif_icon,
-                    body:notif_msg,
-                    tag:"notification-test",
-                });
-                break;
-              case "denied":
-                break;
-            }
-          }
-        });
+        if (Notification.permission != "denied"){
+          var notification = new Notification(notif_title, {
+            icon: notif_icon,
+            iconUrl: notif_icon,
+            body: notif_msg,
+            tag:"notification-test",
+          });
+          setTimeout(function(){
+            notification.close();
+          }, window.localStorage.notificationSeconds * 1000);
+        }
+      }else{
+          Notification.requestPermission();
       }
     }
   }
