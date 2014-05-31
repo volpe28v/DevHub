@@ -111,8 +111,15 @@ app.delete('/upload', routes.upload.delete);
 mongo_builder.ready(db_name, function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
+  bots.set(chat_log,text_log);
+
   server.listen(port);
   console.log("listen!!!");
+  
+  // test
+  text_log.get_uncheck_tasks(function(tasks){
+    console.log(tasks);
+  });
 });
 
 // define socket.io events
