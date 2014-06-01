@@ -39,7 +39,10 @@ $(function() {
   });
 
   shareMemoController = new ShareMemoController({
-    socket: socket
+    socket: socket,
+    setMessage: function(message){
+      chatController.setMessage(message);
+    }
   });
 
   chatController = new ChatController({
@@ -48,6 +51,9 @@ $(function() {
     changedLoginName: function(name){
       shareMemoController.setName(name);
       $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
+    },
+    showRefPoint: function(id){
+      shareMemoController.move(id);
     }
   });
 

@@ -115,11 +115,6 @@ mongo_builder.ready(db_name, function(db){
 
   server.listen(port);
   console.log("listen!!!");
-  
-  // test
-  text_log.get_uncheck_tasks(function(tasks){
-    console.log(tasks);
-  });
 });
 
 // define socket.io events
@@ -233,6 +228,13 @@ io.sockets.on('connection', function(client) {
   client.on('text', function(msg) {
     var name = client_info.get_name(client)
     msg.text = msg.text.replace(/\n/g,"\r\n");
+
+    // [ref]が存在したらIDを追加する
+    var ref_count = 0;
+    msg.text = msg.text.replace(/\[ref\]/g,
+      function(){
+        return "[ref:" + String(msg.no) + "-" + new Date().getTime() + String(ref_count++) + "]";
+      });
 
     var current_text_log = { name: name, no: msg.no, text: msg.text, date: util.getFullDate(new Date()) }
 

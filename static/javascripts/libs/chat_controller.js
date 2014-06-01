@@ -4,6 +4,7 @@ function ChatController(param){
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
+  this.showRefPoint = param.showRefPoint;
 
   // Models
   this.loginElemList = [];
@@ -16,6 +17,11 @@ function ChatController(param){
 }
 
 ChatController.prototype = {
+  setMessage: function(message){
+    $('#message').val($('#message').val() + " " + message + " ");
+    $('#message').focus();
+  },
+
   init_chat: function(){
     var that = this;
 
@@ -48,10 +54,14 @@ ChatController.prototype = {
       that.send_remove_msg(data_id);
     });
 
+    $('#list').on('click', '.ref-point', function(){
+      var id = $(this).attr("id");
+      that.showRefPoint(id);
+    });
+
     $('#chat_area').on('click', '.login-elem', function(){
       var name = $(this).children(".name").text();
-      $('#message').val($('#message').val() + " @" + name + "さん ");
-      $('#message').focus();
+      that.setMessage("@" + name + "さん");
     });
 
     $('#form').submit(function() {

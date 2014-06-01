@@ -244,6 +244,14 @@
     return color_text;
   }
 
+  function _decorate_ref( text ){
+    var refed_text = text.replace(/\[ref:(.+?)\]/g,
+        function(){
+          var matched_id = arguments[1];
+          return '<span class="ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
+        });
+    return refed_text;
+  }
 
   $.decora = {
     to_html: function(target_text){
@@ -261,6 +269,7 @@
           checkbox_no = check_result.no;
           deco_text = _decorate_header( check_result.text );
           deco_text = _decorate_line_color( deco_text );
+          deco_text = _decorate_ref( deco_text );
           bq_sepa_array[i] = deco_text;
         }else{
           // 装飾無し
@@ -279,6 +288,7 @@
       target_text = _decorate_download_tag( target_text );
       target_text = _decorate_img_tag( target_text, 50 );
       target_text = _decorate_line_color( target_text );
+      target_text = _decorate_ref( target_text );
 
       return target_text;
     }

@@ -518,6 +518,10 @@ a:hover {
   margin-bottom: 0.2em;
 }
 
+.ref-point {
+  cursor: pointer;
+}
+
 footer {
   width: 100%;
   margin-top: 4px;

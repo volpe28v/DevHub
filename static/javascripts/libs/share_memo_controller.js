@@ -6,6 +6,7 @@ var CODE_ADJUST_HEIGHT = 200;
 
 function ShareMemoController(param){
   this.socket = param.socket;
+  this.setMessage = param.setMessage;
   this.isEditMode = false;
   this.memo_number = 1;
 
@@ -79,7 +80,20 @@ ShareMemoController.prototype = {
     $("#share_memo_tab_" + data_no).click();
   },
 
+  move: function(id){
+    var no = id.split("-")[0];
+    $("#share_memo_tab_" + no).click();
+
+    // 移動したタブ名を見せたいのでタイムラグを入れる
+    setTimeout(function(){
+      var pos = $("#share_memo_" + no).find("#" + id).offset().top;
+      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 'fast');
+    },700);
+  },
+
   init_sharememo: function(){
+    var that = this;
+
     for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
       $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
       $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
@@ -122,6 +136,11 @@ ShareMemoController.prototype = {
 
     $(".share-memo").each(function(){
       $(this).append($('#shareMemoTmpl').render());
+    });
+
+    $(".share-memo").on("click", ".ref-point", function(){
+      var id = $(this).attr("id");
+      that.setMessage("[ref:" + id + "]");
     });
 
     // 前回の状態を復元する
