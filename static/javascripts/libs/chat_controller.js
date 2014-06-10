@@ -361,16 +361,17 @@ ChatController.prototype = {
   },
 
   play_sound: function(text){
-    if(text.match(/play:(.+)/)){
+    if(text.match(/\/play (.+)/)){
       $.ionSound.destroy();
+      var sound_name = RegExp.$1.split(".")[0];
       $.ionSound({
             sounds: [
-                RegExp.$1
+               sound_name
             ],
             path: "/uploads/",
             volume: "0.5"
       });
-      $.ionSound.play(RegExp.$1);
+      $.ionSound.play(sound_name);
     }
   },
 
