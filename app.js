@@ -55,8 +55,8 @@ app.get('/', function(req, res) {
 app.get('/notify', function(req, res) {
   console.log('/notify');
   console.log(req.query);
-  var name = decodeURI(req.query.name);
-  var msg = decodeURI(req.query.msg);
+  var name = unescape(req.query.name);
+  var msg = unescape(req.query.msg);
   var data = {name: name, msg: msg, date: util.getFullDate(new Date()), ext: true};
 
   chat_log.add(data,function(){
@@ -81,8 +81,8 @@ app.get('/memo', function(req, res) {
   console.log(req.query);
 
   var data = {
-    name: decodeURI(req.query.name),
-    text: decodeURI(req.query.msg),
+    name: unescape(req.query.name),
+    text: unescape(req.query.msg),
     no: Number(req.query.no || 1),
     line: Number(req.query.line || 0),
     date: util.getFullDate(new Date())
