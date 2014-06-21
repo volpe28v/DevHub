@@ -20,36 +20,56 @@ program
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
   .option('NODE_DEVHUB_USER', 'user name of basic authentication. define with env.')
-  .option('NODE_DEVHUB_PaSS', 'password of basic authentication. define with env.')
+  .option('NODE_DEVHUB_PASS', 'password of basic authentication. define with env.')
   .parse(process.argv);
 
-var port = program.port || process.env.PORT || 3000;
-var db_name = program.db_name || 'devhub_db';
-var title_name = program.title_name ? "for " + program.title_name : "";
-var basic_user = process.env.NODE_DEVHUB_USER ? process.env.NODE_DEVHUB_USER : "";
-var basic_pass = process.env.NODE_DEVHUB_PASS ? process.env.NODE_DEVHUB_PASS : "";
+// load settings.json
+var settings = {};
+try{
+  settings = require('./settings.json');
+}catch(e){
+  // ファイルが無ければ設定はデフォルト
+}
 
-console.log(' port : ' + port);
-console.log(' db_name : ' + db_name);
-console.log(' title_name : ' + title_name);
-console.log(' NODE_DEVHUB_USER : ' + basic_user);
-console.log(' NODE_DEVHUB_PASS : ' + basic_pass);
+var menu_links = [];
+try{
+  // メニューにリンクを表示したい場合は以下のファイルに json で記載
+  // [{"name": "Google", "url": "https://www.google.co.jp/"}]
+  menu_links = require('./lib/menu_links.json');
+}catch(e){
+  // ファイルが無ければメニューリンクなし
+}
 
-client_info.set_optional_title( title_name );
+app.set('port', program.port || process.env.PORT || 3000);
+app.set('db_name', program.db_name || 'devhub_db');
+app.set('title_name', program.title_name ? "for " + program.title_name : "");
+app.set('basic_user', process.env.NODE_DEVHUB_USER ? process.env.NODE_DEVHUB_USER : "");
+app.set('basic_pass', process.env.NODE_DEVHUB_PASS ? process.env.NODE_DEVHUB_PASS : "");
+app.set('growl', settings.growl == undefined ? true : settings.growl);
+app.set('menu_links', menu_links);
+
+console.log(' port : ' + app.get('port'));
+console.log(' db_name : ' + app.get('db_name'));
+console.log(' title_name : ' + app.get('title_name'));
+console.log(' growl: ' +  app.get('growl'));
+console.log(' NODE_DEVHUB_USER : ' + app.get('basic_user'));
+console.log(' NODE_DEVHUB_PASS : ' + app.get('basic_pass'));
+
+client_info.options({
+  title: app.get('title_name'),
+  growl: app.get('growl')
+});
 
 // set routing
 app.get('/', function(req, res) {
   console.log('/');
 
-  var menu_links = [];
-  try{
-    // メニューにリンクを表示したい場合は以下のファイルに json で記載
-    // [{"name": "Google", "url": "https://www.google.co.jp/"}]
-    menu_links = require('./lib/menu_links.json');
-  }catch(e){
-    // ファイルが無ければメニューリンクなし
-  }
-  res.render('index',{locals:{title_name:title_name, menu_links: menu_links}});
+  res.render('index',{
+    locals:{
+      title_name: app.get('title_name'),
+      menu_links: app.get('menu_links')
+    }
+  });
 });
 
 app.get('/notify', function(req, res) {
@@ -109,12 +129,12 @@ app.get('/upload', routes.upload.get);
 app.delete('/upload', routes.upload.delete);
 
 // set db and listen app
-mongo_builder.ready(db_name, function(db){
+mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   bots.set(chat_log,text_log);
 
-  server.listen(port);
+  server.listen(app.get('port'));
   console.log("listen!!!");
 });
 
@@ -272,5 +292,5 @@ io.sockets.on('connection', function(client) {
   });
 });
 
-console.log('Server running at http://127.0.0.1:' + port + '/');
+console.log('Server running at http://127.0.0.1:' + app.get('port') + '/');
 
