@@ -20,8 +20,12 @@ $(function() {
     if (file_name.match(/(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.bmp|\.BMP)$/)){
       $(this)
         .append($('<a/>').attr('href' ,file_name).addClass("thumbnail")
-          .append($('<img/>').css("height","30px").attr("src",file_name)));
+          .append($('<img/>').addClass('lazy').css("height","30px").attr("data-original",file_name)));
     }
+  });
+
+  $("img.lazy").lazyload({
+    effect : "fadeIn"
   });
 
   setColorbox($('.thumbnail'));
