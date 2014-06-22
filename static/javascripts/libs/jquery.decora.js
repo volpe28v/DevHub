@@ -233,12 +233,12 @@
   }
 
   function _decorate_line_color( text ){
-    var color_text = text.replace(/^(.+)[ 　]#([a-z]+)$/mg, function(){
+    var color_text = text.replace(/^(.+)[ 　](#([a-z]+)|(#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))$/mg, function(){
       var matched_text = arguments[1];
-      var color_name = arguments[2];
-      if (color_name == "r"){ color_name = "red"; }
-      if (color_name == "g"){ color_name = "green"; }
-      if (color_name == "b"){ color_name = "blue"; }
+      var color_name = arguments[3] || arguments[4];
+      if (color_name == "r"){ color_name = "#ba2636"; }
+      if (color_name == "g"){ color_name = "#387d39"; }
+      if (color_name == "b"){ color_name = "#333399"; }
       return '<font color="' + color_name + '">' + matched_text + '</font>';
     });
     return color_text;
