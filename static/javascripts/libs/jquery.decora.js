@@ -248,7 +248,7 @@
     var refed_text = text.replace(/\[ref:(.+?)\]/g,
         function(){
           var matched_id = arguments[1];
-          return '<span class="ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
+          return '<span class="btn btn-default btn-mini ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
         });
     return refed_text;
   }
