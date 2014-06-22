@@ -68,6 +68,8 @@ $ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -
 </pre>
 * 画像、その他ファイルをドロップでアップロード
 
+その他記法の詳細は[Wiki](https://github.com/volpe28v/DevHub/wiki/%E8%A8%98%E6%B3%95)参照
+
 ## growlの設定方法
 growlを設定すると、ブラウザを開いていなくても、チャットの通知が受け取れます。
 
