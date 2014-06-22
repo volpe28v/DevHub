@@ -175,9 +175,9 @@
             height = default_height;
           }
           if (height){
-            return '<a href="' + matched_link + '" class="thumbnail"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
+            return '<a href="' + matched_link + '" class="thumbnail" style="vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
           }else{
-            return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block;"><img src="' + matched_link + '"/></a>';
+            return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block; vertical-align: top;"><img src="' + matched_link + '"/></a>';
           }
         });
     return img_text;
