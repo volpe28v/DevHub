@@ -313,7 +313,7 @@ ChatController.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@(.+?)さん|@all", "g");
+    var name_reg = RegExp("@([^ .]+?)さん|@all", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.login_name ||
           arguments[0] == "@みなさん"     ||
