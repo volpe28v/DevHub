@@ -130,12 +130,14 @@ app.get('/upload', routes.upload.get);
 app.delete('/upload', routes.upload.delete);
 
 app.get('/blog', routes.blog.get);
+app.get('/blog/body', routes.blog.get_body);
 
 // set db and listen app
 mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   bots.set(chat_log,text_log);
+  routes.blog.set_db(db);
 
   server.listen(app.get('port'));
   console.log("listen!!!");

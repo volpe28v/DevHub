@@ -18,7 +18,7 @@
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="/javascripts/blog.min.js"></script>
     <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/stylesheets/upload.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
   </head>
   <body style=":
@@ -39,11 +39,18 @@
     <div class="container">
       <div class="row">
         <div class="span12">
-          <table class="table table-condensed">
-          </table>
+          <div>
+            <textarea class="" placeholder="Write here"></textarea>
+            <button class="btn btn-info">Save</button>
+          </div>
+
+          <div id="blog-list">
+          </div>
         </div>
       </div>
     </div>
+
+    <div id="share_memo_pre_tmp"></div>
   </body>
 </html>
 
