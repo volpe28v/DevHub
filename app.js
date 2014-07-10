@@ -123,10 +123,13 @@ app.get('/memo', function(req, res) {
 
 var routes = {
   upload : require('./routes/upload'),
+  blog: require('./routes/blog'),
 };
 app.post('/upload', routes.upload.post);
 app.get('/upload', routes.upload.get);
 app.delete('/upload', routes.upload.delete);
+
+app.get('/blog', routes.blog.get);
 
 // set db and listen app
 mongo_builder.ready(app.get('db_name'), function(db){
