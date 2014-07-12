@@ -59,7 +59,39 @@
     return this;
   }
 
+  $.fn.showDecora = function( text ){
+    $(this).html(_set_to_table($.decora.to_html(text)));
+
+    $(this).find('tr:has(:header)').addClass("header-tr");
+    $(this).find('tr:has(.code-out-pre-border)').addClass("code-out-pre-tr");
+    $(this).find('td:has(.code-out-pre)').addClass("code-out-pre-td");
+    $(this).find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
+    $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
+
+    _set_colorbox($(this).find('.thumbnail'));
+
+    // 絵文字表示
+    emojify.run($(this).get(0));
+  }
+
   // private method
+  function _set_to_table(html){
+    var table_html = '<table><tr class="code-out-tr"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr class="code-out-tr"><tr class="code-out-tr"><td>');
+    return table_html += "</td></tr></table>";
+  }
+
+  function _set_colorbox($dom){
+    $dom.colorbox({
+      transition: "none",
+    rel: "img",
+    maxWidth: "100%",
+    maxHeight: "100%",
+    initialWidth: "200px",
+    initialHeight: "200px"
+    });
+  }
+
   function _decorate_raw_tag( text ){
     var is_code = text.split("\n")[0].indexOf("code") != -1;
     if (is_code){
