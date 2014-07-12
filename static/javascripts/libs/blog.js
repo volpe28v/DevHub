@@ -11,7 +11,7 @@ $(function() {
     var title = blog.text.split("\n")[0];
 
     // ブログの追加
-    var $target = $('<div/>').attr("id", id)
+    var $target = $('<div/>').attr("id", id).addClass("blog-body")
           .append($('<div/>').addClass('blog-header')
             .html('<strong>' + blog.name + '</strong> added <span data-livestamp="' + blog.date + '"></span>')
             .append($('<div/>').css('float','right').html('<span class="edit-blog"><i class="icon-pencil"></i></span> <span class="remove-blog"><i class="icon-remove"></i></span>')))
@@ -20,12 +20,14 @@ $(function() {
           );
 
     $target.find('.code-out').showDecora(blog.text);
-    $('#blog-list').prepend($target);
+    $('#blog_list').prepend($target);
 
     // 見出しの追加
     var $index = $('<li/>')
           .append($('<a/>').attr('href',"#").attr('data-id',id).html(title + ' - <span data-livestamp="' + blog.date + '"></span>'));
     $('#index_list').prepend($index);
+
+    $target.data({blog: blog, $index: $index});
   }
  
   // 初期リスト読み込み
@@ -53,6 +55,29 @@ $(function() {
         add_blog(data.blog);
       }
     });
+  });
+
+  $('#blog_list').on("click",".edit-blog", function(){
+    //TODO
+  });
+
+  $('#blog_list').on("click",".remove-blog", function(){
+    if (window.confirm('本当に削除しますか？')){
+      var $target = $(this).closest('.blog-body');
+
+      $.ajax('blog' , {
+        type: 'DELETE',
+        cache: false,
+        data: {blog: $target.data().blog},
+        success: function(data){
+        }
+      });
+
+      $target.fadeOut();
+      $target.data().$index.fadeOut('normal',function(){
+        $target.remove();
+      });
+    }
   });
 
   // インデクスクリックイベント

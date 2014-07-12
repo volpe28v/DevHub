@@ -46,6 +46,10 @@ exports.body = function(req, res){
 };
 
 exports.delete = function(req, res) {
+  var blog = req.body.blog;
+  db.collection(table_blog_name, function(err, collection) {
+    collection.remove( {_id: new mongo.ObjectID(blog._id)} ,{safe:true}, function(){});
+  });
 };
 
 

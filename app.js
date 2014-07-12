@@ -132,6 +132,7 @@ app.delete('/upload', routes.upload.delete);
 app.get('/blog', routes.blog.get);
 app.get('/blog/body', routes.blog.body);
 app.post('/blog', routes.blog.post);
+app.delete('/blog', routes.blog.delete);
 
 // set db and listen app
 mongo_builder.ready(app.get('db_name'), function(db){
