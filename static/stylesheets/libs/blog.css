@@ -1,3 +1,11 @@
+*{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body{
   width : 100%;
   margin : 0px;
@@ -11,7 +19,7 @@ a:hover {
   color: deeppink;
 }
 
-.text-base-style {
+.text-base-style, .edit-form {
   background-color: #fefefe;
   border-top: 0px solid #eee;
   border-right: 1px solid #ddd;
@@ -30,10 +38,6 @@ a:hover {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-
-.text-highlight {
-  background-color: yellow;
 }
 
 .code-out {
@@ -153,6 +157,20 @@ a:hover {
   height: 1.5em;
   display: inline-block;
   margin-bottom: 0.2em;
+}
+
+#blog_form {
+  width: 400px;
+}
+
+.edit-form {
+  padding: 8px;
+  margin-bottom: 9px;
+}
+
+.edit-area {
+  width: 100%;
+  display: block;
 }
 
 .blog-header {

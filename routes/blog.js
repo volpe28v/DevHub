@@ -10,19 +10,24 @@ exports.set_db = function(current_db){
 
 exports.post = function(req, res) {
   var blog = req.body.blog;
+  console.log(blog);
   blog.date = util.getFullDate(new Date());
   db.collection(table_blog_name, function(err, collection) {
-    if (blog.id){
-      collection.findOne({_id: mongo.ObjectID(blog.id)},function(err, target_text) {
+    if (blog._id){
+      collection.findOne({_id: new mongo.ObjectID(blog._id)},function(err, target_text) {
         if (target_text != null){
-          collection.update( {_id: target_text._id}, {'$set': blog}, {safe: true}, function(){});
+          blog._id = null;
+          collection.update( {_id: target_text._id}, {'$set': {text: blog.text, name: blog.name, date: blog.date}}, {safe: true}, function(){});
+          console.log("update " + target_text._id);
         }else{
           collection.save( blog, function(){} );
+          console.log("save " + blog._id);
         }
         res.send({blog: blog});
       });
     }else{
       collection.save( blog, function(){
+        console.log("save " + blog._id);
         res.send({blog: blog});
       });
     }
@@ -47,8 +52,12 @@ exports.body = function(req, res){
 
 exports.delete = function(req, res) {
   var blog = req.body.blog;
+  console.log(blog);
   db.collection(table_blog_name, function(err, collection) {
-    collection.remove( {_id: new mongo.ObjectID(blog._id)} ,{safe:true}, function(){});
+    collection.remove( {_id: new mongo.ObjectID(blog._id)} ,{safe:true}, function(){
+      res.send("delete ok");
+      console.log("delete ok");
+    });
   });
 };
 
