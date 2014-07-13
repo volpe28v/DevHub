@@ -13,7 +13,6 @@ $(function() {
 
   function add_blog(blog){
     var id = blog._id;
-    var title = blog.text.split("\n")[0];
     blog.title = blog.text.split("\n")[0];
 
     $.observable(Blogs).insert(0,blog);
@@ -67,6 +66,11 @@ $(function() {
   $('#blog_list').on("click",".update-blog", function(){
     var index = $.view(this).index;
     var blog = Blogs[index];
+
+    // 名前・タイトルを更新
+    var title = blog.text.split("\n")[0];
+    $.observable(blog).setProperty("title", title);
+    $.observable(blog).setProperty("name", name);
 
     var $target = $(this).closest('.blog-body');
     $target.find(".code-out").showDecora(blog.text);

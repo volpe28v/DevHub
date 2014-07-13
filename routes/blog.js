@@ -3,6 +3,7 @@ var util = require('../lib/util');
 var db;
 
 var table_blog_name = 'blog';
+var BLOG_LIMIT = 100;
 
 exports.set_db = function(current_db){
   db = current_db;
@@ -40,7 +41,7 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   db.collection(table_blog_name, function(err, collection) {
-    collection.find().toArray(function(err, latest_texts) {
+    collection.find({}, {limit: BLOG_LIMIT, sort: {date: 1}}).toArray(function(err, latest_texts) {
       var blogs = [];
       if (latest_texts != null && latest_texts.length != 0){
         blogs = latest_texts;
