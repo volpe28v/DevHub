@@ -375,29 +375,8 @@ ShareMemoController.prototype = {
       writing_loop_stop();
     }
 
-    function setToTable(html){
-      var table_html = '<table><tr class="code-out-tr"><td>';
-      table_html += html.replace(/[\n]/g,'</td></tr class="code-out-tr"><tr class="code-out-tr"><td>');
-      return table_html += "</td></tr></table>";
-    }
-
     function updateShareMemoBody($target, text){
-      $target.find('.code-out').html(setToTable($.decora.to_html(text)));
-
-      $target.find('tr:has(:header)').addClass("header-tr");
-
-      // pre 表示対応
-      $target.find('tr:has(.code-out-pre-border)').addClass("code-out-pre-tr");
-      $target.find('td:has(.code-out-pre)').addClass("code-out-pre-td");
-      $target.find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
-      $target.find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
-//      prettyPrint(null, $target.get(0));
-
-      // 画像表示
-      that.setColorbox($target.find('.thumbnail'));
-
-      // 絵文字表示
-      emojify.run($target.find('.code-out').get(0));
+      $target.find('.code-out').showDecora(text);
 
       // チェックボックスの進捗表示
       var checked_count = $target.find("input:checked").length;
@@ -603,17 +582,6 @@ ShareMemoController.prototype = {
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
       }
-    });
-  },
-
-  setColorbox: function($dom){
-    $dom.colorbox({
-      transition: "none",
-      rel: "img",
-      maxWidth: "100%",
-      maxHeight: "100%",
-      initialWidth: "200px",
-      initialHeight: "200px"
     });
   }
 }

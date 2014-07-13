@@ -123,16 +123,23 @@ app.get('/memo', function(req, res) {
 
 var routes = {
   upload : require('./routes/upload'),
+  blog: require('./routes/blog'),
 };
 app.post('/upload', routes.upload.post);
 app.get('/upload', routes.upload.get);
 app.delete('/upload', routes.upload.delete);
+
+app.get('/blog', routes.blog.get);
+app.get('/blog/body', routes.blog.body);
+app.post('/blog', routes.blog.post);
+app.delete('/blog', routes.blog.delete);
 
 // set db and listen app
 mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   bots.set(chat_log,text_log);
+  routes.blog.set_db(db);
 
   server.listen(app.get('port'));
   console.log("listen!!!");
