@@ -6,7 +6,6 @@ $(function() {
     img_dir: 'img/emoji',  // Directory for emoji images
   });
 
-  // blog のモデルとViewをバインド
   var blogViewModel = new BlogViewModel();
 
   // 保存イベント
@@ -33,6 +32,16 @@ $(function() {
     .on("click",".remove-blog", function(){
       if (window.confirm('本当に削除しますか？')){
         blogViewModel.destory($.view(this));
+      }
+    })
+    .on('keydown','.edit-area',function(event){
+      // Ctrl - S or Ctrl - enter
+      if ((event.ctrlKey == true && event.keyCode == 83) ||
+        (event.ctrlKey == true && event.keyCode == 13)) {
+        $(this).blur(); //入力を確定するためにフォーカス外す
+        event.returnvalue = false;
+        blogViewModel.update($.view(this));
+        return false;
       }
     });
 
