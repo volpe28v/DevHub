@@ -18,6 +18,12 @@ $(function() {
     blogViewModel.add(blog);
   });
 
+  $('.form-search').submit(function(){
+    var keyword = $(this).find(".search-query").val();
+
+    blogViewModel.refresh(keyword);
+  });
+
   // ViewとViewModelをバインド
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){

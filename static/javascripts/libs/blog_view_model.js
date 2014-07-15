@@ -1,15 +1,18 @@
 function BlogViewModel(){
   this.items = [];
-
 }
 
 BlogViewModel.prototype = {
-  refresh: function(){
+  refresh: function(keyword){
+    console.log(keyword);
     var that = this;
+    if (this.ajax_req){ this.ajax_req.abort(); }
     $.ajax('blog/body' , {
       type: 'GET',
       cache: false,
+      data: {keyword: keyword},
       success: function(data){
+        $.observable(that.items).remove(0,that.items.length);
         var blogs = data.body;
         blogs.forEach(function(blog){
           that._addItem(blog);

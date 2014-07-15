@@ -17,8 +17,8 @@
     <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="/javascripts/blog.min.js"></script>
-    <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
   </head>
   <body style=":
@@ -38,11 +38,17 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span12">
+        <div class="span6">
           <div>
             <textarea id="blog_form" class="" placeholder="Paste here"></textarea>
             <button id="save_btn" class="btn btn-info">Save</button>
           </div>
+        </div>
+        <div class="span6">
+          <form class="form-search">
+            <input type="text" class="input-medium search-query">
+            <button type="submit" class="btn">Search</button>
+          </form>
         </div>
       </div>
 

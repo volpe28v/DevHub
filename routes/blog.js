@@ -40,8 +40,9 @@ exports.get = function(req, res){
 };
 
 exports.body = function(req, res){
+  var keyword = req.query.keyword;
   db.collection(table_blog_name, function(err, collection) {
-    collection.find({}, {limit: BLOG_LIMIT, sort: {date: 1}}).toArray(function(err, latest_texts) {
+    collection.find({text: { $regex: keyword, $options: 'i' }}, {limit: BLOG_LIMIT, sort: {date: 1}}).toArray(function(err, latest_texts) {
       var blogs = [];
       if (latest_texts != null && latest_texts.length != 0){
         blogs = latest_texts;
