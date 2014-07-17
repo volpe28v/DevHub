@@ -6,23 +6,19 @@ $(function() {
     img_dir: 'img/emoji',  // Directory for emoji images
   });
 
-  var blogViewModel = new BlogViewModel();
+  var blogViewModel = new BlogViewModel(name);
 
   // 保存イベント
-  $('#save_btn').click(function(){
-    var blog_text = $('#blog_form').val();
-    if (blog_text == ""){ return; }
-    $('#blog_form').val("");
+  $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)
+    .on("click","#save_btn",function(){
+      blogViewModel.add();
+    });
 
-    var blog = {text: blog_text, name: name};
-    blogViewModel.add(blog);
-  });
-
-  $('.form-search').submit(function(){
-    var keyword = $(this).find(".search-query").val();
-
-    blogViewModel.refresh(keyword);
-  });
+  $.link(true, "#search_form", blogViewModel)
+    .submit(function(){
+      blogViewModel.search();;
+      return false;
+    });
 
   // ViewとViewModelをバインド
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)

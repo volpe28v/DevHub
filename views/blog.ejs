@@ -32,9 +32,10 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="/">DevHub - blog</a>
-          <form class="navbar-search pull-left form-search">
-            <input type="text" class="search-query" placeholder="Search">
-            </form>
+
+          <form id="search_form" class="navbar-search pull-left">
+            <input type="text" class="search-query" placeholder="Search" data-link="keyword">
+          </form>
         </div>
       </div>
     </div>
@@ -42,9 +43,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12">
-          <div>
-            <textarea id="blog_form" class="" placeholder="Paste here"></textarea>
-            <button id="save_btn" class="btn btn-info">Save</button>
+          <div id="blog_input_form">
           </div>
         </div>
       </div>
@@ -62,6 +61,11 @@
     </div>
 
     <!-- JsRender Templates -->
+    <script id="blogInputTmpl" type="text/x-jsrender">
+      <textarea id="blog_form" class="" placeholder="Paste here" data-link="input_text"></textarea>
+      <button id="save_btn" class="btn btn-info">Save</button>
+    </script>
+ 
     <script id="blogBodyTmpl" type="text/x-jsrender">
       <div id="{{:_id}}" class="blog-body">
         <div class="blog-header">

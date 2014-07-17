@@ -1,10 +1,16 @@
-function BlogViewModel(){
+function BlogViewModel(name){
+  this.name = name;
+  this.input_text = "";
   this.items = [];
+  this.keyword = "";
 }
 
 BlogViewModel.prototype = {
+  search: function(){
+    this.refresh(this.keyword);
+  },
+
   refresh: function(keyword){
-    console.log(keyword);
     var that = this;
     if (this.ajax_req){ this.ajax_req.abort(); }
     $.ajax('blog/body' , {
@@ -21,7 +27,10 @@ BlogViewModel.prototype = {
     });
   },
 
-  add: function(item){
+  add: function(){
+    if (this.input_text == ""){ return; }
+
+    var item = {text: this.input_text, name: this.name};
     var that = this;
     $.ajax('blog' , {
       type: 'POST',
@@ -31,6 +40,8 @@ BlogViewModel.prototype = {
         that._addItem(data.blog);
       }
     });
+
+    $.observable(this).setProperty("input_text", "");
   },
 
   edit: function(view){
