@@ -12,7 +12,18 @@ $(function() {
   $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)
     .on("click","#save_btn",function(){
       blogViewModel.add();
+    })
+    .on('keydown','#blog_form',function(event){
+      // Ctrl - S or Ctrl - enter
+      if ((event.ctrlKey == true && event.keyCode == 83) ||
+        (event.ctrlKey == true && event.keyCode == 13)) {
+        $(this).blur(); //入力を確定するためにフォーカス外す
+        blogViewModel.add();
+        return false;
+      }
     });
+
+
 
   $.link(true, "#search_form", blogViewModel)
     .submit(function(){
@@ -41,7 +52,6 @@ $(function() {
       if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
         $(this).blur(); //入力を確定するためにフォーカス外す
-        event.returnvalue = false;
         blogViewModel.update($.view(this));
         return false;
       }
