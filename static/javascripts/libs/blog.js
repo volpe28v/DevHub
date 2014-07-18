@@ -6,7 +6,14 @@ $(function() {
     img_dir: 'img/emoji',  // Directory for emoji images
   });
 
-  var blogViewModel = new BlogViewModel(name);
+  var blogViewModel = new BlogViewModel(
+    name,
+    function(){
+      $('#loading').fadeIn('fast');
+    },
+    function(){
+      $('#loading').fadeOut();
+    });
 
   // 保存イベント
   $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)

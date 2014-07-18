@@ -1,8 +1,11 @@
-function BlogViewModel(name){
+function BlogViewModel(name, start, end){
   this.name = name;
   this.input_text = "";
   this.items = [];
   this.keyword = "";
+
+  this.load_start = start;
+  this.load_end = end;
 }
 
 BlogViewModel.prototype = {
@@ -11,6 +14,7 @@ BlogViewModel.prototype = {
   },
 
   refresh: function(keyword){
+    this.load_start();
     var that = this;
     if (this.ajax_req){ this.ajax_req.abort(); }
     $.ajax('blog/body' , {
@@ -23,6 +27,7 @@ BlogViewModel.prototype = {
         blogs.forEach(function(blog){
           that._addItem(blog);
         });
+        that.load_end();
       }
     });
   },
