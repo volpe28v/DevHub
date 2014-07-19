@@ -17,10 +17,7 @@ $(function() {
 
   // 保存イベント
   $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)
-    .on("click","#save_btn",function(){
-      blogViewModel.add();
-    })
-    .on('keydown','#blog_form',function(event){
+   .on('keydown','#blog_form',function(event){
       // Ctrl - S or Ctrl - enter
       if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
@@ -30,7 +27,10 @@ $(function() {
       }
     });
 
-
+  $("#save_btn").click(function(){
+      blogViewModel.add();
+  })
+ 
 
   $.link(true, "#search_form", blogViewModel)
     .submit(function(){
