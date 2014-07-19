@@ -11,6 +11,16 @@ a:hover {
   color: deeppink;
 }
 
+#matched_control {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+#matched_count {
+  color: white;
+  font-size: 14pt;
+}
+
 .text-base-style, .edit-form {
   background-color: #fefefe;
   border-top: 0px solid #eee;
@@ -153,6 +163,7 @@ a:hover {
 
 #blog_form {
   width: 100%;
+  background-color: #f0f8ff;
 }
 
 .edit-form {

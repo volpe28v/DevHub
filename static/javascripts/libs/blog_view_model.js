@@ -4,6 +4,11 @@ function BlogViewModel(name, start, end){
   this.items = [];
   this.keyword = "";
 
+  this.matched_doms = [];
+  this.matched_index = 0;
+  this.matched_num = 0;
+  this.matched_navi_style = "display: none;";
+
   this.load_start = start;
   this.load_end = end;
 }
@@ -27,6 +32,22 @@ BlogViewModel.prototype = {
         blogs.forEach(function(blog){
           that._addItem(blog);
         });
+        // 検索キーワードに色付け
+        if (that.keyword != ""){
+          that.matched_doms = $("td:contains('" + that.keyword + "')").css({'cssText': 'background-color: yellow !important;'});
+
+          $.observable(that).setProperty("matched_num", that.matched_doms.length);
+        }else{
+          $.observable(that).setProperty("matched_num", 0);
+        }
+
+        $.observable(that).setProperty("matched_index", 0);
+        if (that.matched_num > 0){
+          $.observable(that).setProperty("matched_navi_style", "display: inline;");
+        }else{
+          $.observable(that).setProperty("matched_navi_style", "display: none;");
+        }
+
         that.load_end();
       }
     });
@@ -108,6 +129,22 @@ BlogViewModel.prototype = {
     });
 
     $.observable(this.items).remove(index);
+  },
+
+  next: function(callback){
+    var index = this.matched_index + 1;
+    if (index > this.matched_num){ index = 1; }
+
+    $.observable(this).setProperty("matched_index", index);
+    callback($(this.matched_doms[this.matched_index - 1]).offset().top);
+  },
+
+  prev: function(callback){
+    var index = this.matched_index - 1;
+    if (index < 1){ index = this.matched_num; }
+
+    $.observable(this).setProperty("matched_index", index);
+    callback($(this.matched_doms[this.matched_index - 1]).offset().top);
   },
 
   _addItem: function(item){

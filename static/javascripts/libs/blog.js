@@ -15,7 +15,7 @@ $(function() {
       $('#loading').fadeOut();
     });
 
-  // 保存イベント
+  // ViewとViewModelをバインド
   $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)
    .on('keydown','#blog_form',function(event){
       // Ctrl - S or Ctrl - enter
@@ -31,14 +31,24 @@ $(function() {
       blogViewModel.add();
   })
  
-
-  $.link(true, "#search_form", blogViewModel)
-    .submit(function(){
+  $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
+    .on("submit", "#search_form", function(){
       blogViewModel.search();;
+      return false;
+    })
+    .on("click", "#prev_match", function(){
+      blogViewModel.prev(function(offset_top){
+        $('html,body').animate({ scrollTop: offset_top - 100}, 'fast');
+      });
+      return false;
+    })
+    .on("click", "#next_match",function(){
+      blogViewModel.next(function(offset_top){
+        $('html,body').animate({ scrollTop: offset_top - 100}, 'fast');
+      });
       return false;
     });
 
-  // ViewとViewModelをバインド
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){
       blogViewModel.edit($.view(this));

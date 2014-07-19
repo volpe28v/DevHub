@@ -36,10 +36,7 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="/">DevHub - blog</a>
-
-          <form id="search_form" class="navbar-search pull-left">
-            <input type="text" class="search-query" placeholder="Search" data-link="keyword">
-          </form>
+         <div id="blog_navi"></div>
         </div>
       </div>
     </div>
@@ -68,6 +65,21 @@
     </div>
 
     <!-- JsRender Templates -->
+    <script id="blogNaviTmpl" type="text/x-jsrender">
+      <form id="search_form" class="navbar-form pull-right">
+        <input type="text" class="search-query" placeholder="Search" data-link="keyword">
+      </form>
+      <form id="matched_control" class="navbar-form pull-right">
+        <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}">&lt;</button>
+        <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}">&gt;</button>
+      </form>
+
+      <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
+        <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
+      </span>
+ 
+    </script>
+ 
     <script id="blogInputTmpl" type="text/x-jsrender">
       <textarea id="blog_form" class="" placeholder="Paste here" data-link="input_text"></textarea>
     </script>
