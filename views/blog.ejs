@@ -54,12 +54,10 @@
 
       <div class="row-fluid">
         <div class="span9">
-          <div id="blog_list">
-          </div>
+          <ul id="blog_list"></ul>
         </div>
         <div class="span3">
-          <ul id="index_list" class="nav nav-pills nav-stacked">
-          </ul>
+          <ul id="index_list" class="nav nav-pills nav-stacked"></ul>
         </div>
       </div>
     </div>
@@ -85,7 +83,7 @@
     </script>
  
     <script id="blogBodyTmpl" type="text/x-jsrender">
-      <div id="{{:_id}}" class="blog-body">
+      <li id="{{:_id}}" class="blog-body">
         <div class="blog-header">
           <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
           <div style="float: right">
@@ -102,7 +100,7 @@
             <button class="btn btn-info update-blog">Update</button>
           </div>
         </div>
-      </div>
+      </li>
     </script>
 
     <script id="blogIndexTmpl" type="text/x-jsrender">

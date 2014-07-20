@@ -3,7 +3,7 @@ var util = require('../lib/util');
 var db;
 
 var table_blog_name = 'blog';
-var BLOG_LIMIT = 100;
+var BLOG_LIMIT = 5;
 
 exports.set_db = function(current_db){
   db = current_db;
@@ -42,7 +42,7 @@ exports.get = function(req, res){
 exports.body = function(req, res){
   var keyword = req.query.keyword;
   db.collection(table_blog_name, function(err, collection) {
-    collection.find({text: { $regex: keyword, $options: 'i' }}, {limit: BLOG_LIMIT, sort: {date: 1}}).toArray(function(err, latest_texts) {
+    collection.find({text: { $regex: keyword }}, {limit: BLOG_LIMIT, sort: {date: -1}}).toArray(function(err, latest_texts) {
       var blogs = [];
       if (latest_texts != null && latest_texts.length != 0){
         blogs = latest_texts;
@@ -51,6 +51,18 @@ exports.body = function(req, res){
     });
   });
 };
+
+exports.body_older = function(req, res){
+  var last_id = req.query._id;
+  db.collection(table_blog_name, function(err, collection) {
+    collection.findOne({_id: new mongo.ObjectID(last_id)}, function(err, last_blog){
+      collection.find({ date: {$lte: last_blog.date}}, {limit: BLOG_LIMIT, sort:{date: -1}}).toArray(function(err, blogs) {
+        res.send({body: blogs});
+      });
+    });
+  });
+};
+
 
 exports.delete = function(req, res) {
   var blog = req.body.blog;

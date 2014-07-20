@@ -72,7 +72,13 @@ $(function() {
         blogViewModel.update($.view(this));
         return false;
       }
+    })
+    .on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+      console.log("load more");
+      blogViewModel.load_more();
     });
+
+
 
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
     .on("click","a", function(){

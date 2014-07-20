@@ -11,6 +11,7 @@ function BlogViewModel(name, start, end){
 
   this.load_start = start;
   this.load_end = end;
+  this.loading_more = false;
 }
 
 BlogViewModel.prototype = {
@@ -21,7 +22,6 @@ BlogViewModel.prototype = {
   refresh: function(keyword){
     this.load_start();
     var that = this;
-    if (this.ajax_req){ this.ajax_req.abort(); }
     $.ajax('blog/body' , {
       type: 'GET',
       cache: false,
@@ -53,6 +53,27 @@ BlogViewModel.prototype = {
     });
   },
 
+  load_more: function(){
+    var that = this;
+    if (that.keyword != ""){ return; }
+    if (that.loading_more){ return; }
+    
+    var last_id = that.items[that.items.length - 1]._id;
+    that.loading_more = true;
+    $.ajax('blog/body_older' , {
+      type: 'GET',
+      cache: false,
+      data: {_id: last_id},
+      success: function(data){
+        var blogs = data.body;
+        blogs.forEach(function(blog){
+          that._addItem(blog);
+        });
+        that.loading_more = false;
+      }
+    });
+  },
+
   add: function(){
     if (this.input_text == ""){ return; }
 
@@ -63,7 +84,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: item},
       success: function(data){
-        that._addItem(data.blog);
+        that._pushItem(data.blog);
       }
     });
 
@@ -149,9 +170,22 @@ BlogViewModel.prototype = {
 
   _addItem: function(item){
     var id = item._id;
+    for (var i = 0; i < this.items.length; i++){
+      if (this.items[i]._id == id){ return; }
+    }
+
     item.title = item.text.split("\n")[0];
 
-    $.observable(this.items).insert(0,item);
+    $.observable(this.items).insert(item);
+    var $target = $('#' + id);
+    $target.find(".code-out").showDecora(item.text);
+  },
+
+  _pushItem: function(item){
+    var id = item._id;
+    item.title = item.text.split("\n")[0];
+
+    $.observable(this.items).insert(0, item);
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
   }
