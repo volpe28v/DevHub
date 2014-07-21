@@ -33,7 +33,12 @@ $(function() {
  
   $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
     .on("submit", "#search_form", function(){
-      blogViewModel.search();;
+      if(!blogViewModel.search()){
+        // 検索済みの場合はマッチ箇所に移動する
+        blogViewModel.next(function(offset_top){
+          $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
+        });
+      }
       return false;
     })
     .on("click", "#prev_match", function(){

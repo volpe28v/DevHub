@@ -3,6 +3,7 @@ function BlogViewModel(name, start, end){
   this.input_text = "";
   this.items = [];
   this.keyword = "";
+  this.before_keyword = "";
 
   this.matched_doms = [];
   this.matched_index = 0;
@@ -16,7 +17,11 @@ function BlogViewModel(name, start, end){
 
 BlogViewModel.prototype = {
   search: function(){
+    if (this.before_keyword == this.keyword){ return false; }
+
+    this.before_keyword = this.keyword;
     this.refresh(this.keyword);
+    return true;
   },
 
   refresh: function(keyword){
