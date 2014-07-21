@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="span4">
-          <button id="save_btn" class="btn btn-info">Save</button>
+          <button id="save_btn" class="btn btn-primary btn-large">Save</button>
         </div>
       </div>
 
@@ -67,21 +67,23 @@
       <form id="search_form" class="navbar-form pull-right">
         <input type="text" class="search-query" placeholder="Search" data-link="keyword">
       </form>
+
       <form id="matched_control" class="navbar-form pull-right">
-        <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}">&lt;</button>
-        <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}">&gt;</button>
+        <div class="btn-group">
+          <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
+          <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
+        </div>
       </form>
 
       <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
         <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
       </span>
- 
     </script>
- 
+
     <script id="blogInputTmpl" type="text/x-jsrender">
       <textarea id="blog_form" class="" placeholder="Paste here" data-link="input_text"></textarea>
     </script>
- 
+
     <script id="blogBodyTmpl" type="text/x-jsrender">
       <li id="{{:_id}}" class="blog-body">
         <div class="blog-header">

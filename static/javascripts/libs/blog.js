@@ -38,13 +38,13 @@ $(function() {
     })
     .on("click", "#prev_match", function(){
       blogViewModel.prev(function(offset_top){
-        $('html,body').animate({ scrollTop: offset_top - 100}, 'fast');
+        $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
       });
       return false;
     })
     .on("click", "#next_match",function(){
       blogViewModel.next(function(offset_top){
-        $('html,body').animate({ scrollTop: offset_top - 100}, 'fast');
+        $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
       });
       return false;
     });
