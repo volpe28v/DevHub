@@ -373,6 +373,8 @@ ShareMemoController.prototype = {
       }
       socket.emit('add_history',{no: $share_memo.data('no')});
       writing_loop_stop();
+
+      $("#move_to_blog").fadeOut();
     }
 
     function updateShareMemoBody($target, text){
@@ -418,6 +420,34 @@ ShareMemoController.prototype = {
         event.returnvalue = false;
         switchFixShareMemo($(this).parent(), $(this).caretLine());
         return false;
+      }
+    });
+
+    // 選択テキストを blog へ移動する
+    $(".share-memo").on('select','.code',function(event){
+      var $selected_target = $(this);
+      if ($selected_target.selection('get') != ""){
+        $("#move_to_blog")
+          .fadeIn()
+          .unbind("click")
+          .bind("click", function(){
+            $(this).fadeOut();
+            var selected_text = $selected_target.selection('get');
+            if (selected_text != ""){
+              var item = {text: selected_text, name: that.login_name};
+              $.ajax('blog' , {
+                type: 'POST',
+                cache: false,
+                data: {blog: item},
+                success: function(data){
+                  $selected_target.selection('replace', {
+                    text: '',
+                    caret: 'start'
+                  });
+                }
+              });
+            }
+          });
       }
     });
 
@@ -496,6 +526,13 @@ ShareMemoController.prototype = {
         if (code_prev != code) {
           socket.emit('text',{no: no, text: code});
           code_prev = code;
+        }
+
+        // Blogへ移動ボタンの表示状態を制御
+        if ($("#move_to_blog").is(':visible')){
+          if ($target_code.selection('get') == ""){
+            $("#move_to_blog").fadeOut();
+          }
         }
       };
       // 念のためタイマー止めとく

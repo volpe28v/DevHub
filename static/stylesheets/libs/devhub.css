@@ -157,6 +157,13 @@ a:hover {
   background-color: yellow;
 }
 
+#move_to_blog {
+  opacity: 0.8;
+  position: fixed;
+  bottom:5px;
+  right:5px;
+}
+
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;
   width: 93%;
