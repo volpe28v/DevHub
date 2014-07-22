@@ -21,6 +21,21 @@ a:hover {
   font-size: 14pt;
 }
 
+#blog_count {
+  float:right;
+  margin-top: 14px;
+  margin-right: 20px;
+}
+
+#blog_count .count {
+  font-size: 30pt;
+  font-weight: bold;
+}
+
+#blog_count .unit {
+  font-size: 16pt;
+}
+
 #blog_list {
   margin: 0;
   padding: 0;

@@ -2,6 +2,7 @@ function BlogViewModel(name, start, end){
   this.name = name;
   this.input_text = "";
   this.items = [];
+  this.item_count = 0;
   this.keyword = "";
   this.before_keyword = "";
 
@@ -17,22 +18,32 @@ function BlogViewModel(name, start, end){
 
 BlogViewModel.prototype = {
   search: function(){
+    // キーワード無しの場合は全blog更新
+    if (this.keyword == ""){
+      this.refresh();
+      return true;
+    }
+
+    // キーワード変化無しの場合は移動モード
     if (this.before_keyword == this.keyword){ return false; }
 
+    // 検索
     this.before_keyword = this.keyword;
-    this.refresh(this.keyword);
+    this._search(this.keyword);
     return true;
   },
 
-  refresh: function(keyword){
+  _search: function(keyword){
     this.load_start();
     var that = this;
-    $.ajax('blog/body' , {
+    $.ajax('blog/body_search' , {
       type: 'GET',
       cache: false,
       data: {keyword: keyword},
       success: function(data){
         $.observable(that.items).remove(0,that.items.length);
+        $.observable(that).setProperty("item_count", data.count);
+        console.log(that.item_count);
         var blogs = data.body;
         blogs.forEach(function(blog){
           that._addItem(blog);
@@ -58,6 +69,29 @@ BlogViewModel.prototype = {
     });
   },
 
+  refresh: function(){
+    this.load_start();
+    var that = this;
+    $.ajax('blog/body' , {
+      type: 'GET',
+      cache: false,
+      success: function(data){
+        $.observable(that.items).remove(0,that.items.length);
+        $.observable(that).setProperty("item_count", data.count);
+        console.log(that.item_count);
+        var blogs = data.body;
+        blogs.forEach(function(blog){
+          that._addItem(blog);
+        });
+        $.observable(that).setProperty("matched_num", 0);
+        $.observable(that).setProperty("matched_index", 0);
+        $.observable(that).setProperty("matched_navi_style", "display: none;");
+ 
+        that.load_end();
+      }
+    });
+  },
+
   load_more: function(){
     var that = this;
     if (that.keyword != ""){ return; }
@@ -75,7 +109,7 @@ BlogViewModel.prototype = {
           that._addItem(blog);
         });
         that.loading_more = false;
-      }
+     }
     });
   },
 

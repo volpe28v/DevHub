@@ -47,8 +47,11 @@
           <div id="blog_input_form">
           </div>
         </div>
-        <div class="span4">
+        <div class="span1">
           <button id="save_btn" class="btn btn-primary btn-large">Save</button>
+        </div>
+        <div class="span3">
+          <div id="blog_count"></div>
         </div>
       </div>
 
@@ -82,6 +85,10 @@
 
     <script id="blogInputTmpl" type="text/x-jsrender">
       <textarea id="blog_form" class="" placeholder="Paste here" data-link="input_text"></textarea>
+    </script>
+
+    <script id="blogCountTmpl" type="text/x-jsrender">
+      <span class="count" data-link="item_count"></span><span class="unit"> blogs.</span>
     </script>
 
     <script id="blogBodyTmpl" type="text/x-jsrender">

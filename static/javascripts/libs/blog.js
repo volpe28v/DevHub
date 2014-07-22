@@ -31,6 +31,7 @@ $(function() {
       blogViewModel.add();
   })
  
+  $.templates("#blogCountTmpl").link("#blog_count", blogViewModel);
   $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
     .on("submit", "#search_form", function(){
       if(!blogViewModel.search()){

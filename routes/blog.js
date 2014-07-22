@@ -40,14 +40,15 @@ exports.get = function(req, res){
 };
 
 exports.body = function(req, res){
-  var keyword = req.query.keyword;
   db.collection(table_blog_name, function(err, collection) {
-    collection.find({text: { $regex: keyword }}, {limit: BLOG_LIMIT, sort: {date: -1}}).toArray(function(err, latest_texts) {
-      var blogs = [];
-      if (latest_texts != null && latest_texts.length != 0){
-        blogs = latest_texts;
-      }
-      res.send({body: blogs});
+    collection.find({}, {limit: BLOG_LIMIT, sort: {date: -1}}).toArray(function(err, latest_texts) {
+      collection.count(function(err, count){
+        var blogs = [];
+        if (latest_texts != null && latest_texts.length != 0){
+          blogs = latest_texts;
+        }
+        res.send({body: blogs, count: count});
+      });
     });
   });
 };
@@ -63,6 +64,18 @@ exports.body_older = function(req, res){
   });
 };
 
+exports.body_search = function(req, res){
+  var keyword = req.query.keyword;
+  db.collection(table_blog_name, function(err, collection) {
+    collection.find({text: { $regex: keyword }}, {sort: {date: -1}}).toArray(function(err, latest_texts) {
+      var blogs = [];
+      if (latest_texts != null && latest_texts.length != 0){
+        blogs = latest_texts;
+      }
+      res.send({body: blogs, count: blogs.length});
+    });
+  });
+};
 
 exports.delete = function(req, res) {
   var blog = req.body.blog;

@@ -130,6 +130,7 @@ app.delete('/upload', routes.upload.delete);
 
 app.get('/blog', routes.blog.get);
 app.get('/blog/body', routes.blog.body);
+app.get('/blog/body_search', routes.blog.body_search);
 app.get('/blog/body_older', routes.blog.body_older);
 app.post('/blog', routes.blog.post);
 app.delete('/blog', routes.blog.delete);
