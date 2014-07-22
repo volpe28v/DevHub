@@ -8,6 +8,7 @@ function ShareMemoController(param){
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.isEditMode = false;
+  this.isShownMoveToBlog = false;
   this.memo_number = 1;
 
   this.doing_up = false;
@@ -427,6 +428,7 @@ ShareMemoController.prototype = {
     $(".share-memo").on('select','.code',function(event){
       var $selected_target = $(this);
       if ($selected_target.selection('get') != ""){
+        that.isShownMoveToBlog = true;
         $("#move_to_blog")
           .fadeIn()
           .unbind("click")
@@ -529,9 +531,10 @@ ShareMemoController.prototype = {
         }
 
         // Blogへ移動ボタンの表示状態を制御
-        if ($("#move_to_blog").is(':visible')){
+        if (that.isShownMoveToBlog){
           if ($target_code.selection('get') == ""){
             $("#move_to_blog").fadeOut();
+            that.isShownMoveToBlog = false;
           }
         }
       };
