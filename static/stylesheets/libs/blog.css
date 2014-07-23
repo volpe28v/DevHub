@@ -22,9 +22,8 @@ a:hover {
 }
 
 #blog_count {
-  float:right;
   margin-top: 14px;
-  margin-right: 20px;
+  margin-left: 10px;
 }
 
 #blog_count .count {
