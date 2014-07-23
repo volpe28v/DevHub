@@ -21,6 +21,14 @@ a:hover {
   font-size: 14pt;
 }
 
+.matched_line {
+  background-color: #FFFDBF !important;
+}
+
+.matched_strong_line {
+  background-color: yellow !important;
+}
+
 #blog_count {
   margin-top: 14px;
   margin-left: 10px;

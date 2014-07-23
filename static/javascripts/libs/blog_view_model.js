@@ -51,7 +51,7 @@ BlogViewModel.prototype = {
         });
         // 検索キーワードに色付け
         if (that.keyword != ""){
-          that.matched_doms = $("td:contains('" + that.keyword + "')").css({'cssText': 'background-color: yellow !important;'});
+          that.matched_doms = $("td:contains('" + that.keyword + "')").addClass("matched_line");
 
           $.observable(that).setProperty("matched_num", that.matched_doms.length);
         }else{
@@ -205,19 +205,31 @@ BlogViewModel.prototype = {
   },
 
   next: function(callback){
+    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_strong_line");
+    $(this.matched_doms[this.matched_index - 1]).addClass("matched_line");
+
     var index = this.matched_index + 1;
     if (index > this.matched_num){ index = 1; }
 
     $.observable(this).setProperty("matched_index", index);
     callback($(this.matched_doms[this.matched_index - 1]).offset().top);
+
+    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_line");
+    $(this.matched_doms[this.matched_index - 1]).addClass("matched_strong_line");
   },
 
   prev: function(callback){
+    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_strong_line");
+    $(this.matched_doms[this.matched_index - 1]).addClass("matched_line");
+
     var index = this.matched_index - 1;
     if (index < 1){ index = this.matched_num; }
 
     $.observable(this).setProperty("matched_index", index);
     callback($(this.matched_doms[this.matched_index - 1]).offset().top);
+
+    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_line");
+    $(this.matched_doms[this.matched_index - 1]).addClass("matched_strong_line");
   },
 
   _addItem: function(item){
