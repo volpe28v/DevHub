@@ -80,7 +80,6 @@ $(function() {
       }
     })
     .on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-      console.log("load more");
       blogViewModel.load_more();
     });
 

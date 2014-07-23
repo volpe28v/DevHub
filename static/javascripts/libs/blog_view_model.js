@@ -43,7 +43,6 @@ BlogViewModel.prototype = {
       success: function(data){
         $.observable(that.items).remove(0,that.items.length);
         $.observable(that).setProperty("item_count", data.count);
-        console.log(that.item_count);
         var blogs = data.body;
         blogs.forEach(function(blog){
           that._addItem(blog);
@@ -78,7 +77,6 @@ BlogViewModel.prototype = {
       success: function(data){
         $.observable(that.items).remove(0,that.items.length);
         $.observable(that).setProperty("item_count", data.count);
-        console.log(that.item_count);
         var blogs = data.body;
         blogs.forEach(function(blog){
           that._addItem(blog);
@@ -142,13 +140,14 @@ BlogViewModel.prototype = {
   },
 
   update: function(view){
+    var that = this;
     var index = view.index;
     var blog = this.items[index];
 
     // 名前・タイトルを更新
     var title = blog.text.split("\n")[0];
     $.observable(blog).setProperty("title", title);
-    $.observable(blog).setProperty("name", name);
+    $.observable(blog).setProperty("name", that.name);
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find(".code-out").showDecora(blog.text);
@@ -158,7 +157,7 @@ BlogViewModel.prototype = {
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
-      data: {blog: {_id: blog._id, text: blog.text, name: name}},
+      data: {blog: {_id: blog._id, text: blog.text, name: that.name}},
       success: function(data){
         $.observable(blog).setProperty("date", data.blog.date);
       }
