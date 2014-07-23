@@ -3,6 +3,7 @@ function BlogViewModel(name, start, end){
   this.input_text = "";
   this.items = [];
   this.item_count = 0;
+  this.remain_count = 0;
   this.keyword = "";
   this.before_keyword = "";
 
@@ -14,6 +15,7 @@ function BlogViewModel(name, start, end){
   this.load_start = start;
   this.load_end = end;
   this.loading_more = false;
+  this.load_more_style = "display: none;";
 }
 
 BlogViewModel.prototype = {
@@ -63,6 +65,7 @@ BlogViewModel.prototype = {
           $.observable(that).setProperty("matched_navi_style", "display: none;");
         }
 
+        that._change_state_load_more();
         that.load_end();
       }
     });
@@ -84,6 +87,7 @@ BlogViewModel.prototype = {
         $.observable(that).setProperty("matched_num", 0);
         $.observable(that).setProperty("matched_index", 0);
         $.observable(that).setProperty("matched_navi_style", "display: none;");
+        that._change_state_load_more();
  
         that.load_end();
       }
@@ -107,8 +111,18 @@ BlogViewModel.prototype = {
           that._addItem(blog);
         });
         that.loading_more = false;
+        that._change_state_load_more();
      }
     });
+  },
+
+  _change_state_load_more: function(){
+    $.observable(this).setProperty("remain_count", this.item_count - this.items.length);
+    if (this.remain_count > 0){
+      $.observable(this).setProperty("load_more_style", "display: inline;");
+    }else{
+      $.observable(this).setProperty("load_more_style", "display: none;");
+    }
   },
 
   add: function(){

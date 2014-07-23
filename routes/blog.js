@@ -3,7 +3,7 @@ var util = require('../lib/util');
 var db;
 
 var table_blog_name = 'blog';
-var BLOG_LIMIT = 5;
+var BLOG_LIMIT = 10;
 
 exports.set_db = function(current_db){
   db = current_db;
@@ -57,7 +57,7 @@ exports.body_older = function(req, res){
   var last_id = req.query._id;
   db.collection(table_blog_name, function(err, collection) {
     collection.findOne({_id: new mongo.ObjectID(last_id)}, function(err, last_blog){
-      collection.find({ date: {$lte: last_blog.date}}, {limit: BLOG_LIMIT, sort:{date: -1}}).toArray(function(err, blogs) {
+      collection.find({ date: {$lte: last_blog.date}}, {limit: BLOG_LIMIT + 1, sort:{date: -1}}).toArray(function(err, blogs) {
         res.send({body: blogs});
       });
     });

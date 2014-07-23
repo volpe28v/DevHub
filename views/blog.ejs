@@ -61,6 +61,7 @@
         </div>
         <div class="span3">
           <ul id="index_list" class="nav nav-pills nav-stacked"></ul>
+          <div id="load_more_from_index"></div>
         </div>
       </div>
     </div>
@@ -116,6 +117,10 @@
       <li>
         <a href="#" data-id="{{:_id}}">{^{:title}} - <span data-livestamp="{{:date}}"></span></a>
       </li>
+    </script>
+
+    <script id="blogLoadFromIndexTmpl" type="text/x-jsrender">
+      <button class="btn" data-link="style{>load_more_style}">Load more blogs ({^{:remain_count}})</button>
     </script>
 
     <div id="share_memo_pre_tmp"></div>

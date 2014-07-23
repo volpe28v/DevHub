@@ -83,12 +83,15 @@ $(function() {
       blogViewModel.load_more();
     });
 
-
-
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
     .on("click","a", function(){
       $target = $("#" + $(this).data('id'));
       $('html,body').animate({ scrollTop: $target.offset().top - 60}, 'fast');
+    });
+
+  $.templates("#blogLoadFromIndexTmpl").link("#load_more_from_index", blogViewModel)
+    .on("click","button", function(){
+      blogViewModel.load_more();
     });
 
   // 初期リスト読み込み
