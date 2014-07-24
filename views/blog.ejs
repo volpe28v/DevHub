@@ -115,7 +115,9 @@
 
     <script id="blogIndexTmpl" type="text/x-jsrender">
       <li>
-        <a href="#" data-id="{{:_id}}">{^{:title}} - <span data-livestamp="{{:date}}"></span></a>
+      <a href="#" data-id="{{:_id}}">
+        {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
+        {^{:title}} by {^{:name}} at <span data-livestamp="{{:date}}"></span></a>
       </li>
     </script>
 

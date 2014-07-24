@@ -46,18 +46,25 @@ BlogViewModel.prototype = {
         $.observable(that.items).remove(0,that.items.length);
         $.observable(that).setProperty("item_count", data.count);
         var blogs = data.body;
+
+        that.matched_doms = [];
+        var reg_keyword = new RegExp(that.keyword,"i");
         blogs.forEach(function(blog){
-          that._addItem(blog);
+          var matched_doms = that._addItem(blog).find("td").map(function(){
+              if ($(this).html().match(reg_keyword)){
+                $(this).addClass("matched_line");
+                return this;
+              }else{
+                return null;
+              }
+            });
+          var blog = that.items[that.items.length - 1];
+          $.observable(blog).setProperty("matched", matched_doms.length);
+
+          Array.prototype.push.apply(that.matched_doms, matched_doms);
         });
-        // 検索キーワードに色付け
-        if (that.keyword != ""){
-          that.matched_doms = $("td:contains('" + that.keyword + "')").addClass("matched_line");
 
-          $.observable(that).setProperty("matched_num", that.matched_doms.length);
-        }else{
-          $.observable(that).setProperty("matched_num", 0);
-        }
-
+        $.observable(that).setProperty("matched_num", that.matched_doms.length);
         $.observable(that).setProperty("matched_index", 0);
         if (that.matched_num > 0){
           $.observable(that).setProperty("matched_navi_style", "display: inline;");
@@ -159,7 +166,7 @@ BlogViewModel.prototype = {
     var blog = this.items[index];
 
     // 名前・タイトルを更新
-    var title = blog.text.split("\n")[0];
+    var title = that._title(blog.text);
     $.observable(blog).setProperty("title", title);
     $.observable(blog).setProperty("name", that.name);
 
@@ -178,6 +185,10 @@ BlogViewModel.prototype = {
     });
   },
  
+  _title: function(text){
+    return text.split("\n")[0].replace(/^#+/,"");
+  },
+
   cancel: function(view){
     var index = view.index;
     var blog = this.items[index];
@@ -238,16 +249,17 @@ BlogViewModel.prototype = {
       if (this.items[i]._id == id){ return; }
     }
 
-    item.title = item.text.split("\n")[0];
+    item.title = this._title(item.text);
 
     $.observable(this.items).insert(item);
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
+    return $target;
   },
 
   _pushItem: function(item){
     var id = item._id;
-    item.title = item.text.split("\n")[0];
+    item.title = this._title(item.text);
 
     $.observable(this.items).insert(0, item);
     var $target = $('#' + id);
