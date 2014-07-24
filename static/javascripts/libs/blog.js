@@ -39,6 +39,9 @@ $(function() {
         blogViewModel.next(function(offset_top){
           $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
         });
+      }else{
+        // 検索した場合はトップへスクロール
+        $('html,body').scrollTop(0);
       }
       return false;
     })
