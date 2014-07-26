@@ -194,6 +194,14 @@ a:hover {
   background-color: #f0f8ff;
 }
 
+.textarea-small {
+  height: 30px;
+}
+
+.textarea-large {
+  height: 300px;
+}
+
 .edit-form {
   padding: 8px;
   margin-bottom: 9px;

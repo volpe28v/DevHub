@@ -43,23 +43,20 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span8">
-          <div id="blog_input_form">
-          </div>
-        </div>
-        <div class="span1">
-          <button id="save_btn" class="btn btn-primary btn-large">Save</button>
-        </div>
-        <div class="span3">
-          <div id="blog_count"></div>
-        </div>
-      </div>
-
-      <div class="row-fluid">
         <div class="span9">
+          <div class="row-fluid">
+            <div class="span10">
+              <div id="blog_input_form">
+              </div>
+            </div>
+            <div class="span2">
+              <button id="save_btn" class="btn btn-primary btn-large">Save</button>
+            </div>
+          </div>
           <ul id="blog_list"></ul>
         </div>
         <div class="span3">
+          <div id="blog_count"></div>
           <ul id="index_list" class="nav nav-pills nav-stacked"></ul>
           <div id="load_more_from_index"></div>
         </div>
@@ -69,7 +66,7 @@
     <!-- JsRender Templates -->
     <script id="blogNaviTmpl" type="text/x-jsrender">
       <form id="search_form" class="navbar-form pull-right">
-        <input type="text" class="search-query" placeholder="Search" data-link="keyword">
+        <input type="text" class="search-query input-small" placeholder="Search" data-link="keyword">
       </form>
 
       <form id="matched_control" class="navbar-form pull-right">
@@ -85,7 +82,7 @@
     </script>
 
     <script id="blogInputTmpl" type="text/x-jsrender">
-      <textarea id="blog_form" class="" placeholder="Paste here" data-link="input_text"></textarea>
+      <textarea id="blog_form" class="textarea-small" placeholder="Paste here" data-link="input_text"></textarea>
     </script>
 
     <script id="blogCountTmpl" type="text/x-jsrender">

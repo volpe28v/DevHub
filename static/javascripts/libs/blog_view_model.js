@@ -19,6 +19,10 @@ function BlogViewModel(name, start, end){
 }
 
 BlogViewModel.prototype = {
+  hasKeyword: function(){
+    return this.keyword != "" ? true : false;
+  },
+
   search: function(){
     // キーワード無しの場合は全blog更新
     if (this.keyword == ""){
