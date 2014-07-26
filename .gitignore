@@ -13,6 +13,8 @@ logs
 results
 static/uploads/*
 
+lib/menu_links.json
+
 node_modules
 npm-debug.log
 
