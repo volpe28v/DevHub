@@ -81,6 +81,7 @@
             <% } %>
           </ul>
 
+
           <ul class="nav pull-right">
             <li><a id="tab_change" href="#"><i class="icon-white icon-resize-full"></i></a></li>
             <li><a id="scroll_top" href="#"><i class="icon-white icon-arrow-up"></i></a></li>
@@ -98,6 +99,8 @@
             <li><a href="/blog" target="_blank"><i class="icon-white icon-book"></i></a></li>
             <li><a href="/upload" target="_blank"><i class="icon-white icon-file"></i></a></li>
           </ul>
+
+          <div id="search_box"></div>
         </div>
       </div>
     </div>
@@ -222,6 +225,23 @@
       {^{else}}
       <span class="login-elem login-name-pomo"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
       {^{/if}}
+    </script>
+
+    <script id="searchBoxTmpl" type="text/x-jsrender">
+      <form id="search_form" class="navbar-form pull-right">
+        <input type="text" class="search-query input-small" placeholder="Search Memo" data-link="keyword">
+      </form>
+
+      <form id="matched_control" class="navbar-form pull-right">
+        <div class="btn-group">
+          <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
+          <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
+        </div>
+      </form>
+
+      <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
+        <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
+      </span>
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">

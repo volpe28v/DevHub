@@ -17,6 +17,14 @@ function ShareMemoController(param){
   this.writing_text = [];
   this.text_logs = [];
 
+  // searchBox
+  this.keyword = "";
+  this.before_keyword = "";
+  this.matched_navi_style = "display:none";
+  this.matched_index = 0;
+  this.matched_num = 0;
+  this.matched_doms = [];
+
   this.init_sharememo();
   this.init_socket();
   this.init_dropzone();
@@ -92,8 +100,125 @@ ShareMemoController.prototype = {
     },700);
   },
 
+  search: function(){
+    var that = this;
+    if (that.keyword == ""){
+      that.before_keyword = that.keyword;
+      $(".matched_strong_line").removeClass("matched_strong_line");
+      $(".matched_line").removeClass("matched_line");
+
+      $.observable(that).setProperty("matched_num", 0);
+      $.observable(that).setProperty("matched_index", 0);
+      $.observable(that).setProperty("matched_navi_style", "display: none;");
+    }else if(that.before_keyword != that.keyword){
+      $(".matched_strong_line").removeClass("matched_strong_line");
+      $(".matched_line").removeClass("matched_line");
+
+      that.before_keyword = that.keyword;
+      that.matched_doms = [];
+      var reg_keyword = new RegExp(that.keyword,"i");
+      $(".code-out").each(function(){
+        var matched_doms = $(this).find("td").map(function(){
+          if ($(this).text().match(reg_keyword)){
+            $(this).addClass("matched_line");
+            return this;
+          }else{
+            return null;
+          }
+        });
+        Array.prototype.push.apply(that.matched_doms, matched_doms);
+      });
+
+      $.observable(that).setProperty("matched_num", that.matched_doms.length);
+      $.observable(that).setProperty("matched_index", 0);
+      $.observable(that).setProperty("matched_navi_style", "display: inline;");
+      if (that.matched_num > 0){
+        that.matched_next();
+      }
+    }else{
+      that.matched_next();
+    }
+  },
+
+  matched_next: function(){
+    if (this.matched_num == 0){ return; }
+
+    var $prev_target = $(this.matched_doms[this.matched_index - 1]);
+    var index = this.matched_index + 1;
+    if (index > this.matched_num){ index = 1; }
+    $.observable(this).setProperty("matched_index", index);
+    var $next_target = $(this.matched_doms[this.matched_index - 1]);
+
+    $prev_target.removeClass("matched_strong_line").addClass("matched_line");
+    $next_target.removeClass("matched_line").addClass("matched_strong_line");
+ 
+    var no = $next_target.closest(".share-memo").data("no");
+    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    if (data_no != no){
+      var no = $next_target.closest(".share-memo").data("no");
+      $("#share_memo_tab_" + no).click();
+
+      // 移動したタブ名を見せたいのでタイムラグを入れる
+      setTimeout(function(){
+        var pos = $next_target.offset().top;
+        $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+      },700);
+    }else{
+      var pos = $next_target.offset().top;
+      $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+    }
+  },
+
+  matched_prev: function(){
+    var $prev_target = $(this.matched_doms[this.matched_index - 1]);
+    var index = this.matched_index - 1;
+    if (index < 1){ index = this.matched_num; }
+    $.observable(this).setProperty("matched_index", index);
+    var $next_target = $(this.matched_doms[this.matched_index - 1]);
+
+    $prev_target.removeClass("matched_strong_line").addClass("matched_line");
+    $next_target.removeClass("matched_line").addClass("matched_strong_line");
+ 
+    if (!$next_target.is(':visible')){
+      var no = $next_target.closest(".share-memo").data("no");
+      $("#share_memo_tab_" + no).click();
+
+      // 移動したタブ名を見せたいのでタイムラグを入れる
+      setTimeout(function(){
+        var pos = $next_target.offset().top;
+        $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+      },700);
+    }else{
+      var pos = $next_target.offset().top;
+      $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+    }
+  },
+
   init_sharememo: function(){
     var that = this;
+
+    $.templates("#searchBoxTmpl").link("#search_box", this)
+      .on("submit", "#search_form", function(){
+        that.search();
+        return false;
+      })
+    .on("focus", ".search-query", function(){
+      $(this).switchClass("input-small", "input-large","fast");
+    })
+    .on("blur", ".search-query", function(){
+      if (that.keyword == ""){
+        $(this).switchClass("input-large", "input-small","fast");
+      }
+    })
+    .on("click", "#prev_match", function(){
+      that.matched_prev();
+      return false;
+    })
+    .on("click", "#next_match",function(){
+      that.matched_next();
+      return false;
+    });
+
 
     for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
       $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
