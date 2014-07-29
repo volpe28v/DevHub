@@ -26,6 +26,7 @@ BlogViewModel.prototype = {
   search: function(){
     // キーワード無しの場合は全blog更新
     if (this.keyword == ""){
+      this.before_keyword = "";
       this.refresh();
       return true;
     }
@@ -55,7 +56,7 @@ BlogViewModel.prototype = {
         var reg_keyword = new RegExp(that.keyword,"i");
         blogs.forEach(function(blog){
           var matched_doms = that._addItem(blog).find("td").map(function(){
-              if ($(this).html().match(reg_keyword)){
+              if ($(this).text().match(reg_keyword)){
                 $(this).addClass("matched_line");
                 return this;
               }else{

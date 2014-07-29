@@ -7,6 +7,23 @@ body{
   overflow : hidden;
 }
 
+#matched_control {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+#matched_count {
+  font-size: 14pt;
+}
+
+.matched_line {
+  background-color: #FFFDBF !important;
+}
+
+.matched_strong_line {
+  background-color: yellow !important;
+}
+
 #chat_area{
   height : 100%;
   top : 0px;
