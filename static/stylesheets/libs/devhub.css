@@ -16,6 +16,11 @@ body{
   font-size: 14pt;
 }
 
+#matched_title {
+  font-size: 12pt;
+  margin-right: 5px;
+}
+
 .matched_line {
   background-color: #FFFDBF !important;
 }

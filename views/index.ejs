@@ -242,11 +242,15 @@
       <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
         <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
       </span>
+
+      <span id="matched_title" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
+        <span data-link="matched_title"></span>
+      </span>
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">
       <a class="share-memo-tab-elem" id="share_memo_tab_{{>no}}" href="#share_memo_{{>no}}" data-toggle="tab" data-no="{{>no}}" style="display:none">
-        <span> - No.{{>no}} - </span>
+        <span class="share-memo-title"> - No.{{>no}} - </span>
         <div class="writer"></div>
         <div>
           <span class="timestamp"></span>
