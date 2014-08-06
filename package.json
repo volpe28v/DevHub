@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "3.4.8"
-  , "commander": "~> 0.5.2"
-  , "ejs": "0.8.5"
-  , "socket.io": "0.9.16"
-  , "mongodb": "0.9.8"
-  , "request": ""
+  , "commander": "0.5.2"
+  , "ejs": "1.0.0"
+  , "socket.io": "0.9.17"
+  , "mongodb": "1.4.8"
+  , "request": "2.39.0"
   },
   "engines": {
     "node": "0.10.28",
