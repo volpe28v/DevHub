@@ -74,10 +74,12 @@ app.get('/', function(req, res) {
 
 app.get('/notify', function(req, res) {
   console.log('/notify');
-  console.log(req.query);
   var name = unescape(req.query.name);
   var msg = unescape(req.query.msg);
   var data = {name: name, msg: msg, date: util.getFullDate(new Date()), ext: true};
+
+  // 内容が無いものはスルー
+  if (name == "" || msg == ""){ return; }
 
   chat_log.add(data,function(){
     io.sockets.emit('message', data);
