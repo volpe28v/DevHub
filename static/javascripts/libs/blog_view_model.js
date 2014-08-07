@@ -11,6 +11,7 @@ function BlogViewModel(name, start, end){
   this.matched_index = 0;
   this.matched_num = 0;
   this.matched_navi_style = "display: none;";
+  this.matched_title = "";
 
   this.load_start = start;
   this.load_end = end;
@@ -100,7 +101,7 @@ BlogViewModel.prototype = {
         $.observable(that).setProperty("matched_index", 0);
         $.observable(that).setProperty("matched_navi_style", "display: none;");
         that._change_state_load_more();
- 
+
         that.load_end();
       }
     });
@@ -110,7 +111,7 @@ BlogViewModel.prototype = {
     var that = this;
     if (that.keyword != ""){ return; }
     if (that.loading_more){ return; }
-    
+
     var last_id = that.items[that.items.length - 1]._id;
     that.loading_more = true;
     $.ajax('blog/body_older' , {
@@ -189,7 +190,7 @@ BlogViewModel.prototype = {
       }
     });
   },
- 
+
   _title: function(text){
     return text.split("\n")[0].replace(/^#+/,"");
   },
@@ -221,31 +222,52 @@ BlogViewModel.prototype = {
   },
 
   next: function(callback){
-    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_strong_line");
-    $(this.matched_doms[this.matched_index - 1]).addClass("matched_line");
+    $(this.matched_doms[this.matched_index - 1])
+      .removeClass("matched_strong_line")
+      .addClass("matched_line");
 
     var index = this.matched_index + 1;
     if (index > this.matched_num){ index = 1; }
 
-    $.observable(this).setProperty("matched_index", index);
+    // タイトルを取得
+    var view_index = $.view($(this.matched_doms[index - 1])).index;
+    var blog = this.items[view_index];
+    var title = this._title(blog.text);
+
+    $.observable(this).setProperty({
+      "matched_index": index,
+      "matched_title": title
+    });
     callback($(this.matched_doms[this.matched_index - 1]).offset().top);
 
-    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_line");
-    $(this.matched_doms[this.matched_index - 1]).addClass("matched_strong_line");
+    $(this.matched_doms[this.matched_index - 1])
+      .removeClass("matched_line")
+      .addClass("matched_strong_line");
   },
 
   prev: function(callback){
-    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_strong_line");
-    $(this.matched_doms[this.matched_index - 1]).addClass("matched_line");
+    $(this.matched_doms[this.matched_index - 1])
+      .removeClass("matched_strong_line")
+      .addClass("matched_line");
 
     var index = this.matched_index - 1;
     if (index < 1){ index = this.matched_num; }
 
-    $.observable(this).setProperty("matched_index", index);
+    // タイトルを取得
+    var view_index = $.view($(this.matched_doms[index - 1])).index;
+    var blog = this.items[view_index];
+    var title = this._title(blog.text);
+
+    $.observable(this).setProperty({
+      "matched_index": index,
+      "matched_title": title
+    });
+
     callback($(this.matched_doms[this.matched_index - 1]).offset().top);
 
-    $(this.matched_doms[this.matched_index - 1]).removeClass("matched_line");
-    $(this.matched_doms[this.matched_index - 1]).addClass("matched_strong_line");
+    $(this.matched_doms[this.matched_index - 1])
+      .removeClass("matched_line")
+      .addClass("matched_strong_line");
   },
 
   _addItem: function(item){

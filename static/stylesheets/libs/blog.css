@@ -28,6 +28,11 @@ a:hover {
   background-color: yellow !important;
 }
 
+#matched_title {
+  font-size: 12pt;
+  margin-right: 5px;
+}
+
 #blog_count {
   margin-top: 14px;
   margin-left: 10px;
