@@ -1,0 +1,7 @@
+{
+  "name": "DevHub",
+  "description": "Chat & share memo for deverolpers.",
+  "repository": "https://github.com/volpe28v/DevHub",
+  "logo": "https://raw.githubusercontent.com/volpe28v/DevHub/master/static/apple-touch-icon.png",
+  "keywords": ["node", "socket.io", "chat"]
+}
