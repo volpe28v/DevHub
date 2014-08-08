@@ -24,6 +24,7 @@
 http://dev-hub.herokuapp.com/
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+* add an add-on "MongoLab"
 
 ## install
 必要なもの
