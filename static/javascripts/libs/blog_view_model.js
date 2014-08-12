@@ -53,17 +53,19 @@ BlogViewModel.prototype = {
         $.observable(that).setProperty("item_count", data.count);
         var blogs = data.body;
 
+        // 検索キーワードを含む行に色付けする
         that.matched_doms = [];
-        var reg_keyword = new RegExp(that.keyword,"i");
+        var reg_keywords = that.keyword.split(" ").map(function(key){ return new RegExp(key,"i"); });
         blogs.forEach(function(blog){
           var matched_doms = that._addItem(blog).find("td").map(function(){
-              if ($(this).text().match(reg_keyword)){
+            for (var i = 0; i < reg_keywords.length; i++){
+              if ($(this).text().match(reg_keywords[i])){
                 $(this).addClass("matched_line");
                 return this;
-              }else{
-                return null;
               }
-            });
+            }
+            return null;
+          });
           var blog = that.items[that.items.length - 1];
           $.observable(blog).setProperty("matched", matched_doms.length);
 
