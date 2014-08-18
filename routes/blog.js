@@ -3,7 +3,7 @@ var util = require('../lib/util');
 var db;
 
 var table_blog_name = 'blog';
-var BLOG_LIMIT = 10;
+var BLOG_LIMIT = 20;
 
 exports.set_db = function(current_db){
   db = current_db;

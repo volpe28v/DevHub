@@ -70,7 +70,12 @@ $(function() {
         $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
       });
       return false;
+    })
+    .on("click", "#scroll_top", function(){
+      $('body').animate({ scrollTop: 0 }, 'fast');
+      return false;
     });
+
 
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){
