@@ -191,7 +191,11 @@ function adjust_display_size_for_mobile(){
 function init_websocket(){
   socket.on('connect', function() {
     //console.log('connect');
-    socket.emit('name', {name: $.cookie(COOKIE_NAME)});
+    socket.emit('name',
+      {
+        name: $.cookie(COOKIE_NAME),
+        avatar: window.localStorage.avatarImage
+      });
   });
 
   socket.on('disconnect', function(){

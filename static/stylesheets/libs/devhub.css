@@ -313,6 +313,15 @@ a:hover {
   background-color: aliceblue;
 }
 
+.avatar {
+  padding: 1px;
+  background: #fff;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 #form {
   margin: 2px 0px 6px 0px;
 }

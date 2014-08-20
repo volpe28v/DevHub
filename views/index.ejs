@@ -189,6 +189,13 @@
                           seconds.
                         </div>
                       </div>
+                      <div class="control-group">
+                        <label class="control-label">Avatar</label>
+                        <div class="controls">
+                          <input type="text" id="avatar" placeholder="xxxx.jpg">
+                          <button id="avatar_set" class="btn">Set</button>
+                        </div>
+                      </div>
 
                       <div class="control-group">
                        <legend>System Settings</legend>
@@ -221,9 +228,17 @@
     <!-- JsRender Templates -->
     <script id="loginNameTmpl" type="text/x-jsrender">
       {^{if pomo_min == 0}}
-      <span data-link="class{>color_id}"><span class="name">{^{>name}}</span>{^{>place}}</span><wbr>
+        {^{if avatar != null && avatar != ""}}
+          <span><img class="avatar" src="{{>avatar}}"></span><wbr>
+        {^{else}}
+          <span data-link="class{>color_id}"><span class="name">{^{>name}}</span>{^{>place}}</span><wbr>
+        {^{/if}}
       {^{else}}
-      <span class="login-elem login-name-pomo"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+        {^{if avatar != null && avatar != ""}}
+          <span class="login-elem login-name-pomo"><img class="avatar" src="{{>avatar}}">{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+        {^{else}}
+          <span class="login-elem login-name-pomo"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+        {^{/if}}
       {^{/if}}
     </script>
 

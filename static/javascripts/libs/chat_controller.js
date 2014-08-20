@@ -167,6 +167,7 @@ ChatController.prototype = {
           id: login_list[i].id,
           color_id: "login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
           name: login_list[i].name,
+          avatar: login_list[i].avatar,
           place: place,
           pomo_min: login_list[i].pomo_min
         });
@@ -376,6 +377,7 @@ ChatController.prototype = {
   },
 
   init_notification: function(){
+    var that = this;
     if(window.localStorage){
       if(window.localStorage.popupNotification == 'true'){
         $('#notify_all').attr('checked', 'checked');
@@ -401,10 +403,29 @@ ChatController.prototype = {
         $('#notification_seconds').val(5);
         window.localStorage.notificationSeconds = 5;
       } 
+
       $('#notification_seconds').on('change',function(){
         window.localStorage.notificationSeconds = $(this).val();
       });
-    }else{
+ 
+      // for avatar
+      if (window.localStorage.avatarImage){
+        $('#avatar').val(window.localStorage.avatarImage);
+      }
+
+      $('#avatar_set').on('click',function(){
+        window.localStorage.avatarImage = $('#avatar').val();
+
+        var name = $('#name').val();
+        that.socket.emit('name',
+          {
+            name:name,
+            avatar: window.localStorage.avatarImage
+          });
+        return false;
+      });
+ 
+   }else{
       $('#notification').attr('disabled', 'disabled');
     }
   },
