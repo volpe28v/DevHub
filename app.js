@@ -194,7 +194,7 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('message', function(data) {
-    client_info.set_name(client, data.name);
+    client_info.set_name(client, data);
 
     data.date = util.getFullDate(new Date());
 
@@ -230,7 +230,7 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('pomo', function(pomo_data){
-    client_info.set_name(client, pomo_data.name);
+    client_info.set_name(client, pomo_data);
     var pomo_msg = ""
     if ( pomo_data.msg != "" ){
       pomo_msg = '「' + pomo_data.msg + '」'

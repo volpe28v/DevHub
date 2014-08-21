@@ -320,6 +320,7 @@ a:hover {
   height: 24px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  vertical-align: bottom;
 }
 
 #form {
@@ -369,8 +370,7 @@ a:hover {
 }
 
 .login-name-base,
-.login-elem
-{
+.login-elem{
   font-weight: bold;
   font-size: 12px;
   padding: 2px 4px;
@@ -379,16 +379,17 @@ a:hover {
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */
   -moz-border-radius: 4px;   /* Firefox用 */
   color: white;
-  cursor: pointer;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.login-name-base:hover,
-.login-elem:hover
-{
-  border: solid 1px lightsteelblue;
+.login-symbol {
+  cursor: pointer;
+}
+
+.login-symbol:hover {
+  border: solid 1px white;
 }
 
 

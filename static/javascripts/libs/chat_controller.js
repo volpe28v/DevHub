@@ -59,17 +59,18 @@ ChatController.prototype = {
       that.showRefPoint(id);
     });
 
-    $('#chat_area').on('click', '.login-elem', function(){
-      var name = $(this).children(".name").text();
+    $('#chat_area').on('click', '.login-symbol', function(){
+      var name = $(this).data("name");
       that.setMessage("@" + name + "さん");
     });
 
     $('#form').submit(function() {
       var name = $('#name').val();
       var message = $('#message').val();
+      var avatar = window.localStorage.avatarImage;
 
       if ( message && name ){
-        that.socket.emit('message', {name:name, msg:message});
+        that.socket.emit('message', {name:name, avatar:avatar, msg:message});
         $('#message').attr('value', '');
 
         if (that.login_name != name){
@@ -165,7 +166,7 @@ ChatController.prototype = {
 
         login_elems.push({
           id: login_list[i].id,
-          color_id: "login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
+          color_id: "login-symbol login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
           name: login_list[i].name,
           avatar: login_list[i].avatar,
           place: place,
@@ -294,7 +295,11 @@ ChatController.prototype = {
       name_class = "login-name" + this.get_color_id_by_name_id(data.id);
     }
 
-    return '<table><tr><td nowrap valign="top"><span class="login-elem ' + name_class + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+    if (data.avatar != null && data.avatar != ""){
+      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+    }else{
+      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+    }
   },
 
   get_color_id_by_name_id: function(id){
