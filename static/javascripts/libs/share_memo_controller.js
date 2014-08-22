@@ -738,6 +738,21 @@ ShareMemoController.prototype = {
         $target_code.val(that.writing_text[share_memo_no].text);
       }
     });
+
+    // アバターフォームへのドロップ
+    this.dropZone = new DropZone({
+      dropTarget: $('#avatar'),
+      fileTarget: $('#upload_avatar'),
+      uploadedAction: function(that, res){
+        $('#avatar').val(res.fileName);
+      }
+    });
+
+    // アバターアップロードボタン
+    $('#upload_avatar_button').click(function(){
+      $('#upload_avatar').click();
+      return false;
+    });
   }
 }
 

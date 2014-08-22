@@ -173,13 +173,14 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('name', function(data) {
-    client_info.set_name(client, data.name);
+    client_info.set_name(client, data);
     if (data.name == null || data.name == ""){
       client.emit('set_name', client_info.get_name(client));
     }
 
-    client.emit('list', client_info.ip_list());
-    client.broadcast.emit('list', client_info.ip_list());
+    var list = client_info.list();
+    client.emit('list', list);
+    client.broadcast.emit('list', list);
 
     chat_log.size(function(size){
       if ( size > 0 ){
@@ -193,12 +194,12 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('message', function(data) {
-    client_info.set_name(client, data.name);
+    client_info.set_name(client, data);
 
     data.date = util.getFullDate(new Date());
 
-    client.emit('list', client_info.ip_list());
-    client.broadcast.emit('list', client_info.ip_list());
+    client.emit('list', client_info.list());
+    client.broadcast.emit('list', client_info.list());
 
     chat_log.add(data);
     client.emit('message_own', data);
@@ -229,7 +230,7 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('pomo', function(pomo_data){
-    client_info.set_name(client, pomo_data.name);
+    client_info.set_name(client, pomo_data);
     var pomo_msg = ""
     if ( pomo_data.msg != "" ){
       pomo_msg = '「' + pomo_data.msg + '」'
@@ -247,13 +248,13 @@ io.sockets.on('connection', function(client) {
           client_info.send_growl_to(client,data);
         }
 
-        client.emit('list', client_info.ip_list());
-        client.broadcast.emit('list', client_info.ip_list());
+        client.emit('list', client_info.list());
+        client.broadcast.emit('list', client_info.list());
       }, 1 * 60000));
     }
 
-    client.emit('list', client_info.ip_list());
-    client.broadcast.emit('list', client_info.ip_list());
+    client.emit('list', client_info.list());
+    client.broadcast.emit('list', client_info.list());
   });
 
   client.on('text', function(msg) {
@@ -295,7 +296,7 @@ io.sockets.on('connection', function(client) {
     var client_addr = client_info.get_ip(client);
 
     if( client_info.logout(client) ){
-      client.broadcast.emit('list', client_info.ip_list());
+      client.broadcast.emit('list', client_info.list());
     }
 
     console.log('disconnect:' + client_info.get_ip(client));
