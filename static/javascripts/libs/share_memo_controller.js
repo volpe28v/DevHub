@@ -262,7 +262,7 @@ ShareMemoController.prototype = {
     // 前回の状態を復元する
     if ( window.localStorage ){
       // タブスタイル
-      if ( window.localStorage.tabChanged == 'true' ){
+      if ( window.localStorage.tabChanged != 'false' ){
         $('#share_memo_nav').hide();
         $('#share_memo_tabbable').removeClass("tabs-left");
         $('#share_memo_nav').removeClass("nav-tabs");
