@@ -113,7 +113,7 @@ ChatController.prototype = {
     });
 
     emojify.setConfig({
-      img_dir          : 'img/emoji',  // Directory for emoji images
+      img_dir: 'img/emoji',  // Directory for emoji images
     });
   },
 
@@ -247,19 +247,20 @@ ChatController.prototype = {
   },
 
   get_msg_html: function(data){
+    var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
     if ( data.name == this.login_name ){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + data.date + '</span></td></tr></table>'),
+        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "own_msg"
       };
     } else if (this.include_target_name(data.msg,this.login_name)){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + data.date + '</span></td></tr></table>'),
+        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
           css: "target_msg"
       };
     }else{
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + data.date + '</span></td></tr></table>'),
+        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>'),
           css: "normal_msg"
       };
     }

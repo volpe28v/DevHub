@@ -1,6 +1,8 @@
 body{
   width : 100%;
   margin : 0px;
+
+  font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif !important;
 }
 
 .perfect-scrollbar-body-style {
@@ -84,21 +86,25 @@ a:hover {
   color: orange;
 }
 
+.date,
+.target_msg_date,
+.own_msg_date {
+  float: right;
+  font-size: 10px;
+}
+
 .date {
   color: #ccc;
-  float: right;
   margin-right: 14px;
 }
 
 .target_msg_date {
   color: #d8cbcc;
-  float: right;
   margin-right: 14px;
 }
 
 .own_msg_date {
   color: paleturquoise;
-  float: right;
 }
 
 #suggest {
@@ -348,7 +354,6 @@ a:hover {
 
 .msg_text{
   margin-left: 2px;
-  font-weight: bold;
   word-break: break-all;
 }
 
@@ -389,7 +394,7 @@ a:hover {
 }
 
 .login-symbol:hover {
-  border: solid 1px white;
+  border: solid 1px Transparent;
 }
 
 
