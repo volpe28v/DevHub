@@ -195,12 +195,12 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('message', function(data) {
-    client_info.set_name(client, data);
+    if(client_info.set_name(client, data)){
+      client.emit('list', client_info.list());
+      client.broadcast.emit('list', client_info.list());
+    }
 
     data.date = util.getFullDate(new Date());
-
-    client.emit('list', client_info.list());
-    client.broadcast.emit('list', client_info.list());
 
     chat_log.add(data);
     client.emit('message_own', data);

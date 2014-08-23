@@ -83,10 +83,11 @@ ChatController.prototype = {
 
     $('#pomo').click(function(){
       var name = $('#name').val();
+      var avatar = window.localStorage.avatarImage;
 
       if (name){
         $('#message').attr('value', '');
-        that.socket.emit('pomo', {name: name, msg: ''});
+        that.socket.emit('pomo', {name: name, avatar: avatar, msg: ''});
 
         if (that.login_name != name){
           that.login_name = name;
