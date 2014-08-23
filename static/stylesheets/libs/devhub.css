@@ -498,9 +498,10 @@ a:hover {
 
 .checkbox-count {
   float: right;
-  font-size: 24px;
+  font-size: 14px;
   font-weight: bold;
   color: #b7282e;
+  margin: 10px 5px 0 0;
 }
 
 .checkbox-count-done {
