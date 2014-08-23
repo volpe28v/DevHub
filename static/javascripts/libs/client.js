@@ -95,8 +95,8 @@ $(function() {
     $('#share_memo_nav').show();
   }
 
-  var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
-  change_style(style_name);
+//  var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
+//  change_style(style_name);
 
   $('a[id^="style-"]').click(function(e) {
     e.preventDefault();
