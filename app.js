@@ -76,7 +76,7 @@ app.get('/notify', function(req, res) {
   console.log('/notify');
   var name = unescape(req.query.name);
   var msg = unescape(req.query.msg);
-  var avatar = unescape(req.query.avatar);
+  var avatar = req.query.avatar != undefined ? unescape(req.query.avatar) : null;
   var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date()), ext: true};
 
   // 内容が無いものはスルー
