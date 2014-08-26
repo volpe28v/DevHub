@@ -66,13 +66,15 @@ $(function() {
     $('#chat_area').addClass("perfect-scrollbar-style");
     $('#chat_area').perfectScrollbar({
       wheelSpeed: 40,
-      useKeyboard: false
+      useKeyboard: false,
+      suppressScrollX: true
     });
 
     $('#memo_area').addClass("perfect-scrollbar-style");
     $('#memo_area').perfectScrollbar({
       wheelSpeed: 40,
-      useKeyboard: false
+      useKeyboard: false,
+      suppressScrollX: true
     });
   }else{
     // モバイルの場合はフリックイベントでチャットとメモを切り替える

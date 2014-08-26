@@ -297,7 +297,8 @@ ChatController.prototype = {
       name_class = "login-name" + this.get_color_id_by_name_id(data.id);
     }
 
-    if (data.avatar != null && data.avatar != ""){
+    // avatar の undefined ガード処理が入る前のデータを弾くために文字列でも判定しておく
+    if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
       return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }else{
       return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
