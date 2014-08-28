@@ -11,7 +11,7 @@ var bots = require('./lib/bots');
 var http = require('http');
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server,{ 'destroy buffer size': Infinity });
 io.set("log level", 1);
 
 program
