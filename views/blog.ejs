@@ -16,6 +16,7 @@
     <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/perfect-scrollbar-0.4.5.with-mousewheel.min.js"></script>
     <script type="text/javascript" src="/javascripts/blog.min.js"></script>
     <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
@@ -43,7 +44,7 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span9">
+        <div id="blog_area" class="span9">
           <div class="row-fluid">
             <div class="span10">
               <div id="blog_input_form">
@@ -55,7 +56,7 @@
           </div>
           <ul id="blog_list"></ul>
         </div>
-        <div class="span3">
+        <div id="index_area" class="span3">
           <div id="blog_count"></div>
           <ul id="index_list" class="nav nav-pills nav-stacked"></ul>
           <div id="load_more_from_index"></div>

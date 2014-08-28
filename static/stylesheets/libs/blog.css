@@ -3,6 +3,28 @@ body{
   margin : 0px;
 }
 
+.perfect-scrollbar-body-style {
+  overflow : hidden;
+}
+
+.perfect-scrollbar-style {
+  position : absolute;
+  overflow: hidden;
+}
+
+#blog_area {
+  height: 100%;
+  top: 40px;
+  left: 5px;
+  padding-top: 10px;
+}
+
+#index_area {
+  height: 100%;
+  top: 40px;
+  left: 74%;
+}
+
 a {
   color: dodgerblue;
 }

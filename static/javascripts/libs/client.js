@@ -63,19 +63,16 @@ $(function() {
   if (!is_mobile){
     $('body').addClass("perfect-scrollbar-body-style");
 
-    $('#chat_area').addClass("perfect-scrollbar-style");
-    $('#chat_area').perfectScrollbar({
+    var scrollOption = {
       wheelSpeed: 40,
       useKeyboard: false,
       suppressScrollX: true
-    });
+    };
 
+    $('#chat_area').addClass("perfect-scrollbar-style");
+    $('#chat_area').perfectScrollbar(scrollOption);
     $('#memo_area').addClass("perfect-scrollbar-style");
-    $('#memo_area').perfectScrollbar({
-      wheelSpeed: 40,
-      useKeyboard: false,
-      suppressScrollX: true
-    });
+    $('#memo_area').perfectScrollbar(scrollOption);
   }else{
     // モバイルの場合はフリックイベントでチャットとメモを切り替える
     $('.hidden-phone').remove();

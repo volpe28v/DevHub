@@ -6,6 +6,19 @@ $(function() {
     img_dir: 'img/emoji',  // Directory for emoji images
   });
 
+  // スクロールバーの設定
+  var scrollOption = {
+    wheelSpeed: 40,
+    useKeyboard: false,
+    suppressScrollX: true
+  };
+
+  $('body').addClass("perfect-scrollbar-body-style");
+  $('#blog_area').addClass("perfect-scrollbar-style");
+  $('#blog_area').perfectScrollbar(scrollOption);
+  $('#index_area').addClass("perfect-scrollbar-style");
+  $('#index_area').perfectScrollbar(scrollOption);
+
   var blogViewModel = new BlogViewModel(
     name,
     function(){
@@ -37,17 +50,23 @@ $(function() {
       blogViewModel.add();
   })
 
+  function moveSearchLine(offset_top){
+    var target_top = offset_top;
+    var base_top = $("#blog_list").offset().top;
+    $('#blog_area').animate({ scrollTop: target_top - base_top - $(window).height()/2 + 54 }, 'fast');
+  }
+
   $.templates("#blogCountTmpl").link("#blog_count", blogViewModel);
   $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
     .on("submit", "#search_form", function(){
       if(!blogViewModel.search()){
         // 検索済みの場合はマッチ箇所に移動する
         blogViewModel.next(function(offset_top){
-          $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
+          moveSearchLine(offset_top);
         });
       }else{
         // 検索した場合はトップへスクロール
-        $('html,body').scrollTop(0);
+        $('#blog_area').scrollTop(0);
       }
       return false;
     })
@@ -61,18 +80,19 @@ $(function() {
     })
     .on("click", "#prev_match", function(){
       blogViewModel.prev(function(offset_top){
-        $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
+        moveSearchLine(offset_top);
       });
       return false;
     })
     .on("click", "#next_match",function(){
       blogViewModel.next(function(offset_top){
-        $('html,body').animate({ scrollTop: offset_top - $(window).height()/2}, 'fast');
+        moveSearchLine(offset_top);
       });
       return false;
     })
     .on("click", "#scroll_top", function(){
-      $('body').animate({ scrollTop: 0 }, 'fast');
+      $('#blog_area').animate({ scrollTop: 0 }, 'fast');
+      $('#index_area').animate({ scrollTop: 0 }, 'fast');
       return false;
     });
 
@@ -108,7 +128,9 @@ $(function() {
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
     .on("click","a", function(){
       $target = $("#" + $(this).data('id'));
-      $('html,body').animate({ scrollTop: $target.offset().top - 60}, 'fast');
+      var target_top = $target.offset().top;
+      var base_top = $("#blog_list").offset().top;
+      $('#blog_area').animate({ scrollTop: target_top - base_top + 54 }, 'fast');
     });
 
   $.templates("#blogLoadFromIndexTmpl").link("#load_more_from_index", blogViewModel)
