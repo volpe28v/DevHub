@@ -124,15 +124,11 @@
     </script>
 
     <script id="blogIndexTmpl" type="text/x-jsrender">
-      <li>
+      <li class="index-body">
       <a href="#" data-id="{{:_id}}">
         {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
         {^{:title}} by {^{:name}} at <span data-livestamp="{{:date}}"></span></a>
       </li>
-    </script>
-
-    <script id="blogLoadFromIndexTmpl" type="text/x-jsrender">
-      <button class="btn" data-link="style{>load_more_style}"><i class="icon-arrow-down"></i> Load more blogs ({^{:remain_count}})</button>
     </script>
 
     <div id="share_memo_pre_tmp"></div>

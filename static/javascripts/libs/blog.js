@@ -131,10 +131,8 @@ $(function() {
       var target_top = $target.offset().top;
       var base_top = $("#blog_list").offset().top;
       $('#blog_area').animate({ scrollTop: target_top - base_top + 54 }, 'fast');
-    });
-
-  $.templates("#blogLoadFromIndexTmpl").link("#load_more_from_index", blogViewModel)
-    .on("click","button", function(){
+    })
+    .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();
     });
 
