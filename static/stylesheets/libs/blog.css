@@ -15,14 +15,14 @@ body{
 #blog_area {
   height: 100%;
   top: 0px;
-  left: 5px;
-  padding-top: 10px;
+  left: 30%;
+  padding: 10px;
 }
 
 #index_area {
   height: 100%;
   top: 0px;
-  left: 74%;
+  left: 5px;
 }
 
 .dummy-space {
