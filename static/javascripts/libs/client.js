@@ -64,7 +64,7 @@ $(function() {
     $('body').addClass("perfect-scrollbar-body-style");
 
     var scrollOption = {
-      wheelSpeed: 15,
+      wheelSpeed: 6,
       useKeyboard: false,
       suppressScrollX: true
     };
