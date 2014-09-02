@@ -109,6 +109,22 @@ BlogViewModel.prototype = {
     });
   },
 
+  // for Permalink
+  loadByID: function(id){
+    var that = this;
+    $.ajax('blog/body' , {
+      type: 'GET',
+      cache: false,
+      data: {_id: id},
+      success: function(data){
+        var blogs = data.body;
+        blogs.forEach(function(blog){
+          that._addItem(blog);
+        });
+      }
+    });
+  },
+
   load_more: function(){
     var that = this;
     if (that.keyword != ""){ return; }

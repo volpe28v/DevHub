@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DevHub</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <meta name="description" content="DevHub">
+    <meta name="author" content="Naoki Kodama">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script type="text/javascript" src="/javascripts/html5.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/blog_permalink.min.js"></script>
+    <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script type="text/javascript">
+      var BLOG_ID = "<%= id %>";
+    </script>
+  </head>
+  <body style=":
+    background-color: white;
+    background-attachment: fixed;
+    background-position: center top;
+    background-repeat:  repeat;
+    padding-top: 60px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">DevHub - blog</a>
+         <div id="blog_navi"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div id="blog_area" class="span8">
+          <ul id="blog_list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- JsRender Templates -->
+    <script id="blogBodyTmpl" type="text/x-jsrender">
+      <li id="{{:_id}}" class="blog-body">
+        <div class="blog-header">
+          <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
+          <div style="float: right">
+            <span class="edit-blog"><i class="icon-pencil"></i></span> <span class="remove-blog"><i class="icon-remove"></i></span>
+          </div>
+        </div>
+        <pre class="text-base-style"><div class="code-out"></div></pre>
+        <div class="edit-form" style="display: none">
+          <div>
+            <textarea class="edit-area" data-link="text"></textarea>
+          </div>
+          <button class="btn btn-default cancel-edit">Cancel</button>
+          <div style="float: right">
+            <button class="btn btn-info update-blog">Update</button>
+          </div>
+        </div>
+      </li>
+    </script>
+
+    <div id="share_memo_pre_tmp"></div>
+  </body>
+</html>
+
+

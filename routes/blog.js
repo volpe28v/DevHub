@@ -11,7 +11,6 @@ exports.set_db = function(current_db){
 
 exports.post = function(req, res) {
   var blog = req.body.blog;
-  console.log(blog);
   blog.date = util.getFullDate(new Date());
   db.collection(table_blog_name, function(err, collection) {
     if (blog._id){
@@ -36,20 +35,32 @@ exports.post = function(req, res) {
 };
 
 exports.get = function(req, res){
-  res.render('blog');
+  var id = req.query.id;
+  if (id == undefined){
+    res.render('blog');
+  }else{
+    res.render('blog_permalink',{locals:{id: id}});
+  }
 };
 
 exports.body = function(req, res){
+  var blog_id = req.query._id;
   db.collection(table_blog_name, function(err, collection) {
-    collection.find({}, {limit: BLOG_LIMIT, sort: {date: -1}}).toArray(function(err, latest_texts) {
-      collection.count(function(err, count){
-        var blogs = [];
-        if (latest_texts != null && latest_texts.length != 0){
-          blogs = latest_texts;
-        }
-        res.send({body: blogs, count: count});
+    if (blog_id == undefined){
+      collection.find({}, {limit: BLOG_LIMIT, sort: {date: -1}}).toArray(function(err, latest_texts) {
+        collection.count(function(err, count){
+          var blogs = [];
+          if (latest_texts != null && latest_texts.length != 0){
+            blogs = latest_texts;
+          }
+          res.send({body: blogs, count: count});
+        });
       });
-    });
+    }else{
+      collection.findOne({_id: new mongo.ObjectID(blog_id)}, function(err, blog){
+        res.send({body: [blog], count: 1});
+      });
+    }
   });
 };
 
