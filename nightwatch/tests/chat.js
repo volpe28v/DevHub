@@ -1,5 +1,4 @@
 module.exports = {
-  tags: ['chat'],
   '平文メッセージを入力' : function (client) {
     client
       .url('http://localhost:3000')
