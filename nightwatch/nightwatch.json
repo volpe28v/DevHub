@@ -1,19 +1,19 @@
 {
-  "src_folders" : ["./nightwatch/tests"],
-  "output_folder" : "./nightwatch/reports",
-  "custom_commands_path" : "./nightwatch/custom-commands",
+  "src_folders" : ["tests"],
+  "output_folder" : "reports",
+  "custom_commands_path" : "custom-commands",
   "custom_assertions_path" : "",
   "globals_path" : "",
   "live_output" : false,
 
   "selenium" : {
-    "start_process" : false,
-    "server_path" : "",
+    "start_process" : true,
+    "server_path" : "selenium/selenium-server-standalone-2.42.2.jar",
     "log_path" : "",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "/usr/sbin/chromedriver",
+      "webdriver.chrome.driver" : "selenium/chromedriver",
       "webdriver.ie.driver" : "",
       "webdriver.firefox.profile" : ""
     }
@@ -28,7 +28,7 @@
       "disable_colors": false,
       "screenshots" : {
         "enabled" : true,
-        "path" : "./nightwatch/screens"
+        "path" : "screens"
       },
       "desiredCapabilities" : {
         "browserName" : "chrome",
