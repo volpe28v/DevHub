@@ -27,8 +27,8 @@
       "silent" : true,
       "disable_colors": false,
       "screenshots" : {
-        "enabled" : false,
-        "path" : ""
+        "enabled" : true,
+        "path" : "./nightwatch/screens"
       },
       "desiredCapabilities" : {
         "browserName" : "chrome",

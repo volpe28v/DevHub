@@ -1,5 +1,5 @@
 mongo nightwatch_db --eval "db.dropDatabase()"
 node app.js -d nightwatch_db &
-nightwatch
+nightwatch -t $1
 kill -9 $!
 
