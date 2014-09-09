@@ -18,3 +18,4 @@ lib/menu_links.json
 node_modules
 npm-debug.log
 
+nightwatch/reports/
