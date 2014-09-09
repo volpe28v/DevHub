@@ -134,21 +134,24 @@ ChatController.prototype = {
 
   init_socket: function(){
     var that = this;
-    this.socket.on('message_own', function(data) {
-      var $msg = that.prepend_own_msg(data);
+
+    function _msg_post_processing(data, $msg){
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
       that.play_sound(data.msg);
       that.faviconNumber.up();
+      $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
+    }
+
+    this.socket.on('message_own', function(data) {
+      var $msg = that.prepend_own_msg(data);
+      _msg_post_processing(data, $msg);
     });
 
     this.socket.on('message', function(data) {
       var $msg = that.prepend_msg(data);
-      that.setColorbox($msg.find('.thumbnail'));
-      emojify.run($msg.get(0));
+      _msg_post_processing(data, $msg);
       that.do_notification(data);
-      that.play_sound(data.msg);
-      that.faviconNumber.up();
     });
 
     this.socket.on('remove_message', function(data) {
@@ -175,6 +178,7 @@ ChatController.prototype = {
         });
       }
       $.observable(that.loginElemList).refresh(login_elems);
+      $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
 
     this.socket.on('latest_log', function(msgs) {
@@ -185,6 +189,7 @@ ChatController.prototype = {
 
       that.setColorbox($('#chat_body').find('.thumbnail'));
       emojify.run($('#chat_body').get(0));
+      $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
   },
 
@@ -299,7 +304,7 @@ ChatController.prototype = {
 
     // avatar の undefined ガード処理が入る前のデータを弾くために文字列でも判定しておく
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
-      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }else{
       return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }
