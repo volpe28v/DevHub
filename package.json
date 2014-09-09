@@ -8,6 +8,7 @@
   , "socket.io": "0.9.17"
   , "mongodb": "1.4.8"
   , "request": "2.39.0"
+  , "nightwatch": "0.5.22"
   },
   "engines": {
     "node": "0.10.28",
