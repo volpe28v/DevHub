@@ -174,6 +174,9 @@ $(function() {
       */
     }
   });
+  $('a[rel=tooltip]').tooltip({
+    placement : 'bottom'
+  });
 });
 
 function adjust_display_size_for_mobile(){
