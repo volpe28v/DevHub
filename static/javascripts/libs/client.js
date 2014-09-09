@@ -1,21 +1,6 @@
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_STYLE_NAME = "dev_hub_style_name";
 var COOKIE_EXPIRES = 365;
-var DEFAULT_STYLE_NAME = 'default';
-var STYLE_CONFIG = {
-  'default': {
-    white_icon: true,
-    css_file: 'bootstrap.min.css'
-  },
-  'journal': {
-    white_icon: false,
-    css_file: 'bootstrap.journal.css'
-  },
-  'united': {
-    white_icon: true,
-    css_file: 'bootstrap.united.css'
-  }
-};
 
 var socket = io.connect('/');
 var is_mobile = false;
@@ -93,15 +78,6 @@ $(function() {
     $('#share_memo_nav').addClass("nav-pills");
     $('#share_memo_nav').show();
   }
-
-//  var style_name = $.cookie(COOKIE_STYLE_NAME) || DEFAULT_STYLE_NAME;
-//  change_style(style_name);
-
-  $('a[id^="style-"]').click(function(e) {
-    e.preventDefault();
-    var new_style_name = $(e.target).attr('id').replace(/^style-/, '');
-    change_style(new_style_name);
-  });
 
   if ( $.cookie(COOKIE_NAME) == null && !is_mobile){
     setTimeout(function(){
@@ -229,22 +205,3 @@ function init_websocket(){
     return false;
   });
 };
-
-function change_style(style_name) {
-  if (!(style_name in STYLE_CONFIG)) {
-    throw Error('invalid style name: ' + style_name);
-  }
-
-  var style = STYLE_CONFIG[style_name];
-  var css_file = style.css_file;
-  $("#devhub-style").attr('href','/stylesheets/' + css_file);
-  $.cookie(COOKIE_STYLE_NAME, style_name, { expires: COOKIE_EXPIRES });
-
-  var navbar_icons = $('.nav i[class^="icon-"]');
-  if (style.white_icon) {
-    navbar_icons.addClass('icon-white');
-  }else{
-    navbar_icons.removeClass('icon-white');
-  }
-}
-
