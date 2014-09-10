@@ -160,6 +160,7 @@ ChatController.prototype = {
 
     this.socket.on('list', function(login_list) {
       $('#login_list_loader').hide();
+      $('#login_list_body span[rel=tooltip]').tooltip('hide');
 
       var login_elems = [];
       for (var i = 0; i < login_list.length; ++i){
