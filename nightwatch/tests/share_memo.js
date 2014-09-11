@@ -10,6 +10,7 @@ module.exports = {
       .click('#share_memo_1 .sync-text')
       .waitForElementVisible('#share_memo_1 .code', 1000)
       .pause(500) // フォーカスが落ち着くまで待つ
+      .clearValue('#share_memo_1 .code')
       .setValue('#share_memo_1 .code', 'hello')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
@@ -152,6 +153,12 @@ module.exports = {
 
   '共有メモテスト終了' : function (client) {
     client
+      .click('#share_memo_1 .sync-text')
+      .waitForElementVisible('#share_memo_1 .code', 1000)
+      .pause(500)
+      .clearValue('#share_memo_1 .code')
+      .click('#share_memo_1 .fix-text')
+      .waitForElementVisible('#share_memo_1 .code-out', 1000)
       .end();
   }
 };

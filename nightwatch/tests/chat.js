@@ -33,6 +33,10 @@ module.exports = {
       .setValue('#message', [':dog:',client.Keys.ENTER])
       .pause(1000)
       .assert.attributeEquals('#chat_body li:first-child img', 'src', 'http://localhost:3000/img/emoji/dog.png')
+  },
+
+  'チャットテストを終了' : function (client) {
+    client
       .end();
   }
 };
