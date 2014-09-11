@@ -113,6 +113,12 @@
               </table>
             </form>
             <div id="chat_body" class="text-base-style">
+              <div id="mention_own_alert" class="alert" style="display:none">
+                <strong>Display Mention & Own mode. </strong>
+              </div>
+              <div id="mention_alert" class="alert" style="display:none">
+                <strong>Display Mention only mode. </strong>
+              </div>
               <ul id="list"></ul>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...
@@ -184,7 +190,21 @@
                           <input type="file" id="upload_avatar" name="file" style="display:none"></input>
                         </div>
                       </div>
-
+                      <div class="control-group timeline-radio">
+                        <label class="control-label">Display Timeline</label>
+                        <div class="controls">
+                          <label class="radio inline">
+                            <input type="radio" name="timeline" id="timeline_all" value="all" checked> All
+                          </label>
+                         <label class="radio inline">
+                            <input type="radio" name="timeline" id="timeline_own" value="own"> Mention & Own 
+                          </label>
+                          <label class="radio inline">
+                            <input type="radio" name="timeline" id="timeline_mention" value="mention"> Mention only
+                          </label>
+                        </div>
+                      </div>
+ 
                       <div class="control-group">
                        <legend>System Settings</legend>
                         <label class="control-label">Enable share memo</label>

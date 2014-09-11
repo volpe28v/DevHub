@@ -72,6 +72,10 @@ a:hover {
   color: deeppink;
 }
 
+#mention_own_alert,#mention_alert {
+  margin-bottom: 4px !important;
+}
+
 .normal_msg {
   color: #3f3836;
 }

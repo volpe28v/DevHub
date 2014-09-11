@@ -11,7 +11,7 @@ function ChatController(param){
 
   // initialize
   this.init_chat();
-  this.init_notification();
+  this.init_settings();
   this.init_socket();
   this.init_dropzone();
 }
@@ -144,12 +144,16 @@ ChatController.prototype = {
     }
 
     this.socket.on('message_own', function(data) {
-      var $msg = that.prepend_own_msg(data);
+      var $msg = that.prepend_own_msg(data, function(){
+        that.display_timeline();
+      });
       _msg_post_processing(data, $msg);
     });
 
     this.socket.on('message', function(data) {
-      var $msg = that.prepend_msg(data);
+      var $msg = that.prepend_msg(data,function(){
+        that.display_timeline();
+      });
       _msg_post_processing(data, $msg);
       that.do_notification(data);
     });
@@ -191,7 +195,9 @@ ChatController.prototype = {
       that.setColorbox($('#chat_body').find('.thumbnail'));
       emojify.run($('#chat_body').get(0));
       $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
-    });
+
+      that.display_timeline();
+   });
   },
 
   init_dropzone: function(){
@@ -217,7 +223,7 @@ ChatController.prototype = {
     msg.li.fadeIn();
   },
 
-  prepend_msg: function(data){
+  prepend_msg: function(data, callback){
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
     if (data.name == "System") { return }
@@ -228,20 +234,24 @@ ChatController.prototype = {
     $('#list').prepend(msg.li);
     msg.li.addClass("text-highlight",0);
     msg.li.slideDown('fast',function(){
-      msg.li.switchClass("text-highlight", msg.css, 500);
+      msg.li.switchClass("text-highlight", msg.css, 500, function(){
+        callback();
+      });
     });
 
     return msg.li;
   },
 
-  prepend_own_msg: function(data){
+  prepend_own_msg: function(data, callback){
     if (this.exist_msg(data)){ return };
     var msg = this.get_msg_html(data);
 
     $('#list').prepend(msg.li);
     msg.li.addClass("text-highlight",0);
     msg.li.slideDown('fast',function(){
-      msg.li.switchClass("text-highlight", msg.css, 500);
+      msg.li.switchClass("text-highlight", msg.css, 500, function(){
+        callback();
+      });
     });
 
     return msg.li;
@@ -390,7 +400,7 @@ ChatController.prototype = {
     }
   },
 
-  init_notification: function(){
+  init_settings: function(){
     var that = this;
     if(window.localStorage){
       if(window.localStorage.popupNotification == 'true'){
@@ -438,7 +448,38 @@ ChatController.prototype = {
           });
         return false;
       });
- 
+
+      // for Timeline
+      if(window.localStorage.timeline == 'all'){
+        $('#timeline_all').attr('checked', 'checked');
+      }else if (window.localStorage.timeline == 'own'){
+        $('#timeline_own').attr('checked', 'checked');
+        $('#mention_own_alert').show();
+      }else{
+        $('#timeline_mention').attr('checked', 'checked');
+        $('#mention_alert').show();
+      }
+
+      $('.timeline-radio').on('change', "input", function(){
+        var mode = $(this).val();
+        window.localStorage.timeline = mode; 
+        if (mode == 'all'){
+          $('.normal_msg').fadeIn();
+          $('.own_msg').fadeIn();
+          $('#mention_own_alert').hide();
+          $('#mention_alert').hide();
+        }else if (mode == 'own'){
+          $('.normal_msg').fadeOut();
+          $('.own_msg').fadeIn();
+          $('#mention_own_alert').show();
+          $('#mention_alert').hide();
+        }else{
+          $('.normal_msg').fadeOut();
+          $('.own_msg').fadeOut();
+          $('#mention_own_alert').hide();
+          $('#mention_alert').show();
+        }
+      });
    }else{
       $('#notification').attr('disabled', 'disabled');
     }
@@ -484,6 +525,15 @@ ChatController.prototype = {
       }else{
           Notification.requestPermission();
       }
+    }
+  },
+
+  display_timeline: function(){
+    if (window.localStorage.timeline == "own"){
+      $('.normal_msg').fadeOut();
+    }else if (window.localStorage.timeline == "mention"){
+      $('.normal_msg').fadeOut();
+      $('.own_msg').fadeOut();
     }
   }
 }
