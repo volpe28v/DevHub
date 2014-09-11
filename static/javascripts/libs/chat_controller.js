@@ -450,14 +450,14 @@ ChatController.prototype = {
       });
 
       // for Timeline
-      if(window.localStorage.timeline == 'all'){
-        $('#timeline_all').attr('checked', 'checked');
-      }else if (window.localStorage.timeline == 'own'){
+      if(window.localStorage.timeline == 'own'){
         $('#timeline_own').attr('checked', 'checked');
         $('#mention_own_alert').show();
-      }else{
+      }else if (window.localStorage.timeline == 'mention'){
         $('#timeline_mention').attr('checked', 'checked');
         $('#mention_alert').show();
+      }else{
+        $('#timeline_all').attr('checked', 'checked');
       }
 
       $('.timeline-radio').on('change', "input", function(){
