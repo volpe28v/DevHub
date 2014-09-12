@@ -595,3 +595,10 @@ footer span {
           box-sizing: border-box;
 }
 
+button.close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}

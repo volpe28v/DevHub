@@ -480,6 +480,18 @@ ChatController.prototype = {
           $('#mention_alert').slideDown();
         }
       });
+
+      $('#chat_body').on('click', '.close', function(){
+        window.localStorage.timeline = 'all';
+        $('.normal_msg').slideDown();
+        $('.own_msg').slideDown();
+        $('#mention_own_alert').slideUp();
+        $('#mention_alert').slideUp();
+        $('#timeline_all').attr('checked', 'checked');
+        $(this).closest('.alert').slideUp();
+        return false;
+      });
+
    }else{
       $('#notification').attr('disabled', 'disabled');
     }
