@@ -165,6 +165,14 @@ io.sockets.on('connection', function(client) {
     }
   });
 
+  text_log.get_latest(function(latest_texts){
+    console.log("latest_text: " + latest_texts.length);
+    var length = latest_texts.length;
+    for( var i = 0; i < length; i++){
+      client.emit('text',latest_texts[i]);
+    }
+  });
+
   client.on('name', function(data) {
     client_info.set_name(client, data);
     if (data.name == null || data.name == ""){
