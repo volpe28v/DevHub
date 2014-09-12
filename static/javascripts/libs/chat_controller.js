@@ -362,7 +362,7 @@ ChatController.prototype = {
   },
 
   get_id: function(name){
-    for(var i = 0; i < this.loginElemList.length; ++i ){
+    for(var i = 1; i < this.loginElemList.length; ++i ){
       if ( this.loginElemList[i].name == name ){
         return this.loginElemList[i].id;
       }
@@ -464,24 +464,33 @@ ChatController.prototype = {
         var mode = $(this).val();
         window.localStorage.timeline = mode; 
         if (mode == 'all'){
-          $('.normal_msg').fadeIn();
-          $('.own_msg').fadeIn();
-          $('#mention_own_alert').hide();
-          $('#mention_alert').hide();
+          $('.normal_msg').slideDown();
+          $('.own_msg').slideDown();
+          $('#mention_own_alert').slideUp();
+          $('#mention_alert').slideUp();
         }else if (mode == 'own'){
-          $('.normal_msg').fadeOut();
-          $('.own_msg').fadeIn();
-          $('#mention_own_alert').show();
-          $('#mention_alert').hide();
+          $('.normal_msg').slideUp();
+          $('.own_msg').slideDown();
+          $('#mention_own_alert').slideDown();
+          $('#mention_alert').slideUp();
         }else{
-          $('.normal_msg').fadeOut();
-          $('.own_msg').fadeOut();
-          $('#mention_own_alert').hide();
-          $('#mention_alert').show();
+          $('.normal_msg').slideUp();
+          $('.own_msg').slideUp();
+          $('#mention_own_alert').slideUp();
+          $('#mention_alert').slideDown();
         }
       });
    }else{
       $('#notification').attr('disabled', 'disabled');
+    }
+  },
+
+  display_timeline: function(){
+    if (window.localStorage.timeline == "own"){
+      $('.normal_msg').slideUp();
+    }else if (window.localStorage.timeline == "mention"){
+      $('.normal_msg').slideUp();
+      $('.own_msg').slideUp();
     }
   },
 
@@ -525,15 +534,6 @@ ChatController.prototype = {
       }else{
           Notification.requestPermission();
       }
-    }
-  },
-
-  display_timeline: function(){
-    if (window.localStorage.timeline == "own"){
-      $('.normal_msg').fadeOut();
-    }else if (window.localStorage.timeline == "mention"){
-      $('.normal_msg').fadeOut();
-      $('.own_msg').fadeOut();
     }
   }
 }
