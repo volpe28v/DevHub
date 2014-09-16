@@ -8,6 +8,7 @@ function ChatController(param){
 
   // Models
   this.loginElemList = [];
+  this.hidingMessageCount = 0;
 
   // initialize
   this.init_chat();
@@ -46,6 +47,7 @@ ChatController.prototype = {
 
     // ログインリストのバインディング
     $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
+    $.templates("#alertTimelineTmpl").link("#alert_timeline", that);
 
     $('#list').on('click', '.remove_msg', function(){
       var id = "#" + $(this).closest('li').attr('id');
@@ -144,15 +146,15 @@ ChatController.prototype = {
     }
 
     this.socket.on('message_own', function(data) {
-      var $msg = that.prepend_own_msg(data, function(){
-        that.display_timeline();
+      var $msg = that.prepend_own_msg(data, function($msg){
+        that.display_timeline($msg);
       });
       _msg_post_processing(data, $msg);
     });
 
     this.socket.on('message', function(data) {
-      var $msg = that.prepend_msg(data,function(){
-        that.display_timeline();
+      var $msg = that.prepend_msg(data,function($msg){
+        that.display_timeline($msg);
       });
       _msg_post_processing(data, $msg);
       that.do_notification(data);
@@ -235,7 +237,7 @@ ChatController.prototype = {
     msg.li.addClass("text-highlight",0);
     msg.li.slideDown('fast',function(){
       msg.li.switchClass("text-highlight", msg.css, 500, function(){
-        callback();
+        callback(msg.li);
       });
     });
 
@@ -250,7 +252,7 @@ ChatController.prototype = {
     msg.li.addClass("text-highlight",0);
     msg.li.slideDown('fast',function(){
       msg.li.switchClass("text-highlight", msg.css, 500, function(){
-        callback();
+        callback(msg.li);
       });
     });
 
@@ -426,12 +428,12 @@ ChatController.prototype = {
       }else{
         $('#notification_seconds').val(5);
         window.localStorage.notificationSeconds = 5;
-      } 
+      }
 
       $('#notification_seconds').on('change',function(){
         window.localStorage.notificationSeconds = $(this).val();
       });
- 
+
       // for avatar
       if (window.localStorage.avatarImage){
         $('#avatar').val(window.localStorage.avatarImage);
@@ -462,7 +464,7 @@ ChatController.prototype = {
 
       $('.timeline-radio').on('change', "input", function(){
         var mode = $(this).val();
-        window.localStorage.timeline = mode; 
+        window.localStorage.timeline = mode;
         if (mode == 'all'){
           $('.normal_msg').slideDown();
           $('.own_msg').slideDown();
@@ -479,6 +481,7 @@ ChatController.prototype = {
           $('#mention_own_alert').slideUp();
           $('#mention_alert').slideDown();
         }
+        $.observable(that).setProperty("hidingMessageCount", 0);
       });
 
       $('#chat_body').on('click', '.close', function(){
@@ -489,6 +492,7 @@ ChatController.prototype = {
         $('#mention_alert').slideUp();
         $('#timeline_all').attr('checked', 'checked');
         $(this).closest('.alert').slideUp();
+        $.observable(that).setProperty("hidingMessageCount", 0);
         return false;
       });
 
@@ -497,13 +501,20 @@ ChatController.prototype = {
     }
   },
 
-  display_timeline: function(){
+  display_timeline: function($msg){
     if (window.localStorage.timeline == "own"){
+      if ($msg != undefined && $msg.hasClass('normal_msg')){
+        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      }
       $('.normal_msg').slideUp();
     }else if (window.localStorage.timeline == "mention"){
+      if ($msg != undefined && ($msg.hasClass('normal_msg') || $msg.hasClass('own_msg'))){
+        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      }
       $('.normal_msg').slideUp();
       $('.own_msg').slideUp();
     }
+    console.log(this.hidingMessageCount);
   },
 
   do_notification: function(data){

@@ -113,14 +113,7 @@
               </table>
             </form>
             <div id="chat_body" class="text-base-style">
-              <div id="mention_own_alert" class="alert" style="display:none">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Display Mention & Own mode. </strong>
-              </div>
-              <div id="mention_alert" class="alert" style="display:none">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Display Mention only mode. </strong>
-              </div>
+              <div id="alert_timeline"></div>
               <ul id="list"></ul>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...
@@ -271,6 +264,25 @@
       <span id="matched_title" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
         <span data-link="matched_title"></span>
       </span>
+    </script>
+
+    <script id="alertTimelineTmpl" type="text/x-jsrender">
+      <div id="mention_own_alert" class="alert" style="display:none">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Display Mention & Own mode.
+        {^{if hidingMessageCount != 0}}
+          <span data-link="hidingMessageCount"></span> new messages.
+        {^{/if}}
+        </strong>
+      </div>
+      <div id="mention_alert" class="alert" style="display:none">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Display Mention only mode.
+        {^{if hidingMessageCount != 0}}
+          <span data-link="hidingMessageCount"></span> new messages.
+        {^{/if}}
+        </strong>
+      </div>
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">
