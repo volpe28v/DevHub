@@ -514,7 +514,6 @@ ChatController.prototype = {
       $('.normal_msg').slideUp();
       $('.own_msg').slideUp();
     }
-    console.log(this.hidingMessageCount);
   },
 
   do_notification: function(data){
