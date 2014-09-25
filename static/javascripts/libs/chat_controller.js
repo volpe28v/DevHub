@@ -364,7 +364,7 @@ ChatController.prototype = {
   },
 
   get_id: function(name){
-    for(var i = 1; i < this.loginElemList.length; ++i ){
+    for(var i = 0; i < this.loginElemList.length; ++i ){
       if ( this.loginElemList[i].name == name ){
         return this.loginElemList[i].id;
       }
