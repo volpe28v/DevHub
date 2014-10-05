@@ -519,6 +519,9 @@ ChatController.prototype = {
   do_notification: function(data){
     var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "");
     var notif_icon = 'notification.png';
+    if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
+      notif_icon = data.avatar;
+    }
     var notif_msg = data.msg;
 
     if (window.localStorage.popupNotification == 'true' ||
