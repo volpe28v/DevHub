@@ -169,22 +169,28 @@ ChatController.prototype = {
       $('#login_list_body span[rel=tooltip]').tooltip('hide');
 
       var login_elems = [];
+      var avatar_elems = [];
       for (var i = 0; i < login_list.length; ++i){
         var place = "";
         if ( login_list[i].place != "" ){
           place = "@" + login_list[i].place;
         }
 
-        login_elems.push({
-          id: login_list[i].id,
-          color_id: "login-symbol login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
-          name: login_list[i].name,
-          avatar: login_list[i].avatar,
-          place: place,
-          pomo_min: login_list[i].pomo_min
-        });
+        var login_elem = {
+            id: login_list[i].id,
+            color_id: "login-symbol login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
+            name: login_list[i].name,
+            avatar: login_list[i].avatar,
+            place: place,
+            pomo_min: login_list[i].pomo_min
+          };
+        if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
+          avatar_elems.push(login_elem);
+        }else{
+          login_elems.push(login_elem);
+        }
       }
-      $.observable(that.loginElemList).refresh(login_elems);
+      $.observable(that.loginElemList).refresh(avatar_elems.concat(login_elems));
       $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
 
