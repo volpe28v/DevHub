@@ -174,7 +174,7 @@
     var linked_text = text.replace(/(\[(.+?)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+))[\)]?/g,
         function(){
           var matched_link = arguments[3];
-          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp)$/i)){
+          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp)[?]?/i)){
             return matched_link;
           }else{
             var title_text = arguments[2] ? arguments[2] : matched_link;
@@ -189,7 +189,7 @@
         function(){
           var matched_link = arguments[1];
           var matched_name = arguments[2];
-          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.xap)$/i)){
+          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.xap)[?]?/i)){
             return matched_link;
           }else{
             return '<a href="' + matched_link + '" class="btn btn-default btn-mini" ><i class="icon-download-alt"></i>' + matched_name + '</a>';
@@ -199,10 +199,10 @@
   }
 
   function _decorate_img_tag( text, default_height){
-    var img_text = text.replace(/((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp))($|\s([0-9]+)|\s))/gi,
+    var img_text = text.replace(/((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
         function(){
           var matched_link = arguments[2];
-          var height = arguments[5];
+          var height = arguments[6];
           if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
             height = default_height;
           }
