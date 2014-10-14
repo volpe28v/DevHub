@@ -339,6 +339,7 @@ ChatController.prototype = {
 
     deco_msg = this.deco_login_name(deco_msg)
     deco_msg = $.decora.message_to_html(deco_msg);
+    deco_msg = deco_msg.replace(/\n/g,"<br>");
 
     return deco_msg;
   },
