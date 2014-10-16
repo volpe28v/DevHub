@@ -9,7 +9,7 @@ exports.set_db = function(current_db){
   db = current_db;
 };
 
-exports.post = function(req, res) {
+exports.post = function(req, res, callback) {
   var blog = req.body.blog;
   blog.date = util.getFullDate(new Date());
   db.collection(table_blog_name, function(err, collection) {
@@ -29,6 +29,7 @@ exports.post = function(req, res) {
       collection.save( blog, function(){
         console.log("save " + blog._id);
         res.send({blog: blog});
+        callback(blog); //新規登録の時だけコールバックする
       });
     }
   });

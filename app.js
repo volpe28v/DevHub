@@ -135,7 +135,19 @@ app.get('/blog', routes.blog.get);
 app.get('/blog/body', routes.blog.body);
 app.get('/blog/body_search', routes.blog.body_search);
 app.get('/blog/body_older', routes.blog.body_older);
-app.post('/blog', routes.blog.post);
+app.post('/blog', function(req,res){
+  routes.blog.post(req,res,function(blog){
+    var name = "Blog";
+    var msg = blog.name + "さんがブログを投稿しました\n" + "[" + blog.text.split('\n')[0] + "](blog?id=" + blog._id + ")";
+    var avatar = "img/blog.png";
+    var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date())};
+
+    chat_log.add(data,function(){
+      io.sockets.emit('message', data);
+      client_info.send_growl_all(data);
+    });
+  });
+});
 app.delete('/blog', routes.blog.delete);
 
 // set db and listen app
