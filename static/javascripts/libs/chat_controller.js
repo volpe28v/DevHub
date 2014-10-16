@@ -420,7 +420,7 @@ ChatController.prototype = {
 
       $('.notify-radio').on('change', "input", function(){
         var mode = $(this).val();
-        window.localStorage.popupNotification = mode; 
+        window.localStorage.popupNotification = mode;
         if (mode != "disable"){
           if (window.webkitNotifications){
             window.webkitNotifications.requestPermission();
@@ -556,8 +556,7 @@ ChatController.prototype = {
           var notification = new Notification(notif_title, {
             icon: notif_icon,
             iconUrl: notif_icon,
-            body: notif_msg,
-            tag:"notification-test",
+            body: notif_msg
           });
           setTimeout(function(){
             notification.close();
