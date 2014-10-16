@@ -14,10 +14,10 @@
 * 共有リアルタイムメモ帳(複数枚)
 * メモの履歴差分表示(最新のいくつか)
 * 外部サービスからの通知API
-* いろんな通知をアクセスしているメンバに Growl 通知
-* ポモドーロタイマーで作業に集中(ポモドーロ中は Growl 通知が来ないようになる)
+* ポモドーロタイマーで作業に集中
 * DBへチャット履歴の保存
 * ファイルのドロップによるアップロード(画像は表示される)
+* 共有メモをブログとして保存
 * モバイル対応(フリックによるチャット⇔メモ切り替え)
 
 ## デモ
@@ -25,7 +25,7 @@ http://dev-hub.herokuapp.com/
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-## install
+## インストール
 必要なもの
 
 * node 
@@ -72,27 +72,23 @@ $ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -
 
 その他記法の詳細は[Wiki](https://github.com/volpe28v/DevHub/wiki/%E8%A8%98%E6%B3%95)参照
 
-## growlの設定方法
-growlを設定すると、ブラウザを開いていなくても、チャットの通知が受け取れます。
+### 通知
+* チャットメッセージをポップアップでデスクトップ表示
+* Settings にて WebNotification を有効にする
 
-### Windows
-1.サーバ側にruby-growlをインストールする。
-
-<pre>
-$ gem install ruby-growl
-</pre>
-
-2.各クライアントに Growl for windowsをインストールする。
-
-* http://www.growlforwindows.com/gfw/
-
-3.ネットワーク通知をオンにする。
-
-* Security > Allow network notificationsにチェックする。
-* password managerにパスワード「growl」を追加。
+### アバター
+* ユーザ名の代わりにお好きなアイコンを表示
+* Settings にてアバターアイコンを設定する
 
 
-## 外部サービスからの通知APIを叩く方法
+## 外部連携
+### Hubot
+https://github.com/hashrock/hubot-devhub
+
+### Redmine, GitHub, Gitlab, GitBucket
+https://github.com/hashrock/DevhubHook
+
+## 汎用通知API
 
 * クエリーとして以下が必須
 * name : サービス名
@@ -117,7 +113,8 @@ LOG=`svnlook log $REPOS -r $REV | nkf -w`
 wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 </pre>
 
-## メニューバーにリンクを追加する
+## その他Tips
+### メニューバーにリンクを追加する
 * よく行くサイトのリンクをDevhubの上部メニューに表示しておくことができる。
 * /lib/menu_links.json を追加する。
 
@@ -128,7 +125,7 @@ wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 ]
 </pre>
 
-## bot を追加する
+### 組み込み bot を追加する
 /lib/bots 配下に js ファイルを追加する。実装例は david.js を参照。
 <pre>
 var util = require('../util');
