@@ -43,7 +43,17 @@ ChatController.prototype = {
         index: 1,
         maxCount: 8
       }
-    ]);
+    ]).on('keydown',function(event){
+      // Ctrl - enter は改行扱い
+      if (event.ctrlKey == true && event.keyCode == 13) {
+        event.returnvalue = false;
+      }else if(event.keyCode == 13){
+        $(this).submit();
+        return false;
+      }
+    });
+
+
 
     // ログインリストのバインディング
     $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
