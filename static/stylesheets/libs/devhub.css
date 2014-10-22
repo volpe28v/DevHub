@@ -72,7 +72,9 @@ a:hover {
   color: deeppink;
 }
 
-#mention_own_alert,#mention_alert {
+#mention_own_alert,
+#mention_alert,
+#filter_name_alert{
   margin-bottom: 4px !important;
 }
 

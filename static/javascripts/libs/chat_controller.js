@@ -9,6 +9,7 @@ function ChatController(param){
   // Models
   this.loginElemList = [];
   this.hidingMessageCount = 0;
+  this.filterName = "";
 
   // initialize
   this.init_chat();
@@ -84,9 +85,18 @@ ChatController.prototype = {
       that.showRefPoint(id);
     });
 
-    $('#chat_area').on('click', '.login-symbol', function(){
-      var name = $(this).data("name");
-      that.setMessage("@" + name + "さん");
+    $('#chat_area').on('click', '.login-symbol', function(event){
+      if (event.shiftKey == true ){
+        $('#timeline_all').attr('checked', 'checked');
+        $('#timeline_all').trigger("change");
+
+        $.observable(that).setProperty("filterName", $(this).data("name"));
+        $('.login-symbol:not([data-name="' + that.filterName + '"])').closest('li').hide();
+        $('#filter_name_alert').slideDown();
+      }else{
+        var name = $(this).data("name");
+        that.setMessage("@" + name + "さん");
+      }
     });
 
     $('#form').submit(function() {
@@ -496,37 +506,34 @@ ChatController.prototype = {
         var mode = $(this).val();
         window.localStorage.timeline = mode;
         if (mode == 'all'){
-          $('.normal_msg').slideDown();
-          $('.own_msg').slideDown();
+          $('#list').find('li').slideDown();
           $('#mention_own_alert').slideUp();
           $('#mention_alert').slideUp();
+          $('#filter_name_alert').slideUp();
         }else if (mode == 'own'){
           $('.normal_msg').slideUp();
           $('.own_msg').slideDown();
+          $('.target_msg').slideDown();
           $('#mention_own_alert').slideDown();
           $('#mention_alert').slideUp();
+          $('#filter_name_alert').slideUp();
         }else{
           $('.normal_msg').slideUp();
           $('.own_msg').slideUp();
+          $('.target_msg').slideDown();
           $('#mention_own_alert').slideUp();
           $('#mention_alert').slideDown();
+          $('#filter_name_alert').slideUp();
         }
         $.observable(that).setProperty("hidingMessageCount", 0);
       });
 
       $('#chat_body').on('click', '.close', function(){
-        window.localStorage.timeline = 'all';
-        $('.normal_msg').slideDown();
-        $('.own_msg').slideDown();
-        $('#mention_own_alert').slideUp();
-        $('#mention_alert').slideUp();
         $('#timeline_all').attr('checked', 'checked');
-        $(this).closest('.alert').slideUp();
-        $.observable(that).setProperty("hidingMessageCount", 0);
+        $('#timeline_all').trigger("change");
         return false;
       });
-
-   }else{
+    }else{
       $('#notification').attr('disabled', 'disabled');
     }
   },
@@ -543,6 +550,11 @@ ChatController.prototype = {
       }
       $('.normal_msg').slideUp();
       $('.own_msg').slideUp();
+    }else if (this.filterName != ""){
+      if ($msg != undefined && $msg.find(".login-symbol").data("name") != this.filterName){
+        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      }
+      $('.login-symbol:not([data-name="' + this.filterName + '"])').closest('li').slideUp();
     }
   },
 
