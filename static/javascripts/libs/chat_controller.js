@@ -30,15 +30,15 @@ ChatController.prototype = {
       {
         match: /\B:([\-+\w]*)$/,
         search: function (term, callback) {
-            callback($.map(emojies, function (emoji) {
-                return emoji.indexOf(term) === 0 ? emoji : null;
-            }));
+          callback($.map(emojies, function (emoji) {
+            return emoji.indexOf(term) === 0 ? emoji : null;
+          }));
         },
         template: function (value) {
-            return '<img class="emoji-suggest" src="img/emoji/' + value + '.png"></img> ' + value;
+          return '<img class="emoji-suggest" src="img/emoji/' + value + '.png"></img> ' + value;
         },
         replace: function (value) {
-            return ':' + value + ': ';
+          return ':' + value + ': ';
         },
         index: 1,
         maxCount: 8
@@ -46,14 +46,18 @@ ChatController.prototype = {
     ]).on('keydown',function(event){
       // Ctrl - enter は改行扱い
       if (event.ctrlKey == true && event.keyCode == 13) {
-        event.returnvalue = false;
+        return true;
       }else if(event.keyCode == 13){
-        $(this).submit();
-        return false;
+        // 絵文字サジェストが表示中は submit しない
+        if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
+          $(this).submit();
+          event.returnvalue = false;
+          return false;
+        }else{
+          return true;
+        }
       }
     });
-
-
 
     // ログインリストのバインディング
     $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
