@@ -25,6 +25,11 @@ body{
   left: 5px;
 }
 
+#index_list {
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
 .index-body a{
   border: 1px solid #dddddd;
 }
