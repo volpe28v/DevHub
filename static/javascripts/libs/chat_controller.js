@@ -19,7 +19,17 @@ function ChatController(param){
 
 ChatController.prototype = {
   setMessage: function(message){
-    $('#message').focus().val($('#message').val() + " " + message + " ");
+    var exist_msg = $('#message').val();
+    if ( exist_msg == ""){
+      exist_msg += message + " ";
+    }else{
+      if (exist_msg.slice(-1) == " "){
+        exist_msg += message + " ";
+      }else{
+        exist_msg += " " + message + " ";
+      }
+    }
+    $('#message').focus().val(exist_msg);
   },
 
   init_chat: function(){
