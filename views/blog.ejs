@@ -127,13 +127,11 @@
     <script id="blogIndexTmpl" type="text/x-jsrender">
       <li class="index-body">
         <a href="#" data-id="{{:_id}}">
-          <dl>
-            <dt>
-              {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
-              {^{:title}}
-            </dt>
-            <dd>{^{:name}} - <span data-livestamp="{{:date}}"></span></dd>
-          </dl>
+          {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
+          <span class="share-memo-title">{^{:title}}</span>
+          <div class="writer">{^{:name}} -
+            <span class="timestamp" data-livestamp="{{:date}}"></span>
+          </div>
         </a>
       </li>
     </script>

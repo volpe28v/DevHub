@@ -199,6 +199,10 @@ BlogViewModel.prototype = {
     $target.find('pre').show();
     $target.find('.edit-form').hide();
 
+    var id = $target.attr("id");
+    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
+    emojify.run($index_title.get(0));
+
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
@@ -221,6 +225,7 @@ BlogViewModel.prototype = {
       }
     };
 
+    title = $('<div/>').html($.decora.to_html(title)).text();
     return title;
   },
 
@@ -310,6 +315,11 @@ BlogViewModel.prototype = {
     $.observable(this.items).insert(item);
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
+
+    var id = $target.attr("id");
+    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
+    emojify.run($index_title.get(0));
+
     return $target;
   },
 

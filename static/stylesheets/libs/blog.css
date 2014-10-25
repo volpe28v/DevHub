@@ -27,16 +27,22 @@ body{
 
 #index_list {
   padding-left: 10px;
-  padding-right: 5px;
+  padding-right: 10px;
 }
 
 .index-body a{
-  border: 1px solid #dddddd;
+  border: 1px solid #ccc;
   background-color: #fefefe;
 }
 
-.index-body dl{
-  margin: 0px;
+.writer {
+  color: #BBB;
+  margin: 4px 0px 0px 10px;
+  font-size: 12px;
+}
+
+.timestamp {
+  font-size: 10px;
 }
 
 .dummy-space {

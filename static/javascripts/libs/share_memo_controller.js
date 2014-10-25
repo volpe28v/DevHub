@@ -161,7 +161,7 @@ ShareMemoController.prototype = {
 
     $prev_target.removeClass("matched_strong_line").addClass("matched_line");
     $next_target.removeClass("matched_line").addClass("matched_strong_line");
- 
+
     var no = $next_target.closest(".share-memo").data("no");
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     var $target_tab = $("#share_memo_tab_" + no);
@@ -598,7 +598,7 @@ ShareMemoController.prototype = {
       if (!title.match(/\S/g)){
         title = " - No." + no + " - ";
       }
-      var $tab_title = $target_tab.children('span').html(title);
+      var $tab_title = $target_tab.children('.share-memo-title').html(title);
       emojify.run($tab_title.get(0));
 
       var $writer = $target_tab.children('.writer');

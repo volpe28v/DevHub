@@ -158,7 +158,7 @@ a:hover {
   background-color: #fefefe;
 }
 
-.share-memo-tab-elem > span,
+.share-memo-title ,
 .share-memo-tab-elem .writer{
   overflow: hidden;
   text-overflow: ellipsis;
