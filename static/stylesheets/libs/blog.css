@@ -32,6 +32,7 @@ body{
 
 .index-body a{
   border: 1px solid #dddddd;
+  background-color: #fefefe;
 }
 
 .index-body dl{
