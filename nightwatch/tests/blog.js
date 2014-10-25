@@ -40,7 +40,7 @@ module.exports = {
       .pause(500)
       .assert.attributeEquals('.blog-body:first-child .code-out input', 'type', 'checkbox')
       .assert.containsText('.blog-body:first-child .code-out', 'this is a task.')
-      .assert.containsText('.index-body:first-child', '-[] this is a task.')
+      .assert.containsText('.index-body:first-child', 'this is a task.')
   },
 
   'Blogテスト終了' : function (client) {
