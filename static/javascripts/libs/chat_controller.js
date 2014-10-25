@@ -19,8 +19,7 @@ function ChatController(param){
 
 ChatController.prototype = {
   setMessage: function(message){
-    $('#message').val($('#message').val() + " " + message + " ");
-    $('#message').focus();
+    $('#message').focus().val($('#message').val() + " " + message + " ");
   },
 
   init_chat: function(){
