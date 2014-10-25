@@ -25,6 +25,14 @@ body{
   left: 5px;
 }
 
+.index-body a{
+  border: 1px solid #dddddd;
+}
+
+.index-body dl{
+  margin: 0px;
+}
+
 .dummy-space {
   height: 40px;
 }

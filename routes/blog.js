@@ -11,6 +11,22 @@ exports.set_db = function(current_db){
 
 exports.post = function(req, res, callback) {
   var blog = req.body.blog;
+  var blog_lines = blog.text.split('\n');
+  var title = "";
+  for (var i = 0; i < blog_lines.length; i++){
+    var line = blog_lines[i];
+    var matched = line.match(/(\S+)/);
+    if (matched){
+      title = blog_lines[i];
+      break;
+    }
+  };
+  // 中身が空の場合は登録しない
+  if (title == ""){
+    res.send({blog: blog});
+    return;
+  }
+
   blog.date = util.getFullDate(new Date());
   db.collection(table_blog_name, function(err, collection) {
     if (blog._id){
@@ -29,7 +45,7 @@ exports.post = function(req, res, callback) {
       collection.save( blog, function(){
         console.log("save " + blog._id);
         res.send({blog: blog});
-        callback(blog); //新規登録の時だけコールバックする
+        callback(title, blog); //新規登録の時だけコールバックする
       });
     }
   });

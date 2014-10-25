@@ -210,7 +210,18 @@ BlogViewModel.prototype = {
   },
 
   _title: function(text){
-    return text.split("\n")[0].replace(/^#+/,"");
+    var blog_lines = text.split('\n');
+    var title = "";
+    for (var i = 0; i < blog_lines.length; i++){
+      var line = blog_lines[i];
+      var matched = line.match(/(\S+)/);
+      if (matched){
+        title = blog_lines[i];
+        break;
+      }
+    };
+
+    return title;
   },
 
   cancel: function(view){

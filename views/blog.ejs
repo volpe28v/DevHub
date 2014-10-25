@@ -47,12 +47,12 @@
           <div class="dummy-space"></div>
           <div class="row-fluid">
             <div id="blog_count"></div>
-            <ul id="index_list" class="nav nav-pills nav-stacked"></ul>
+            <ul id="index_list" class="nav nav-pills"></ul>
             <div id="load_more_from_index"></div>
             <div class="dummy-space"></div>
           </div>
         </div>
- 
+
         <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
           <div class="row-fluid">
@@ -74,7 +74,7 @@
       <ul class="nav pull-right">
         <li><a id="scroll_top" href="#"><i class="icon-white icon-arrow-up"></i></a></li>
       </ul>
- 
+
       <form id="search_form" class="navbar-form pull-right">
         <input type="text" class="search-query input-small" placeholder="Search" data-link="keyword">
       </form>
@@ -126,9 +126,15 @@
 
     <script id="blogIndexTmpl" type="text/x-jsrender">
       <li class="index-body">
-      <a href="#" data-id="{{:_id}}">
-        {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
-        {^{:title}} by {^{:name}} at <span data-livestamp="{{:date}}"></span></a>
+        <a href="#" data-id="{{:_id}}">
+          <dl>
+            <dt>
+              {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
+              {^{:title}}
+            </dt>
+            <dd>{^{:name}} - <span data-livestamp="{{:date}}"></span></dd>
+          </dl>
+        </a>
       </li>
     </script>
 
