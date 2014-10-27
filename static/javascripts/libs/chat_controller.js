@@ -76,8 +76,10 @@ ChatController.prototype = {
     $('#list').on('click', '.remove_msg', function(){
       var id = "#" + $(this).closest('li').attr('id');
       var data_id = $(this).closest('li').data('id');
-      $(id).fadeOut();
       that.send_remove_msg(data_id);
+      $(id).fadeOut('normal', function(){
+        $(this).remove();
+      });
     });
 
     $('#list').on('click', '.ref-point', function(){
@@ -194,7 +196,9 @@ ChatController.prototype = {
     });
 
     this.socket.on('remove_message', function(data) {
-      $('#msg_' + data.id).fadeOut();
+      $('#msg_' + data.id).fadeOut('normal',function(){
+        $(this).remove();
+      });
     });
 
     this.socket.on('list', function(login_list) {
@@ -526,6 +530,7 @@ ChatController.prototype = {
           $('#filter_name_alert').slideUp();
         }
         $.observable(that).setProperty("hidingMessageCount", 0);
+        $.observable(that).setProperty("filterName", "");
       });
 
       $('#chat_body').on('click', '.close', function(){
