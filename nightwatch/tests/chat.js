@@ -11,10 +11,11 @@ module.exports = {
       .assert.containsText('#chat_body li:first-child', 'hello')
   },
   'メッセージを削除' : function (client) {
-    client
-      .click('#chat_body li:first-child .remove_msg')
-      .pause(1000)
-      .assert.hidden("#list li")
+    client.getAttribute('#chat_body li:first-child', 'id', function(result){
+      this.click('#chat_body li:first-child .remove_msg');
+      this.pause(1000);
+      this.assert.elementNotPresent("#" + result.value);
+    });
   },
   'URL メッセージを入力' : function (client) {
     client

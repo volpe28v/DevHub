@@ -184,6 +184,18 @@ io.sockets.on('connection', function(client) {
     }
   });
 
+  function load_latest_log(){
+    chat_log.size(function(size){
+      if ( size > 0 ){
+        chat_log.get(function(logs){
+          client.emit('latest_log',logs);
+        });
+      }else{
+        client.emit('latest_log',[]);
+      }
+    });
+  }
+
   client.on('name', function(data) {
     client_info.set_name(client, data);
     if (data.name == null || data.name == ""){
@@ -194,15 +206,11 @@ io.sockets.on('connection', function(client) {
     client.emit('list', list);
     client.broadcast.emit('list', list);
 
-    chat_log.size(function(size){
-      if ( size > 0 ){
-        chat_log.get(function(logs){
-          client.emit('latest_log',logs);
-        });
-      }else{
-        client.emit('latest_log',[]);
-      }
-    });
+    load_latest_log();
+  });
+
+  client.on('latest_log', function(data) {
+    load_latest_log();
   });
 
   client.on('message', function(data) {

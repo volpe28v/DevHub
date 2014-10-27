@@ -95,6 +95,8 @@ ChatController.prototype = {
         $.observable(that).setProperty("filterName", $(this).data("name"));
         $('.login-symbol:not([data-name="' + that.filterName + '"])').closest('li').hide();
         $('#filter_name_alert').slideDown();
+        $('.tooltip').hide();
+        $('#chat_area').scrollTop(0);
       }else{
         var name = $(this).data("name");
         that.setMessage("@" + name + "さん");
@@ -181,18 +183,16 @@ ChatController.prototype = {
     }
 
     this.socket.on('message_own', function(data) {
-      var $msg = that.prepend_own_msg(data, function($msg){
-        that.display_timeline($msg);
+      that.prepend_own_msg(data, function($msg){
+        _msg_post_processing(data, $msg);
       });
-      _msg_post_processing(data, $msg);
     });
 
     this.socket.on('message', function(data) {
-      var $msg = that.prepend_msg(data,function($msg){
-        that.display_timeline($msg);
+      that.prepend_msg(data,function($msg){
+        _msg_post_processing(data, $msg);
+        that.do_notification(data);
       });
-      _msg_post_processing(data, $msg);
-      that.do_notification(data);
     });
 
     this.socket.on('remove_message', function(data) {
@@ -233,15 +233,21 @@ ChatController.prototype = {
 
     this.socket.on('latest_log', function(msgs) {
       $('#message_loader').hide();
+      if (msgs.length == 0){ return; }
+
+      var add_count = 0;
       for ( var i = 0 ; i < msgs.length; i++){
-        that.append_msg(msgs[i])
+        if (that.append_msg(msgs[i])){ add_count++; }
       }
 
-      that.setColorbox($('#chat_body').find('.thumbnail'));
-      emojify.run($('#chat_body').get(0));
-      $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
-
-      that.display_timeline();
+      if (add_count > 0){
+        that.setColorbox($('#chat_body').find('.thumbnail'));
+        emojify.run($('#chat_body').get(0));
+        $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
+      }else{
+        $('#message_loader').show();
+        that.socket.emit('load_log_more', {id: msgs[msgs.length-1]._id});
+      }
    });
   },
 
@@ -259,47 +265,59 @@ ChatController.prototype = {
   append_msg: function(data){
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
-    if (data.name == "System") { return };
-    if (this.exist_msg(data)){ return };
+    if (data.name == "System") { return false; };
+    if (this.exist_msg(data)){ return false; };
 
     var msg = this.get_msg_html(data);
 
-    $('#list').append(msg.li.addClass(msg.css));
-    msg.li.fadeIn();
+    if (this.display_message(msg)){
+      $('#list').append(msg.li.addClass(msg.css));
+      msg.li.fadeIn();
+      return true;
+    }
+    return false;
   },
 
   prepend_msg: function(data, callback){
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
-    if (data.name == "System") { return }
-    if (this.exist_msg(data)){ return };
+    if (data.name == "System"){ return false; }
+    if (this.exist_msg(data)){ return false; }
 
     var msg = this.get_msg_html(data);
 
-    $('#list').prepend(msg.li);
-    msg.li.addClass("text-highlight",0);
-    msg.li.slideDown('fast',function(){
-      msg.li.switchClass("text-highlight", msg.css, 500, function(){
-        callback(msg.li);
+    if (this.display_message(msg)){
+      $('#list').prepend(msg.li);
+      msg.li.addClass("text-highlight",0);
+      msg.li.slideDown('fast',function(){
+        msg.li.switchClass("text-highlight", msg.css, 500, function(){
+          callback(msg.li);
+        });
       });
-    });
-
-    return msg.li;
+      return true;
+    }else{
+      $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      return false;
+    }
   },
 
   prepend_own_msg: function(data, callback){
-    if (this.exist_msg(data)){ return };
+    if (this.exist_msg(data)){ return false; }
     var msg = this.get_msg_html(data);
 
     $('#list').prepend(msg.li);
-    msg.li.addClass("text-highlight",0);
-    msg.li.slideDown('fast',function(){
-      msg.li.switchClass("text-highlight", msg.css, 500, function(){
-        callback(msg.li);
+    if (this.display_message(msg)){
+      msg.li.addClass("text-highlight",0);
+      msg.li.slideDown('fast',function(){
+        msg.li.switchClass("text-highlight", msg.css, 500, function(){
+          callback(msg.li);
+        });
       });
-    });
-
-    return msg.li;
+      return true;
+    }else{
+      $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      return false;
+    }
   },
 
   exist_msg: function(data){
@@ -318,12 +336,12 @@ ChatController.prototype = {
     } else if (this.include_target_name(data.msg,this.login_name)){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
-          css: "target_msg"
+        css: "target_msg"
       };
     }else{
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>'),
-          css: "normal_msg"
+        css: "normal_msg"
       };
     }
   },
@@ -509,22 +527,19 @@ ChatController.prototype = {
       $('.timeline-radio').on('change', "input", function(){
         var mode = $(this).val();
         window.localStorage.timeline = mode;
+        $('#list').empty();
+        that.socket.emit('latest_log');
+        $('#message_loader').show();
+
         if (mode == 'all'){
-          $('#list').find('li').slideDown();
           $('#mention_own_alert').slideUp();
           $('#mention_alert').slideUp();
           $('#filter_name_alert').slideUp();
         }else if (mode == 'own'){
-          $('.normal_msg').slideUp();
-          $('.own_msg').slideDown();
-          $('.target_msg').slideDown();
           $('#mention_own_alert').slideDown();
           $('#mention_alert').slideUp();
           $('#filter_name_alert').slideUp();
         }else{
-          $('.normal_msg').slideUp();
-          $('.own_msg').slideUp();
-          $('.target_msg').slideDown();
           $('#mention_own_alert').slideUp();
           $('#mention_alert').slideDown();
           $('#filter_name_alert').slideUp();
@@ -543,24 +558,21 @@ ChatController.prototype = {
     }
   },
 
-  display_timeline: function($msg){
+  display_message: function(msg){
     if (window.localStorage.timeline == "own"){
-      if ($msg != undefined && $msg.hasClass('normal_msg')){
-        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      if (msg.css == 'normal_msg'){
+        return false;
       }
-      $('.normal_msg').slideUp();
     }else if (window.localStorage.timeline == "mention"){
-      if ($msg != undefined && ($msg.hasClass('normal_msg') || $msg.hasClass('own_msg'))){
-        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
+        return false;
       }
-      $('.normal_msg').slideUp();
-      $('.own_msg').slideUp();
     }else if (this.filterName != ""){
-      if ($msg != undefined && $msg.find(".login-symbol").data("name") != this.filterName){
-        $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      if (msg.li.find(".login-symbol").data("name") != this.filterName){
+        return false;
       }
-      $('.login-symbol:not([data-name="' + this.filterName + '"])').closest('li').slideUp();
     }
+    return true;
   },
 
   do_notification: function(data){
