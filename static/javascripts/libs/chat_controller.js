@@ -290,10 +290,9 @@ ChatController.prototype = {
       $('#list').prepend(msg.li);
       msg.li.addClass("text-highlight",0);
       msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500, function(){
-          callback(msg.li);
-        });
+        msg.li.switchClass("text-highlight", msg.css, 500);
       });
+      callback(msg.li);
       return true;
     }else{
       $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
@@ -309,10 +308,9 @@ ChatController.prototype = {
     if (this.display_message(msg)){
       msg.li.addClass("text-highlight",0);
       msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500, function(){
-          callback(msg.li);
-        });
+        msg.li.switchClass("text-highlight", msg.css, 500);
       });
+      callback(msg.li);
       return true;
     }else{
       $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
