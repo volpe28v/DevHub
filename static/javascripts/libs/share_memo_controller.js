@@ -570,7 +570,7 @@ ShareMemoController.prototype = {
 
     var update_timer = [];
     // for share memo
-    socket.on('text', function(text_log) {
+    function update_text(text_log){
       var no = text_log.no == undefined ? 1 : text_log.no;
       that.writing_text[no] = text_log;
 
@@ -627,6 +627,16 @@ ShareMemoController.prototype = {
         $writer.removeClass("writing-name");
         update_timer[no] = undefined;
       },3000);
+    }
+
+    socket.on('text', function(text_log) {
+      if (text_log instanceof Array){
+        text_log.forEach(function(one_log){
+          update_text(one_log);
+        });
+      }else{
+        update_text(text_log);
+      }
     });
 
     socket.on('text_logs_with_no', function(data){

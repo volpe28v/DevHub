@@ -168,20 +168,24 @@ io.sockets.on('connection', function(client) {
 
   client_info.login(client_ip);
 
-  text_log.get_active_number(function(number){
-    client.emit('memo_number',number);
-    for( var i = 1; i <= number.num; i++){
+  function load_latest_text(number){
+    for( var i = 1; i <= number; i++){
       text_log.get_logs_by_no(i, function(logs){
         client.emit('text_logs_with_no', logs);
       });
     }
-  });
 
-  text_log.get_latest(function(latest_texts){
-    var length = latest_texts.length;
-    for( var i = 0; i < length; i++){
-      client.emit('text',latest_texts[i]);
-    }
+    text_log.get_latest(number, function(latest_texts){
+      var length = latest_texts.length;
+      for( var i = 0; i < length; i++){
+        client.emit('text',latest_texts[i]);
+      }
+    });
+  }
+
+  text_log.get_active_number(function(number){
+    client.emit('memo_number',number);
+    load_latest_text(number.num);
   });
 
   function load_latest_log(){
@@ -308,6 +312,7 @@ io.sockets.on('connection', function(client) {
   client.on('memo_number', function(data) {
     client.emit('memo_number', data);
     client.broadcast.emit('memo_number', data);
+    load_latest_text(data.num);
     text_log.update_active_number(data);
   });
 
