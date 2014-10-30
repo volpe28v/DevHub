@@ -100,6 +100,23 @@ a:hover {
   list-style-type: none;
 }
 
+.cancel-edit,
+.update-blog {
+  float: right;
+  margin-left: 5px;
+}
+
+.blog-action:before {
+  display: table;
+  content: "";
+}
+
+.blog-action:after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
 .text-base-style, .edit-form {
   background-color: #fff;
   border-top: 0px solid #eee;
