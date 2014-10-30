@@ -277,6 +277,9 @@ BlogViewModel.prototype = {
     $(this.matched_doms[this.matched_index - 1])
       .removeClass("matched_line")
       .addClass("matched_strong_line");
+
+    $(".index-body a:not([data-id=" + blog._id + "])").removeClass("matched_strong_line");
+    $(".index-body [data-id=" + blog._id + "]").addClass("matched_strong_line");
   },
 
   prev: function(callback){
@@ -302,6 +305,9 @@ BlogViewModel.prototype = {
     $(this.matched_doms[this.matched_index - 1])
       .removeClass("matched_line")
       .addClass("matched_strong_line");
+
+    $(".index-body a:not([data-id=" + blog._id + "])").removeClass("matched_strong_line");
+    $(".index-body [data-id=" + blog._id + "]").addClass("matched_strong_line");
   },
 
   _addItem: function(item){
