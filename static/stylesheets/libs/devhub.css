@@ -337,6 +337,10 @@ a:hover {
   margin: 2px 0px 6px 0px;
 }
 
+#form td {
+  vertical-align: bottom;
+}
+
 #chat_body{
   min-height: 620px;
   padding: 4px 2px;
