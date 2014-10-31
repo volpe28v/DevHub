@@ -136,9 +136,9 @@ app.get('/blog/body', routes.blog.body);
 app.get('/blog/body_search', routes.blog.body_search);
 app.get('/blog/body_older', routes.blog.body_older);
 app.post('/blog', function(req,res){
-  routes.blog.post(req,res,function(title, blog){
+  routes.blog.post(req,res,function(blog){
     var name = "Blog";
-    var msg = blog.name + "さんがブログを投稿しました\n" + "[" + title + "](blog?id=" + blog._id + ")";
+    var msg = blog.name + "さんがブログを投稿しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")";
     var avatar = "img/blog.png";
     var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date())};
 

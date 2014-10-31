@@ -159,7 +159,11 @@ BlogViewModel.prototype = {
   add: function(){
     if (this.input_text == ""){ return; }
 
-    var item = {text: this.input_text, name: this.name};
+    var item = {
+      title: this._title(this.input_text),
+      text:  this.input_text,
+      name:  this.name
+    };
     var that = this;
     $.ajax('blog' , {
       type: 'POST',

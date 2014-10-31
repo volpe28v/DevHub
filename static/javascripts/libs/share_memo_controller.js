@@ -539,6 +539,22 @@ ShareMemoController.prototype = {
       }
     });
 
+    function _title(text){
+      var blog_lines = text.split('\n');
+      var title = "";
+      for (var i = 0; i < blog_lines.length; i++){
+        var line = blog_lines[i];
+        var matched = line.match(/(\S+)/);
+        if (matched){
+          title = blog_lines[i];
+          break;
+        }
+      };
+
+      title = $('<div/>').html($.decora.to_html(title)).text();
+      return title;
+    }
+
     // 選択テキストを blog へ移動する
     $(".share-memo").on('select','.code',function(event){
       var $selected_target = $(this);
@@ -551,7 +567,12 @@ ShareMemoController.prototype = {
             $(this).fadeOut();
             var selected_text = $selected_target.selection('get');
             if (selected_text != ""){
-              var item = {text: selected_text, name: that.login_name};
+              var item = {
+                title: _title(selected_text),
+                text: selected_text,
+                name: that.login_name
+              };
+
               $.ajax('blog' , {
                 type: 'POST',
                 cache: false,
