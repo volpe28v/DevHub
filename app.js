@@ -5,6 +5,7 @@ var mongo_builder = require('./lib/mongo_builder');
 var app = require('./lib/server');
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
+var blog = require('./lib/blog');
 var client_info = require('./lib/client_info');
 var util = require('./lib/util');
 var bots = require('./lib/bots');
@@ -88,8 +89,8 @@ app.delete('/blog', routes.blog.delete);
 mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
+  blog.set_db(db);
   bots.set(chat_log,text_log);
-  routes.blog.set_db(db);
 
   server.listen(app.get('port'));
   console.log("listen!!!");
