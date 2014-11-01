@@ -1,6 +1,0 @@
-以下のプラグインをインストールした
-$ npm install express
-$ npm install ejs
-$ npm install socket.io
-$ npm install commander
-
