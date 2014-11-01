@@ -50,6 +50,12 @@ $(function() {
       blogViewModel.add();
   })
 
+  function moveSearchIndex(offset_top){
+    var target_top = offset_top;
+    var base_top = $("#index_list").offset().top;
+    $('#index_area').animate({ scrollTop: target_top - base_top - $(window).height()/2 + 54 }, 'fast');
+  }
+
   function moveSearchLine(offset_top){
     var target_top = offset_top;
     var base_top = $("#blog_list").offset().top;
@@ -61,8 +67,9 @@ $(function() {
     .on("submit", "#search_form", function(){
       if(!blogViewModel.search()){
         // 検索済みの場合はマッチ箇所に移動する
-        blogViewModel.next(function(offset_top){
-          moveSearchLine(offset_top);
+        blogViewModel.next(function(index_top, blog_top){
+          moveSearchIndex(index_top);
+          moveSearchLine(blog_top);
         });
       }else{
         // 検索した場合はトップへスクロール
@@ -79,14 +86,16 @@ $(function() {
       }
     })
     .on("click", "#prev_match", function(){
-      blogViewModel.prev(function(offset_top){
-        moveSearchLine(offset_top);
+      blogViewModel.prev(function(index_top, blog_top){
+        moveSearchIndex(index_top);
+        moveSearchLine(blog_top);
       });
       return false;
     })
     .on("click", "#next_match",function(){
-      blogViewModel.next(function(offset_top){
-        moveSearchLine(offset_top);
+      blogViewModel.next(function(index_top, blog_top){
+        moveSearchIndex(index_top);
+        moveSearchLine(blog_top);
       });
       return false;
     })

@@ -276,7 +276,10 @@ BlogViewModel.prototype = {
       "matched_index": index,
       "matched_title": title
     });
-    callback($(this.matched_doms[this.matched_index - 1]).offset().top);
+    callback(
+      $(".index-body [data-id=" + blog._id + "]").offset().top,
+      $(this.matched_doms[this.matched_index - 1]).offset().top
+    );
 
     $(this.matched_doms[this.matched_index - 1])
       .removeClass("matched_line")
@@ -304,7 +307,10 @@ BlogViewModel.prototype = {
       "matched_title": title
     });
 
-    callback($(this.matched_doms[this.matched_index - 1]).offset().top);
+    callback(
+      $(".index-body [data-id=" + blog._id + "]").offset().top,
+      $(this.matched_doms[this.matched_index - 1]).offset().top
+    );
 
     $(this.matched_doms[this.matched_index - 1])
       .removeClass("matched_line")
