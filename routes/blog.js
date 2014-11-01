@@ -9,9 +9,26 @@ exports.set_db = function(current_db){
   db = current_db;
 };
 
-exports.post = function(req, res, callback) {
+
+var chat_log = require('../lib/chat_log');
+var client_info = require('../lib/client_info');
+var util = require('../lib/util');
+
+exports.post = function(req, res, io) {
   var blog = req.body.blog;
   var blog_lines = blog.text.split('\n');
+
+  function notify(blog){
+    var name = "Blog";
+    var msg = blog.name + "さんがブログを投稿しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")";
+    var avatar = "img/blog.png";
+    var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date())};
+
+    chat_log.add(data,function(){
+      io.sockets.emit('message', data);
+      client_info.send_growl_all(data);
+    });
+  }
 
   blog.date = util.getFullDate(new Date());
   db.collection(table_blog_name, function(err, collection) {
@@ -31,7 +48,7 @@ exports.post = function(req, res, callback) {
       collection.save( blog, function(){
         console.log("save " + blog._id);
         res.send({blog: blog});
-        callback(blog); //新規登録の時だけコールバックする
+        notify(blog);
       });
     }
   });
