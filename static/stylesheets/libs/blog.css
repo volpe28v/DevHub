@@ -15,14 +15,15 @@ body{
 #blog_area {
   height: 100%;
   top: 0px;
-  left: 30%;
+  left: 5px;
   padding: 10px;
 }
 
 #index_area {
   height: 100%;
   top: 0px;
-  left: 5px;
+  left: 65%;
+  padding: 10px;
 }
 
 #index_list {
@@ -83,6 +84,7 @@ a:hover {
 #blog_count {
   margin-top: 14px;
   margin-left: 10px;
+  margin-bottom: 6px;
 }
 
 #blog_count .count {
