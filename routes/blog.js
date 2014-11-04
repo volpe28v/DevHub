@@ -39,8 +39,8 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   var blog_id = req.query._id;
-  blog_model.find(blog_id, function(blogs){
-    res.send({body: blogs, count: blogs.length});
+  blog_model.find(blog_id, function(blogs, all_count){
+    res.send({body: blogs, count: all_count});
   });
 };
 
