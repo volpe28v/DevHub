@@ -142,7 +142,8 @@ $(function() {
       $target = $("#" + $(this).data('id'));
       var target_top = $target.offset().top;
       var base_top = $("#blog_list").offset().top;
-      $('#blog_area').animate({ scrollTop: target_top - base_top + 54 }, 'fast');
+      //$('#blog_area').animate({ scrollTop: target_top - base_top + 54 }, 'fast');
+      $('#blog_area').scrollTop(target_top - base_top + 54);
     })
     .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();
