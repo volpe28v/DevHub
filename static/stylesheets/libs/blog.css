@@ -108,6 +108,15 @@ a:hover {
   margin-left: 5px;
 }
 
+.update-notify-blog {
+  position: absolute;
+  bottom: 0;
+}
+
+.blog-action {
+  position: relative;
+}
+
 .blog-action:before {
   display: table;
   content: "";

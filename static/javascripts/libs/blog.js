@@ -110,6 +110,9 @@ $(function() {
     .on("click",".edit-blog", function(){
       blogViewModel.edit($.view(this));
     })
+    .on("click",".update-notify-blog", function(){
+      blogViewModel.update($.view(this), true);
+    })
     .on("click",".update-blog", function(){
       blogViewModel.update($.view(this));
     })

@@ -5,11 +5,12 @@ var util = require('../lib/util');
 
 exports.post = function(req, res, io) {
   var blog = req.body.blog;
-  var is_needed_notify = blog._id ? false : true;
+  var is_needed_notify = blog._id ? (blog.is_notify ? true : false) : true;
+  var is_create = blog._id ? false : true;
 
   function notify(blog){
     var name = "Blog";
-    var msg = blog.name + "さんがブログを投稿しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")";
+    var msg = blog.name + "さんがブログを" + (is_create ? "投稿" : "更新") + "しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")";
     var avatar = "img/blog.png";
     var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date())};
 

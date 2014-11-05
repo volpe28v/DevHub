@@ -188,7 +188,7 @@ BlogViewModel.prototype = {
     $target.find('textarea').focus().autofit({min_height: 100});
   },
 
-  update: function(view){
+  update: function(view, is_notify){
     var that = this;
     var index = view.index;
     var blog = this.items[index];
@@ -210,7 +210,13 @@ BlogViewModel.prototype = {
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
-      data: {blog: {_id: blog._id, text: blog.text, name: that.name}},
+      data: {blog: {
+        _id: blog._id,
+        title: title,
+        text: blog.text,
+        name: that.name,
+        is_notify: is_notify
+      }},
       success: function(data){
         $.observable(blog).setProperty("date", data.blog.date);
       }
