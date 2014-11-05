@@ -1,6 +1,7 @@
 body{
   width : 100%;
   margin : 0px;
+  background-color: #EEE;
 }
 
 .perfect-scrollbar-body-style {
@@ -102,6 +103,12 @@ a:hover {
   list-style-type: none;
 }
 
+#blog_list > li {
+  margin-bottom: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23);
+  border-radius: 4px;
+}
+
 .cancel-edit,
 .update-blog {
   float: right;
@@ -147,6 +154,10 @@ a:hover {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+pre.text-base-style {
+  border: 0px;
 }
 
 .code-out {
@@ -302,10 +313,6 @@ a:hover {
   background-color: #f7f7f7;
   color: #777;
   padding: 4px 8px;
-  border-top: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-bottom: 1px solid #eee;
   -webkit-border-top-right-radius: 4px;
   -webkit-border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
