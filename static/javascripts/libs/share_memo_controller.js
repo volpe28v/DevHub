@@ -2,7 +2,6 @@ var SHARE_MEMO_NUMBER = 30;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 50;
-var CODE_ADJUST_HEIGHT = 200;
 
 function ShareMemoController(param){
   this.socket = param.socket;
@@ -299,7 +298,7 @@ ShareMemoController.prototype = {
 
       var $target_code = $share_memo.children(".code");
       $target_code.val(that.writing_text[no].text);
-      $('#memo_area').scrollTop(row * 18 - CODE_ADJUST_HEIGHT);
+      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - $(window).height()/3);
 
       $target_code.show();
       $target_code.keyup(); //call autofit
@@ -485,7 +484,7 @@ ShareMemoController.prototype = {
       var $target_tr = $share_memo.find('table tr').eq(row - 1);
       if ($target_tr.length > 0){
         $('#memo_area').scrollTop(0);
-        $('#memo_area').scrollTop($target_tr.offset().top - CODE_OUT_ADJUST_HEIGHT);
+        $('#memo_area').scrollTop($target_tr.offset().top - $(window).height()/3);
       }
       socket.emit('add_history',{no: $share_memo.data('no')});
       writing_loop_stop();
