@@ -148,6 +148,7 @@ a:hover {
 .share-memo pre {
   margin-top: 2px;
   line-height: 0;
+  padding: 14px;
 }
 
 .share-memo-tab-elem {
@@ -198,10 +199,11 @@ a:hover {
 
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;
+  color: #333333;
   width: 93%;
   height: 700px;
-  padding: 5px;
-  background-color: #fefefe;
+  padding: 10px;
+  background-color: #fff;
   margin-top: 2px;
   margin-bottom: 2px;
 }

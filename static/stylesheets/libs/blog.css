@@ -158,6 +158,7 @@ a:hover {
 
 pre.text-base-style {
   border: 0px;
+  padding: 14px;
 }
 
 .code-out {
@@ -301,6 +302,8 @@ pre.text-base-style {
   font-family: Menlo,Monaco,"Courier New",monospace;
   width: 100%;
   display: block;
+  padding: 10px;
+  border: 0px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
