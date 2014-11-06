@@ -300,10 +300,12 @@ pre.text-base-style {
 
 .edit-area {
   font-family: Menlo,Monaco,"Courier New",monospace;
+  font-size: 14px;
+  color: #333333;
+  line-height: 21px;
   width: 100%;
   display: block;
-  padding: 10px;
-  border: 0px;
+  padding: 8px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;

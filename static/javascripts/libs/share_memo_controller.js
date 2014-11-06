@@ -301,17 +301,17 @@ ShareMemoController.prototype = {
       $target_code.val(that.writing_text[no].text);
       $('#memo_area').scrollTop(row * 18 - CODE_ADJUST_HEIGHT);
 
-      $target_code.fadeIn('fast', function(){
-        $target_code.keyup(); //call autofit
-        // 編集モード時に選択した行位置を表示する
-        if (row >= 0){
-          $target_code.caretLine(row);
-        }else{
-          // キャレット位置指定なしの場合は前回の場所を復元
-          $target_code.focus();
-          row = $target_code.caretLine();
-        }
-      });
+      $target_code.show();
+      $target_code.keyup(); //call autofit
+      // 編集モード時に選択した行位置を表示する
+      if (row >= 0){
+        $target_code.caretLine(row);
+      }else{
+        // キャレット位置指定なしの場合は前回の場所を復元
+        $target_code.caretLine();
+      }
+      $target_code.focus();
+
       $share_memo.children('pre').hide();
       $share_memo.children('.fix-text').show();
       $share_memo.children('.sync-text').hide();
@@ -415,7 +415,7 @@ ShareMemoController.prototype = {
     // 差分表示モード終了
     $('.share-memo').on('click','.diff-done', function(){
       var $share_memo = $(this).closest('.share-memo');
-      $share_memo.find('pre').fadeIn();
+      $share_memo.find('pre').show();
       $share_memo.find('.diff-view').hide();
 
       $share_memo.find('.diff-done').hide();
@@ -477,7 +477,7 @@ ShareMemoController.prototype = {
       // 見栄えを閲覧モードへ
       updateShareMemoBody($share_memo, that.writing_text[no].text);
       $share_memo.children('.code').hide();
-      $share_memo.children('pre').fadeIn();
+      $share_memo.children('pre').show();
       $share_memo.children('.fix-text').hide();
       $share_memo.children('.sync-text').show();
 

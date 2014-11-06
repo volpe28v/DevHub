@@ -185,6 +185,7 @@ BlogViewModel.prototype = {
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').hide();
     $target.find('.edit-form').show();
+    $target.find('textarea').caretLine(0);
     $target.find('textarea').focus().autofit({min_height: 100});
   },
 
