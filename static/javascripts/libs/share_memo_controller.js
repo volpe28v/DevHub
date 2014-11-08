@@ -299,7 +299,6 @@ ShareMemoController.prototype = {
 
       var $target_code = $share_memo.children(".code");
       $target_code.val(that.writing_text[no].text);
-      //$('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - $(window).height()/3);
       $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
 
       $target_code.show();
