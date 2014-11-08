@@ -291,14 +291,16 @@ ShareMemoController.prototype = {
       }
     };
 
-    this.switchEditShareMemo = function($share_memo, row){
+    this.switchEditShareMemo = function($share_memo, row, offset){
       that.isEditMode = true;
+      offset = offset == undefined ? $(window).height()/3 : offset - 94;
       var no = $share_memo.data('no');
       that.writing_text[no] = that.writing_text[no] ? that.writing_text[no] : { text: "" };
 
       var $target_code = $share_memo.children(".code");
       $target_code.val(that.writing_text[no].text);
-      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - $(window).height()/3);
+      //$('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - $(window).height()/3);
+      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
 
       $target_code.show();
       $target_code.keyup(); //call autofit
@@ -324,19 +326,19 @@ ShareMemoController.prototype = {
       that.switchEditShareMemo($share_memo, 0);
     });
 
-    $('.share-memo').on('dblclick','pre tr', function(){
+    $('.share-memo').on('dblclick','pre tr', function(e){
       // クリック時の行数を取得してキャレットに設定する
       var $share_memo = $(this).closest('.share-memo');
       var row = $(this).closest("table").find("tr").index(this);
-      that.switchEditShareMemo($share_memo, row);
+      that.switchEditShareMemo($share_memo, row, e.pageY);
       return false;
     });
 
-    $('.share-memo').on('dblclick','pre', function(){
+    $('.share-memo').on('dblclick','pre', function(e){
       // 文字列が無い場合は最下部にキャレットを設定する
       var $share_memo = $(this).closest('.share-memo');
       var row = $(this).find("table tr").length - 1;
-      that.switchEditShareMemo($share_memo, row);
+      that.switchEditShareMemo($share_memo, row, e.pageY);
     });
 
     // 差分リスト表示
@@ -462,8 +464,9 @@ ShareMemoController.prototype = {
       }
     });
 
-    function switchFixShareMemo($share_memo, row){
+    function switchFixShareMemo($share_memo, row, offset){
       that.isEditMode = false;
+      offset = offset == undefined ? $(window).height()/3 : offset - 14;
       if ($share_memo.children('.code').css('display') == "none"){ return; }
 
       // 最新の状態をサーバへ送信する
@@ -484,7 +487,7 @@ ShareMemoController.prototype = {
       var $target_tr = $share_memo.find('table tr').eq(row - 1);
       if ($target_tr.length > 0){
         $('#memo_area').scrollTop(0);
-        $('#memo_area').scrollTop($target_tr.offset().top - $(window).height()/3);
+        $('#memo_area').scrollTop($target_tr.offset().top - offset);
       }
       socket.emit('add_history',{no: $share_memo.data('no')});
       writing_loop_stop();
@@ -520,8 +523,8 @@ ShareMemoController.prototype = {
       return true;
     });
 
-    $('.share-memo').on('dblclick','.code', function(){
-      switchFixShareMemo($(this).parent(), $(this).caretLine());
+    $('.share-memo').on('dblclick','.code', function(e){
+      switchFixShareMemo($(this).parent(), $(this).caretLine(), e.pageY);
     });
 
     $('.share-memo').on('click','.fix-text', function(){
@@ -533,7 +536,8 @@ ShareMemoController.prototype = {
       if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
         event.returnvalue = false;
-        switchFixShareMemo($(this).parent(), $(this).caretLine());
+        var caret_top = $(this).textareaHelper('caretPos').top + $(this).offset().top;
+        switchFixShareMemo($(this).parent(), $(this).caretLine(), caret_top);
         return false;
       }
     });
