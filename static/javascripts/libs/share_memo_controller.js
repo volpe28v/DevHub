@@ -772,6 +772,49 @@ ShareMemoController.prototype = {
       }
     });
 
+    $('#share-memo').on('paste','.code', function(e){
+      var context = this;
+
+      console.log(e.originalEvent.clipboardData.items.length);
+      items = e.originalEvent.clipboardData.items;
+      for (var i = 0 ; i < items.length ; i++) {
+        var item = items[i];
+        console.log("Item: " + item.type);
+        if (item.type.indexOf("image") != -1) {
+          console.log(item.getAsFile());
+          var file = item.getAsFile();
+          file.name = "paste." + item.type.split("/")[1];
+          console.log(file);
+
+          var formData = new FormData();
+          formData.append('file', file);
+          console.log(formData);
+
+          $.ajax('/upload' , {
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            error: function() {
+            },
+            success: function(res) {
+              var share_memo_no = $(context).closest('.share-memo').data('no');
+              var row = $(context).caretLine();
+
+              // メモのキャレット位置にファイルを差し込む
+              var text_array = that.writing_text[share_memo_no].text.split("\n");
+              text_array.splice(row - 1,0,res.fileName + ' ');
+              that.writing_text[share_memo_no].text = text_array.join("\n");
+              var $target_code = $(context).closest('.share-memo').children('.code');
+              $target_code.val(that.writing_text[share_memo_no].text);
+            }
+          });
+        } else {
+          console.log("Discardingimage paste data");
+        }
+      }
+    });
+
     // アバターフォームへのドロップ
     this.dropZone = new DropZone({
       dropTarget: $('#avatar'),
