@@ -754,11 +754,12 @@ ShareMemoController.prototype = {
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
       }
     });
- 
+
     // 編集モードへのドロップ
     new DropZone({
       dropTarget: $('.code'),
       alertTarget: $('#alert_memo_area'),
+      pasteValid: true,
       uploadedAction: function(context, res){
         var share_memo_no = $(context).closest('.share-memo').data('no');
         var row = $(context).caretLine();
@@ -769,11 +770,12 @@ ShareMemoController.prototype = {
         that.writing_text[share_memo_no].text = text_array.join("\n");
         var $target_code = $(context).closest('.share-memo').children('.code');
         $target_code.val(that.writing_text[share_memo_no].text);
+        $(context).caretLine(row);
       }
     });
 
     // アバターフォームへのドロップ
-    this.dropZone = new DropZone({
+    new DropZone({
       dropTarget: $('#avatar'),
       fileTarget: $('#upload_avatar'),
       uploadedAction: function(that, res){
