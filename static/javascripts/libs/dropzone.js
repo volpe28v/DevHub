@@ -17,6 +17,11 @@ function DropZone(param){
   if (param.fileTarget != undefined){
     param.fileTarget.on('change', this.select_file_action(param.alertTarget, param.uploadedAction));
   }
+
+  // 画像貼り付け時
+  if(param.pasteValid){
+    param.dropTarget.on('paste', this.paste_file_action(param.alertTarget, param.uploadedAction));
+  }
 }
 
 DropZone.prototype = {
@@ -39,6 +44,24 @@ DropZone.prototype = {
 
       that.upload_file_with_ajax(context, file, $target, call_back);
       return false;
+    }
+  },
+
+  paste_file_action: function($target, call_back){
+    var that = this;
+    return function(event){
+      var context = this;
+      var items = event.originalEvent.clipboardData.items;
+      for (var i = 0 ; i < items.length ; i++) {
+        var item = items[i];
+        if (item.type.indexOf("image") != -1) {
+          var file = item.getAsFile();
+          file.name = "paste." + item.type.split("/")[1];
+
+          that.upload_file_with_ajax(context, file, $target, call_back);
+        }
+      }
+      return true;
     }
   },
  
