@@ -256,6 +256,7 @@ ChatController.prototype = {
       dropTarget: $('#chat_area'),
       fileTarget: $('#upload_chat'),
       alertTarget: $('#alert_chat_area'),
+      pasteValid: true,
       uploadedAction: function(that, res){
         $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
       }

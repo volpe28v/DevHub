@@ -778,6 +778,7 @@ ShareMemoController.prototype = {
     new DropZone({
       dropTarget: $('#avatar'),
       fileTarget: $('#upload_avatar'),
+      pasteValid: true,
       uploadedAction: function(that, res){
         $('#avatar').val(res.fileName);
       }
