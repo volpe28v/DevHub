@@ -1,7 +1,7 @@
 var SHARE_MEMO_NUMBER = 30;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
-var CODE_INDEX_ADJUST_HEIGHT = 50;
+var CODE_INDEX_ADJUST_HEIGHT = 10;
 
 function ShareMemoController(param){
   this.socket = param.socket;
@@ -50,7 +50,7 @@ ShareMemoController.prototype = {
   },
 
   top: function(){
-    $('#memo_area').animate({ scrollTop: 0 }, 'fast');
+    $('#memo_area').scrollTop(0);
   },
 
   down: function(){
@@ -95,8 +95,8 @@ ShareMemoController.prototype = {
 
     // 移動したタブ名を見せたいのでタイムラグを入れる
     setTimeout(function(){
-      var pos = $("#share_memo_" + no).find("#" + id).offset().top;
-      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 'fast');
+      var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
+      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint');
     },700);
   },
 
@@ -241,7 +241,7 @@ ShareMemoController.prototype = {
     });
 
     $("#scroll_top").click(function(){
-      $('#memo_area').animate({ scrollTop: 0 }, 'fast');
+      $('#memo_area').scrollTop(0);
     });
 
     $(".share-memo-tab").each(function(){
@@ -443,8 +443,8 @@ ShareMemoController.prototype = {
     $('.share-memo').on('click','.index-li', function(){
       var index = $(this).closest(".index-list").find(".index-li").index(this);
       var $code_out = $(this).closest('.share-memo').find('.code-out');
-      var pos = $code_out.find(":header").eq(index).offset().top;
-      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 'fast');
+      var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
+      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
       return true;
     });
 
