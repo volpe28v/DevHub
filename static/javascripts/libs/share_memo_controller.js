@@ -592,7 +592,6 @@ ShareMemoController.prototype = {
     });
 
     var update_timer = [];
-    // for share memo
     function update_text(text_log){
       var no = text_log.no == undefined ? 1 : text_log.no;
       that.writing_text[no] = text_log;
@@ -617,7 +616,7 @@ ShareMemoController.prototype = {
       $text_date.addClass("label-important");
       $text_date.show();
 
-      var title = $('<div/>').html($.decora.to_html(text_log.text.split("\n")[0])).text();
+      var title = _title(text_log.text);
       if (!title.match(/\S/g)){
         title = " - No." + no + " - ";
       }
