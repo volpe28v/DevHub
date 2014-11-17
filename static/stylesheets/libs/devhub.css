@@ -7,6 +7,20 @@ body{
   overflow : hidden;
 }
 
+#loading {
+  width: 78px; /* gif画像の幅 */
+  height: 78px; /* gif画像の高さ */
+  margin: -78px 0 0 -78px; /* gif画像を画面中央に */
+  padding: 20px; /* gif画像を大きく */
+  background: #CCCCCC; /* gif画像の背景色 */
+  opacity: 0.5; /* 透過させる */
+  border-radius: 15px; /* 丸角 */
+  position: fixed; /* gif画像をスクロールさせない */
+  left: 50%; /* gif画像を画面横中央へ */
+  top: 50%; /* gif画像を画面縦中央へ */
+  display: none;
+}
+
 #matched_control {
   margin-right: 5px;
   margin-left: 5px;

@@ -720,7 +720,7 @@ ShareMemoController.prototype = {
     new DropZone({
       dropTarget: $('.code-out'),
       dropChildSelector: '.code-out-tr',
-      alertTarget: $('#alert_memo_area'),
+      alertTarget: $('#loading'),
       uploadedAction: function(context, res){
         var share_memo_no = $(context).closest('.share-memo').data('no');
         var row = $(context).closest("table").find("tr").index(context);
@@ -729,10 +729,10 @@ ShareMemoController.prototype = {
         var text_array = that.writing_text[share_memo_no].text.split("\n");
         text_array.splice(row + 1,0,res.fileName + " ");
         that.writing_text[share_memo_no].text = text_array.join("\n");
-        var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.writing_text[share_memo_no].text);
 
         // 変更をサーバへ通知
+        var $target_code = $(context).closest('.share-memo').children('.code');
+        $target_code.val(that.writing_text[share_memo_no].text);
         socket.emit('text',{no: share_memo_no, text: $target_code.val()});
       }
     });
@@ -740,7 +740,7 @@ ShareMemoController.prototype = {
     // 閲覧モードの行以外の部分にドロップ
     new DropZone({
       dropTarget: $('.code-out'),
-      alertTarget: $('#alert_memo_area'),
+      alertTarget: $('#loading'),
       uploadedAction: function(context, res){
         var share_memo_no = $(context).closest('.share-memo').data('no');
 
@@ -757,7 +757,7 @@ ShareMemoController.prototype = {
     // 編集モードへのドロップ
     new DropZone({
       dropTarget: $('.code'),
-      alertTarget: $('#alert_memo_area'),
+      alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(context, res){
         var share_memo_no = $(context).closest('.share-memo').data('no');
@@ -776,6 +776,7 @@ ShareMemoController.prototype = {
     // アバターフォームへのドロップ
     new DropZone({
       dropTarget: $('#avatar'),
+      alertTarget: $('#loading'),
       fileTarget: $('#upload_avatar'),
       pasteValid: true,
       uploadedAction: function(that, res){

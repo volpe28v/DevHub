@@ -255,7 +255,7 @@ ChatController.prototype = {
     this.dropZone = new DropZone({
       dropTarget: $('#chat_area'),
       fileTarget: $('#upload_chat'),
-      alertTarget: $('#alert_chat_area'),
+      alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(that, res){
         $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
