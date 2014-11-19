@@ -299,7 +299,6 @@ ShareMemoController.prototype = {
 
       var $target_code = $share_memo.children(".code");
       $target_code.val(that.writing_text[no].text);
-      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
 
       $target_code.show();
       $target_code.keyup(); //call autofit
@@ -308,8 +307,9 @@ ShareMemoController.prototype = {
         $target_code.caretLine(row);
       }else{
         // キャレット位置指定なしの場合は前回の場所を復元
-        $target_code.caretLine();
+        row = $target_code.caretLine();
       }
+      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
       $target_code.focus();
 
       $share_memo.children('pre').hide();
@@ -537,6 +537,14 @@ ShareMemoController.prototype = {
         event.returnvalue = false;
         var caret_top = $(this).textareaHelper('caretPos').top + $(this).offset().top;
         switchFixShareMemo($(this).parent(), $(this).caretLine(), caret_top);
+        return false;
+      }
+    });
+
+    $("body").on('keydown',function(event){
+      // F2で共有メモの編集状態へ
+      if (event.keyCode == 113){
+        that.setFocus();
         return false;
       }
     });
