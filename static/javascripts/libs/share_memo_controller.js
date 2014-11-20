@@ -309,7 +309,8 @@ ShareMemoController.prototype = {
         // キャレット位置指定なしの場合は前回の場所を復元
         row = $target_code.caretLine();
       }
-      $('#memo_area').scrollTop(row * 21 + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
+      var line_height = Number($share_memo.find('.code').css('line-height').replace('px',''));
+      $('#memo_area').scrollTop(row * line_height + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
       $target_code.focus();
 
       $share_memo.children('pre').hide();
