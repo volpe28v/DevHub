@@ -6,6 +6,10 @@ $(function() {
     img_dir: 'img/emoji',  // Directory for emoji images
   });
 
+  $('a[rel=tooltip]').tooltip({
+    placement : 'bottom'
+  });
+
   var blogViewModel = new BlogViewModel(
     name,
     function(){
