@@ -104,6 +104,11 @@ a:hover {
   color: orange;
 }
 
+.unread-msg {
+  font-weight: bold !important;
+  color: black !important;
+}
+
 .date,
 .target_msg_date,
 .own_msg_date {

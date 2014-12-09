@@ -178,7 +178,9 @@ ChatController.prototype = {
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
       that.play_sound(data.msg);
-      that.faviconNumber.up();
+      if (that.faviconNumber.up()){
+        $msg.addClass("unread-msg");
+      }
       $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
     }
 
@@ -545,6 +547,12 @@ ChatController.prototype = {
         }
         $.observable(that).setProperty("hidingMessageCount", 0);
         $.observable(that).setProperty("filterName", "");
+      });
+
+      $('#chat_area').on('click', function(){
+        $(this).find('li').removeClass("unread-msg");
+        that.faviconNumber.off();
+        return true;
       });
 
       $('#chat_body').on('click', '.close', function(){
