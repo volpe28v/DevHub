@@ -178,9 +178,6 @@ ChatController.prototype = {
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
       that.play_sound(data.msg);
-      if (that.faviconNumber.up()){
-        $msg.addClass("unread-msg");
-      }
       $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
     }
 
@@ -194,6 +191,9 @@ ChatController.prototype = {
       that.prepend_msg(data,function($msg){
         _msg_post_processing(data, $msg);
         that.do_notification(data);
+        if (that.faviconNumber.up()){
+          $msg.addClass("unread-msg");
+        }
       });
     });
 
