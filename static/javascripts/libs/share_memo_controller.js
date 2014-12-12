@@ -568,34 +568,37 @@ ShareMemoController.prototype = {
 
     // 選択テキストを blog へ移動する
     $(".share-memo").on('select','.code',function(event){
+      var before_pos = $('#share-memo').offset().top * -1;
+      if ($(".navbar").is(':visible')){
+        before_pos += 40;
+      }
       var $selected_target = $(this);
-      if ($selected_target.selection('get') != ""){
+      var selected_text = $selected_target.selection('get');
+      if (selected_text != ""){
         that.isShownMoveToBlog = true;
         $("#move_to_blog")
           .fadeIn()
           .unbind("click")
           .bind("click", function(){
             $(this).fadeOut();
-            var selected_text = $selected_target.selection('get');
-            if (selected_text != ""){
-              var item = {
-                title: _title(selected_text),
-                text: selected_text,
-                name: that.login_name
-              };
+            var item = {
+              title: _title(selected_text),
+              text: selected_text,
+              name: that.login_name
+            };
 
-              $.ajax('blog' , {
-                type: 'POST',
-                cache: false,
-                data: {blog: item},
-                success: function(data){
-                  $selected_target.selection('replace', {
-                    text: '',
-                    caret: 'start'
-                  });
-                }
-              });
-            }
+            $.ajax('blog' , {
+              type: 'POST',
+              cache: false,
+              data: {blog: item},
+              success: function(data){
+                $selected_target.selection('replace', {
+                  text: '',
+                  caret: 'start'
+                });
+                $('#memo_area').scrollTop(before_pos);
+              }
+            });
           });
       }
     });
