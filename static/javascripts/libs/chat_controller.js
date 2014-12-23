@@ -595,7 +595,6 @@ ChatController.prototype = {
         if (Notification.permission != "denied"){
           var notification = new Notification(notif_title, {
             icon: notif_icon,
-            iconUrl: notif_icon,
             body: notif_msg
           });
           setTimeout(function(){
