@@ -591,7 +591,6 @@ ChatController.prototype = {
     if (window.localStorage.popupNotification == 'true' ||
         (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.login_name))){
       if(Notification){
-        console.log("Notification");
         if (Notification.permission != "denied"){
           var notification = new Notification(notif_title, {
             icon: notif_icon,
