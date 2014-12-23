@@ -478,9 +478,7 @@ ChatController.prototype = {
         var mode = $(this).val();
         window.localStorage.popupNotification = mode;
         if (mode != "disable"){
-          if (window.webkitNotifications){
-            window.webkitNotifications.requestPermission();
-          }else if(Notification){
+          if(Notification){
             Notification.requestPermission();
           }
         }
@@ -592,25 +590,8 @@ ChatController.prototype = {
 
     if (window.localStorage.popupNotification == 'true' ||
         (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.login_name))){
-      if (window.webkitNotifications){
-        var havePermission = window.webkitNotifications.checkPermission();
-        if (havePermission == 0) {
-          var notification = window.webkitNotifications.createNotification(
-              notif_icon,
-              notif_title,
-              notif_msg
-              );
-          notification.onclick = function () {
-            notification.close();
-          }
-          notification.show();
-          setTimeout(function(){
-            notification.cancel();
-          }, window.localStorage.notificationSeconds * 1000);
-        } else {
-          window.webkitNotifications.requestPermission();
-        }
-      }else if(Notification){
+      if(Notification){
+        console.log("Notification");
         if (Notification.permission != "denied"){
           var notification = new Notification(notif_title, {
             icon: notif_icon,
@@ -622,7 +603,7 @@ ChatController.prototype = {
           }, window.localStorage.notificationSeconds * 1000);
         }
       }else{
-          Notification.requestPermission();
+        Notification.requestPermission();
       }
     }
   }
