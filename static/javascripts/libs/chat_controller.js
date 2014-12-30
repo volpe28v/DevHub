@@ -247,6 +247,7 @@ ChatController.prototype = {
         emojify.run($('#chat_body').get(0));
         $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
       }else{
+        if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
         $('#message_loader').show();
         that.socket.emit('load_log_more', {id: msgs[msgs.length-1]._id});
       }
