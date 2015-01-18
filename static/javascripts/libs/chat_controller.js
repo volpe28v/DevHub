@@ -55,7 +55,7 @@ ChatController.prototype = {
       }
     ]).on('keydown',function(event){
       // Ctrl - enter は改行扱い
-      if ((event.altKey == true || event.ctrlKey == true) && event.keyCode == 13) {
+      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
         return true;
       }else if(event.keyCode == 13){
         // 絵文字サジェストが表示中は submit しない
