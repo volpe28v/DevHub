@@ -33,6 +33,30 @@ ChatController.prototype = {
     $('#message').focus().val(exist_msg);
   },
 
+  sendMessage: function(){
+    var that = this;
+
+    // 絵文字サジェストが表示中は送信しない
+    if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
+      var name = $('#name').val();
+      var message = $('#message').val();
+      var avatar = window.localStorage.avatarImage;
+
+      if ( message && name ){
+        that.socket.emit('message', {name:name, avatar:avatar, msg:message});
+        $('#message').attr('value', '');
+
+        if (that.login_name != name){
+          that.login_name = name;
+          that.changedLoginName(name);
+        }
+      }
+      return false;
+    }else{
+      return true;
+    }
+  },
+
   init_chat: function(){
     var that = this;
 
@@ -54,19 +78,28 @@ ChatController.prototype = {
         maxCount: 8
       }
     ]).on('keydown',function(event){
-      // Ctrl - enter は改行扱い
-      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
-        return true;
-      }else if(event.keyCode == 13){
-        // 絵文字サジェストが表示中は submit しない
-        if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
-          $(this).submit();
-          event.returnvalue = false;
-          return false;
-        }else{
+      if(window.localStorage.sendkey == 'ctrl'){
+        if ( event.ctrlKey && event.keyCode == 13) {
+          return that.sendMessage();
+        }
+      }else if (window.localStorage.sendkey == 'shift'){
+        if ( event.shiftKey && event.keyCode == 13) {
+          return that.sendMessage();
+        }
+      }else{
+        if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
           return true;
+        }else if(event.keyCode == 13){
+          return that.sendMessage();
         }
       }
+
+      return true;
+    });
+
+    $('#send_button').click(function(){
+      that.sendMessage();
+      return false;
     });
 
     // ログインリストのバインディング
@@ -101,23 +134,6 @@ ChatController.prototype = {
         var name = $(this).data("name");
         that.setMessage("@" + name + "さん");
       }
-    });
-
-    $('#form').submit(function() {
-      var name = $('#name').val();
-      var message = $('#message').val();
-      var avatar = window.localStorage.avatarImage;
-
-      if ( message && name ){
-        that.socket.emit('message', {name:name, avatar:avatar, msg:message});
-        $('#message').attr('value', '');
-
-        if (that.login_name != name){
-          that.login_name = name;
-          that.changedLoginName(name);
-        }
-      }
-      return false;
     });
 
     $('#pomo').click(function(){
@@ -547,6 +563,21 @@ ChatController.prototype = {
         $.observable(that).setProperty("hidingMessageCount", 0);
         $.observable(that).setProperty("filterName", "");
       });
+
+      // for Send Message Key
+      if(window.localStorage.sendkey == 'ctrl'){
+        $('#send_ctrl').attr('checked', 'checked');
+      }else if (window.localStorage.sendkey == 'shift'){
+        $('#send_shift').attr('checked', 'checked');
+      }else{
+        $('#send_enter').attr('checked', 'checked');
+      }
+
+      $('.send-message-key-radio').on('change', "input", function(){
+        var key = $(this).val();
+        window.localStorage.sendkey = key;
+      });
+
 
       $('#chat_area').on('click', function(){
         $(this).find('li').removeClass("unread-msg");

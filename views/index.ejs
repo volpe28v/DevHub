@@ -105,7 +105,7 @@
                   <td style="width: 100%; padding-right: 11px;">
                     <textarea name="message" id="message" style="width: 100%; resize: vertical;" rows="1" autocomplete="off" placeholder="Message"/></textarea>
                   </td>
-                  <td><input type="submit" value="Send" class="btn btn-small btn-primary"/></td>
+                  <td><button id="send_button" class="btn btn-small btn-primary"/>Send</button></td>
                   <td><input type="file" id="upload_chat" name="file" style="display:none"></input><button id="upload_chat_button" class="btn btn-small btn-inverse visible-phone" style="display:none"><i class="icon-upload icon-white"></i></button></td>
                 </tr>
               </table>
@@ -188,11 +188,25 @@
                           <label class="radio inline">
                             <input type="radio" name="timeline" id="timeline_all" value="all" checked> All
                           </label>
-                         <label class="radio inline">
+                          <label class="radio inline">
                             <input type="radio" name="timeline" id="timeline_own" value="own"> Mention & Own 
                           </label>
                           <label class="radio inline">
                             <input type="radio" name="timeline" id="timeline_mention" value="mention"> Mention only
+                          </label>
+                        </div>
+                      </div>
+                      <div class="control-group send-message-key-radio">
+                        <label class="control-label">Send Message Key</label>
+                        <div class="controls">
+                          <label class="radio inline">
+                            <input type="radio" name="sendkey" id="send_enter" value="enter" checked> Enter
+                          </label>
+                          <label class="radio inline">
+                            <input type="radio" name="sendkey" id="send_ctrl" value="ctrl"> Ctrl+Enter
+                          </label>
+                          <label class="radio inline">
+                            <input type="radio" name="sendkey" id="send_shift" value="shift"> Shift+Enter
                           </label>
                         </div>
                       </div>
