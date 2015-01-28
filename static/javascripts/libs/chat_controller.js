@@ -44,7 +44,7 @@ ChatController.prototype = {
 
       if ( message && name ){
         that.socket.emit('message', {name:name, avatar:avatar, msg:message});
-        $('#message').attr('value', '');
+        $('#message').attr('value', '').trigger('autosize.resize');
 
         if (that.login_name != name){
           that.login_name = name;
@@ -95,6 +95,10 @@ ChatController.prototype = {
       }
 
       return true;
+    }).focus(function(){
+      $(this).autosize();
+    }).blur(function(){
+      $(this).trigger('autosize.destroy');
     });
 
     $('#send_button').click(function(){
