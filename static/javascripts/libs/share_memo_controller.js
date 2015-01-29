@@ -17,6 +17,8 @@ function ShareMemoController(param){
   this.text_logs = [];
 
   this.diff_no = 0;
+  this.diff_list = [];
+  this.diff_list_index = 0;
 
   // searchBox
   this.keyword = "";
@@ -413,8 +415,36 @@ ShareMemoController.prototype = {
       $share_memo.find('.sync-text').hide();
       $share_memo.find('.index-button').hide();
 
+      // diff リストを生成
+      that.diff_list = $diff_out.find(".insert,.delete");
+      that.diff_list_index = 0;
+
+      if (that.diff_list.length > 0){
+        $('#move_to_diff').fadeIn();
+      }
+
       that.diff_no = share_memo_no;
       return true;
+    });
+
+    $('#move_to_diff').click(function(){
+      // 差分へ移動
+      var $current_diff_td = $(that.diff_list[that.diff_list_index]);
+      var pos = $current_diff_td.offset().top;
+      $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+
+      // 次の差分グループを検索
+      var $diff_table = $current_diff_td.closest("table");
+      var pre_index = $diff_table.find("tr").index($current_diff_td.closest("tr"));
+      while(1){
+        that.diff_list_index++;
+        var $next_diff_td = $(that.diff_list[that.diff_list_index]);
+
+        if (that.diff_list_index >= that.diff_list.length){ that.diff_list_index = 0 }
+        var next_index = $diff_table.find("tr").index($next_diff_td.closest("tr"));
+        if (next_index - pre_index != 1){ break; }
+        pre_index = next_index;
+      }
     });
 
     // 差分表示モード終了
@@ -423,16 +453,6 @@ ShareMemoController.prototype = {
       var share_memo_no = $share_memo.data('no');
 
       endDiffMode(share_memo_no);
-      /*
-      $share_memo.find('pre').show();
-      $share_memo.find('.diff-view').hide();
-
-      $share_memo.find('.diff-done').hide();
-      $share_memo.find('.sync-text').show();
-      $share_memo.find('.index-button').show();
-
-      that.diff_no = 0;
-      */
     });
 
     function endDiffMode(share_memo_no){
@@ -443,6 +463,8 @@ ShareMemoController.prototype = {
       $share_memo.find('.diff-done').hide();
       $share_memo.find('.sync-text').show();
       $share_memo.find('.index-button').show();
+
+      $('#move_to_diff').fadeOut();
 
       that.diff_no = 0;
     }

@@ -211,8 +211,15 @@ a:hover {
 #move_to_blog {
   opacity: 0.8;
   position: fixed;
-  bottom:5px;
-  right:5px;
+  bottom: 50%;
+  right: 30px;
+}
+
+#move_to_diff {
+  opacity: 0.8;
+  position: fixed;
+  bottom: 50%;
+  right: 30px;
 }
 
 .code {
