@@ -95,11 +95,7 @@ ChatController.prototype = {
       }
 
       return true;
-    }).focus(function(){
-      $(this).autosize();
-    }).blur(function(){
-      $(this).trigger('autosize.destroy');
-    });
+    }).autosize();
 
     $('#send_button').click(function(){
       that.sendMessage();
