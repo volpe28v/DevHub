@@ -16,6 +16,8 @@ function ShareMemoController(param){
   this.writing_text = [];
   this.text_logs = [];
 
+  this.diff_no = 0;
+
   // searchBox
   this.keyword = "";
   this.before_keyword = "";
@@ -410,19 +412,40 @@ ShareMemoController.prototype = {
       $share_memo.find('.diff-done').show();
       $share_memo.find('.sync-text').hide();
       $share_memo.find('.index-button').hide();
+
+      that.diff_no = share_memo_no;
       return true;
     });
 
     // 差分表示モード終了
     $('.share-memo').on('click','.diff-done', function(){
       var $share_memo = $(this).closest('.share-memo');
+      var share_memo_no = $share_memo.data('no');
+
+      endDiffMode(share_memo_no);
+      /*
       $share_memo.find('pre').show();
       $share_memo.find('.diff-view').hide();
 
       $share_memo.find('.diff-done').hide();
       $share_memo.find('.sync-text').show();
       $share_memo.find('.index-button').show();
+
+      that.diff_no = 0;
+      */
     });
+
+    function endDiffMode(share_memo_no){
+      var $share_memo = $("#share_memo_" + share_memo_no);
+      $share_memo.find('pre').show();
+      $share_memo.find('.diff-view').hide();
+
+      $share_memo.find('.diff-done').hide();
+      $share_memo.find('.sync-text').show();
+      $share_memo.find('.index-button').show();
+
+      that.diff_no = 0;
+    }
 
     // 見出し表示
     $('.share-memo').on('click','.index-button', function(){
@@ -519,6 +542,11 @@ ShareMemoController.prototype = {
         $share_memo = $('#share_memo_' + writing_no);
         switchFixShareMemo($share_memo, 1);
       }
+
+      if ( that.diff_no != 0 ){
+        endDiffMode(that.diff_no);
+      }
+
       $('#memo_area').animate({ scrollTop: 0 }, 'fast');
       return true;
     });
