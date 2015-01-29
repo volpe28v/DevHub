@@ -30,7 +30,7 @@ ChatController.prototype = {
         exist_msg += " " + message + " ";
       }
     }
-    $('#message').focus().val(exist_msg);
+    $('#message').focus().val(exist_msg).trigger('autosize.resize');
   },
 
   sendMessage: function(){
@@ -277,7 +277,7 @@ ChatController.prototype = {
       alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(that, res){
-        $('#message').val($('#message').val() + ' ' + res.fileName + ' ');
+        $('#message').val($('#message').val() + ' ' + res.fileName + ' ').trigger('autosize.resize');
       }
     });
   },
