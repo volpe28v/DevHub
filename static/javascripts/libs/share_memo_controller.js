@@ -14,11 +14,7 @@ function ShareMemoController(param){
   this.doing_down = false;
 
   this.memoViewModels = [];
-
-  this.diffViewModel = new DiffViewModel();
-  this.diff_no = 0;
-  this.diff_list = [];
-  this.diff_list_index = 0;
+  this.currentMemoNo = 0;
 
   // searchBox
   this.keyword = "";
@@ -35,6 +31,10 @@ function ShareMemoController(param){
 }
 
 ShareMemoController.prototype = {
+  currentMemo: function(){
+    return this.memoViewModels[this.currentMemoNo];
+  },
+
   setName: function(name){
     this.login_name = name;
   },
@@ -222,6 +222,8 @@ ShareMemoController.prototype = {
     // タブ選択のIDを記憶する
     $("#share_memo_nav").on('click',".share-memo-tab-elem",function(){
       window.localStorage.tabSelectedID = "#" + $(this).attr("id");
+
+      that.currentMemoNo = $(this).data('no');
     });
 
     $("#tab_change").click(function(){
@@ -298,9 +300,8 @@ ShareMemoController.prototype = {
     this.switchEditShareMemo = function($share_memo, row, offset){
       that.isEditMode = true;
       offset = offset == undefined ? $(window).height()/3 : offset - 94;
-      var no = $share_memo.data('no');
       var $target_code = $share_memo.children(".code");
-      $target_code.val(that.memoViewModels[no].writing_text.text);
+      $target_code.val(that.currentMemo().writing_text.text);
 
       $target_code.show();
       $target_code.keyup(); //call autofit
@@ -320,7 +321,7 @@ ShareMemoController.prototype = {
       $share_memo.children('.sync-text').hide();
 
       code_prev = $target_code.val();
-      writing_loop_start(no);
+      writing_loop_start();
     }
 
     $('.share-memo').on('click','.sync-text', function(){
@@ -350,11 +351,7 @@ ShareMemoController.prototype = {
 
       var $diff_list = $share_memo.find('.diff-list');
       var share_memo_no = $share_memo.data('no');
-      var text_log = that.memoViewModels[share_memo_no].text_logs;
-      if (text_log == undefined || text_log.length == 0 ){ return; }
-      if (that.memoViewModels[share_memo_no].writing_text.date != text_log[0].date){
-        text_log.unshift(that.memoViewModels[share_memo_no].writing_text);
-      }
+      var text_log = that.currentMemo().getLogsForDiff();
 
       $diff_list.empty();
       $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
@@ -390,20 +387,9 @@ ShareMemoController.prototype = {
       var index = $(this).closest(".diff-list").find(".diff-li").index(this);
 
       // diff 生成
-      var base   = difflib.stringAsLines(that.memoViewModels[share_memo_no].text_logs[index].text);
-      var newtxt = difflib.stringAsLines(that.memoViewModels[share_memo_no].writing_text.text);
-      var sm = new difflib.SequenceMatcher(base, newtxt);
-      var opcodes = sm.get_opcodes();
       var $diff_out = $share_memo.find('.diff-view');
       $diff_out.empty();
-      $diff_out.append(diffview.buildView({
-        baseTextLines: base,
-        newTextLines: newtxt,
-        opcodes: opcodes,
-        baseTextName: "Current",
-        newTextName: that.memoViewModels[share_memo_no].text_logs[index].date + " - " + that.memoViewModels[share_memo_no].text_logs[index].name,
-        viewType: 1
-      }));
+      $diff_out.append(that.currentMemo().createDiff(index));
 
       // diff 画面を有効化
       $diff_out.fadeIn();
@@ -413,36 +399,16 @@ ShareMemoController.prototype = {
       $share_memo.find('.sync-text').hide();
       $share_memo.find('.index-button').hide();
 
-      // diff リストを生成
-      that.diff_list = $diff_out.find(".insert,.delete");
-      that.diff_list_index = 0;
-
-      if (that.diff_list.length > 0){
+      if (that.currentMemo().diff_list.length > 0){
         $('#move_to_diff').fadeIn();
       }
 
-      that.diff_no = share_memo_no;
       return true;
     });
 
     $('#move_to_diff').click(function(){
-      // 差分へ移動
-      var $current_diff_td = $(that.diff_list[that.diff_list_index]);
-      var pos = $current_diff_td.offset().top;
+      var pos = that.currentMemo().getNextDiffPos();
       $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
-
-      // 次の差分グループを検索
-      var $diff_table = $current_diff_td.closest("table");
-      var pre_index = $diff_table.find("tr").index($current_diff_td.closest("tr"));
-      while(1){
-        that.diff_list_index++;
-        var $next_diff_td = $(that.diff_list[that.diff_list_index]);
-
-        if (that.diff_list_index >= that.diff_list.length){ that.diff_list_index = 0 }
-        var next_index = $diff_table.find("tr").index($next_diff_td.closest("tr"));
-        if (next_index - pre_index != 1){ break; }
-        pre_index = next_index;
-      }
     });
 
     // 差分表示モード終了
@@ -450,11 +416,11 @@ ShareMemoController.prototype = {
       var $share_memo = $(this).closest('.share-memo');
       var share_memo_no = $share_memo.data('no');
 
-      endDiffMode(share_memo_no);
+      endDiffMode();
     });
 
-    function endDiffMode(share_memo_no){
-      var $share_memo = $("#share_memo_" + share_memo_no);
+    function endDiffMode(){
+      var $share_memo = $("#share_memo_" + that.currentMemoNo);
       $share_memo.find('pre').show();
       $share_memo.find('.diff-view').hide();
 
@@ -463,8 +429,6 @@ ShareMemoController.prototype = {
       $share_memo.find('.index-button').show();
 
       $('#move_to_diff').fadeOut();
-
-      that.diff_no = 0;
     }
 
     // 見出し表示
@@ -495,15 +459,13 @@ ShareMemoController.prototype = {
     // デコレートされた html へのイベント登録
     $('.share-memo').decora({
       checkbox_callback: function(context, applyCheckStatus){
-        var share_memo_no = $(context).closest('.share-memo').data('no');
-
         // チェック対象のテキストを更新する
-        that.memoViewModels[share_memo_no].writing_text.text = applyCheckStatus(that.memoViewModels[share_memo_no].writing_text.text);
+        that.currentMemo().applyToWritingText(applyCheckStatus);
 
         // 変更をサーバへ通知
         var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.memoViewModels[share_memo_no].writing_text.text);
-        socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+        $target_code.val(that.currentMemo().writing_text.text);
+        socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
       }
     });
 
@@ -520,7 +482,7 @@ ShareMemoController.prototype = {
       }
 
       // 見栄えを閲覧モードへ
-      updateShareMemoBody($share_memo, that.memoViewModels[no].writing_text.text);
+      updateShareMemoBody($share_memo, that.currentMemo().writing_text.text);
       $share_memo.children('.code').hide();
       $share_memo.children('pre').show();
       $share_memo.children('.fix-text').hide();
@@ -563,8 +525,8 @@ ShareMemoController.prototype = {
         switchFixShareMemo($share_memo, 1);
       }
 
-      if ( that.diff_no != 0 ){
-        endDiffMode(that.diff_no);
+      if ( that.currentMemo().diff_mode ){
+        endDiffMode();
       }
 
       $('#memo_area').animate({ scrollTop: 0 }, 'fast');
@@ -734,7 +696,8 @@ ShareMemoController.prototype = {
     var code_prev = "";
 
     var writing_loop_timer = { id: -1, code_no: 0};
-    function writing_loop_start(no){
+    function writing_loop_start(){
+      var no = that.currentMemoNo;
       $target_code = $('#share_memo_' + no).children('.code');
       var loop = function() {
         var code = $target_code.val();
@@ -788,16 +751,15 @@ ShareMemoController.prototype = {
       dropChildSelector: '.code-out-tr',
       alertTarget: $('#loading'),
       uploadedAction: function(context, res){
-        var share_memo_no = $(context).closest('.share-memo').data('no');
         var row = $(context).closest("table").find("tr").index(context);
 
         // ドロップ位置にファイルを差し込む
-        that.memoViewModels[share_memo_no].insert(row + 1, res.fileName + " ");
+        that.currentMemo().insert(row + 1, res.fileName + " ");
 
         // 変更をサーバへ通知
         var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.memoViewModels[share_memo_no].writing_text.text);
-        socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+        $target_code.val(that.currentMemo().writing_text.text);
+        socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
       }
     });
 
@@ -806,15 +768,13 @@ ShareMemoController.prototype = {
       dropTarget: $('.code-out'),
       alertTarget: $('#loading'),
       uploadedAction: function(context, res){
-        var share_memo_no = $(context).closest('.share-memo').data('no');
-
         // メモの先頭に画像を差し込む
-        that.memoViewModels[share_memo_no].insert(0, res.fileName + " ");
+        that.currentMemo().insert(0, res.fileName + " ");
 
         // 変更をサーバへ通知
         var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.memoViewModels[share_memo_no].writing_text.text);
-        socket.emit('text',{no: share_memo_no, text: $target_code.val()});
+        $target_code.val(that.currentMemo().writing_text.text);
+        socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
       }
     });
 
@@ -828,10 +788,10 @@ ShareMemoController.prototype = {
         var row = $(context).caretLine();
 
         // メモのキャレット位置にファイルを差し込む
-        that.memoViewModels[share_memo_no].insert(row - 1, res.fileName + " ");
+        that.currentMemo().insert(row - 1, res.fileName + " ");
 
         var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.memoViewModels[share_memo_no].writing_text.text);
+        $target_code.val(that.currentMemo().writing_text.text);
         $(context).caretLine(row);
       }
     });
