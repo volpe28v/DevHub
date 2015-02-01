@@ -180,7 +180,7 @@ ChatController.prototype = {
   },
 
   focus: function(){
-    $('#message').focus();
+    $('#message').focus().trigger('autosize.resize');
   },
 
   setWidth: function(width){

@@ -82,6 +82,7 @@
             </a></li>
             <li><a href="/blog" target="_blank"   rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
             <li><a href="/upload" target="_blank" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
+            <li><a href="#settings_modal" rel="tooltip" title="Settings" data-toggle="modal"><i class="icon-white icon-cog"></i></a></li>
           </ul>
 
           <div id="search_box"></div>
@@ -125,105 +126,8 @@
             <div class="dummy-top-space hidden-phone"></div>
             <div id="share-memo">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
-                <ul id="share_memo_nav" class="nav nav-tabs">
-                  <li id="share_memo_tab_top" class="share-memo-tab active" data-no="1"></li>
-
-                  <li><a id="settings_tab" href="#settings_memo" data-toggle="tab">Settings</a></li>
-                </ul>
-
-                <div class="tab-content">
-                  <div id="share_memo_1" data-no="1" class="share-memo tab-pane active"></div>
-
-                  <div id="settings_memo" class="tab-pane">
-                    <form class="form-horizontal">
-                      <div class="control-group notify-radio">
-                        <legend>Personal Settings</legend>
-                        <label class="control-label">Show notifications</label>
-                        <div class="controls">
-                          <label class="radio inline">
-                            <input type="radio" name="notificaton" id="notify_disable" value="disable" checked> Disable
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="notificaton" id="notify_all" value="true"> All
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="notificaton" id="notify_mention" value="mention"> Mention only
-                          </label>
-                        </div>
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label">Close notification in</label>
-                        <div class="controls">
-                          <select id="notification_seconds" class="span1">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="30">30</option>
-                          </select>
-                          seconds.
-                        </div>
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label">Avatar</label>
-                        <div class="controls">
-                          <div class="input-append">
-                            <input type="text" id="avatar" placeholder="xxxx.jpg">
-                            <button id="avatar_set" class="btn">Set</button>
-                            <button id="upload_avatar_button" class="btn btn-small"><i class="icon-file"></i></button>
-                          </div>
-                          <input type="file" id="upload_avatar" name="file" style="display:none"></input>
-                        </div>
-                      </div>
-                      <div class="control-group timeline-radio">
-                        <label class="control-label">Display Timeline</label>
-                        <div class="controls">
-                          <label class="radio inline">
-                            <input type="radio" name="timeline" id="timeline_all" value="all" checked> All
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="timeline" id="timeline_own" value="own"> Mention & Own 
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="timeline" id="timeline_mention" value="mention"> Mention only
-                          </label>
-                        </div>
-                      </div>
-                      <div class="control-group send-message-key-radio">
-                        <label class="control-label">Send Message Key</label>
-                        <div class="controls">
-                          <label class="radio inline">
-                            <input type="radio" name="sendkey" id="send_enter" value="enter" checked> Enter
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="sendkey" id="send_ctrl" value="ctrl"> Ctrl+Enter
-                          </label>
-                          <label class="radio inline">
-                            <input type="radio" name="sendkey" id="send_shift" value="shift"> Shift+Enter
-                          </label>
-                        </div>
-                      </div>
- 
-                      <div class="control-group">
-                       <legend>System Settings</legend>
-                        <label class="control-label">Enable share memo</label>
-                        <div class="controls">
-                          <select id="memo_number" class="span1">
-                            <option id="memo_number_option_top" value="1">1</option>
-                          </select>
-                          tabs.
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
+                <ul id="share_memo_nav" class="nav nav-tabs"></ul>
+                <div class="tab-content"></div>
               </div>
             </div>
             <footer>
@@ -233,6 +137,105 @@
         </div>
       </div>
     </div>
+
+    <div id="settings_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Settings</h3>
+      </div>
+      <div class="modal-body">
+        <div id="settings_memo">
+          <form class="form-horizontal">
+            <div class="control-group notify-radio">
+              <legend>Personal Settings</legend>
+              <label class="control-label">Show notifications</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="notificaton" id="notify_disable" value="disable" checked> Disable
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="notificaton" id="notify_all" value="true"> All
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="notificaton" id="notify_mention" value="mention"> Mention only
+                </label>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Close notification in</label>
+              <div class="controls">
+                <select id="notification_seconds" class="span1">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                </select>
+                seconds.
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Avatar</label>
+              <div class="controls">
+                <div class="input-append">
+                  <input type="text" id="avatar" placeholder="xxxx.jpg">
+                  <button id="avatar_set" class="btn">Set</button>
+                  <button id="upload_avatar_button" class="btn btn-small"><i class="icon-file"></i></button>
+                </div>
+                <input type="file" id="upload_avatar" name="file" style="display:none"></input>
+              </div>
+            </div>
+            <div class="control-group timeline-radio">
+              <label class="control-label">Display Timeline</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="timeline" id="timeline_all" value="all" checked> All
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="timeline" id="timeline_own" value="own"> Mention & Own 
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="timeline" id="timeline_mention" value="mention"> Mention only
+                </label>
+              </div>
+            </div>
+            <div class="control-group send-message-key-radio">
+              <label class="control-label">Send Message Key</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="sendkey" id="send_enter" value="enter" checked> Enter
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="sendkey" id="send_ctrl" value="ctrl"> Ctrl+Enter
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="sendkey" id="send_shift" value="shift"> Shift+Enter
+                </label>
+              </div>
+            </div>
+            <div class="control-group">
+              <legend>System Settings</legend>
+              <label class="control-label">Enable share memo</label>
+              <div class="controls">
+                <select id="memo_number" class="span1"></select>
+                tabs.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" aria-hidden="true" data-dismiss="modal" >Close</a>
+      </div>
+    </div>
+
 
     <div id="move_to_blog" style="display:none">
       <button class="btn btn-success"><i class="icon-share-alt icon-white"></i> Move To Blog</button>

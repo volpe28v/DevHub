@@ -186,7 +186,6 @@ ShareMemoController.prototype = {
     }
   },
 
-
   init_sharememo: function(){
     var that = this;
 
@@ -212,11 +211,10 @@ ShareMemoController.prototype = {
       return false;
     });
 
-
-    for (var i = SHARE_MEMO_NUMBER; i > 1; i--){
-      $("#share_memo_tab_top").after($('<li/>').addClass("share-memo-tab").attr("data-no",i));
-      $("#share_memo_1").after($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
-      $("#memo_number_option_top").after($('<option/>').attr('value',i).html(i));
+    for (var i = SHARE_MEMO_NUMBER; i >= 1; i--){
+      $("#share_memo_nav").prepend($('<li/>').addClass("share-memo-tab").attr("data-no",i));
+      $(".tab-content").prepend($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
+      $("#memo_number").prepend($('<option/>').attr('value',i).html(i));
     }
 
     // タブ選択のIDを記憶する
