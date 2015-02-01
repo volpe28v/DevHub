@@ -200,13 +200,10 @@ BlogViewModel.prototype = {
     $.observable(blog).setProperty("name", that.name);
 
     var $target = $(view.contents()).closest('.blog-body');
-    $target.find(".code-out").showDecora(blog.text);
     $target.find('pre').show();
     $target.find('.edit-form').hide();
 
-    var id = $target.attr("id");
-    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
-    emojify.run($index_title.get(0));
+    this._decorate(blog);
 
     $.ajax('blog' , {
       type: 'POST',
@@ -336,14 +333,7 @@ BlogViewModel.prototype = {
     item.title = this._title(item.text);
 
     $.observable(this.items).insert(item);
-    var $target = $('#' + id);
-    $target.find(".code-out").showDecora(item.text);
-
-    var id = $target.attr("id");
-    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
-    emojify.run($index_title.get(0));
-
-    return $target;
+    return this._decorate(item);
   },
 
   _pushItem: function(item){
@@ -351,7 +341,16 @@ BlogViewModel.prototype = {
     item.title = this._title(item.text);
 
     $.observable(this.items).insert(0, item);
+    this._decorate(item);
+  },
+
+  _decorate: function(item){
+    var id = item._id;
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
+    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
+    emojify.run($index_title.get(0));
+
+    return $target;
   }
 }
