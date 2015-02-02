@@ -193,7 +193,6 @@
 
 				//height += boxOffset;
 				height += boxOffset - minHeight; // add volpe
-
 				if (Math.abs(originalHeight - height) > 1/100) {
 					ta.style.height = height + 'px';
 
