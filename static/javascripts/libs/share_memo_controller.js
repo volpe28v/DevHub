@@ -211,18 +211,23 @@ ShareMemoController.prototype = {
       return false;
     });
 
-    for (var i = SHARE_MEMO_NUMBER; i >= 1; i--){
-      $("#share_memo_nav").prepend($('<li/>').addClass("share-memo-tab").attr("data-no",i));
-      $(".tab-content").prepend($('<div/>').attr('id',"share_memo_" + i).attr("data-no",i).addClass("share-memo tab-pane"));
-      $("#memo_number").prepend($('<option/>').attr('value',i).html(i));
+    for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
+      $("#share_memo_nav").append($('#shareMemoTabTmpl').render({no: i}));
+      $(".tab-content").append($('#shareMemoTmpl').render({no: i}));
+      $("#memo_number").append($('<option/>').attr('value',i).html(i));
     }
+
+    $(".share-memo").on("click", ".ref-point", function(){
+      var id = $(this).attr("id");
+      that.setMessage("[ref:" + id + "]");
+    });
 
     // タブ選択のIDを記憶する
     $("#share_memo_nav").on('click',".share-memo-tab-elem",function(){
       window.localStorage.tabSelectedID = "#" + $(this).attr("id");
-
       that.currentMemoNo = $(this).data('no');
     });
+
 
     $("#tab_change").click(function(){
       if ($('#share_memo_tabbable').hasClass("tabs-left")){
@@ -246,20 +251,6 @@ ShareMemoController.prototype = {
 
     $("#scroll_top").click(function(){
       $('#memo_area').scrollTop(0);
-    });
-
-    $(".share-memo-tab").each(function(){
-      var no = $(this).data('no');
-      $(this).append($('#shareMemoTabTmpl').render({no: no}));
-    });
-
-    $(".share-memo").each(function(){
-      $(this).append($('#shareMemoTmpl').render());
-    });
-
-    $(".share-memo").on("click", ".ref-point", function(){
-      var id = $(this).attr("id");
-      that.setMessage("[ref:" + id + "]");
     });
 
     // 前回の状態を復元する
