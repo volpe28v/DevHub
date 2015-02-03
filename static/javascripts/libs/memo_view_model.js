@@ -1,5 +1,6 @@
-function MemoViewModel(){
-  this.writing_text = {text: "", date: undefined};
+function MemoViewModel(no){
+  this.no = no;
+  this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
 
   this.diff_mode = false;
