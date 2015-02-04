@@ -211,14 +211,7 @@ ShareMemoController.prototype = {
         return false;
       });
 
-    $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
-      .on('click',".share-memo-tab-elem", function(){
-        // タブ選択のIDを記憶する
-        var memoViewModel = that.memoViewModels[$.view(this).index];
-        window.localStorage.tabSelectedID = "#" + $(this).attr("id");
-        that.currentMemoNo = memoViewModel.no;
-      });
-
+    $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels);
     $.templates("#shareMemoTmpl").link(".tab-content", this.memoViewModels);
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
@@ -269,6 +262,7 @@ ShareMemoController.prototype = {
       // タブ選択状態
       if ( window.localStorage.tabSelectedID ){
         $(window.localStorage.tabSelectedID).click();
+        this.currentMemoNo = $(window.localStorage.tabSelectedID).data('no');
       }
     }
   },
@@ -513,13 +507,25 @@ ShareMemoController.prototype = {
     $('#share-memo').on('click','.share-memo-tab-elem', function(){
       var writing_no = writing_loop_timer.code_no;
       if ( writing_no != 0){
-        $share_memo = $('#share_memo_' + writing_no);
+        var $share_memo = $('#share_memo_' + writing_no);
         switchFixShareMemo($share_memo, 1);
       }
 
       if ( that.currentMemo().diff_mode ){
         endDiffMode();
       }
+
+      // タブ選択のIDを記憶する
+      var no = $(this).data('no');
+      var memoViewModel = null;
+      for (var i = 0; i < that.memoViewModels.length; i++){
+        if (that.memoViewModels[i].no == no){
+          memoViewModel = that.memoViewModels[i];
+        }
+      }
+
+      window.localStorage.tabSelectedID = "#" + $(this).attr("id");
+      that.currentMemoNo = memoViewModel.no;
 
       $('#memo_area').animate({ scrollTop: 0 }, 'fast');
       return true;
