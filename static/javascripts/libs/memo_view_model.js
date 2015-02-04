@@ -2,6 +2,8 @@ function MemoViewModel(no){
   this.no = no;
   this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
+  this.title = "- No." + no + " -";
+  this.update_timer = null;
 
   this.diff_mode = false;
   this.diff_list = [];
@@ -9,6 +11,67 @@ function MemoViewModel(no){
 }
 
 MemoViewModel.prototype = {
+  _title: function(text){
+    var text_lines = text.split('\n');
+    var title = "";
+    for (var i = 0; i < text_lines.length; i++){
+      var line = text_lines[i];
+      var matched = line.match(/(\S+)/);
+      if (matched){
+        title = text_lines[i];
+        break;
+      }
+    };
+
+    title = $('<div/>').html($.decora.to_html(title)).text();
+    if (!title.match(/\S/g)){
+      title = " - No." + this.no + " - ";
+    }
+    return title;
+  },
+  setText: function(text_body){
+    var that = this;
+    this.writing_text = text_body;
+    $.observable(this).setProperty("writer", this.writing_text.name);
+    $.observable(this).setProperty("title", this._title(this.writing_text.text));
+
+    // バインドだけで実現できない画面処理(いずれなんとかしたい)
+    var $target_tab = $('#share_memo_tab_' + this.no);
+    var $tab_title = $target_tab.children('.share-memo-title');
+    emojify.run($tab_title.get(0));
+
+    var $writer = $target_tab.children('.writer');
+    $writer.addClass("writing-name");
+
+    var $timestamp = $target_tab.find('.timestamp');
+    $timestamp.attr("data-livestamp", text_body.date);
+
+    var $target = $('#share_memo_' + this.no);
+    var $text_date = $target.children('.text-date');
+    $text_date.html(text_body.date);
+    $text_date.removeClass("label-info");
+    $text_date.addClass("label-important");
+    $text_date.show();
+
+    var is_blank = text_body.text == "";
+    if (is_blank){
+      $writer.hide();
+      $timestamp.hide();
+    }else{
+      $writer.show();
+      $timestamp.show();
+    }
+
+    if (this.update_timer){
+      clearTimeout(this.update_timer);
+    }
+    this.update_timer = setTimeout(function(){
+      $text_date.removeClass("label-important");
+      $text_date.addClass("label-info");
+      $writer.removeClass("writing-name");
+      that.update_timer = null;
+    },3000);
+  },
   insert: function(row, text){
     var text_array = this.writing_text.text.split("\n");
     text_array.splice(row,0,text);
