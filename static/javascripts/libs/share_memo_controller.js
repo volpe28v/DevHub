@@ -209,7 +209,6 @@ ShareMemoController.prototype = {
         return false;
       });
 
-    var writing_loop_timer = { id: -1, code_no: 0};
     $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
       .on('click','.share-memo-tab-elem', function(){
         // 遷移前のメモを表示モードに戻す
@@ -333,8 +332,7 @@ ShareMemoController.prototype = {
         }
       })
       .on('select','.code',function(event){
-        var memoViewModel = that.memoViewModels[$.view(this).index];
-        memoViewModel.showMoveToBlogButton($(this), that.login_name);
+        that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
 
 
