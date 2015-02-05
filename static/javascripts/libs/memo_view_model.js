@@ -1,9 +1,13 @@
-function MemoViewModel(no){
+function MemoViewModel(no, socket){
   this.no = no;
+  this.socket = socket;
   this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
   this.title = "- No." + no + " -";
   this.update_timer = null;
+  this.code_prev = "";
+  this.writing_loop_timer = { id: -1, code_no: 0};
+  this.is_shown_move_to_blog = false;
 
   this.diff_mode = false;
   this.diff_list = [];
@@ -35,7 +39,7 @@ MemoViewModel.prototype = {
     $.observable(this).setProperty("writer", this.writing_text.name);
     $.observable(this).setProperty("title", this._title(this.writing_text.text));
 
-    // バインドだけで実現できない画面処理(いずれなんとかしたい)
+    // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);
     var $tab_title = $target_tab.children('.share-memo-title');
     emojify.run($tab_title.get(0));
@@ -72,12 +76,148 @@ MemoViewModel.prototype = {
       that.update_timer = null;
     },3000);
   },
+  
+  switchFixMode: function(){
+    if ( this.edit_mode){
+      this.switchFixShareMemo(1);
+    }
+
+    if ( this.diff_mode ){
+      this.endDiff();
+    }
+  },
+
+  switchFixShareMemo: function(row, offset){
+    var $share_memo = $('#share_memo_' + this.no);
+    this.edit_mode = false;
+
+    offset = offset == undefined ? $(window).height()/3 : offset - 14;
+    if ($share_memo.children('.code').css('display') == "none"){ return; }
+
+    // 最新の状態をサーバへ送信する
+    var code = $share_memo.children('.code').val();
+    if (this.code_prev != code){
+      socket.emit('text',{no: this.no, text: code});
+    }
+
+    // 見栄えを閲覧モードへ
+    this.showText();
+    $share_memo.children('.code').hide();
+    $share_memo.children('pre').show();
+    $share_memo.children('.fix-text').hide();
+    $share_memo.children('.sync-text').show();
+
+    // 閲覧モード時に編集していたキャレット位置を表示する
+    var $target_tr = $share_memo.find('table tr').eq(row - 1);
+    if ($target_tr.length > 0){
+      $('#memo_area').scrollTop(0);
+      $('#memo_area').scrollTop($target_tr.offset().top - offset);
+    }
+    socket.emit('add_history',{no: $share_memo.data('no')});
+    this.writingLoopStop();
+
+    $("#move_to_blog").fadeOut();
+  },
+
+  writingLoopStop: function(){
+    clearInterval(this.writing_loop_timer.id);
+    this.writing_loop_timer = { id: -1, code_no: 0};
+  },
+
+  switchEditShareMemo: function(row, offset){
+    var $share_memo = $('#share_memo_' + this.no);
+    this.edit_mode = true;
+
+    offset = offset == undefined ? $(window).height()/3 : offset - 94;
+    var $target_code = $share_memo.children(".code");
+    $target_code.val(this.writing_text.text);
+
+    $target_code.show();
+    $target_code.keyup(); //call autofit
+    // 編集モード時に選択した行位置を表示する
+    if (row >= 0){
+      $target_code.caretLine(row);
+    }else{
+      // キャレット位置指定なしの場合は前回の場所を復元
+      row = $target_code.caretLine();
+    }
+    var line_height = Number($share_memo.find('.code').css('line-height').replace('px',''));
+    $('#memo_area').scrollTop(row * line_height + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
+    $target_code.focus();
+
+    $share_memo.children('pre').hide();
+    $share_memo.children('.fix-text').show();
+    $share_memo.children('.sync-text').hide();
+
+    this.code_prev = $target_code.val();
+    this.writingLoopStart();
+  },
+
+  writingLoopStart: function(){
+    var that = this;
+    $target_code = $('#share_memo_' + this.no).children('.code');
+    var loop = function() {
+      var code = $target_code.val();
+      if (that.code_prev != code) {
+        that.socket.emit('text',{no: that.no, text: code});
+        that.code_prev = code;
+      }
+
+      // Blogへ移動ボタンの表示状態を制御
+      if (that.is_shown_move_to_blog){
+        if ($target_code.selection('get') == ""){
+          $("#move_to_blog").fadeOut();
+          that.is_shown_move_to_blog = false;
+        }
+      }
+    };
+    // 念のためタイマー止めとく
+    if (this.writing_loop_timer.id != -1){
+      this.writingLoopStop();
+    }
+    this.writing_loop_timer = {id: setInterval(loop, 500), code_no: this.no};
+  },
+
+  showText: function(){
+    var $target = $('#share_memo_' + this.no);
+    $target.find('.code-out').showDecora(this.writing_text.text);
+
+    // チェックボックスの進捗表示
+    var checked_count = $target.find("input:checked").length;
+    var checkbox_count = $target.find("input[type=checkbox]").length;
+    if (checkbox_count > 0){
+      $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
+      if (checked_count == checkbox_count){
+        $target.find('.checkbox-count').addClass('checkbox-count-done');
+      }else{
+        $target.find('.checkbox-count').removeClass('checkbox-count-done');
+      }
+    }else{
+      $target.find('.checkbox-count').hide();
+    }
+  },
+
   insert: function(row, text){
     var text_array = this.writing_text.text.split("\n");
     text_array.splice(row,0,text);
     this.writing_text.text = text_array.join("\n");
   },
-  getLogsForDiff: function(){
+
+  showIndexList: function(){
+    var $share_memo = $('#share_memo_' + this.no);;
+
+    var $index_list = $share_memo.find('.index-list');
+    var $code_out = $share_memo.find('.code-out');
+    $index_list.empty();
+    $code_out.find(":header").each(function(){
+      var h_num = parseInt($(this).get()[0].localName.replace("h",""));
+      var prefix = "";
+      for (var i = 1; i < h_num; i++){ prefix += "&emsp;"; }
+      $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html(prefix + " " + $(this).text())));
+    });
+  },
+
+  _getLogsForDiff: function(){
     var out_logs = this.text_logs;
     if (this.writing_text.date != out_logs[0].date){
       out_logs.unshift(this.writing_text);
@@ -85,6 +225,19 @@ MemoViewModel.prototype = {
 
     return out_logs;
   },
+
+  showDiffList: function(){
+    var $share_memo = $('#share_memo_' + this.no);
+    var $diff_list = $share_memo.find('.diff-list');
+    var text_log = this._getLogsForDiff();
+
+    $diff_list.empty();
+    $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
+    for (var i = 1; i < text_log.length; i++){
+      $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
+    }
+  },
+
   createDiff: function(index){
     var base   = difflib.stringAsLines(this.text_logs[index].text);
     var newtxt = difflib.stringAsLines(this.writing_text.text);
@@ -106,6 +259,7 @@ MemoViewModel.prototype = {
 
     return diff_body;
   },
+
   getNextDiffPos: function(){
     var $current_diff_td = $(this.diff_list[this.diff_index]);
     var pos = $current_diff_td.offset().top;
@@ -125,13 +279,61 @@ MemoViewModel.prototype = {
 
     return pos;
   },
+
   endDiff: function(){
+    var $share_memo = $("#share_memo_" + this.no);
+    $share_memo.find('pre').show();
+    $share_memo.find('.diff-view').hide();
+
+    $share_memo.find('.diff-done').hide();
+    $share_memo.find('.sync-text').show();
+    $share_memo.find('.index-button').show();
+
+    $('#move_to_diff').fadeOut();
+ 
     this.diff_list = [];
     this.diff_index = 0;
     this.diff_mode = false;
   },
+
   applyToWritingText: function(func){
     this.writing_text.text = func(this.writing_text.text);
-  }
+  },
 
+  showMoveToBlogButton: function($selected_target, login_name){
+    var that = this;
+    this.is_shown_move_to_blog = true;
+    var before_pos = $('#share-memo').offset().top * -1;
+    if ($(".navbar").is(':visible')){
+      before_pos += 40;
+    }
+
+    var selected_text = $selected_target.selection('get');
+    if (selected_text != ""){
+      $("#move_to_blog")
+        .fadeIn()
+        .unbind("click")
+        .bind("click", function(){
+          $(this).fadeOut();
+          var item = {
+            title: that._title(selected_text),
+            text: selected_text,
+            name: login_name
+          };
+
+          $.ajax('blog' , {
+            type: 'POST',
+            cache: false,
+            data: {blog: item},
+            success: function(data){
+              $selected_target.selection('replace', {
+                text: '',
+                caret: 'start'
+              });
+              $('#memo_area').scrollTop(before_pos);
+            }
+          });
+        });
+    }
+  }
 }
