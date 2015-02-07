@@ -284,6 +284,7 @@ MemoViewModel.prototype = {
     this.diff_mode = true;
 
     // 差分グループを生成
+    this.diff_block_list = [];
     if (diff_list.length > 0){
       var $diff_table = $(diff_body).closest("table");
       this.diff_block_list.push($(diff_list[0]));
