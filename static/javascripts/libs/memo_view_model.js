@@ -1,9 +1,10 @@
-function MemoViewModel(no, socket){
-  this.no = no;
-  this.socket = socket;
+function MemoViewModel(param){
+  this.no = param.no;
+  this.socket = param.socket;
+  this.getName = param.getName; //function
   this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
-  this.title = "- No." + no + " -";
+  this.title = "- No." + this.no + " -";
   this.update_timer = null;
   this.code_prev = "";
   this.writing_loop_timer = { id: -1, code_no: 0};
@@ -12,9 +13,33 @@ function MemoViewModel(no, socket){
   this.diff_mode = false;
   this.diff_list = [];
   this.diff_index = 0;
+
+  this.initSocket();
 }
 
 MemoViewModel.prototype = {
+  initSocket: function(){
+    var that = this;
+    socket.on('text' + this.no, function(text_log) {
+      that.setText(text_log);
+
+      if ( that.edit_mode ){
+        // 編集中の共有メモに他ユーザの変更が来たら編集終了
+        if( that.getName() != text_log.name ){
+          var $target = $('#share_memo_' + that.no);
+          that.switchFixShareMemo($target.children('.code').caretLine());
+        }
+      }else{
+        // 同共有メモを編集していない場合はメモ本文を更新
+        that.showText();
+      }
+    });
+
+    socket.on('text_logs' + this.no, function(data){
+      that.text_logs = data.logs;
+    });
+  },
+
   _title: function(text){
     var text_lines = text.split('\n');
     var title = "";

@@ -36,6 +36,10 @@ ShareMemoController.prototype = {
     this.login_name = name;
   },
 
+  getName: function(){
+    return this.login_name;
+  },
+
   setWidth: function(width){
     $('#memo_area').css('width',width + 'px').css('margin',0);
   },
@@ -344,7 +348,11 @@ ShareMemoController.prototype = {
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
-      $.observable(this.memoViewModels).insert(new MemoViewModel(i, this.socket));
+      $.observable(this.memoViewModels).insert(new MemoViewModel({
+        no: i,
+        socket: this.socket,
+        getName: function() { return that.getName(); }
+      }));
     }
 
     $("#tab_change").click(function(){
@@ -399,37 +407,6 @@ ShareMemoController.prototype = {
         that.setFocus();
         return false;
       }
-    });
-
-    function update_text(text_log){
-      var no = text_log.no == undefined ? 1 : text_log.no;
-      that.memoViewModels[no-1].setText(text_log);
-
-
-      if ( that.currentMemo().edit_mode && that.currentMemo().no == no ){
-        // 編集中の共有メモに他ユーザの変更が来たら編集終了
-        if( that.login_name != text_log.name ){
-          var $target = $('#share_memo_' + no);
-          that.currentMemo().switchFixShareMemo($target.children('.code').caretLine());
-        }
-      }else{
-        // 同共有メモを編集していない場合はメモ本文を更新
-        that.memoViewModels[no-1].showText();
-      }
-    }
-
-    socket.on('text', function(text_log) {
-      if (text_log instanceof Array){
-        text_log.forEach(function(one_log){
-          update_text(one_log);
-        });
-      }else{
-        update_text(text_log);
-      }
-    });
-
-    socket.on('text_logs_with_no', function(data){
-      that.memoViewModels[data.no-1].text_logs = data.logs;
     });
 
     $('#memo_number').bind('change',function(){
