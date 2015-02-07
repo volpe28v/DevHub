@@ -245,7 +245,7 @@ ShareMemoController.prototype = {
         that.currentMemo().switchEditShareMemo(row, e.pageY);
       })
       .on('click','.diff-button', function(){
-        that.currentMemo().switchFixMode(1);
+        that.currentMemo().switchFixShareMemo(1);
         that.currentMemo().showDiffList();
       })
       .on('mouseover','.diff-li', function(){
