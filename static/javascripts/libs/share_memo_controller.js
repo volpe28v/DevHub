@@ -288,7 +288,7 @@ ShareMemoController.prototype = {
         $share_memo.find('.sync-text').hide();
         $share_memo.find('.index-button').hide();
 
-        if (that.currentMemo().diff_list.length > 0){
+        if (that.currentMemo().diff_block_list.length > 0){
           $('#move_to_diff').fadeIn();
         }
 

@@ -11,7 +11,7 @@ function MemoViewModel(param){
   this.is_shown_move_to_blog = false;
 
   this.diff_mode = false;
-  this.diff_list = [];
+  this.diff_block_list = [];
   this.diff_index = 0;
 
   this.initSocket();
@@ -58,6 +58,7 @@ MemoViewModel.prototype = {
     }
     return title;
   },
+
   setText: function(text_body){
     var that = this;
     this.writing_text = text_body;
@@ -278,30 +279,47 @@ MemoViewModel.prototype = {
       viewType: 1
     });
 
-    this.diff_list = $(diff_body).find(".insert,.delete");
+    var diff_list = $(diff_body).find(".insert,.delete");
     this.diff_index = 0;
     this.diff_mode = true;
 
+    // 差分グループを生成
+    if (diff_list.length > 0){
+      var $diff_table = $(diff_body).closest("table");
+      this.diff_block_list.push($(diff_list[0]));
+
+      for (var i = 0; i < diff_list.length; i++){
+        var $current_diff_td = $(diff_list[i]);
+        var pre_index = $diff_table.find("tr").index($current_diff_td.closest("tr"));
+
+        while(1){
+          if (++i >= diff_list.length){ break; }
+          var $next_diff_td = $(diff_list[i]);
+
+          var next_index = $diff_table.find("tr").index($next_diff_td.closest("tr"));
+          if (next_index - pre_index != 1){
+            this.diff_block_list.push($(diff_list[i]));
+            break;
+          }
+          pre_index = next_index;
+        }
+      }
+    }
+
+    $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + this.diff_block_list.length);
     return diff_body;
   },
 
   getNextDiffPos: function(){
-    var $current_diff_td = $(this.diff_list[this.diff_index]);
-    var pos = $current_diff_td.offset().top;
+    var pos = this.diff_block_list[this.diff_index].offset().top;
+    if (++this.diff_index >= this.diff_block_list.length){ this.diff_index = 0; }
 
-    // 次の差分グループを検索
-    var $diff_table = $current_diff_td.closest("table");
-    var pre_index = $diff_table.find("tr").index($current_diff_td.closest("tr"));
-    while(1){
-      this.diff_index++;
-      var $next_diff_td = $(this.diff_list[this.diff_index]);
-
-      if (this.diff_index >= this.diff_list.length){ this.diff_index = 0 }
-      var next_index = $diff_table.find("tr").index($next_diff_td.closest("tr"));
-      if (next_index - pre_index != 1){ break; }
-      pre_index = next_index;
+    // ボタンの文字列変更
+    if (this.diff_index == 0){
+      $('#move_to_diff .btn').html('<i class="icon-arrow-up icon-white"></i> Next Diff ' + this.diff_block_list.length + '/' + this.diff_block_list.length);
+    }else{
+      $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff ' + this.diff_index + '/' + this.diff_block_list.length);
     }
-
     return pos;
   },
 
@@ -316,9 +334,9 @@ MemoViewModel.prototype = {
 
     $('#move_to_diff').fadeOut();
  
-    this.diff_list = [];
     this.diff_index = 0;
     this.diff_mode = false;
+    this.diff_block_list = [];
   },
 
   applyToWritingText: function(func){
