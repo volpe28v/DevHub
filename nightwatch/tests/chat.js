@@ -1,7 +1,7 @@
 module.exports = {
   '平文メッセージを入力' : function (client) {
     client
-      .url('http://localhost:3000')
+      .url('http://localhost:3010')
       .waitForElementVisible('#name_in', 1000)
       .pause(1000)
       .click('#login')
@@ -33,7 +33,7 @@ module.exports = {
     client
       .setValue('#message', [':dog:',client.Keys.ENTER])
       .pause(1000)
-      .assert.attributeEquals('#chat_body li:first-child img', 'src', 'http://localhost:3000/img/emoji/dog.png')
+      .assert.attributeEquals('#chat_body li:first-child img', 'src', 'http://localhost:3010/img/emoji/dog.png')
   },
 
   'チャットテストを終了' : function (client) {

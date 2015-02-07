@@ -1,7 +1,7 @@
 module.exports = {
   'Blog画面が表示されること' : function (client) {
     client
-      .url('http://localhost:3000/blog')
+      .url('http://localhost:3010/blog')
       .assert.containsText('.brand', 'DevHub - blog')
   },
 

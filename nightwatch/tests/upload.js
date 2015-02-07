@@ -1,7 +1,7 @@
 module.exports = {
   'アップロード画面が表示されること' : function (client) {
     client
-      .url('http://localhost:3000/upload')
+      .url('http://localhost:3010/upload')
       .assert.containsText('.brand', 'DevHub - uploads')
   },
 

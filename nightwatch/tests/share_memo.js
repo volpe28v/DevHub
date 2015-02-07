@@ -1,7 +1,7 @@
 module.exports = {
   '平文メモを入力' : function (client) {
     client
-      .url('http://localhost:3000')
+      .url('http://localhost:3010')
       .waitForElementVisible('#name_in', 1000)
       .click('#login')
       .waitForElementVisible('#message', 1000)
@@ -150,15 +150,66 @@ module.exports = {
       .assert.attributeEquals('#share_memo_1 img', 'src', 'http://nightwatchjs.org/img/logo-nightwatch.png')
   },
 
-
-  '共有メモテスト終了' : function (client) {
+  'メモ2に画像を入力' : function (client) {
     client
+      .click('#share_memo_tab_2')
+      .click('#share_memo_2 .sync-text')
+      .waitForElementVisible('#share_memo_2 .code', 1000)
+      .pause(500)
+      .clearValue('#share_memo_2 .code')
+      .setValue('#share_memo_2 .code', 'http://nightwatchjs.org/img/logo-nightwatch.png\n')
+      .click('#share_memo_2 .fix-text')
+      .waitForElementVisible('#share_memo_2 .code-out', 1000)
+      .assert.attributeEquals('#share_memo_2 img', 'src', 'http://nightwatchjs.org/img/logo-nightwatch.png')
+  },
+
+  'メモ2が編集状態でメモ1に移動して戻ってきたら閲覧モードになる' : function (client) {
+    client
+      .click('#share_memo_tab_2')
+      .click('#share_memo_2 .sync-text')
+      .waitForElementVisible('#share_memo_2 .code', 1000)
+      .pause(500)
+      .click('#share_memo_tab_1')
+      .click('#share_memo_tab_2')
+      .waitForElementVisible('#share_memo_2 .code-out', 1000)
+  },
+
+  'メモ2が編集状態でDiffボタンを押下したら閲覧モードになる' : function (client) {
+    client
+      .click('#share_memo_tab_2')
+      .click('#share_memo_2 .sync-text')
+      .waitForElementVisible('#share_memo_2 .code', 1000)
+      .pause(500)
+      .click('#share_memo_2 .diff-button')
+      .waitForElementVisible('#share_memo_2 .code-out', 1000)
+  },
+
+
+  'メモ1をクリア' : function (client) {
+    client
+      .click('#share_memo_tab_1')
       .click('#share_memo_1 .sync-text')
       .waitForElementVisible('#share_memo_1 .code', 1000)
       .pause(500)
       .clearValue('#share_memo_1 .code')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+  },
+
+  'メモ2をクリア' : function (client) {
+    client
+      .click('#share_memo_tab_2')
+      .click('#share_memo_2 .sync-text')
+      .waitForElementVisible('#share_memo_2 .code', 1000)
+      .pause(500)
+      .clearValue('#share_memo_2 .code')
+      .click('#share_memo_2 .fix-text')
+      .waitForElementVisible('#share_memo_2 .code-out', 1000)
+  },
+
+
+  '共有メモテスト終了' : function (client) {
+    client
       .end();
   }
 };
