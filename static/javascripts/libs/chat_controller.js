@@ -515,10 +515,12 @@ ChatController.prototype = {
       // for avatar
       if (window.localStorage.avatarImage){
         $('#avatar').val(window.localStorage.avatarImage);
+        $('#avatar_img').attr('src', window.localStorage.avatarImage);
       }
 
       $('#avatar_set').on('click',function(){
         window.localStorage.avatarImage = $('#avatar').val();
+        $('#avatar_img').attr('src', window.localStorage.avatarImage);
 
         var name = $('#name').val();
         that.socket.emit('name',

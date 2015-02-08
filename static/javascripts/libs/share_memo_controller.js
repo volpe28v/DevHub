@@ -487,6 +487,7 @@ ShareMemoController.prototype = {
       pasteValid: true,
       uploadedAction: function(that, res){
         $('#avatar').val(res.fileName);
+        $('#avatar_img').attr('src',res.fileName);
       }
     });
 
