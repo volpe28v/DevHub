@@ -6,5 +6,10 @@
   "keywords": ["node", "socket.io", "chat"],
   "addons": [
     "mongolab"
-  ]
+  ],
+  "env": {
+    "NODE_DEVHUB_USER": "",
+    "NODE_DEVHUB_PASS": "",
+    "GRIDFS": "false"
+  }
 }
