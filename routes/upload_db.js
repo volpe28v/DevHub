@@ -76,7 +76,6 @@ function getFileListAndSizeGridFs(){
   return deferred.promise;
 }
 
-
 exports.get = function(req, res){
   getFileListAndSizeGridFs().then(function(file_info){
     res.render('upload',{locals:{file_info: file_info}});
@@ -94,7 +93,6 @@ exports.delete = function(req, res) {
     });
   });
 };
-
 
 exports.serve = function(req, res){
   var file = req.param("file");
