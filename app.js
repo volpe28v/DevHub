@@ -59,7 +59,7 @@ var routes = {
   index: require('./routes/index'),
   notify: require('./routes/notify'),
   memo: require('./routes/memo'),
-  upload : require('./routes/upload'),
+  upload : require('./routes/upload_db'),
   blog: require('./routes/blog'),
 };
 
@@ -70,6 +70,7 @@ app.get('/memo', function(req, res) { routes.memo.get(req,res,io); });
 app.post('/upload', routes.upload.post);
 app.get('/upload', routes.upload.get);
 app.delete('/upload', routes.upload.delete);
+app.get('/uploads/:file', routes.upload.serve);
 
 app.get('/blog', routes.blog.get);
 app.get('/blog/body', routes.blog.body);
@@ -88,6 +89,7 @@ mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   blog.set_db(db);
+  routes.upload.set_db(db);
 
   server.listen(app.get('port'));
   console.log("listen!!!");
