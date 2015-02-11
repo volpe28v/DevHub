@@ -2,13 +2,16 @@
   "name": "DevHub",
   "version": "0.0.1",
   "dependencies": {
-    "express": "3.4.8"
-  , "commander": "0.5.2"
-  , "ejs": "1.0.0"
-  , "socket.io": "0.9.17"
-  , "mongodb": "1.4.8"
-  , "request": "2.39.0"
-  , "nightwatch": "0.5.22"
+    "commander": "0.5.2",
+    "ejs": "1.0.0",
+    "express": "3.4.8",
+    "grid-fs": "^0.1.2",
+    "mongodb": "1.4.8",
+    "nightwatch": "0.5.22",
+    "q": "^1.1.2",
+    "request": "2.39.0",
+    "socket.io": "0.9.17",
+    "underscore": "^1.7.0"
   },
   "engines": {
     "node": "0.10.28",

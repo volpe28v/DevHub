@@ -1,6 +1,10 @@
 var fs = require('fs');
 var util = require('../lib/util');
 
+module.exports.set_db = function(current_db){
+
+};
+
 exports.post = function(req, res) {
   var tmp_path = req.files.file.path;
   var base_name = req.files.file.name.replace(/[ 　]/g,'_');
@@ -43,4 +47,7 @@ exports.delete = function(req, res) {
   });
 };
 
-
+exports.serve = function(req, res){
+  res.status(404);
+  res.type('txt').send('Not found');
+};
