@@ -227,10 +227,17 @@ MemoViewModel.prototype = {
     var text_array = this.writing_text.text.split("\n");
     text_array.splice(row,0,text);
     this.writing_text.text = text_array.join("\n");
-  },
+
+    if (this.edit_mode){
+      var $target_code = $('#share_memo_' + this.no).children('.code');
+      $target_code.val(this.writing_text.text);
+    }else{
+      this.socket.emit('text',{no: this.no, text: this.writing_text.text});
+    }
+ },
 
   showIndexList: function(){
-    var $share_memo = $('#share_memo_' + this.no);;
+    var $share_memo = $('#share_memo_' + this.no);
 
     var $index_list = $share_memo.find('.index-list');
     var $code_out = $share_memo.find('.code-out');
@@ -342,6 +349,7 @@ MemoViewModel.prototype = {
 
   applyToWritingText: function(func){
     this.writing_text.text = func(this.writing_text.text);
+    this.socket.emit('text',{no: this.no, text: this.writing_text.text});
   },
 
   showMoveToBlogButton: function($selected_target, login_name){

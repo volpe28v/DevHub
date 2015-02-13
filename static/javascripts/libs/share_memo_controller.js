@@ -312,11 +312,6 @@ ShareMemoController.prototype = {
         checkbox_callback: function(context, applyCheckStatus){
           // チェック対象のテキストを更新する
           that.currentMemo().applyToWritingText(applyCheckStatus);
-
-          // 変更をサーバへ通知
-          var $target_code = $(context).closest('.share-memo').children('.code');
-          $target_code.val(that.currentMemo().writing_text.text);
-          socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
         }
       })
       .on('dblclick','.code', function(e){
@@ -438,11 +433,6 @@ ShareMemoController.prototype = {
 
         // ドロップ位置にファイルを差し込む
         that.currentMemo().insert(row + 1, res.fileName + " ");
-
-        // 変更をサーバへ通知
-        var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.currentMemo().writing_text.text);
-        socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
       }
     });
 
@@ -453,11 +443,6 @@ ShareMemoController.prototype = {
       uploadedAction: function(context, res){
         // メモの先頭に画像を差し込む
         that.currentMemo().insert(0, res.fileName + " ");
-
-        // 変更をサーバへ通知
-        var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.currentMemo().writing_text.text);
-        socket.emit('text',{no: that.currentMemoNo, text: $target_code.val()});
       }
     });
 
@@ -472,9 +457,6 @@ ShareMemoController.prototype = {
 
         // メモのキャレット位置にファイルを差し込む
         that.currentMemo().insert(row - 1, res.fileName + " ");
-
-        var $target_code = $(context).closest('.share-memo').children('.code');
-        $target_code.val(that.currentMemo().writing_text.text);
         $(context).caretLine(row);
       }
     });
