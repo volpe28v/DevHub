@@ -36,7 +36,14 @@ MemoViewModel.prototype = {
     });
 
     socket.on('text_logs' + this.no, function(data){
-      that.text_logs = data.logs;
+      if (Array.isArray(data)){
+        that.text_logs = data;
+      }else{
+        that.text_logs.unshift(data);
+        if (that.text_logs.length > 20){
+          that.text_logs.pop();
+        }
+      }
     });
   },
 
