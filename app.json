@@ -8,8 +8,8 @@
     "mongolab"
   ],
   "env": {
-    "NODE_DEVHUB_USER": "",
-    "NODE_DEVHUB_PASS": "",
+    "BASIC_AUTH_USER": "",
+    "BASIC_AUTH_PASS": "",
     "GRIDFS": "false"
   }
 }

@@ -48,10 +48,10 @@ $ node app.js -p 3000 -d devhub_db -t title
 
 ### Basic認証をかける
 <pre>
-$ NODE_DEVHUB_USER=user NODE_DEVHUB_PASS=pass node app.js -p 3000 -d devhub_db -t title
+$ BASIC_AUTH_USER=user BASIC_AUTH_PASS=pass node app.js -p 3000 -d devhub_db -t title
 </pre>
-* NODE_DEVHUB_USER ユーザ名
-* NODE_DEVHUB_PASS パスワード
+* BASIC_AUTH_USER ユーザ名
+* BASIC_AUTH_PASS パスワード
 
 ## 操作ヒント
 ### チャット

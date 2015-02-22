@@ -12,8 +12,8 @@ program
   .option('-p, --port <n>', 'port no. default is 3008.')
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
-  .option('NODE_DEVHUB_USER', 'user name of basic authentication. define with env.')
-  .option('NODE_DEVHUB_PASS', 'password of basic authentication. define with env.')
+  .option('BASIC_AUTH_USER', 'user name of basic authentication. define with env.')
+  .option('BASIC_AUTH_PASS', 'password of basic authentication. define with env.')
   .option('GRIDFS', 'Set "true" when useing gridfs. define with env.')
   .parse(process.argv);
 
@@ -37,8 +37,8 @@ try{
 app.set('port', program.port || process.env.PORT || 3000);
 app.set('db_name', program.db_name || 'devhub_db');
 app.set('title_name', program.title_name ? "for " + program.title_name : "");
-app.set('basic_user', process.env.NODE_DEVHUB_USER ? process.env.NODE_DEVHUB_USER : "");
-app.set('basic_pass', process.env.NODE_DEVHUB_PASS ? process.env.NODE_DEVHUB_PASS : "");
+app.set('basic_user', process.env.BASIC_AUTH_USER ? process.env.BASIC_AUTH_USER : "");
+app.set('basic_pass', process.env.BASIC_AUTH_PASS ? process.env.BASIC_AUTH_PASS : "");
 app.set('gridfs', process.env.GRIDFS == "true" ? true : false);
 app.set('growl', settings.growl == undefined ? true : settings.growl);
 app.set('menu_links', menu_links);
@@ -47,8 +47,8 @@ console.log(' port : ' + app.get('port'));
 console.log(' db_name : ' + app.get('db_name'));
 console.log(' title_name : ' + app.get('title_name'));
 console.log(' growl: ' +  app.get('growl'));
-console.log(' NODE_DEVHUB_USER : ' + app.get('basic_user'));
-console.log(' NODE_DEVHUB_PASS : ' + app.get('basic_pass'));
+console.log(' BASIC_AUTH_USER : ' + app.get('basic_user'));
+console.log(' BASIC_AUTH_PASS : ' + app.get('basic_pass'));
 console.log(' GRIDFS: ' + app.get('gridfs'));
 
 var client_info = require('./lib/client_info');
