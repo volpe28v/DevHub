@@ -16,14 +16,14 @@ body{
 #blog_area {
   height: 100%;
   top: 0px;
-  left: 5px;
+  left: 29%;
   padding: 10px;
 }
 
 #index_area {
   height: 100%;
   top: 0px;
-  left: 65%;
+  left: 5%;
   padding: 10px;
 }
 
@@ -33,15 +33,26 @@ body{
 }
 
 .index-body a{
-  min-height: 42px;
+  min-height: 36px;
   border: 1px solid #ccc;
   background-color: #fefefe;
 }
 
+.index-body a:hover {
+  background-color: #fafafa !important;
+}
+
+.share-memo-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .writer {
   color: #BBB;
-  margin: 4px 0px 0px 10px;
+  margin: 8px 0px 4px 0px;
   font-size: 12px;
+  float: right;
 }
 
 .timestamp {
@@ -89,12 +100,12 @@ a:hover {
 }
 
 #blog_count .count {
-  font-size: 30pt;
+  font-size: 16pt;
   font-weight: bold;
 }
 
 #blog_count .unit {
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 #blog_list {
