@@ -452,7 +452,6 @@ ShareMemoController.prototype = {
       alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(context, res){
-        var share_memo_no = $(context).closest('.share-memo').data('no');
         var row = $(context).caretLine();
 
         // メモのキャレット位置にファイルを差し込む
