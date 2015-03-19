@@ -237,6 +237,16 @@ BlogViewModel.prototype = {
     return title;
   },
 
+  _indexes: function(text){
+    var indexes = [];
+    text.split("\n").forEach(function(val){
+      if (val.match(/^#/)){
+        indexes.push({header: val.replace(/#/g,"&emsp;")});
+      }
+    });
+    return indexes;
+  },
+
   cancel: function(view){
     var index = view.index;
     var blog = this.items[index];
@@ -331,6 +341,7 @@ BlogViewModel.prototype = {
     }
 
     item.title = this._title(item.text);
+    item.indexes = this._indexes(item.text);
 
     $.observable(this.items).insert(item);
     return this._decorate(item);

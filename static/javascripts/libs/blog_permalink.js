@@ -1,4 +1,5 @@
 var COOKIE_NAME = "dev_hub_name";
+var CODE_INDEX_ADJUST_HEIGHT = -10;
 
 $(function() {
   var name = $.cookie(COOKIE_NAME);
@@ -44,6 +45,15 @@ $(function() {
         blogViewModel.update($.view(this));
         return false;
       }
+    });
+
+  $.templates("#blogIndexTmpl").link("#index_header", blogViewModel.items)
+    .on("click",".index-li", function(){
+      var index = $(this).closest(".index-ul").find(".index-li").index(this);
+      var $code_out = $('.code-out');
+      var pos = $code_out.find(":header").eq(index).offset().top - $('#blog_list').offset().top;
+      $('body').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
+      return true;
     });
 
   blogViewModel.loadByID(BLOG_ID);

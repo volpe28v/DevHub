@@ -8,7 +8,7 @@ $(function() {
 
   // スクロールバーの設定
   var scrollOption = {
-    wheelSpeed: 6,
+    wheelSpeed: 1,
     useKeyboard: false,
     suppressScrollX: true
   };

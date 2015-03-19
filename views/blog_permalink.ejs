@@ -43,9 +43,12 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="span12">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span4">
+          <ul id="index_header"></ul>
+        </div>
+        <div class="span8">
           <ul id="blog_list"></ul>
         </div>
       </div>
@@ -71,6 +74,16 @@
             <button class="btn btn-default cancel-edit">Cancel</button>
           </div>
         </div>
+      </li>
+    </script>
+
+    <script id="blogIndexTmpl" type="text/x-jsrender">
+      <li>
+        <ul class="index-ul">
+          {{for indexes}}
+            <li><a class="index-li" href="#">{{:header}}</a></li>
+          {{/for}}
+        </ul>
       </li>
     </script>
 
