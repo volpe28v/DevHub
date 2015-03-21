@@ -1,5 +1,5 @@
 var COOKIE_NAME = "dev_hub_name";
-var CODE_INDEX_ADJUST_HEIGHT = -10;
+var CODE_INDEX_ADJUST_HEIGHT = 10;
 
 $(function() {
   var name = $.cookie(COOKIE_NAME);
@@ -10,6 +10,19 @@ $(function() {
   $('a[rel=tooltip]').tooltip({
     placement : 'bottom'
   });
+
+  // スクロールバーの設定
+  var scrollOption = {
+    wheelSpeed: 1,
+    useKeyboard: false,
+    suppressScrollX: true
+  };
+
+  $('body').addClass("perfect-scrollbar-body-style");
+  $('#blog_permalink_area').addClass("perfect-scrollbar-style");
+  $('#blog_permalink_area').perfectScrollbar(scrollOption);
+  $('#index_header_area').addClass("perfect-scrollbar-style");
+  $('#index_header_area').perfectScrollbar(scrollOption);
 
   var blogViewModel = new BlogViewModel(
     name,
@@ -52,7 +65,7 @@ $(function() {
       var index = $(this).closest(".index-ul").find(".index-li").index(this);
       var $code_out = $('.code-out');
       var pos = $code_out.find(":header").eq(index).offset().top - $('#blog_list').offset().top;
-      $('body').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
+      $('#blog_permalink_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
       return true;
     });
 

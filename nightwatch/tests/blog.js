@@ -2,7 +2,7 @@ module.exports = {
   'Blog画面が表示されること' : function (client) {
     client
       .url('http://localhost:3010/blog')
-      .assert.containsText('.brand', 'DevHub - blog')
+      .assert.containsText('.brand', 'DevHub - 0 blog')
   },
 
   '平文メモを入力' : function (client) {

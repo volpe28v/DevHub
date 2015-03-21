@@ -18,7 +18,7 @@
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="/javascripts/blog_permalink.min.js"></script>
     <link href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/blog_permalink.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script type="text/javascript">
       var BLOG_ID = "<%= id %>";
@@ -45,10 +45,12 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span4">
+        <div id="index_header_area" class="span4">
+          <div class="dummy-space"></div>
           <ul id="index_header"></ul>
         </div>
-        <div class="span8">
+        <div id="blog_permalink_area" class="span8">
+          <div class="dummy-space"></div>
           <ul id="blog_list"></ul>
         </div>
       </div>
