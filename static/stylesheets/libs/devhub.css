@@ -46,7 +46,7 @@ body{
 #chat_area{
   height : 100%;
   top : 0px;
-  left : 5px;
+  left : 14px;
 }
 
 .perfect-scrollbar-style {
@@ -57,7 +57,7 @@ body{
 .memo-area{
   height : 100%;
   top : 0px;
-  left: 40%;
+  left: 39%;
 }
 
 .memo-area-zen{
@@ -70,8 +70,8 @@ body{
 }
 
 .area-inner {
-  margin-right: 12px;
-  margin-left: 8px;
+  margin-right: 14px;
+  margin-left: 14px;
 }
 
 .dummy-top-space {
