@@ -82,8 +82,8 @@
     <script id="blogIndexTmpl" type="text/x-jsrender">
       <li>
         <ul class="index-ul">
-          {{for indexes}}
-            <li><a class="index-li" href="#">{{:header}}</a></li>
+          {^{for indexes}}
+            <li><a class="index-li" href="#">{^{:header}}</a></li>
           {{/for}}
         </ul>
       </li>

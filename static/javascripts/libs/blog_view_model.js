@@ -196,8 +196,10 @@ BlogViewModel.prototype = {
 
     // 名前・タイトルを更新
     var title = that._title(blog.text);
+    var indexes = this._indexes(blog.text);
     $.observable(blog).setProperty("title", title);
     $.observable(blog).setProperty("name", that.name);
+    $.observable(blog).setProperty("indexes", indexes);
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
@@ -359,8 +361,14 @@ BlogViewModel.prototype = {
     var id = item._id;
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
+
     var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
     emojify.run($index_title.get(0));
+
+    var $indexes = $(".index-li");
+    $indexes.each(function(){
+      emojify.run($(this).get(0));
+    });
 
     return $target;
   }
