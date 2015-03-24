@@ -65,7 +65,7 @@ $(function() {
       var index = $(this).closest(".index-ul").find(".index-li").index(this);
       var $code_out = $('.code-out');
       var pos = $code_out.find(":header").eq(index).offset().top - $('#blog_list').offset().top;
-      $('#blog_permalink_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
+      $('#blog_permalink_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
       return true;
     });
 
