@@ -193,6 +193,12 @@ ChatController.prototype = {
     function _msg_post_processing(data, $msg){
       that.setColorbox($msg.find('.thumbnail'));
       emojify.run($msg.get(0));
+
+      // リンク内の絵文字を有効化
+      $msg.find('a').each(function(){
+        emojify.run($(this).get(0));
+      });
+
       that.play_sound(data.msg);
       $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
     }
@@ -259,8 +265,15 @@ ChatController.prototype = {
       }
 
       if (add_count > 0){
-        that.setColorbox($('#chat_body').find('.thumbnail'));
-        emojify.run($('#chat_body').get(0));
+        var $chat_body = $('#chat_body');
+        that.setColorbox($chat_body.find('.thumbnail'));
+        emojify.run($chat_body.get(0));
+
+        // リンク内の絵文字を有効化
+        $chat_body.find('a').each(function(){
+          emojify.run($(this).get(0));
+        });
+
         $('#chat_body span[rel=tooltip]').tooltip({placement: 'bottom'});
       }else{
         if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
