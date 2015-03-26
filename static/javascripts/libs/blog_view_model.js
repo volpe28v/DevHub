@@ -336,6 +336,19 @@ BlogViewModel.prototype = {
     $(".index-body [data-id=" + blog._id + "]").addClass("matched_strong_line");
   },
 
+  toggleIndexes: function(view){
+    var index = view.index;
+    var blog = this.items[index];
+
+    if (blog.indexes.length <= 0){ return; }
+
+    if (blog.display_indexes == "display: none"){
+      $.observable(blog).setProperty("display_indexes", "display: block");
+    }else{
+      $.observable(blog).setProperty("display_indexes", "display: none");
+    }
+  },
+
   _addItem: function(item){
     var id = item._id;
     for (var i = 0; i < this.items.length; i++){
@@ -344,6 +357,7 @@ BlogViewModel.prototype = {
 
     item.title = this._title(item.text);
     item.indexes = this._indexes(item.text);
+    item.display_indexes = "display: none";
 
     $.observable(this.items).insert(item);
     return this._decorate(item);

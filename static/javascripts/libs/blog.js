@@ -138,11 +138,23 @@ $(function() {
     });
 
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
-    .on("click","a", function(){
+    .on("click",".index-body-link", function(){
       $target = $("#" + $(this).data('id'));
       var target_top = $target.offset().top;
       var base_top = $("#blog_list").offset().top;
       $('#blog_area').scrollTop(target_top - base_top + 48);
+    })
+    .on("click",".indexes-link", function(){
+      blogViewModel.toggleIndexes($.view(this));
+      return false;
+    })
+    .on("click",".index-li", function(){
+      var index = $(this).closest(".index-ul").find(".index-li").index(this);
+      var id = $(this).closest(".index-ul").data("id");
+      var $code_out = $('#' + id);
+      var pos = $code_out.find(":header").eq(index).offset().top - $('#blog_list').offset().top;
+      $('#blog_area').scrollTop(pos + 48);
+      return true;
     })
     .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();

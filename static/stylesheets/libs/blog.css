@@ -365,14 +365,9 @@ pre.text-base-style {
           box-sizing: border-box;
 }
 
-#index_header {
-  list-style: none;
-  margin-left: 0px;
-}
-
 .index-ul {
   padding: 8px 0px;
-  margin: 0;
+  margin: 0 0 4px 0;
   list-style: none;
   background-color: #ffffff;
   border-color: #ccc;
@@ -396,10 +391,14 @@ pre.text-base-style {
   color: #555555;
   padding: 3px 0;
   text-decoration: none;
+  min-height: 0px;
+  border: 0px;
+  background-color: white;
 }
 
 .index-ul a:hover {
   color: white !important;
-  background-color: #0088cc;
+  background-color: #0088cc !important;
 }
+
 
