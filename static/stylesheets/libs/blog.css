@@ -13,18 +13,22 @@ body{
   overflow: hidden;
 }
 
+#blog_input_area {
+  padding: 10px 10px 0 10px;
+
+}
+
 #blog_area {
   height: 100%;
   top: 0px;
-  left: 29%;
-  padding: 10px;
+  left: 31%;
 }
 
 #index_area {
   height: 100%;
   top: 0px;
-  left: 5%;
-  padding: 10px;
+  left: 14px;
+  padding-top: 10px;
 }
 
 #index_list {
@@ -110,7 +114,7 @@ a:hover {
 
 #blog_list {
   margin: 0;
-  padding: 0;
+  padding: 0 10px 10px 10px;
   list-style-type: none;
 }
 
