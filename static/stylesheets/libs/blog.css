@@ -46,6 +46,10 @@ body{
   background-color: #fafafa !important;
 }
 
+.indexes-link {
+  margin: 4px;
+}
+
 .share-memo-title {
   white-space: nowrap;
   overflow: hidden;

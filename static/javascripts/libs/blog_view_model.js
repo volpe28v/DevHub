@@ -161,6 +161,8 @@ BlogViewModel.prototype = {
 
     var item = {
       title: this._title(this.input_text),
+      indexes: this._indexes(this.input_text),
+      display_indexes: "display: none",
       text:  this.input_text,
       name:  this.name
     };
@@ -301,8 +303,8 @@ BlogViewModel.prototype = {
       .removeClass("matched_line")
       .addClass("matched_strong_line");
 
-    $(".index-body a:not([data-id=" + blog._id + "])").removeClass("matched_strong_line");
-    $(".index-body [data-id=" + blog._id + "]").addClass("matched_strong_line");
+    $("a:not([data-id=" + blog._id + "]).index-body-link").removeClass("matched_strong_line");
+    $("[data-id=" + blog._id + "].index-body-link").addClass("matched_strong_line");
   },
 
   prev: function(callback){

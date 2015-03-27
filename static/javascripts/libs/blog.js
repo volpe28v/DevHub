@@ -143,10 +143,7 @@ $(function() {
       var target_top = $target.offset().top;
       var base_top = $("#blog_list").offset().top;
       $('#blog_area').scrollTop(target_top - base_top + 48);
-    })
-    .on("click",".indexes-link", function(){
       blogViewModel.toggleIndexes($.view(this));
-      return false;
     })
     .on("click",".index-li", function(){
       var index = $(this).closest(".index-ul").find(".index-li").index(this);

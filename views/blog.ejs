@@ -131,10 +131,14 @@
             {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
             {^{:title}}
           </div>
+
+          {^{if indexes.length}}
+          <i class="icon-align-left indexes-link"></i>
+          {{/if}}
+ 
           <div class="writer">
             {^{:name}} - <span class="timestamp" data-livestamp="{{:date}}"></span>
-            <i class="icon-align-left indexes-link"></i>
-          </div>
+         </div>
         </a>
         <ul class="index-ul" data-id="{{:_id}}" data-link="style{>display_indexes}">
           {^{for indexes}}
