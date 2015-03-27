@@ -296,6 +296,14 @@
     return refed_text;
   }
 
+  function _decorate_hr( text ){
+    var hr_text = text.replace(/^---[-]*$/mg,
+        function(){
+          return '<hr></hr>';
+        });
+    return hr_text;
+  }
+
   $.decora = {
     to_html: function(target_text){
       var bq_sepa_array = target_text.split("```");
@@ -313,6 +321,7 @@
           deco_text = _decorate_header( check_result.text );
           deco_text = _decorate_line_color( deco_text );
           deco_text = _decorate_ref( deco_text );
+          deco_text = _decorate_hr( deco_text );
           bq_sepa_array[i] = deco_text;
         }else{
           // 装飾無し
@@ -330,6 +339,7 @@
       target_text = _decorate_img_tag( target_text, 50 );
       target_text = _decorate_line_color( target_text );
       target_text = _decorate_ref( target_text );
+      target_text = _decorate_hr( target_text );
 
       return target_text;
     }

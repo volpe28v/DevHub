@@ -275,6 +275,14 @@ pre.text-base-style {
   cursor: pointer;
 }
 
+hr {
+  height: 4px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: #e7e7e7;
+  border: 0 none;
+}
+
 #loading {
   width: 78px; /* gif画像の幅 */
   height: 78px; /* gif画像の高さ */
