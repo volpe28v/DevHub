@@ -228,7 +228,7 @@ ShareMemoController.prototype = {
         return true;
       });
 
-    $.templates("#shareMemoTmpl").link(".tab-content", this.memoViewModels)
+    $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
       .on('click','.sync-text', function(){
         that.currentMemo().switchEditShareMemo(0);
       })

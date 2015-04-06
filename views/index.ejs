@@ -113,7 +113,22 @@
             </form>
             <div id="chat_body" class="text-base-style">
               <div id="alert_timeline"></div>
-              <ul id="list"></ul>
+              <div id="chat_tabbable"  class="tabbable">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#tab_home" data-toggle="tab">Home</a>
+                  </li>
+                  <li><a href="#tab1" data-toggle="tab">Room1</a></li>
+                  <li><a href="#tab2" data-toggle="tab">Room2</a></li>
+                </ul>
+                <div class="chat-tab-content tab-content">
+                  <div class="tab-pane active" id="tab_home">
+                    <ul id="list"></ul>
+                  </div>
+                  <div class="tab-pane" id="tab1"></div>
+                  <div class="tab-pane" id="tab2"></div>
+                </div>
+              </div>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...
               </div>
@@ -127,7 +142,7 @@
             <div id="share-memo">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
                 <ul id="share_memo_nav" class="nav nav-tabs"></ul>
-                <div class="tab-content"></div>
+                <div class="share-memo-tab-content tab-content"></div>
               </div>
             </div>
             <footer>
