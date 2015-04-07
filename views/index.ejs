@@ -115,19 +115,11 @@
               <div id="alert_timeline"></div>
               <div id="chat_tabbable"  class="tabbable">
                 <ul class="nav nav-tabs">
-                  <li class="active">
-                    <a href="#tab_home" data-toggle="tab">Home</a>
-                  </li>
-                  <li><a href="#tab1" data-toggle="tab">Room1</a></li>
-                  <li><a href="#tab2" data-toggle="tab">Room2</a></li>
+                  <li><a id="chat_tab_1" href="#tab_1" data-toggle="tab">Home</a></li>
+                  <li><a id="chat_tab_2" href="#tab_2" data-toggle="tab">Room1</a></li>
+                  <li><a id="chat_tab_3" href="#tab_3" data-toggle="tab">Room2</a></li>
                 </ul>
-                <div class="chat-tab-content tab-content">
-                  <div class="tab-pane active" id="tab_home">
-                    <ul id="list"></ul>
-                  </div>
-                  <div class="tab-pane" id="tab1"></div>
-                  <div class="tab-pane" id="tab2"></div>
-                </div>
+                <div class="chat-tab-content tab-content"></div>
               </div>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...
@@ -327,6 +319,12 @@
           <span data-link="hidingMessageCount"></span> new messages.
         {^{/if}}
         </strong>
+      </div>
+    </script>
+
+    <script id="chatTmpl" type="text/x-jsrender">
+      <div class="tab-pane" id="tab_{{>no}}">
+        <ul id="list_{{>no}}"></ul>
       </div>
     </script>
 

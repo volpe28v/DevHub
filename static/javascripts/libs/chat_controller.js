@@ -11,6 +11,8 @@ function ChatController(param){
   this.hidingMessageCount = 0;
   this.filterName = "";
 
+  this.chatViewModels = [];
+
   // initialize
   this.init_chat();
   this.init_settings();
@@ -171,6 +173,19 @@ ChatController.prototype = {
     emojify.setConfig({
       img_dir: 'img/emoji',  // Directory for emoji images
     });
+
+
+    // for chat list
+    $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels);
+    for (var i = 1; i <= 3; i++){
+      $.observable(this.chatViewModels).insert(new ChatViewModel({
+        no: i,
+        socket: this.socket,
+        get_id: function(name) {return that.get_id(name); }
+      }));
+    }
+
+    $("#chat_tab_1").click();
   },
 
   setName: function(name){
@@ -255,6 +270,7 @@ ChatController.prototype = {
       $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
 
+    /*
     this.socket.on('latest_log', function(msgs) {
       $('#message_loader').hide();
       if (msgs.length == 0){ return; }
@@ -280,7 +296,8 @@ ChatController.prototype = {
         $('#message_loader').show();
         that.socket.emit('load_log_more', {id: msgs[msgs.length-1]._id});
       }
-   });
+    });
+    */
   },
 
   init_dropzone: function(){
