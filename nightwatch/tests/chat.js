@@ -8,7 +8,7 @@ module.exports = {
       .waitForElementVisible('#message', 1000)
       .setValue('#message', ['hello',client.Keys.ENTER])
       .pause(1000)
-      .assert.containsText('#chat_body li:first-child', 'hello')
+      .assert.containsText('#list_1 li:first-child', 'hello')
   },
   'メッセージを削除' : function (client) {
     client.getAttribute('#chat_body li:first-child', 'id', function(result){
