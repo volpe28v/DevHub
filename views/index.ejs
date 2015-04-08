@@ -114,11 +114,7 @@
             <div id="chat_body" class="text-base-style">
               <div id="alert_timeline"></div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul class="nav nav-tabs">
-                  <li><a id="chat_tab_1" href="#tab_1" data-toggle="tab">Home</a></li>
-                  <li><a id="chat_tab_2" href="#tab_2" data-toggle="tab">Room1</a></li>
-                  <li><a id="chat_tab_3" href="#tab_3" data-toggle="tab">Room2</a></li>
-                </ul>
+                <ul id="chat_nav" class="nav nav-pills"></ul>
                 <div class="chat-tab-content tab-content"></div>
               </div>
               <div id="message_loader">
@@ -322,9 +318,13 @@
       </div>
     </script>
 
+    <script id="chatTabTmpl" type="text/x-jsrender">
+      <li><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}}</a></li>
+    </script>
+
     <script id="chatTmpl" type="text/x-jsrender">
       <div class="tab-pane" id="tab_{{>no}}">
-        <ul id="list_{{>no}}"></ul>
+        <ul id="list_{{>no}}" class="chat-list"></ul>
       </div>
     </script>
 

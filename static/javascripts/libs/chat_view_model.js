@@ -4,11 +4,10 @@ function ChatViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
   this.get_id = param.get_id; // function
+  this.get_name = param.get_name; // function
   this.filterName = "";
 
   this.list_id = "#list_" + this.no;
-  console.log(this.list_id);
-
   this.initSocket();
 }
 
@@ -42,12 +41,6 @@ ChatViewModel.prototype = {
         if (that.faviconNumber.up()){
           $msg.addClass("unread-msg");
         }
-      });
-    });
-
-    this.socket.on('remove_message' + this.no, function(data) {
-      $('#msg_' + data.id).fadeOut('normal',function(){
-        $(this).remove();
       });
     });
 
@@ -145,12 +138,12 @@ ChatViewModel.prototype = {
 
   get_msg_html: function(data){
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
-    if ( data.name == this.login_name ){
+    if ( data.name == this.get_name()){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "own_msg"
       };
-    } else if (this.include_target_name(data.msg,this.login_name)){
+    } else if (this.include_target_name(data.msg,this.get_name())){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "target_msg"
@@ -221,7 +214,7 @@ ChatViewModel.prototype = {
     var deco_msg = msg;
     var name_reg = RegExp("@([^ .]+?)さん|@all", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.login_name ||
+      if (arguments[1] == that.get_name()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
@@ -275,17 +268,14 @@ ChatViewModel.prototype = {
   display_message: function(msg){
     if (window.localStorage.timeline == "own"){
       if (msg.css == 'normal_msg'){
-        console.log("1");
         return false;
       }
     }else if (window.localStorage.timeline == "mention"){
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
-        console.log("2");
         return false;
       }
     }else if (this.filterName != ""){
       if (msg.li.find(".login-symbol").data("name") != this.filterName){
-        console.log("3");
         return false;
       }
     }
@@ -301,7 +291,7 @@ ChatViewModel.prototype = {
     var notif_msg = data.msg;
 
     if (window.localStorage.popupNotification == 'true' ||
-        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.login_name))){
+        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.get_name()))){
       if(Notification){
         if (Notification.permission != "denied"){
           var notification = new Notification(notif_title, {

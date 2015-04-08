@@ -5,6 +5,7 @@ function ChatController(param){
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
+  this.login_name = "";
 
   // Models
   this.loginElemList = [];
@@ -45,7 +46,8 @@ ChatController.prototype = {
       var avatar = window.localStorage.avatarImage;
 
       if ( message && name ){
-        that.socket.emit('message', {name:name, avatar:avatar, msg:message});
+        var room_id = $("#chat_nav").find(".active").find("a").data("id");
+        that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
         $('#message').attr('value', '').trigger('autosize.resize');
 
         if (that.login_name != name){
@@ -108,7 +110,7 @@ ChatController.prototype = {
     $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
     $.templates("#alertTimelineTmpl").link("#alert_timeline", that);
 
-    $('#list').on('click', '.remove_msg', function(){
+    $('.chat-tab-content').on('click', '.remove_msg', function(){
       var id = "#" + $(this).closest('li').attr('id');
       var data_id = $(this).closest('li').data('id');
       that.send_remove_msg(data_id);
@@ -176,12 +178,14 @@ ChatController.prototype = {
 
 
     // for chat list
+    $.templates("#chatTabTmpl").link("#chat_nav", this.chatViewModels);
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels);
     for (var i = 1; i <= 3; i++){
       $.observable(this.chatViewModels).insert(new ChatViewModel({
         no: i,
         socket: this.socket,
-        get_id: function(name) {return that.get_id(name); }
+        get_id: function(name) {return that.get_id(name); },
+        get_name: function() {return that.getName(); }
       }));
     }
 
@@ -192,6 +196,10 @@ ChatController.prototype = {
     this.login_name = name;
     $('#name').val(name);
     this.changedLoginName(name);
+  },
+
+  getName: function(){
+    return this.login_name;
   },
 
   focus: function(){

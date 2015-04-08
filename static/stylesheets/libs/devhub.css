@@ -172,9 +172,6 @@ a:hover {
 .share-memo-tab-elem {
   width: 72px;
   height: 50px;
-}
-
-.nav-pills .share-memo-tab-elem {
   border: 1px solid #ccc;
   background-color: #fefefe;
 }
@@ -377,16 +374,21 @@ a:hover {
   margin-bottom: 70px;
 }
 
-#list {
+.chat-list {
   margin: 0px;
   padding: 0px;
   list-style-type: none;
 }
 
-#list li{
+.chat-list li{
   line-height: 21px;
   margin: 0px;
   padding: 0px;
+}
+
+.chat-tab-elem {
+  border: 1px solid #ccc;
+  background-color: #fefefe;
 }
 
 .msg_text{
@@ -648,4 +650,8 @@ button.close {
 
 .modal {
   max-height: 800px;
+}
+
+.nav {
+  margin-bottom: 4px !important;
 }
