@@ -21,7 +21,7 @@ module.exports = {
     client
       .setValue('#message', ['https://github.com/volpe28v/DevHub',client.Keys.ENTER])
       .pause(1000)
-      .assert.containsText('#chat_body li:first-child a', 'https://github.com/volpe28v/DevHub')
+      .assert.containsText('#list_1 li:first-child a', 'https://github.com/volpe28v/DevHub')
   },
   '画像 メッセージを入力' : function (client) {
     client
