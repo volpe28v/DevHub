@@ -5,7 +5,10 @@ function ChatViewModel(param){
   this.socket = param.socket;
   this.get_id = param.get_id; // function
   this.get_name = param.get_name; // function
+  this.faviconNumber = param.faviconNumber;
   this.filterName = "";
+  this.unreadCount = 0;
+  this.active_class = "";
 
   this.list_id = "#list_" + this.no;
   this.initSocket();
@@ -39,7 +42,9 @@ ChatViewModel.prototype = {
         _msg_post_processing(data, $msg);
         that.do_notification(data);
         if (that.faviconNumber.up()){
+          console.log(that.unreadCount);
           $msg.addClass("unread-msg");
+          $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
         }
       });
     });
@@ -66,12 +71,30 @@ ChatViewModel.prototype = {
         $(that.list_id + ' span[rel=tooltip]').tooltip({placement: 'bottom'});
       }else{
         if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
-        $('#message_loader').show();
-        that.socket.emit('load_log_more', {id: msgs[msgs.length-1]._id});
+        that.load_log_more(msgs[msgs.length-1]._id);
       }
     });
 
     this.socket.emit('latest_log', {no: this.no});
+  },
+
+  set_active: function(is_active){
+    if (is_active){
+      this.active_class = "active";
+    }else{
+      this.active_class = "";
+    }
+  },
+
+  load_log_more: function(id){
+    $('#message_loader').show();
+    this.socket.emit('load_log_more', {room_id: this.no, id: id});
+  },
+
+  clear_unread: function(){
+    this.faviconNumber.minus(this.unreadCount);
+    $(this.list_id).find('li').removeClass("unread-msg");
+    $.observable(this).setProperty("unreadCount", 0);
   },
 
   append_msg: function(data){
@@ -235,8 +258,12 @@ ChatViewModel.prototype = {
     return false;
   },
 
-  send_remove_msg: function(id){
+  remove_msg: function(id){
     this.socket.emit('remove_message', {id:id});
+    console.log(id);
+    $("#msg_" + id).fadeOut('normal', function(){
+      $(this).remove();
+    });
   },
 
   setColorbox: function($dom){

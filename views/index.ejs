@@ -114,7 +114,7 @@
             <div id="chat_body" class="text-base-style">
               <div id="alert_timeline"></div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul id="chat_nav" class="nav nav-pills"></ul>
+                <ul id="chat_nav" class="nav nav-tabs"></ul>
                 <div class="chat-tab-content tab-content"></div>
               </div>
               <div id="message_loader">
@@ -319,7 +319,11 @@
     </script>
 
     <script id="chatTabTmpl" type="text/x-jsrender">
-      <li><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}}</a></li>
+      {^{if unreadCount == 0}}
+      <li data-link="class{>active_class}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}}</a></li>
+      {^{else}}
+      <li data-link="class{>active_class}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}} <span class="label label-info">{^{:unreadCount}}</span></a></li>
+      {^{/if}}
     </script>
 
     <script id="chatTmpl" type="text/x-jsrender">

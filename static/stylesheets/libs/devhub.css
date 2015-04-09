@@ -386,11 +386,6 @@ a:hover {
   padding: 0px;
 }
 
-.chat-tab-elem {
-  border: 1px solid #ccc;
-  background-color: #fefefe;
-}
-
 .msg_text{
   margin-left: 2px;
   word-break: break-all;
@@ -652,6 +647,7 @@ button.close {
   max-height: 800px;
 }
 
-.nav {
+#chat_nav,
+#share_memo_nav{
   margin-bottom: 4px !important;
 }

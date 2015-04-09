@@ -91,10 +91,6 @@ $(function() {
     chatController.focus();
   }
 
-  $(window).on("blur focus", function(e) {
-    faviconNumber.off();
-  });
-
   // ナビバー消去
   $("#both_zen").click(function(){
     $(".navbar").fadeOut();
