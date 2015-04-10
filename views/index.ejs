@@ -226,6 +226,18 @@
             </div>
             <div class="control-group">
               <legend>System Settings</legend>
+
+              <label class="control-label">Enable chat room</label>
+              <div class="controls">
+                <select id="chat_number" class="span1">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                rooms.
+              </div>
               <label class="control-label">Enable share memo</label>
               <div class="controls">
                 <select id="memo_number" class="span1"></select>
@@ -330,6 +342,10 @@
       <div class="tab-pane" id="tab_{{>no}}">
         <ul id="list_{{>no}}" class="chat-list"></ul>
       </div>
+    </script>
+
+    <script id="chatNumberTmpl" type="text/x-jsrender">
+      <option value="{{>no}}">{{>no}}</option>
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">

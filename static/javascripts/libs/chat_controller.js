@@ -147,6 +147,7 @@ ChatController.prototype = {
       });
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
       .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+        console.log("inview");
         // ログ追加読み込みイベント
         if (!isInView){ return false; }
 
@@ -167,18 +168,6 @@ ChatController.prototype = {
         that.chatViewModels[$.view(this).index].clear_unread();
         return true;
       });
-
-    for (var i = 1; i <= 3; i++){
-      $.observable(this.chatViewModels).insert(new ChatViewModel({
-        no: i,
-        socket: this.socket,
-        get_id: function(name) {return that.get_id(name); },
-        get_name: function() {return that.getName(); },
-        faviconNumber: that.faviconNumber
-      }));
-    }
-
-    $("#chat_tab_1").click();
   },
 
   setName: function(name){
@@ -206,6 +195,30 @@ ChatController.prototype = {
       $('#msg_' + data.id).fadeOut('normal',function(){
         $(this).remove();
       });
+    });
+
+    $('#chat_number').bind('change',function(){
+      var num = $(this).val();
+      socket.emit('chat_number', {num: num});
+    });
+
+    this.socket.on('chat_number', function(number) {
+      $('#chat_number').val(number.num);
+      that.chatViewModels.forEach(function(vm){
+        vm.destroySocket();
+      });
+      $.observable(that.chatViewModels).refresh([]);
+      for (var i = 1; i <= number.num; i++){
+        $.observable(that.chatViewModels).insert(new ChatViewModel({
+          no: i,
+          socket: that.socket,
+          get_id: function(name) {return that.get_id(name); },
+          get_name: function() {return that.getName(); },
+          faviconNumber: that.faviconNumber
+        }));
+      }
+
+      $("#chat_tab_1").click();
     });
 
     this.socket.on('list', function(login_list) {

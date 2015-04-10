@@ -10,46 +10,64 @@ function ChatViewModel(param){
   this.unreadCount = 0;
   this.active_class = "";
 
+  // socket.io event handler
+  this.on_message_own = this._message_own_handler();
+  this.on_message = this._message_handler();
+  this.on_latest_log = this._latest_log_handler();
+
   this.list_id = "#list_" + this.no;
   this.initSocket();
 }
 
 ChatViewModel.prototype = {
   initSocket: function(){
+    this.socket.on('message_own' + this.no, this.on_message_own);
+    this.socket.on('message' + this.no, this.on_message_own);
+    this.socket.on('latest_log' + this.no, this.on_latest_log);
+
+    this.socket.emit('latest_log', {no: this.no});
+  },
+
+  _msg_post_processing: function(data, $msg){
     var that = this;
+    that.setColorbox($msg.find('.thumbnail'));
+    emojify.run($msg.get(0));
 
-    function _msg_post_processing(data, $msg){
-      that.setColorbox($msg.find('.thumbnail'));
-      emojify.run($msg.get(0));
-
-      // リンク内の絵文字を有効化
-      $msg.find('a').each(function(){
-        emojify.run($(this).get(0));
-      });
-
-      that.play_sound(data.msg);
-      $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
-    }
-
-    this.socket.on('message_own' + this.no, function(data) {
-      that.prepend_own_msg(data, function($msg){
-        _msg_post_processing(data, $msg);
-      });
+    // リンク内の絵文字を有効化
+    $msg.find('a').each(function(){
+      emojify.run($(this).get(0));
     });
 
-    this.socket.on('message' + this.no, function(data) {
+    that.play_sound(data.msg);
+    $msg.find('span[rel=tooltip]').tooltip({placement: 'bottom'});
+  },
+
+  _message_own_handler: function(){
+    var that = this;
+    return function(data) {
+      that.prepend_own_msg(data, function($msg){
+        that._msg_post_processing(data, $msg);
+      });
+    }
+  },
+
+  _message_handler: function(){
+    var that = this;
+    return function(data) {
       that.prepend_msg(data,function($msg){
-        _msg_post_processing(data, $msg);
+        that._msg_post_processing(data, $msg);
         that.do_notification(data);
         if (that.faviconNumber.up()){
-          console.log(that.unreadCount);
           $msg.addClass("unread-msg");
           $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
         }
       });
-    });
+    }
+  },
 
-    this.socket.on('latest_log' + this.no, function(msgs) {
+  _latest_log_handler: function() {
+    var that = this;
+    return function(msgs){
       $('#message_loader').hide();
       if (msgs.length == 0){ return; }
 
@@ -73,9 +91,13 @@ ChatViewModel.prototype = {
         if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
         that.load_log_more(msgs[msgs.length-1]._id);
       }
-    });
+    }
+  },
 
-    this.socket.emit('latest_log', {no: this.no});
+  destroySocket: function(){
+    this.socket.removeListener("message_own" + this.no, this.on_message_own);
+    this.socket.removeListener("message" + this.no, this.on_message);
+    this.socket.removeListener("latest_log" + this.no, this.on_latest_log);
   },
 
   set_active: function(is_active){
@@ -260,7 +282,6 @@ ChatViewModel.prototype = {
 
   remove_msg: function(id){
     this.socket.emit('remove_message', {id:id});
-    console.log(id);
     $("#msg_" + id).fadeOut('normal', function(){
       $(this).remove();
     });
