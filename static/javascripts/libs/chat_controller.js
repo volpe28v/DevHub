@@ -112,11 +112,11 @@ ChatController.prototype = {
 
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
+        $.observable(that).setProperty("filterName", $(this).data("name"));
+
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
 
-        $.observable(that).setProperty("filterName", $(this).data("name"));
-        $('.login-symbol:not([data-name="' + that.filterName + '"])').closest('li').hide();
         $('#filter_name_alert').slideDown();
         $('.tooltip').hide();
         $('#chat_area').scrollTop(0);
@@ -147,7 +147,6 @@ ChatController.prototype = {
       });
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
       .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-        console.log("inview");
         // ログ追加読み込みイベント
         if (!isInView){ return false; }
 
@@ -214,6 +213,8 @@ ChatController.prototype = {
           socket: that.socket,
           get_id: function(name) {return that.get_id(name); },
           get_name: function() {return that.getName(); },
+          get_filter_name: function() {return that.get_filter_name(); },
+          up_hiding_count: function() {return that.up_hiding_count(); },
           faviconNumber: that.faviconNumber
         }));
       }
@@ -276,6 +277,14 @@ ChatController.prototype = {
       }
     }
     return 0;
+  },
+
+  up_hiding_count: function(){
+    $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+  },
+
+  get_filter_name: function(){
+    return this.filterName;
   },
 
   init_settings: function(){
@@ -341,9 +350,6 @@ ChatController.prototype = {
       $('.timeline-radio').on('change', "input", function(){
         var mode = $(this).val();
         window.localStorage.timeline = mode;
-        $('#list').empty();
-        that.socket.emit('latest_log');
-        $('#message_loader').show();
 
         if (mode == 'all'){
           $('#mention_own_alert').slideUp();
@@ -359,7 +365,10 @@ ChatController.prototype = {
           $('#filter_name_alert').slideUp();
         }
         $.observable(that).setProperty("hidingMessageCount", 0);
-        $.observable(that).setProperty("filterName", "");
+
+        that.chatViewModels.forEach(function(vm){
+          vm.reloadTimeline();
+        });
       });
 
       // for Send Message Key
@@ -377,6 +386,7 @@ ChatController.prototype = {
       });
 
       $('#chat_body').on('click', '.close', function(){
+        $.observable(that).setProperty("filterName", "");
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
         return false;

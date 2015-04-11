@@ -5,8 +5,10 @@ function ChatViewModel(param){
   this.socket = param.socket;
   this.get_id = param.get_id; // function
   this.get_name = param.get_name; // function
+  this.get_filter_name = param.get_filter_name; // function
+  this.up_hiding_count = param.up_hiding_count; // function
   this.faviconNumber = param.faviconNumber;
-  this.filterName = "";
+
   this.unreadCount = 0;
   this.active_class = "";
 
@@ -22,7 +24,7 @@ function ChatViewModel(param){
 ChatViewModel.prototype = {
   initSocket: function(){
     this.socket.on('message_own' + this.no, this.on_message_own);
-    this.socket.on('message' + this.no, this.on_message_own);
+    this.socket.on('message' + this.no, this.on_message);
     this.socket.on('latest_log' + this.no, this.on_latest_log);
 
     this.socket.emit('latest_log', {no: this.no});
@@ -100,6 +102,13 @@ ChatViewModel.prototype = {
     this.socket.removeListener("latest_log" + this.no, this.on_latest_log);
   },
 
+  reloadTimeline: function(){
+    this.clear_unread();
+    $(this.list_id).empty();
+    this.socket.emit('latest_log', {no: this.no});
+    $('#message_loader').show();
+  },
+
   set_active: function(is_active){
     if (is_active){
       this.active_class = "active";
@@ -152,7 +161,7 @@ ChatViewModel.prototype = {
       callback(msg.li);
       return true;
     }else{
-      $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      this.up_hiding_count();
       return false;
     }
   },
@@ -170,7 +179,7 @@ ChatViewModel.prototype = {
       callback(msg.li);
       return true;
     }else{
-      $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+      this.up_hiding_count();
       return false;
     }
   },
@@ -322,8 +331,8 @@ ChatViewModel.prototype = {
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
         return false;
       }
-    }else if (this.filterName != ""){
-      if (msg.li.find(".login-symbol").data("name") != this.filterName){
+    }else if (this.get_filter_name() != ""){
+      if (msg.li.find(".login-symbol").data("name") != this.get_filter_name()){
         return false;
       }
     }
