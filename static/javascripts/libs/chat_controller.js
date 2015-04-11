@@ -5,7 +5,7 @@ function ChatController(param){
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
-  this.login_name = "";
+  this.loginName = "";
 
   // Models
   this.loginElemList = [];
@@ -15,10 +15,10 @@ function ChatController(param){
   this.chatViewModels = [];
 
   // initialize
-  this.init_chat();
-  this.init_settings();
-  this.init_socket();
-  this.init_dropzone();
+  this.initChat();
+  this.initSettings();
+  this.initSocket();
+  this.initDropzone();
 }
 
 ChatController.prototype = {
@@ -50,8 +50,8 @@ ChatController.prototype = {
         that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
         $('#message').attr('value', '').trigger('autosize.resize');
 
-        if (that.login_name != name){
-          that.login_name = name;
+        if (that.loginName != name){
+          that.loginName = name;
           that.changedLoginName(name);
         }
       }
@@ -61,7 +61,7 @@ ChatController.prototype = {
     }
   },
 
-  init_chat: function(){
+  initChat: function(){
     var that = this;
 
     $('#message').textcomplete([
@@ -170,13 +170,13 @@ ChatController.prototype = {
   },
 
   setName: function(name){
-    this.login_name = name;
+    this.loginName = name;
     $('#name').val(name);
     this.changedLoginName(name);
   },
 
   getName: function(){
-    return this.login_name;
+    return this.loginName;
   },
 
   focus: function(){
@@ -187,7 +187,7 @@ ChatController.prototype = {
     $('#chat_area').css('width',width + 'px').css('margin',0);
   },
 
-  init_socket: function(){
+  initSocket: function(){
     var that = this;
 
     this.socket.on('remove_message', function(data) {
@@ -211,10 +211,10 @@ ChatController.prototype = {
         $.observable(that.chatViewModels).insert(new ChatViewModel({
           no: i,
           socket: that.socket,
-          get_id: function(name) {return that.get_id(name); },
-          get_name: function() {return that.getName(); },
-          get_filter_name: function() {return that.get_filter_name(); },
-          up_hiding_count: function() {return that.up_hiding_count(); },
+          getId: function(name) {return that.getId(name); },
+          getName: function() {return that.getName(); },
+          getFilterName: function() {return that.getFilterName(); },
+          upHidingCount: function() {return that.upHidingCount(); },
           faviconNumber: that.faviconNumber
         }));
       }
@@ -236,7 +236,7 @@ ChatController.prototype = {
 
         var login_elem = {
             id: login_list[i].id,
-            color_id: "login-symbol login-elem login-name" + that.get_color_id_by_name_id(login_list[i].id),
+            color_id: "login-symbol login-elem login-name" + that.getColorIdByNameId(login_list[i].id),
             name: login_list[i].name,
             avatar: login_list[i].avatar,
             place: place,
@@ -253,7 +253,7 @@ ChatController.prototype = {
     });
   },
 
-  init_dropzone: function(){
+  initDropzone: function(){
     this.dropZone = new DropZone({
       dropTarget: $('#chat_area'),
       fileTarget: $('#upload_chat'),
@@ -265,12 +265,12 @@ ChatController.prototype = {
     });
   },
 
-  get_color_id_by_name_id: function(id){
+  getColorIdByNameId: function(id){
     if(id == 0){ return 0; } // no exist user.
     return id % LOGIN_COLOR_MAX + 1; // return 1 〜 LOGIN_COLOR_MAX
   },
 
-  get_id: function(name){
+  getId: function(name){
     for(var i = 0; i < this.loginElemList.length; ++i ){
       if ( this.loginElemList[i].name == name ){
         return this.loginElemList[i].id;
@@ -279,15 +279,15 @@ ChatController.prototype = {
     return 0;
   },
 
-  up_hiding_count: function(){
+  upHidingCount: function(){
     $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
   },
 
-  get_filter_name: function(){
+  getFilterName: function(){
     return this.filterName;
   },
 
-  init_settings: function(){
+  initSettings: function(){
     var that = this;
     if(window.localStorage){
       if(window.localStorage.popupNotification == 'true'){

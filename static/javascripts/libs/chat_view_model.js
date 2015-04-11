@@ -3,21 +3,21 @@ var LOGIN_COLOR_MAX = 9;
 function ChatViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
-  this.get_id = param.get_id; // function
-  this.get_name = param.get_name; // function
-  this.get_filter_name = param.get_filter_name; // function
-  this.up_hiding_count = param.up_hiding_count; // function
+  this.getId = param.getId; // function
+  this.getName = param.getName; // function
+  this.getFilterName = param.getFilterName; // function
+  this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
 
   this.unreadCount = 0;
-  this.active_class = "";
+  this.activeClass = "";
 
   // socket.io event handler
   this.on_message_own = this._message_own_handler();
   this.on_message = this._message_handler();
   this.on_latest_log = this._latest_log_handler();
 
-  this.list_id = "#list_" + this.no;
+  this.listId = "#list_" + this.no;
   this.initSocket();
 }
 
@@ -79,7 +79,7 @@ ChatViewModel.prototype = {
       }
 
       if (add_count > 0){
-        var $chat_body = $(that.list_id);
+        var $chat_body = $(that.listId);
         that.setColorbox($chat_body.find('.thumbnail'));
         emojify.run($chat_body.get(0));
 
@@ -88,7 +88,7 @@ ChatViewModel.prototype = {
           emojify.run($(this).get(0));
         });
 
-        $(that.list_id + ' span[rel=tooltip]').tooltip({placement: 'bottom'});
+        $(that.listId + ' span[rel=tooltip]').tooltip({placement: 'bottom'});
       }else{
         if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
         that.load_log_more(msgs[msgs.length-1]._id);
@@ -104,16 +104,16 @@ ChatViewModel.prototype = {
 
   reloadTimeline: function(){
     this.clear_unread();
-    $(this.list_id).empty();
+    $(this.listId).empty();
     this.socket.emit('latest_log', {no: this.no});
     $('#message_loader').show();
   },
 
   set_active: function(is_active){
     if (is_active){
-      this.active_class = "active";
+      this.activeClass = "active";
     }else{
-      this.active_class = "";
+      this.activeClass = "";
     }
   },
 
@@ -124,7 +124,7 @@ ChatViewModel.prototype = {
 
   clear_unread: function(){
     this.faviconNumber.minus(this.unreadCount);
-    $(this.list_id).find('li').removeClass("unread-msg");
+    $(this.listId).find('li').removeClass("unread-msg");
     $.observable(this).setProperty("unreadCount", 0);
   },
 
@@ -137,7 +137,7 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.list_id).append(msg.li.addClass(msg.css));
+      $(this.listId).append(msg.li.addClass(msg.css));
       msg.li.fadeIn();
       return true;
     }
@@ -153,7 +153,7 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.list_id).prepend(msg.li);
+      $(this.listId).prepend(msg.li);
       msg.li.addClass("text-highlight",0);
       msg.li.slideDown('fast',function(){
         msg.li.switchClass("text-highlight", msg.css, 500);
@@ -161,7 +161,7 @@ ChatViewModel.prototype = {
       callback(msg.li);
       return true;
     }else{
-      this.up_hiding_count();
+      this.upHidingCount();
       return false;
     }
   },
@@ -170,7 +170,7 @@ ChatViewModel.prototype = {
     if (this.exist_msg(data)){ return false; }
     var msg = this.get_msg_html(data);
 
-    $(this.list_id).prepend(msg.li);
+    $(this.listId).prepend(msg.li);
     if (this.display_message(msg)){
       msg.li.addClass("text-highlight",0);
       msg.li.slideDown('fast',function(){
@@ -179,7 +179,7 @@ ChatViewModel.prototype = {
       callback(msg.li);
       return true;
     }else{
-      this.up_hiding_count();
+      this.upHidingCount();
       return false;
     }
   },
@@ -192,12 +192,12 @@ ChatViewModel.prototype = {
 
   get_msg_html: function(data){
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
-    if ( data.name == this.get_name()){
+    if ( data.name == this.getName()){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "own_msg"
       };
-    } else if (this.include_target_name(data.msg,this.get_name())){
+    } else if (this.include_target_name(data.msg,this.getName())){
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "target_msg"
@@ -225,7 +225,7 @@ ChatViewModel.prototype = {
     var name_class = "login-name";
     var msg_class = "msg";
 
-    data.id = this.get_id(data.name)
+    data.id = this.getId(data.name)
 
     if ( data.name == "System" ){
       name_class = "login-name-system";
@@ -268,7 +268,7 @@ ChatViewModel.prototype = {
     var deco_msg = msg;
     var name_reg = RegExp("@([^ .]+?)さん|@all", "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.get_name()||
+      if (arguments[1] == that.getName()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
@@ -331,8 +331,8 @@ ChatViewModel.prototype = {
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
         return false;
       }
-    }else if (this.get_filter_name() != ""){
-      if (msg.li.find(".login-symbol").data("name") != this.get_filter_name()){
+    }else if (this.getFilterName() != ""){
+      if (msg.li.find(".login-symbol").data("name") != this.getFilterName()){
         return false;
       }
     }
@@ -348,7 +348,7 @@ ChatViewModel.prototype = {
     var notif_msg = data.msg;
 
     if (window.localStorage.popupNotification == 'true' ||
-        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.get_name()))){
+        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.getName()))){
       if(Notification){
         if (Notification.permission != "denied"){
           var notification = new Notification(notif_title, {
