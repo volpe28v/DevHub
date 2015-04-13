@@ -332,9 +332,9 @@
 
     <script id="chatTabTmpl" type="text/x-jsrender">
       {^{if unreadCount == 0}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}}</a></li>
+      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}}</a></li>
       {^{else}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">Room{{>no}} <span class="label label-info">{^{:unreadCount}}</span></a></li>
+      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-info">{^{:unreadCount}}</span></a></li>
       {^{/if}}
     </script>
 

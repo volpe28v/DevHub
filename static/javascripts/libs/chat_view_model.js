@@ -8,6 +8,7 @@ function ChatViewModel(param){
   this.getFilterName = param.getFilterName; // function
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
+  this.room = "Room" + this.no;
 
   this.unreadCount = 0;
   this.activeClass = "";
@@ -16,6 +17,7 @@ function ChatViewModel(param){
   this.on_message_own = this._message_own_handler();
   this.on_message = this._message_handler();
   this.on_latest_log = this._latest_log_handler();
+  this.on_room_name = this._room_name_handler();
 
   this.listId = "#list_" + this.no;
   this.initSocket();
@@ -26,8 +28,10 @@ ChatViewModel.prototype = {
     this.socket.on('message_own' + this.no, this.on_message_own);
     this.socket.on('message' + this.no, this.on_message);
     this.socket.on('latest_log' + this.no, this.on_latest_log);
+    this.socket.on('room_name' + this.no, this.on_room_name);
 
     this.socket.emit('latest_log', {no: this.no});
+    this.socket.emit('room_name', {no: this.no});
   },
 
   _msg_post_processing: function(data, $msg){
@@ -96,10 +100,18 @@ ChatViewModel.prototype = {
     }
   },
 
+  _room_name_handler: function() {
+    var that = this;
+    return function(room_name){
+      $.observable(that).setProperty("room", room_name);
+    }
+  },
+
   destroySocket: function(){
     this.socket.removeListener("message_own" + this.no, this.on_message_own);
     this.socket.removeListener("message" + this.no, this.on_message);
     this.socket.removeListener("latest_log" + this.no, this.on_latest_log);
+    this.socket.removeListener('room_name' + this.no, this.on_room_name);
   },
 
   reloadTimeline: function(){
