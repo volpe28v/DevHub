@@ -202,6 +202,12 @@ ChatController.prototype = {
     });
 
     this.socket.on('chat_number', function(number) {
+      if (number.num == 1){
+        $('#chat_nav').css('display','none');
+      }else{
+        $('#chat_nav').css('display','block');
+      }
+
       $('#chat_number').val(number.num);
       that.chatViewModels.forEach(function(vm){
         vm.destroySocket();
