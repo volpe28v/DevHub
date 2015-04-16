@@ -10,6 +10,7 @@ function ChatViewModel(param){
   this.faviconNumber = param.faviconNumber;
   this.room = "Room" + this.no;
 
+  this.mentionCount = 0;
   this.unreadCount = 0;
   this.activeClass = "";
 
@@ -65,7 +66,12 @@ ChatViewModel.prototype = {
         that.do_notification(data);
         if (that.faviconNumber.up()){
           $msg.addClass("unread-msg");
-          $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+
+          if (that.include_target_name(data.msg,that.getName())){
+            $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+          }else{
+            $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+          }
         }
       });
     }
@@ -135,8 +141,10 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
+    this.faviconNumber.minus(this.mentionCount);
     this.faviconNumber.minus(this.unreadCount);
     $(this.listId).find('li').removeClass("unread-msg");
+    $.observable(this).setProperty("mentionCount", 0);
     $.observable(this).setProperty("unreadCount", 0);
   },
 
