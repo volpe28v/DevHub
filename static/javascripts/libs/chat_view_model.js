@@ -141,8 +141,7 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
-    this.faviconNumber.minus(this.mentionCount);
-    this.faviconNumber.minus(this.unreadCount);
+    this.faviconNumber.minus(this.mentionCount + this.unreadCount);
     $(this.listId).find('li').removeClass("unread-msg");
     $.observable(this).setProperty("mentionCount", 0);
     $.observable(this).setProperty("unreadCount", 0);
