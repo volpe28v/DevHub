@@ -334,13 +334,13 @@
 
     <script id="chatTabTmpl" type="text/x-jsrender">
       {^{if unreadCount == 0 && mentionCount == 0}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}}</a></li>
+      <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}}</a></li>
       {^{else unreadCount != 0 && mentionCount == 0}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-info">{^{:unreadCount}}</span></a></li>
+      <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-info">{^{:unreadCount}}</span></a></li>
       {^{else unreadCount == 0 && mentionCount != 0}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-important">{^{:mentionCount}}</span></a></li>
+      <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-important">{^{:mentionCount}}</span></a></li>
       {^{else}}
-      <li data-link="class{>activeClass}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-important">{^{:mentionCount}}</span> <span class="label label-info">{^{:unreadCount}}</span></a></li>
+      <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}} <span class="label label-important">{^{:mentionCount}}</span> <span class="label label-info">{^{:unreadCount}}</span></a></li>
       {^{/if}}
     </script>
 

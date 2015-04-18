@@ -651,3 +651,7 @@ button.close {
 #share_memo_nav{
   margin-bottom: 4px !important;
 }
+
+.label {
+  font-size: 13px;
+}

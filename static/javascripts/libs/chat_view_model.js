@@ -12,7 +12,7 @@ function ChatViewModel(param){
 
   this.mentionCount = 0;
   this.unreadCount = 0;
-  this.activeClass = "";
+  this.isActive = false;
 
   // socket.io event handler
   this.on_message_own = this._message_own_handler();
@@ -129,9 +129,9 @@ ChatViewModel.prototype = {
 
   set_active: function(is_active){
     if (is_active){
-      this.activeClass = "active";
+      this.isActive = true;
     }else{
-      this.activeClass = "";
+      this.isActive = false;
     }
   },
 
