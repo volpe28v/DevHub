@@ -92,6 +92,7 @@ https://github.com/hashrock/DevhubHook
 * クエリーとして以下が必須
 * name : サービス名
 * msg  : メッセージ
+* room_id : 部屋番号(1〜. 省略した場合は1)
 
 #### Jenkins
 * Post build task　プラグインをインストール
