@@ -88,12 +88,12 @@ https://github.com/hashrock/hubot-devhub
 https://github.com/hashrock/DevhubHook
 
 ## 汎用通知API
-
+### チャットへの通知
 * クエリーとして以下が必須
 * name : サービス名
 * msg  : メッセージ
 
-### Jenkins
+#### Jenkins
 * Post build task　プラグインをインストール
 * 以下のスクリプトを実行するようにする
 
@@ -102,7 +102,7 @@ RESULT=`curl ${BUILD_URL}api/xml | perl -le '$_=<>;print [/<result>(.+?)</]->[0]
 wget http://XXXXX:3000/notify?name=Jenkins&msg="($JOB_NAME): $RESULT"
 </pre>
 
-### Subversion
+#### Subversion
 * hooks/post-commit に以下を記述する
 
 <pre>
@@ -111,6 +111,12 @@ CHANGE=`svnlook changed $REPOS -r $REV | nkf -w`
 LOG=`svnlook log $REPOS -r $REV | nkf -w`
 wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 </pre>
+
+### メモへの通知
+* name : サービス名
+* text : 通知テキスト
+* no : メモNo(省略した場合は No.1)
+* line : 行数(省略した場合は先頭)
 
 ## その他Tips
 ### メニューバーにリンクを追加する
