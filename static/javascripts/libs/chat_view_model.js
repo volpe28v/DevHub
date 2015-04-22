@@ -285,7 +285,7 @@ ChatViewModel.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@([^ .]+?)さん|@all", "g");
+    var name_reg = RegExp("@([^ .]+?)さん|@all|@" + that.room, "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.getName()||
           arguments[0] == "@みなさん"     ||
@@ -299,8 +299,10 @@ ChatViewModel.prototype = {
   },
 
   include_target_name: function(msg,name){
+                         console.log(this.room);
     var name_reg = RegExp("@" + name + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
+        msg.match("@" + this.room) ||
         msg.match("@みなさん") ||
         msg.toLowerCase().match("@all")){
       return true;
