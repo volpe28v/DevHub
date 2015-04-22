@@ -148,7 +148,7 @@ BlogViewModel.prototype = {
   },
 
   _change_state_load_more: function(){
-    $.observable(this).setProperty("remain_count", this.item_count - this.items.length);
+    this.remain_count =  this.item_count - this.items.length;
     if (this.remain_count > 0){
       $.observable(this).setProperty("load_more_style", "display: inline;");
     }else{
