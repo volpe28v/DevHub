@@ -299,10 +299,8 @@ ChatViewModel.prototype = {
   },
 
   include_target_name: function(msg,name){
-                         console.log(this.room);
     var name_reg = RegExp("@" + name + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
-        msg.match("@" + this.room) ||
         msg.match("@みなさん") ||
         msg.toLowerCase().match("@all")){
       return true;

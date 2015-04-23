@@ -9,12 +9,16 @@ exports.post = function(req, res, io) {
   var is_create = blog._id ? false : true;
 
   function notify(blog){
-    var name = "Blog";
-    var msg = blog.name + "さんがブログを" + (is_create ? "投稿" : "更新") + "しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")";
-    var avatar = "img/blog.png";
-    var data = {name: name, msg: msg, avatar: avatar, date: util.getFullDate(new Date())};
+    var data = {
+      name: "Blog",
+      msg: blog.name + "さんがブログを" + (is_create ? "投稿" : "更新") + "しました\n" + "[" + blog.title + "](blog?id=" + blog._id + ")",
+      avatar: "img/blog.png",
+      room_id: 1,
+      date: util.getFullDate(new Date())
+    }
 
     chat_log.add(data,function(){
+      io.sockets.emit('message' + data.room_id, data);
       io.sockets.emit('message', data);
       client_info.send_growl_all(data);
     });
