@@ -351,7 +351,14 @@ BlogViewModel.prototype = {
     }
   },
 
+  insertText: function(item, row, text){
+    var text_array = item.text.split("\n");
+    text_array.splice(row,0,text);
+    $.observable(item).setProperty("text", text_array.join("\n"));
+  },
+
   _addItem: function(item){
+    var that = this;
     var id = item._id;
     for (var i = 0; i < this.items.length; i++){
       if (this.items[i]._id == id){ return; }
@@ -362,7 +369,28 @@ BlogViewModel.prototype = {
     item.display_indexes = "display: none";
 
     $.observable(this.items).insert(item);
+
+    var $target = $('#' + id);
+    this._setDropZone(item, $target.find('.edit-area'));
     return this._decorate(item);
+  },
+
+  _setDropZone: function(item, $target){
+    var that = this;
+
+    // 編集モードへのドロップ
+    new DropZone({
+      dropTarget: $target,
+        alertTarget: $('#loading'),
+        pasteValid: true,
+        uploadedAction: function(context, res){
+          var row = $(context).caretLine();
+
+          // メモのキャレット位置にファイルを差し込む
+          that.insertText(item, row - 1, res.fileName + " ");
+          $(context).caretLine(row);
+        }
+    });
   },
 
   _pushItem: function(item){
@@ -370,6 +398,9 @@ BlogViewModel.prototype = {
     item.title = this._title(item.text);
 
     $.observable(this.items).insert(0, item);
+
+    var $target = $('#' + id);
+    this._setDropZone(item, $target.find('.edit-area'));
     this._decorate(item);
   },
 
@@ -385,6 +416,7 @@ BlogViewModel.prototype = {
     $indexes.each(function(){
       emojify.run($(this).get(0));
     });
+
 
     return $target;
   }
