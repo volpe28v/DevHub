@@ -139,10 +139,16 @@ ChatController.prototype = {
     // for chat list
     $.templates("#chatTabTmpl").link("#chat_nav", this.chatViewModels)
       .on('click', '.chat-tab-elem', function(){
+        var thisVm = that.chatViewModels[$.view(this).getIndex()];
+        if (thisVm.isActive){
+          // 部屋名をフォームに設定する
+          that.setMessage("@" + thisVm.room + " ");
+        }
+
         that.chatViewModels.forEach(function(vm){
           vm.set_active(false);
         });
-        that.chatViewModels[$.view(this).getIndex()].set_active(true);
+        thisVm.set_active(true);
         return true;
       });
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)

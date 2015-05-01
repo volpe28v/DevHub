@@ -393,6 +393,10 @@ a:hover {
   padding: 0px;
 }
 
+.chat-tab-elem {
+  cursor: pointer !important;
+}
+
 .msg_text{
   margin-left: 2px;
   word-break: break-all;
