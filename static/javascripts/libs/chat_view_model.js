@@ -11,6 +11,7 @@ function ChatViewModel(param){
   this.room = "Room" + this.no;
 
   this.mentionCount = 0;
+  this.unreadRoomCount = 0;
   this.unreadCount = 0;
   this.isActive = false;
 
@@ -69,6 +70,8 @@ ChatViewModel.prototype = {
 
           if (that.include_target_name(data.msg,that.getName())){
             $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+          }else if (that.include_room_name(data.msg)){
+            $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
           }else{
             $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
           }
@@ -141,9 +144,10 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
-    this.faviconNumber.minus(this.mentionCount + this.unreadCount);
+    this.faviconNumber.minus(this.mentionCount + this.unreadCount + this.unreadRoomCount);
     $(this.listId).find('li').removeClass("unread-msg");
     $.observable(this).setProperty("mentionCount", 0);
+    $.observable(this).setProperty("unreadRoomCount", 0);
     $.observable(this).setProperty("unreadCount", 0);
   },
 
@@ -221,6 +225,11 @@ ChatViewModel.prototype = {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
         css: "target_msg"
       };
+    } else if (this.include_room_name(data.msg)){
+      return {
+        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="room_msg_date">' + disp_date + '</span></td></tr></table>'),
+        css: "room_msg"
+      };
     }else{
       return {
         li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>'),
@@ -291,6 +300,8 @@ ChatViewModel.prototype = {
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
+      }else if (arguments[0] == "@" + that.room){
+        return '<span class="target-room">' + arguments[0] + '</span>'
       }else{
         return '<span class="target-other">' + arguments[0] + '</span>'
       }
@@ -303,6 +314,14 @@ ChatViewModel.prototype = {
     if (msg.match(name_reg)    ||
         msg.match("@みなさん") ||
         msg.toLowerCase().match("@all")){
+      return true;
+    }
+    return false;
+  },
+
+  include_room_name: function(msg){
+    var room_reg = RegExp("@" + this.room + "( |　|さん|$)");
+    if (msg.match(room_reg)){
       return true;
     }
     return false;

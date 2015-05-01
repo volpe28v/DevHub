@@ -110,7 +110,9 @@ a:hover {
 
 .date,
 .target_msg_date,
-.own_msg_date {
+.room_msg_date,
+.own_msg_date
+{
   float: right;
   font-size: 10px;
 }
@@ -125,8 +127,13 @@ a:hover {
   margin-right: 14px;
 }
 
+.room_msg_date {
+  color: #dfcbad;
+  margin-right: 14px;
+}
+
 .own_msg_date {
-  color: paleturquoise;
+  color: #c0dFdF;
 }
 
 #suggest {
@@ -396,6 +403,11 @@ a:hover {
   color: #c1454f;
 }
 
+.room_msg{
+  background-color: #ffebcd;
+  color: #d2691e;
+}
+
 .own_msg{
   background-color: lightcyan;
   color: #336699;
@@ -496,10 +508,11 @@ a:hover {
   background-color: lightgreen;
 }
 
-.target-me {
+.target-me,
+.target-room,
+.target-other
+{
   background-color: white;
-  border: 1px solid #c1454f;
-  color: #c1454f;
   font-size: 12px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -507,15 +520,19 @@ a:hover {
   padding: 1px 2px;
 }
 
+.target-me {
+  border: 1px solid #c1454f;
+  color: #c1454f;
+}
+
+.target-room {
+  border: 1px solid #d2691e;
+  color: #d2691e;
+}
+
 .target-other{
-  background-color: white;
   border: 1px solid #369;
   color: #369;
-  font-size: 12px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  padding: 1px 2px;
 }
 
 .pomo-min{
