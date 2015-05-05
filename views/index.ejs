@@ -314,7 +314,7 @@
         {^{/if}}
         </strong>
       </div>
-      <div id="mention_alert" class="alert" style="display:none">
+      <div id="mention_alert" class="alert alert-error" style="display:none">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Display Mention only mode.
         {^{if hidingMessageCount != 0}}
@@ -322,9 +322,17 @@
         {^{/if}}
         </strong>
       </div>
-      <div id="filter_name_alert" class="alert" style="display:none">
+      <div id="filter_name_alert" class="alert alert-info" style="display:none">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Display <span data-link="filterName"></span> only mode.
+        {^{if hidingMessageCount != 0}}
+          <span data-link="hidingMessageCount"></span> new messages.
+        {^{/if}}
+        </strong>
+      </div>
+      <div id="filter_word_alert" class="alert alert-success" style="display:none">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Display <span data-link="filterWord"></span> search mode.
         {^{if hidingMessageCount != 0}}
           <span data-link="hidingMessageCount"></span> new messages.
         {^{/if}}

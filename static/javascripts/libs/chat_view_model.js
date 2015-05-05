@@ -6,6 +6,7 @@ function ChatViewModel(param){
   this.getId = param.getId; // function
   this.getName = param.getName; // function
   this.getFilterName = param.getFilterName; // function
+  this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
   this.room = "Room" + this.no;
@@ -371,6 +372,11 @@ ChatViewModel.prototype = {
       }
     }else if (this.getFilterName() != ""){
       if (msg.li.find(".login-symbol").data("name") != this.getFilterName()){
+        return false;
+      }
+    }else if (this.getFilterWord() != ""){
+      var reg = RegExp(this.getFilterWord());
+      if (!msg.li.find(".msg").text().match(reg)){
         return false;
       }
     }

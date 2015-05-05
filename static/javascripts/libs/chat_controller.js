@@ -11,6 +11,7 @@ function ChatController(param){
   this.loginElemList = [];
   this.hidingMessageCount = 0;
   this.filterName = "";
+  this.filterWord = "";
 
   this.chatViewModels = [];
 
@@ -46,19 +47,39 @@ ChatController.prototype = {
       var avatar = window.localStorage.avatarImage;
 
       if ( message && name ){
-        var room_id = $("#chat_nav").find(".active").find("a").data("id");
-        that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
         $('#message').attr('value', '').trigger('autosize.resize');
+        if (!that.isClientCommand(message)){
+          var room_id = $("#chat_nav").find(".active").find("a").data("id");
+          that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
 
-        if (that.loginName != name){
-          that.loginName = name;
-          that.changedLoginName(name);
+          if (that.loginName != name){
+            that.loginName = name;
+            that.changedLoginName(name);
+          }
         }
       }
       return false;
     }else{
       return true;
     }
+  },
+
+  isClientCommand: function(message){
+    var that = this;
+    if (message.match(/^search:(.*)/)){
+      var search_word = RegExp.$1;
+      $.observable(that).setProperty("filterWord", search_word);
+
+      $('#timeline_all').attr('checked', 'checked');
+      $('#timeline_all').trigger("change");
+
+      $('#filter_word_alert').slideDown();
+      $('.tooltip').hide();
+      $('#chat_area').scrollTop(0);
+      return true;
+    }
+
+    return false;
   },
 
   initChat: function(){
@@ -226,6 +247,7 @@ ChatController.prototype = {
           getId: function(name) {return that.getId(name); },
           getName: function() {return that.getName(); },
           getFilterName: function() {return that.getFilterName(); },
+          getFilterWord: function() {return that.getFilterWord(); },
           upHidingCount: function() {return that.upHidingCount(); },
           faviconNumber: that.faviconNumber
         }));
@@ -299,6 +321,10 @@ ChatController.prototype = {
     return this.filterName;
   },
 
+  getFilterWord: function(){
+    return this.filterWord;
+  },
+
   initSettings: function(){
     var that = this;
     if(window.localStorage){
@@ -364,18 +390,19 @@ ChatController.prototype = {
         window.localStorage.timeline = mode;
 
         if (mode == 'all'){
-          $('#mention_own_alert').slideUp();
-          $('#mention_alert').slideUp();
-          $('#filter_name_alert').slideUp();
+          $('.alert').slideUp();
         }else if (mode == 'own'){
+          $('.alert').hide();
           $('#mention_own_alert').slideDown();
-          $('#mention_alert').slideUp();
-          $('#filter_name_alert').slideUp();
+          $.observable(that).setProperty("filterName", "");
+          $.observable(that).setProperty("filterWord", "");
         }else{
-          $('#mention_own_alert').slideUp();
+          $('.alert').hide();
           $('#mention_alert').slideDown();
-          $('#filter_name_alert').slideUp();
+          $.observable(that).setProperty("filterName", "");
+          $.observable(that).setProperty("filterWord", "");
         }
+
         $.observable(that).setProperty("hidingMessageCount", 0);
 
         that.chatViewModels.forEach(function(vm){
@@ -399,6 +426,7 @@ ChatController.prototype = {
 
       $('#chat_body').on('click', '.close', function(){
         $.observable(that).setProperty("filterName", "");
+        $.observable(that).setProperty("filterWord", "");
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
         return false;

@@ -88,7 +88,8 @@ a:hover {
 
 #mention_own_alert,
 #mention_alert,
-#filter_name_alert{
+#filter_name_alert,
+#filter_word_alert{
   margin-bottom: 4px !important;
 }
 
