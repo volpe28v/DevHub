@@ -69,6 +69,7 @@ ChatController.prototype = {
     if (message.match(/^search:(.*)/)){
       var search_word = RegExp.$1;
       $.observable(that).setProperty("filterWord", search_word);
+      $.observable(that).setProperty("filterName", "");
 
       $('#timeline_all').attr('checked', 'checked');
       $('#timeline_all').trigger("change");
@@ -134,6 +135,7 @@ ChatController.prototype = {
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
         $.observable(that).setProperty("filterName", $(this).data("name"));
+        $.observable(that).setProperty("filterWord", "");
 
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
