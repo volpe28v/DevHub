@@ -7,11 +7,16 @@ function ChatController(param){
   this.showRefPoint = param.showRefPoint;
   this.loginName = "";
 
+  this.isSearchMode = false;
+  this.isSearching = false;
+
   // Models
+  this.message = "";
   this.loginElemList = [];
   this.hidingMessageCount = 0;
   this.filterName = "";
   this.filterWord = "";
+  this._filterWord = "";
 
   this.chatViewModels = [];
 
@@ -48,14 +53,12 @@ ChatController.prototype = {
 
       if ( message && name ){
         $('#message').attr('value', '').trigger('autosize.resize');
-        if (!that.isClientCommand(message)){
-          var room_id = $("#chat_nav").find(".active").find("a").data("id");
-          that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
+        var room_id = $("#chat_nav").find(".active").find("a").data("id");
+        that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
 
-          if (that.loginName != name){
-            that.loginName = name;
-            that.changedLoginName(name);
-          }
+        if (that.loginName != name){
+          that.loginName = name;
+          that.changedLoginName(name);
         }
       }
       return false;
@@ -64,23 +67,39 @@ ChatController.prototype = {
     }
   },
 
-  isClientCommand: function(message){
+  doClientCommand: function(message){
     var that = this;
-    if (message.match(/^search:(.*)/)){
+    if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
       $.observable(that).setProperty("filterWord", search_word);
-      $.observable(that).setProperty("filterName", "");
 
-      $('#timeline_all').attr('checked', 'checked');
-      $('#timeline_all').trigger("change");
-
-      $('#filter_word_alert').slideDown();
-      $('.tooltip').hide();
-      $('#chat_area').scrollTop(0);
-      return true;
+      if (!that.isSearching && that._filterWord != that.filterWord){
+        that.isSearching = true;
+        setTimeout(function(){
+          if (!that.isSearching){ return; }
+          $('#timeline_all').attr('checked', 'checked');
+          $('#timeline_all').trigger("change");
+          if (that.filterWord == ""){
+            $('#filter_word_alert').slideUp();
+          }else{
+            $('#filter_word_alert').slideDown();
+          }
+          that._filterWord = that.filterWord;
+          that.isSearching = false;
+        },1000);
+      }
+      return;
+    }else{
+      // 検索中または前回検索済みの場合は検索結果をクリア
+      if (that.isSearching == true || that._filterWord != ""){
+        that.isSearching = false;
+        that._filterWord = "";
+        $('#timeline_all').attr('checked', 'checked');
+        $('#timeline_all').trigger("change");
+      }
     }
 
-    return false;
+    return;
   },
 
   initChat: function(){
@@ -104,7 +123,7 @@ ChatController.prototype = {
         maxCount: 8
       }
     ]).on('keydown',function(event){
-      if(window.localStorage.sendkey == 'ctrl'){
+     if(window.localStorage.sendkey == 'ctrl'){
         if ( event.ctrlKey && event.keyCode == 13) {
           return that.sendMessage();
         }
@@ -121,6 +140,9 @@ ChatController.prototype = {
       }
 
       return true;
+    }).on('keyup',function(event){
+      var message = $('#message').val();
+      that.doClientCommand(message);
     }).autosize();
 
     $('#send_button').click(function(){
@@ -135,7 +157,6 @@ ChatController.prototype = {
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
         $.observable(that).setProperty("filterName", $(this).data("name"));
-        $.observable(that).setProperty("filterWord", "");
 
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
@@ -392,17 +413,23 @@ ChatController.prototype = {
         window.localStorage.timeline = mode;
 
         if (mode == 'all'){
-          $('.alert').slideUp();
+          if (that.filterWord == ""){
+            $('#filter_word_alert').slideUp();
+          }
+          if (that.filterName == ""){
+            $('#filter_name_alert').slideUp();
+          }
+
+          $('#mention_own_alert').slideUp();
+          $('#mention_alert').slideUp();
         }else if (mode == 'own'){
           $('.alert').hide();
           $('#mention_own_alert').slideDown();
           $.observable(that).setProperty("filterName", "");
-          $.observable(that).setProperty("filterWord", "");
         }else{
           $('.alert').hide();
           $('#mention_alert').slideDown();
           $.observable(that).setProperty("filterName", "");
-          $.observable(that).setProperty("filterWord", "");
         }
 
         $.observable(that).setProperty("hidingMessageCount", 0);
@@ -427,8 +454,20 @@ ChatController.prototype = {
       });
 
       $('#chat_body').on('click', '.close', function(){
-        $.observable(that).setProperty("filterName", "");
-        $.observable(that).setProperty("filterWord", "");
+        var data_id = $(this).closest(".alert").attr('id');
+        if (data_id == "memtion_own_alert"){
+
+        }else if (data_id == "mention_alert"){
+
+        }else if (data_id == "filter_name_alert"){
+          $.observable(that).setProperty("filterName", "");
+
+        }else if (data_id == "filter_word_alert"){
+          $.observable(that).setProperty("filterWord", "");
+          $('#message').val("");
+
+        }
+
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
         return false;

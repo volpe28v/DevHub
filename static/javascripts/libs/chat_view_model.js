@@ -374,7 +374,9 @@ ChatViewModel.prototype = {
       if (msg.li.find(".login-symbol").data("name") != this.getFilterName()){
         return false;
       }
-    }else if (this.getFilterWord() != ""){
+    }
+
+    if (this.getFilterWord() != ""){
       var reg = RegExp(this.getFilterWord());
       if (!msg.li.find(".msg").text().match(reg)){
         return false;
