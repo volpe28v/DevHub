@@ -357,6 +357,11 @@ a:hover {
   background-color: aliceblue;
 }
 
+.client-command {
+  background-color: black !important;
+  color: white;
+}
+
 .avatar {
   padding: 1px;
   background: #fff;

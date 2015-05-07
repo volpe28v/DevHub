@@ -7,7 +7,6 @@ function ChatController(param){
   this.showRefPoint = param.showRefPoint;
   this.loginName = "";
 
-  this.isSearchMode = false;
   this.isSearching = false;
 
   // Models
@@ -73,6 +72,7 @@ ChatController.prototype = {
       var search_word = RegExp.$1;
       $.observable(that).setProperty("filterWord", search_word);
 
+      $('#message').addClass("client-command");
       if (!that.isSearching && that._filterWord != that.filterWord){
         that.isSearching = true;
         setTimeout(function(){
@@ -90,9 +90,11 @@ ChatController.prototype = {
       }
       return;
     }else{
+      $('#message').removeClass("client-command");
       // 検索中または前回検索済みの場合は検索結果をクリア
       if (that.isSearching == true || that._filterWord != ""){
         that.isSearching = false;
+        $.observable(that).setProperty("filterWord", "");
         that._filterWord = "";
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
@@ -461,11 +463,10 @@ ChatController.prototype = {
 
         }else if (data_id == "filter_name_alert"){
           $.observable(that).setProperty("filterName", "");
-
         }else if (data_id == "filter_word_alert"){
           $.observable(that).setProperty("filterWord", "");
           $('#message').val("");
-
+          $('#message').removeClass("client-command");
         }
 
         $('#timeline_all').attr('checked', 'checked');
