@@ -465,6 +465,7 @@ ChatController.prototype = {
           $.observable(that).setProperty("filterName", "");
         }else if (data_id == "filter_word_alert"){
           $.observable(that).setProperty("filterWord", "");
+          that._filterWord = "";
           $('#message').val("");
           $('#message').removeClass("client-command");
         }

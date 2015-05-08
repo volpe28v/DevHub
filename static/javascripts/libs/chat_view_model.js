@@ -16,6 +16,9 @@ function ChatViewModel(param){
   this.unreadCount = 0;
   this.isActive = false;
 
+  this.isLoadingLog = false;
+  this.loadingAfterEvent = null;
+
   // socket.io event handler
   this.on_message_own = this._message_own_handler();
   this.on_message = this._message_handler();
@@ -33,6 +36,7 @@ ChatViewModel.prototype = {
     this.socket.on('latest_log' + this.no, this.on_latest_log);
     this.socket.on('room_name' + this.no, this.on_room_name);
 
+    this.isLoadingLog = true;
     this.socket.emit('latest_log', {no: this.no});
     this.socket.emit('room_name', {no: this.no});
   },
@@ -87,6 +91,18 @@ ChatViewModel.prototype = {
       $('#message_loader').hide();
       if (msgs.length == 0){ return; }
 
+      // 読み込みがキャンセルされていれば以降の処理を停止
+      // 読み込み停止後のイベントが設定されていれば呼び出す
+      if (!that.isLoadingLog){
+        if(that.loadingAfterEvent != null){
+          that.loadingAfterEvent();
+          that.loadingAfterEvent = null;
+        }
+        return;
+      }else{
+        that.isLoadingLog = false;
+      }
+
       var add_count = 0;
       for ( var i = 0 ; i < msgs.length; i++){
         if (that.append_msg(msgs[i])){ add_count++; }
@@ -125,10 +141,23 @@ ChatViewModel.prototype = {
   },
 
   reloadTimeline: function(){
+    var that = this;
     this.clear_unread();
     $(this.listId).empty();
-    this.socket.emit('latest_log', {no: this.no});
-    $('#message_loader').show();
+
+    // 既に読み込み中の場合は完了後に再度読み込み開始する
+    if (this.isLoadingLog){
+      this.isLoadingLog = false;
+      this.loadingAfterEvent = function(){
+        this.isLoadingLog = true;
+        that.socket.emit('latest_log', {no: that.no});
+        $('#message_loader').show();
+      };
+    }else{
+      this.isLoadingLog = true;
+      this.socket.emit('latest_log', {no: this.no});
+      $('#message_loader').show();
+    }
   },
 
   set_active: function(is_active){
@@ -141,6 +170,7 @@ ChatViewModel.prototype = {
 
   load_log_more: function(id){
     $('#message_loader').show();
+    this.isLoadingLog = true;
     this.socket.emit('load_log_more', {room_id: this.no, id: id});
   },
 
