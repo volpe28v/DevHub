@@ -177,7 +177,10 @@ ChatViewModel.prototype = {
   load_log_more: function(id){
     $('#message_loader').show();
     this.isLoadingLog = true;
-    this.socket.emit('load_log_more', {room_id: this.no, id: id});
+
+    var filterName = this.getFilterName();
+    var filterWord = this.getFilterWord();
+    this.socket.emit('load_log_more', {no: this.no, id: id, name: filterName, word: filterWord});
   },
 
   clear_unread: function(){
