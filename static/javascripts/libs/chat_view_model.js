@@ -89,7 +89,10 @@ ChatViewModel.prototype = {
     var that = this;
     return function(msgs){
       $('#message_loader').hide();
-      if (msgs.length == 0){ return; }
+      if (msgs.length == 0){
+        that.isLoadingLog = false;
+        return;
+      }
 
       // 読み込みがキャンセルされていれば以降の処理を停止
       // 読み込み停止後のイベントが設定されていれば呼び出す
@@ -145,17 +148,20 @@ ChatViewModel.prototype = {
     this.clear_unread();
     $(this.listId).empty();
 
+    var filterName = that.getFilterName();
+    var filterWord = that.getFilterWord();
+
     // 既に読み込み中の場合は完了後に再度読み込み開始する
     if (this.isLoadingLog){
-      this.isLoadingLog = false;
-      this.loadingAfterEvent = function(){
-        this.isLoadingLog = true;
-        that.socket.emit('latest_log', {no: that.no});
+      that.isLoadingLog = false;
+      that.loadingAfterEvent = function(){
+        that.isLoadingLog = true;
+        that.socket.emit('latest_log', {no: that.no, name: filterName, word: filterWord});
         $('#message_loader').show();
       };
     }else{
-      this.isLoadingLog = true;
-      this.socket.emit('latest_log', {no: this.no});
+      that.isLoadingLog = true;
+      that.socket.emit('latest_log', {no: that.no, name: filterName, word: filterWord});
       $('#message_loader').show();
     }
   },
@@ -407,7 +413,7 @@ ChatViewModel.prototype = {
     }
 
     if (this.getFilterWord() != ""){
-      var reg = RegExp(this.getFilterWord());
+      var reg = RegExp(this.getFilterWord(),"im");
       if (!msg.li.find(".msg").text().match(reg)){
         return false;
       }
