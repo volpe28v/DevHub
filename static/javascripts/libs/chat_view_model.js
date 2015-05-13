@@ -37,8 +37,8 @@ ChatViewModel.prototype = {
     this.socket.on('room_name' + this.no, this.on_room_name);
 
     this.isLoadingLog = true;
-    this.socket.emit('latest_log', {no: this.no});
-    this.socket.emit('room_name', {no: this.no});
+    this.socket.emit('latest_log', {room_id: this.no});
+    this.socket.emit('room_name', {room_id: this.no});
   },
 
   _msg_post_processing: function(data, $msg){
@@ -156,12 +156,12 @@ ChatViewModel.prototype = {
       that.isLoadingLog = false;
       that.loadingAfterEvent = function(){
         that.isLoadingLog = true;
-        that.socket.emit('latest_log', {no: that.no, name: filterName, word: filterWord});
+        that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord});
         $('#message_loader').show();
       };
     }else{
       that.isLoadingLog = true;
-      that.socket.emit('latest_log', {no: that.no, name: filterName, word: filterWord});
+      that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord});
       $('#message_loader').show();
     }
   },
@@ -180,7 +180,7 @@ ChatViewModel.prototype = {
 
     var filterName = this.getFilterName();
     var filterWord = this.getFilterWord();
-    this.socket.emit('load_log_more', {no: this.no, id: id, name: filterName, word: filterWord});
+    this.socket.emit('load_log_more', {room_id: this.no, id: id, name: filterName, word: filterWord});
   },
 
   clear_unread: function(){
