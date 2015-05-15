@@ -15,6 +15,7 @@ function ShareMemoController(param){
   this.currentMemoNo = 0;
 
   // searchBox
+  this.isSearching = false;
   this.keyword = "";
   this.before_keyword = "";
   this.matched_navi_style = "display:none";
@@ -176,16 +177,9 @@ ShareMemoController.prototype = {
     if (data_no != no){
       var no = $next_target.closest(".share-memo").data("no");
       $("#share_memo_tab_" + no).click();
-
-      // 移動したタブ名を見せたいのでタイムラグを入れる
-      setTimeout(function(){
-        var pos = $next_target.offset().top;
-        $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
-      },700);
-    }else{
-      var pos = $next_target.offset().top;
-      $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
     }
+    var pos = $next_target.offset().top;
+    $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
   },
 
   init_sharememo: function(){
@@ -195,6 +189,16 @@ ShareMemoController.prototype = {
       .on("submit", "#search_form", function(){
         that.search();
         return false;
+      })
+      .on('keyup', ".search-query", function(event){
+        that.keyword = $(this).val();
+        if (!that.isSearching && event.keyCode != 13){
+          that.isSearching = true;
+          setTimeout(function(){
+            that.search();
+            that.isSearching = false;
+          },1000);
+        }
       })
       .on("focus", ".search-query", function(){
         $(this).switchClass("input-small", "input-large","fast");
