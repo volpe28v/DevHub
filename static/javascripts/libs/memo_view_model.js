@@ -212,8 +212,25 @@ MemoViewModel.prototype = {
   },
 
   showText: function(){
+    var that = this;
     var $target = $('#share_memo_' + this.no);
     $target.find('.code-out').showDecora(this.writing_text.text);
+    $target.find('.code-out').sortable({
+      items: "tr:has(input[type=checkbox])",
+      start: function(event,ui){
+        that.drag_index = ui.item.index();
+      },
+      stop: function(event,ui){
+        var drag_stop_index = ui.item.index();
+        if (drag_stop_index == that.drag_index){ return; }
+
+        var text_array = that.writing_text.text.split("\n");
+        text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
+        that.writing_text.text = text_array.join("\n");
+        that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+      },
+      scroll: true
+    });
 
     // チェックボックスの進捗表示
     var checked_count = $target.find("input:checked").length;

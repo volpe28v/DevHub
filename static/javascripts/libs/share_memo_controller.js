@@ -188,6 +188,7 @@ ShareMemoController.prototype = {
     $.templates("#searchBoxTmpl").link("#search_box", this)
       .on("submit", "#search_form", function(){
         that.search();
+        that.isSearching = false;
         return false;
       })
       .on('keyup', ".search-query", function(event){
@@ -195,8 +196,10 @@ ShareMemoController.prototype = {
         if (!that.isSearching && event.keyCode != 13){
           that.isSearching = true;
           setTimeout(function(){
-            that.search();
-            that.isSearching = false;
+            if (that.isSearching){
+              that.search();
+              that.isSearching = false;
+            }
           },1000);
         }
       })
