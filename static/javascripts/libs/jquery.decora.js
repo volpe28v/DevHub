@@ -6,9 +6,9 @@
  */
 
 (function($) {
-  var REG_CHECKBOX = /-[ ]?\[[ ]?\]|-[ ]?\[x\]/g,
-      SYM_CHECKED = "-[x]",
-      SYM_UNCHECKED = "-[ ]";
+  var REG_CHECKBOX = /(-|=)[ ]?\[[ ]?\]|(-|=)[ ]?\[x\]/g,
+      SYM_CHECKED = "[x]",
+      SYM_UNCHECKED = "[ ]";
 
   $.fn.decora = function( options ){
     var defaults = {
@@ -37,11 +37,12 @@
         function(){
           var matched_check = arguments[0];
           var current_index = check_index++;
+          var sym_prefix = arguments[1] || arguments[2];
           if ( check_no == current_index){
             if (is_checked){
-              return SYM_CHECKED;
+              return sym_prefix + SYM_CHECKED;
             }else{
-              return SYM_UNCHECKED;
+              return sym_prefix + SYM_UNCHECKED;
             }
           }else{
             return matched_check;
@@ -245,10 +246,12 @@
   function _decorate_checkbox( text, no ){
     var check_text = text.replace(REG_CHECKBOX, function(){
       var matched_text = arguments[0];
+      var sym_prefix = arguments[1] || arguments[2];
+      var checkbox_class = sym_prefix == "-" ? "checkbox-normal" : "checkbox-draggable";
       if ( matched_text.indexOf("x") > 0 ){
-        return '<input type="checkbox" data-no="' + no++ + '" checked />';
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />';
       }else{
-        return '<input type="checkbox" data-no="' + no++ + '" />';
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />';
       }
     });
     return {text: check_text, no: no};

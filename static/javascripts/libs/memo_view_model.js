@@ -216,7 +216,7 @@ MemoViewModel.prototype = {
     var $target = $('#share_memo_' + this.no);
     $target.find('.code-out').showDecora(this.writing_text.text);
     $target.find('.code-out').sortable({
-      items: "tr:has(input[type=checkbox])",
+      items: "tr:has(.checkbox-draggable)",
       start: function(event,ui){
         that.drag_index = ui.item.index();
       },
