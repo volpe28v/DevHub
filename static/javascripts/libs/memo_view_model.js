@@ -216,7 +216,7 @@ MemoViewModel.prototype = {
     var $target = $('#share_memo_' + this.no);
     $target.find('.code-out').showDecora(this.writing_text.text);
     $target.find('.code-out').sortable({
-      items: "tr:has(.checkbox-draggable)",
+      items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
       start: function(event,ui){
         that.drag_index = ui.item.index();
       },
@@ -229,6 +229,16 @@ MemoViewModel.prototype = {
         that.writing_text.text = text_array.join("\n");
         that.socket.emit('text',{no: that.no, text: that.writing_text.text});
       },
+      helper: function(e, tr){
+        var $originals = tr.children();
+        var $helper = tr.clone();
+        $helper.children().each(function(index)
+        {
+          $(this).width($originals.eq(index).width());
+        });
+        return $helper;
+      },
+      placeholder: 'draggable-placeholder',
       scroll: true
     });
 

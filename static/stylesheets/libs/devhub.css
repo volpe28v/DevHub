@@ -332,6 +332,24 @@ a:hover {
   line-height: 0.2 !important;
 }
 
+.draggable-tr td {
+  cursor: pointer;
+  color: #333;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  -webkit-border-radius: 3px;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.draggable-tr td:hover {
+  border: 1px solid #bbb;
+}
+
+.draggable-placeholder {
+  background-color: beige !important;
+}
+
 .diff-view {
   min-height: 700px;
 }

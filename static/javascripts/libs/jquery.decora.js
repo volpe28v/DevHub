@@ -69,6 +69,8 @@
     $(this).find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
     $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
 
+    $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr");
+
     _set_colorbox($(this).find('.thumbnail'));
 
     // 絵文字表示
@@ -200,17 +202,18 @@
   }
 
   function _decorate_img_tag( text, default_height){
-    var img_text = text.replace(/((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
+    var img_text = text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
         function(){
-          var matched_link = arguments[2];
-          var height = arguments[6];
+          var matched_link = arguments[3];
+          var height = arguments[7];
           if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
             height = default_height;
           }
+          var prefix = arguments[1] ? arguments[1] : "";
           if (height){
-            return '<a href="' + matched_link + '" class="thumbnail" style="vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
+            return prefix + '<a href="' + matched_link + '" class="thumbnail" style="vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
           }else{
-            return '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block; vertical-align: top;"><img src="' + matched_link + '"/></a>';
+            return prefix + '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block; vertical-align: top;"><img src="' + matched_link + '"/></a>';
           }
         });
     return img_text;
@@ -255,6 +258,14 @@
       }
     });
     return {text: check_text, no: no};
+  }
+
+  function _decorate_draggable( text ){
+    var draggable_text = text.replace(/^=(.*)/mg, function(){
+      var matched_text = arguments[1];
+      return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
+    });
+    return draggable_text;
   }
 
   function _decorate_header( text ){
@@ -321,7 +332,8 @@
           deco_text = _decorate_xap_tag( deco_text, 200, 200 );
           var check_result = _decorate_checkbox( deco_text, checkbox_no );
           checkbox_no = check_result.no;
-          deco_text = _decorate_header( check_result.text );
+          deco_text = _decorate_draggable( check_result.text );
+          deco_text = _decorate_header( deco_text );
           deco_text = _decorate_line_color( deco_text );
           deco_text = _decorate_ref( deco_text );
           deco_text = _decorate_hr( deco_text );
