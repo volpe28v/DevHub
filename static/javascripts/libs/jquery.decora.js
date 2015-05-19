@@ -70,6 +70,7 @@
     $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
 
     $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr");
+    $(this).find('tr:has(.text-draggable)').addClass("draggable-text-tr");
 
     _set_colorbox($(this).find('.thumbnail'));
 

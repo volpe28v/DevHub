@@ -239,6 +239,7 @@ MemoViewModel.prototype = {
         return $helper;
       },
       placeholder: 'draggable-placeholder',
+      axis: "y",
       scroll: true
     });
 

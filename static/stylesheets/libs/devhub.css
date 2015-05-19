@@ -334,7 +334,6 @@ a:hover {
 
 .draggable-tr td {
   cursor: pointer;
-  color: #333;
   background-color: #f7f7f7;
   border: 1px solid #ccc;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
@@ -345,6 +344,12 @@ a:hover {
 .draggable-tr td:hover {
   border: 1px solid #bbb;
 }
+
+.draggable-text-tr td {
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
 
 .draggable-placeholder {
   background-color: beige !important;
