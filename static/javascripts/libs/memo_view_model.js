@@ -239,8 +239,23 @@ MemoViewModel.prototype = {
         return $helper;
       },
       placeholder: 'draggable-placeholder',
+      revert: true,
       axis: "y",
       scroll: true
+    });
+
+    $target.find('.code-out').on('click','.delete-task', function(e){
+      var $this_tr = $(this).closest('tr');
+      var delete_index = $this_tr.index();
+
+      $this_tr.fadeOut('normal', function(){
+        $(this).remove();
+
+        var text_array = that.writing_text.text.split("\n");
+        text_array.splice(delete_index, 1);
+        that.writing_text.text = text_array.join("\n");
+        that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+      });
     });
 
     // チェックボックスの進捗表示

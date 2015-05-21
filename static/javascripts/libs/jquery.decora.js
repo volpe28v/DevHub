@@ -252,10 +252,11 @@
       var matched_text = arguments[0];
       var sym_prefix = arguments[1] || arguments[2];
       var checkbox_class = sym_prefix == "-" ? "checkbox-normal" : "checkbox-draggable";
+      var delete_button = sym_prefix == "-" ? "" : '<a class="delete-task" href="#">x</a>';
       if ( matched_text.indexOf("x") > 0 ){
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />';
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />' + delete_button;
       }else{
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />';
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />' + delete_button;
       }
     });
     return {text: check_text, no: no};

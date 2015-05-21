@@ -332,6 +332,10 @@ a:hover {
   line-height: 0.2 !important;
 }
 
+.checkbox-draggable {
+  margin-left: 4px !important;
+}
+
 .draggable-tr td {
   cursor: pointer;
   background-color: #f7f7f7;
@@ -350,9 +354,13 @@ a:hover {
   cursor: pointer;
 }
 
-
 .draggable-placeholder {
   background-color: beige !important;
+}
+
+.delete-task {
+  float: right;
+  margin-right: 4px;
 }
 
 .diff-view {
