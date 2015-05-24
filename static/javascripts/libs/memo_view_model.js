@@ -109,7 +109,7 @@ MemoViewModel.prototype = {
       that.update_timer = null;
     },3000);
   },
-  
+
   switchFixMode: function(){
     if ( this.edit_mode){
       this.switchFixShareMemo(1);
@@ -316,8 +316,14 @@ MemoViewModel.prototype = {
 
     $diff_list.empty();
     $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
+    var current_date = moment();
     for (var i = 1; i < text_log.length; i++){
-      $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
+      var diff_date = moment(text_log[i].date);
+      var diff_class = "diff-li";
+      if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
+        diff_class += " today-diff-list";
+      }
+      $diff_list.append($('<li/>').append($('<a/>').addClass(diff_class).attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
     }
   },
 

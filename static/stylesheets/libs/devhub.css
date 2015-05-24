@@ -367,6 +367,10 @@ a:hover {
   min-height: 700px;
 }
 
+.today-diff-list {
+  color: red !important;
+}
+
 .thumbnail {
   display: inline-block !important;
   margin-right: 7px;
