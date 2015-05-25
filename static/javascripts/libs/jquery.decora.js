@@ -265,7 +265,11 @@
   function _decorate_draggable( text ){
     var draggable_text = text.replace(/^=(.*)/mg, function(){
       var matched_text = arguments[1];
-      return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
+      if (matched_text == "[input]"){
+        return '<div class="text-draggable" style="padding-right: 10px"><input type="text" class="input-task" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
+      }else{
+        return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
+      }
     });
     return draggable_text;
   }

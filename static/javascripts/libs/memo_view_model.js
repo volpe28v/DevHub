@@ -214,6 +214,8 @@ MemoViewModel.prototype = {
   showText: function(){
     var that = this;
     var $target = $('#share_memo_' + this.no);
+    $target.find('.code-out').off('keydown');
+    $target.find('.code-out').off('click');
     $target.find('.code-out').showDecora(this.writing_text.text);
     $target.find('.code-out').sortable({
       items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
@@ -256,6 +258,21 @@ MemoViewModel.prototype = {
         that.writing_text.text = text_array.join("\n");
         that.socket.emit('text',{no: that.no, text: that.writing_text.text});
       });
+    });
+
+    $target.find('.code-out').on('keydown', '.input-task', function(event){
+      if ( event.keyCode != 13) { return true; }
+
+      var $this_tr = $(this).closest('tr');
+      var input_index = $this_tr.index();
+      var input_text = $(this).val();
+
+      var text_array = that.writing_text.text.split("\n");
+      text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
+      that.writing_text.text = text_array.join("\n");
+      that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+
+      return false;
     });
 
     // チェックボックスの進捗表示
