@@ -211,11 +211,31 @@ MemoViewModel.prototype = {
     this.writing_loop_timer = {id: setInterval(loop, 500), code_no: this.no};
   },
 
+  _getFocusFromInputTask: function(){
+    var $focus_dom = $(':focus');
+    if ($focus_dom && $focus_dom.hasClass('input-task')){
+      return $focus_dom.closest('tr').index();
+    }
+    return -1;
+  },
+
+  _setFocusToInputTask: function($target, focus_index){
+    if (focus_index >= 0){
+      var $focus_dom = $target.find('.code-out').find('tr:eq(' + focus_index + ')').find('.input-task');
+      if ($focus_dom){
+        $focus_dom.focus();
+      }
+    }
+  },
+
   showText: function(){
     var that = this;
     var $target = $('#share_memo_' + this.no);
+    var focus_index = this._getFocusFromInputTask();
+
     $target.find('.code-out').off('keydown');
     $target.find('.code-out').off('click');
+
     $target.find('.code-out').showDecora(this.writing_text.text);
     $target.find('.code-out').sortable({
       items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
@@ -266,6 +286,7 @@ MemoViewModel.prototype = {
       var $this_tr = $(this).closest('tr');
       var input_index = $this_tr.index();
       var input_text = $(this).val();
+      $(this).val("");
 
       var text_array = that.writing_text.text.split("\n");
       text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
@@ -288,6 +309,8 @@ MemoViewModel.prototype = {
     }else{
       $target.find('.checkbox-count').hide();
     }
+
+    this._setFocusToInputTask($target, focus_index);
   },
 
   insert: function(row, text){
