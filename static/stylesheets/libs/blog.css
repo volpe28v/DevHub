@@ -271,6 +271,37 @@ pre.text-base-style {
   line-height: 0.2 !important;
 }
 
+.checkbox-draggable {
+  margin-left: 4px !important;
+}
+
+.draggable-tr td {
+  cursor: pointer;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  -webkit-border-radius: 3px;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.draggable-tr td:hover {
+  border: 1px solid #bbb;
+}
+
+.draggable-text-tr td {
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.draggable-placeholder {
+  background-color: beige !important;
+}
+
+.delete-task {
+  float: right;
+  margin-right: 4px;
+}
+
 .diff-view {
   min-height: 700px;
 }
