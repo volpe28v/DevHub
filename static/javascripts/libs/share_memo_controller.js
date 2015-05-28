@@ -63,18 +63,16 @@ ShareMemoController.prototype = {
   down: function(){
     var that = this;
     if (!this.doing_down){
-      $('#memo_area').animate({ scrollTop: $('#memo_area').scrollTop() + 400 }, 'fast', function(){
-        that.doing_down = false;
-      });
+      $('#memo_area').scrollTop($('#memo_area').scrollTop() + 400);
+      that.doing_down = false;
     }
   },
 
   up: function(){
     var that = this;
     if (!this.doing_up){
-      $('#memo_area').animate({ scrollTop: $('#memo_area').scrollTop() - 400 }, 'fast', function(){
+      $('#memo_area').scrollTop($('#memo_area').scrollTop() - 400);
       that.doing_up = false;
-      });
     }
   },
 
@@ -103,7 +101,7 @@ ShareMemoController.prototype = {
     // 移動したタブ名を見せたいのでタイムラグを入れる
     setTimeout(function(){
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
-      $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint');
+      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
     },700);
   },
 
@@ -179,7 +177,7 @@ ShareMemoController.prototype = {
       $("#share_memo_tab_" + no).click();
     }
     var pos = $next_target.offset().top;
-    $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+    $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
   },
 
   init_sharememo: function(){
@@ -231,7 +229,7 @@ ShareMemoController.prototype = {
         window.localStorage.tabSelectedID = "#" + $(this).attr("id");
         that.currentMemoNo = memoViewModel.no;
 
-        $('#memo_area').animate({ scrollTop: 0 }, 'fast');
+        $('#memo_area').scrollTop(0);
         return true;
       });
 
@@ -312,7 +310,7 @@ ShareMemoController.prototype = {
         var index = $(this).closest(".index-list").find(".index-li").index(this);
         var $code_out = $(this).closest('.share-memo').find('.code-out');
         var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').animate({ scrollTop: pos - CODE_INDEX_ADJUST_HEIGHT}, 1000, 'easeOutQuint' );
+        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
         return true;
       })
       .decora({
@@ -344,7 +342,7 @@ ShareMemoController.prototype = {
 
     $('#move_to_diff').click(function(){
       var pos = that.currentMemo().getNextDiffPos();
-      $('#memo_area').animate({ scrollTop: pos - $("#share-memo").offset().top - $(window).height()/2}, 'fast');
+      $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
     });
 
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);

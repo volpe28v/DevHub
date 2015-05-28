@@ -25,6 +25,7 @@ BlogViewModel.prototype = {
   },
 
   search: function(){
+    this.keyword = $('.search-query').val().replace(/^[\s　]+|[\s　]+$/g, "");
     // キーワード無しの場合は全blog更新
     if (this.keyword == ""){
       this.before_keyword = "";
@@ -66,8 +67,8 @@ BlogViewModel.prototype = {
             }
             return null;
           });
-          var blog = that.items[that.items.length - 1];
-          $.observable(blog).setProperty("matched", matched_doms.length);
+          var binded_blog = that.items[that.items.length - 1];
+          $.observable(binded_blog).setProperty("matched", matched_doms.length);
 
           Array.prototype.push.apply(that.matched_doms, matched_doms);
         });

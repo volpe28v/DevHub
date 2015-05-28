@@ -19,6 +19,7 @@ $(function() {
   $('#index_area').addClass("perfect-scrollbar-style");
   $('#index_area').perfectScrollbar(scrollOption);
 
+  var isSearching = false;
   var blogViewModel = new BlogViewModel(
     name,
     function(){
@@ -53,13 +54,13 @@ $(function() {
   function moveSearchIndex(offset_top){
     var target_top = offset_top;
     var base_top = $("#index_list").offset().top;
-    $('#index_area').animate({ scrollTop: target_top - base_top - $(window).height()/2 + 54 }, 'fast');
+    $('#index_area').scrollTop(target_top - base_top - $(window).height()/2 + 54);
   }
 
   function moveSearchLine(offset_top){
     var target_top = offset_top;
     var base_top = $("#blog_list").offset().top;
-    $('#blog_area').animate({ scrollTop: target_top - base_top - $(window).height()/2 + 54 }, 'fast');
+    $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
   $.templates("#blogCountTmpl").link("#blog_count", blogViewModel);
@@ -76,6 +77,17 @@ $(function() {
         $('#blog_area').scrollTop(0);
       }
       return false;
+    })
+    .on('keyup', ".search-query", function(event){
+      if (!isSearching && event.keyCode != 13){
+        isSearching = true;
+        setTimeout(function(){
+          if (isSearching){
+            blogViewModel.search();
+            isSearching = false;
+          }
+        },1000);
+      }
     })
     .on("focus", ".search-query", function(){
       $(this).switchClass("input-small", "input-large","fast");
