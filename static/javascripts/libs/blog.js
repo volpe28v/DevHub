@@ -19,7 +19,6 @@ $(function() {
   $('#index_area').addClass("perfect-scrollbar-style");
   $('#index_area').perfectScrollbar(scrollOption);
 
-  var isSearching = false;
   var blogViewModel = new BlogViewModel(
     name,
     function(){
@@ -77,17 +76,6 @@ $(function() {
         $('#blog_area').scrollTop(0);
       }
       return false;
-    })
-    .on('keyup', ".search-query", function(event){
-      if (!isSearching && event.keyCode != 13){
-        isSearching = true;
-        setTimeout(function(){
-          if (isSearching){
-            blogViewModel.search();
-            isSearching = false;
-          }
-        },1000);
-      }
     })
     .on("focus", ".search-query", function(){
       $(this).switchClass("input-small", "input-large","fast");
