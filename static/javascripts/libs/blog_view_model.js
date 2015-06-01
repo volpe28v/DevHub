@@ -245,8 +245,11 @@ BlogViewModel.prototype = {
   _indexes: function(text){
     var indexes = [];
     text.split("\n").forEach(function(val){
-      if (val.match(/^#/)){
-        indexes.push({header: val.replace(/#/g,"&emsp;")});
+      var matches = val.match(/^(#+)/);
+      if (matches){
+        var header_level = matches[1].length;
+        var header_text = val.replace(/#/g,"");
+        indexes.push({header: '<div class="header-level-' + header_level + '">' + header_text + '</div>'});
       }
     });
     return indexes;
