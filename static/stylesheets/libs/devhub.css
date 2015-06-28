@@ -718,3 +718,11 @@ button.close {
   font-size: 13px;
   font-weight: normal;
 }
+
+.sync-text.btn {
+  width: 71px;  
+}
+
+.fix-text.btn {
+  width: 71px;  
+}
