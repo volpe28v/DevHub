@@ -718,3 +718,16 @@ button.close {
   font-size: 13px;
   font-weight: normal;
 }
+
+.sync-text.btn {
+  width: 71px;  
+}
+
+.fix-text.btn {
+  width: 71px;  
+}
+
+.text-date.label{
+  margin: 3px 0px 0px 5px;
+  display: inline-block;
+}
