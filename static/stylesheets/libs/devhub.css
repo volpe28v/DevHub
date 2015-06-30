@@ -431,7 +431,8 @@ a:hover {
 .chat-list li{
   line-height: 21px;
   margin: 0px;
-  padding: 0px;
+  padding: 3px 2px;
+  border-bottom: 1px solid #eee;
 }
 
 .chat-tab-elem {
