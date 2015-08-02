@@ -173,7 +173,7 @@ function init_websocket(){
   });
 
   socket.on('disconnect', function(){
-    //console.log('disconnect');
+    console.log('disconnect');
   });
 
   socket.on('set_name', function(name) {

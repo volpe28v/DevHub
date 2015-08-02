@@ -386,7 +386,7 @@ ChatViewModel.prototype = {
   },
 
   play_sound: function(text){
-    if(text.match(/\/play (.+)/)){
+    if(text.match(/play:(.+)/)){
       $.ionSound.destroy();
       var sound_name = RegExp.$1.split(".")[0];
       $.ionSound({
