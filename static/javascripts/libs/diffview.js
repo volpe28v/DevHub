@@ -75,7 +75,8 @@ diffview = {
 		function ctelt (name, clazz, text) {
 			var e = document.createElement(name);
 			e.className = clazz;
-			e.appendChild(document.createTextNode(text));
+			//e.appendChild(document.createTextNode(text)); // 差分をHTMLで表示
+			e.innerHTML = text; // 差分をHTMLで表示
 			return e;
 		}
 	

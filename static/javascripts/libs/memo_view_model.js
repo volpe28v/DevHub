@@ -355,9 +355,8 @@ MemoViewModel.prototype = {
     var text_log = this._getLogsForDiff();
 
     $diff_list.empty();
-    $diff_list.append($('<li/>').append($('<a/>').addClass("diff-li").attr('href',"#").html('<i class="icon-play"></i> Current memo - ' + text_log[0].name)));
     var current_date = moment();
-    for (var i = 1; i < text_log.length; i++){
+    for (var i = 0; i < text_log.length; i++){
       var diff_date = moment(text_log[i].date);
       var diff_class = "diff-li";
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
@@ -368,8 +367,9 @@ MemoViewModel.prototype = {
   },
 
   createDiff: function(index){
-    var base   = difflib.stringAsLines(this.text_logs[index].text);
-    var newtxt = difflib.stringAsLines(this.writing_text.text);
+    var text_log = this._getLogsForDiff();
+    var base   = difflib.stringAsLines($.decora.to_html(text_log[index].text));
+    var newtxt = difflib.stringAsLines($.decora.to_html(text_log[0].text));
     var sm = new difflib.SequenceMatcher(base, newtxt);
     var opcodes = sm.get_opcodes();
 
@@ -377,8 +377,8 @@ MemoViewModel.prototype = {
       baseTextLines: base,
       newTextLines: newtxt,
       opcodes: opcodes,
-      baseTextName: "Current",
-      newTextName: this.text_logs[index].date + " - " + this.text_logs[index].name,
+      baseTextName: text_log[0].date + ' - ' + text_log[0].name,
+      newTextName: text_log[index].date + " - " + text_log[index].name,
       viewType: 1
     });
 
