@@ -356,7 +356,7 @@ MemoViewModel.prototype = {
 
     $diff_list.empty();
     var current_date = moment();
-    for (var i = 0; i < text_log.length; i++){
+    for (var i = 1; i < text_log.length; i++){
       var diff_date = moment(text_log[i].date);
       var diff_class = "diff-li";
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
@@ -367,6 +367,7 @@ MemoViewModel.prototype = {
   },
 
   createDiff: function(index){
+    index++; // 0番目はリストに表示しないので 1番目の履歴は 0で来る
     var text_log = this._getLogsForDiff();
     var baseHtml = $.decora.to_html(text_log[index].text);
     var newHtml = $.decora.to_html(text_log[0].text);
