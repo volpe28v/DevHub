@@ -368,8 +368,15 @@ MemoViewModel.prototype = {
 
   createDiff: function(index){
     var text_log = this._getLogsForDiff();
-    var base   = difflib.stringAsLines($.decora.to_html(text_log[index].text));
-    var newtxt = difflib.stringAsLines($.decora.to_html(text_log[0].text));
+    var baseHtml = $.decora.to_html(text_log[index].text);
+    var newHtml = $.decora.to_html(text_log[0].text);
+
+    // 差分には現れて欲しくない文字列を削除
+    baseHtml = baseHtml.replace(/data-no="\d+"/g,"");
+    newHtml = newHtml.replace(/data-no="\d+"/g,"");
+
+    var base   = difflib.stringAsLines(baseHtml);
+    var newtxt = difflib.stringAsLines(newHtml);
     var sm = new difflib.SequenceMatcher(base, newtxt);
     var opcodes = sm.get_opcodes();
 

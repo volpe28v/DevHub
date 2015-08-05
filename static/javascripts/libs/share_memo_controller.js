@@ -286,8 +286,9 @@ ShareMemoController.prototype = {
         $diff_out.append(that.currentMemo().createDiff(index));
 
         // diff 画面を有効化
-        $diff_out.fadeIn();
+        $diff_out.show();
         $code_out_pre.hide();
+        emojify.run($diff_out.get(0));
 
         $share_memo.find('.diff-done').show();
         $share_memo.find('.sync-text').hide();
