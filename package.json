@@ -11,7 +11,8 @@
     "q": "^1.1.2",
     "request": "2.39.0",
     "socket.io": "0.9.17",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "moment": "2.10.6"
   },
   "engines": {
     "node": "0.10.28",
