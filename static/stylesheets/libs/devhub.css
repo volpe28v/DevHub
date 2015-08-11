@@ -240,7 +240,7 @@ a:hover {
   margin-bottom: 2px;
 }
 
-.code-out {
+.code-out,.diff-view {
   width: 100%;
   min-height: 700px;
   margin-top: 0px;
@@ -248,17 +248,21 @@ a:hover {
   line-height: 21px;
 }
 
-.code-out table{
+.code-out table,.diff-view table {
   width: 100%;
 }
 
-.code-out table tr{
+.code-out table tr,.diff-view table tr {
   height: 21px;
 }
 
 .code-out h1,
 .code-out h2,
-.code-out h3{
+.code-out h3,
+.diff-view h1,
+.diff-view h2,
+.diff-view h3
+{
   margin: 0 0 0px;
   padding: 0;
   font-weight: bold;
@@ -267,25 +271,30 @@ a:hover {
   position: relative;
 }
 
-.code-out h1{
+.code-out h1,
+.diff-view h1{
   font-size: 2.2em;
   border-bottom: 1px solid #ddd;
 }
 
-.code-out h2 {
+.code-out h2,
+.diff-view h2 {
   font-size: 1.7em;
   border-bottom: 1px solid #eee;
 }
 
-.code-out h3 {
+.code-out h3,
+.diff-view h3 {
   font-size: 1.4em;
 }
 
-.code-out h4 {
+.code-out h4,
+.diff-view h4 {
   font-size: 1.2em;
 }
 
-.code-out table{
+.code-out table,
+.diff-view table{
   border-collapse: separate;
 }
 

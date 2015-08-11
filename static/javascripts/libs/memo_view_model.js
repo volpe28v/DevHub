@@ -390,11 +390,17 @@ MemoViewModel.prototype = {
       viewType: 1
     });
 
-    var diff_list = $(diff_body).find(".insert,.delete");
     this.diff_index = 0;
     this.diff_mode = true;
+    this._createDiffBlockList(diff_body);
 
+    $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + this.diff_block_list.length);
+    return diff_body;
+  },
+
+  _createDiffBlockList: function(diff_body){
     // 差分グループを生成
+    var diff_list = $(diff_body).find(".insert,.delete");
     this.diff_block_list = [];
     if (diff_list.length > 0){
       var $diff_table = $(diff_body).closest("table");
@@ -417,9 +423,6 @@ MemoViewModel.prototype = {
         }
       }
     }
-
-    $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + this.diff_block_list.length);
-    return diff_body;
   },
 
   getNextDiffPos: function(){
@@ -437,7 +440,7 @@ MemoViewModel.prototype = {
 
   endDiff: function(){
     var $share_memo = $("#share_memo_" + this.no);
-    $share_memo.find('pre').show();
+    $share_memo.find('.code-out').show();
     $share_memo.find('.diff-view').hide();
 
     $share_memo.find('.diff-done').hide();
@@ -445,7 +448,7 @@ MemoViewModel.prototype = {
     $share_memo.find('.index-button').show();
 
     $('#move_to_diff').fadeOut();
- 
+
     this.diff_index = 0;
     this.diff_mode = false;
     this.diff_block_list = [];

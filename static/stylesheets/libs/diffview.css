@@ -27,40 +27,7 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Chas Emerick.
 */
-table.diff {
-	border-collapse:collapse;
-	border:1px solid darkgray;
-	white-space:pre-wrap
-  border-spacing: 0;
-}
-table.diff tbody { 
-	font-family:Courier, monospace
-}
-table.diff tbody th {
-	font-family:verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
-	background:#EED;
-	font-size:11px;
-	font-weight:normal;
-	border:1px solid #BBC;
-	color:#886;
-	padding:.3em .5em .1em 2em;
-	text-align:right;
-	vertical-align:top
-}
-table.diff thead {
-	border-bottom:1px solid #BBC;
-	background:#EFEFEF;
-	font-family:Verdana
-}
-table.diff thead th.texttitle {
-	text-align:left;
-  padding-left: 5px;
-}
-table.diff tbody td {
-	padding:0px .4em;
-	padding-top:.4em;
-	vertical-align:top;
-}
+
 table.diff .empty {
 	background-color:#DDD;
 }
@@ -78,25 +45,3 @@ table.diff .skip {
 table.diff .insert {
 	background-color:#ddffdd;
 }
-table.diff th.author {
-	text-align:right;
-	border-top:1px solid #BBC;
-	background:#EFEFEF
-}
-
-/* add */
-table.diff .equal{
-	background-color:#fbfbfc;
-}
-.diff-view {
-  margin-top: 14px;
-}
-
-.diff-view .diff,
-.diff-view td {
-  width: 100%;
-  font-family: Menlo,Monaco,"Courier New",monospace;
-  font-size: 12px;
-  height: 14px;
-}
-

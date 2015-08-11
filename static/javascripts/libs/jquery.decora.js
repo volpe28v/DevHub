@@ -52,6 +52,7 @@
 
     $(this).on('click',':checkbox', function(){
       var check_no = $(this).data('no');
+      if (check_no == undefined){ return; }
       var is_checked = $(this).attr("checked") ? true : false;
       var that = this;
 
@@ -61,7 +62,9 @@
   }
 
   $.fn.showDecora = function( text ){
-    $(this).html(_set_to_table($.decora.to_html(text)));
+    if (text != undefined){
+      $(this).html(_set_to_table($.decora.to_html(text)));
+    }
 
     $(this).find('tr:has(:header)').addClass("header-tr");
     $(this).find('tr:has(.code-out-pre-border)').addClass("code-out-pre-tr");

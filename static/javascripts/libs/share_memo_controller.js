@@ -241,14 +241,14 @@ ShareMemoController.prototype = {
         var id = $(this).attr("id");
         that.setMessage("[ref:" + id + "]");
       })
-      .on('dblclick','pre tr', function(e){
+      .on('dblclick','.code-out tr', function(e){
         // クリック時の行数を取得してキャレットに設定する
         var row = $(this).closest("table").find("tr").index(this);
         that.currentMemo().switchEditShareMemo(row, e.pageY);
 
         return false;
       })
-      .on('dblclick','pre', function(e){
+      .on('dblclick','.code-out', function(e){
         // 文字列が無い場合は最下部にキャレットを設定する
         var row = $(this).find("table tr").length - 1;
         that.currentMemo().switchEditShareMemo(row, e.pageY);
@@ -276,7 +276,7 @@ ShareMemoController.prototype = {
       })
       .on('click','.diff-li', function(){
         var $share_memo = $(this).closest('.share-memo');
-        var $code_out_pre = $share_memo.find('pre');
+        var $code_out = $share_memo.find('.code-out');
         var share_memo_no = $share_memo.data('no');
         var index = $(this).closest(".diff-list").find(".diff-li").index(this);
 
@@ -284,11 +284,11 @@ ShareMemoController.prototype = {
         var $diff_out = $share_memo.find('.diff-view');
         $diff_out.empty();
         $diff_out.append(that.currentMemo().createDiff(index));
+        $diff_out.showDecora();
 
         // diff 画面を有効化
         $diff_out.show();
-        $code_out_pre.hide();
-        emojify.run($diff_out.get(0));
+        $code_out.hide();
 
         $share_memo.find('.diff-done').show();
         $share_memo.find('.sync-text').hide();
