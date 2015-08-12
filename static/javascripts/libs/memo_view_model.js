@@ -81,11 +81,12 @@ MemoViewModel.prototype = {
     $writer.addClass("writing-name");
 
     var $timestamp = $target_tab.find('.timestamp');
-    $timestamp.attr("data-livestamp", text_body.date);
+    $timestamp.attr("data-livestamp", this.writing_text.date);
 
     var $target = $('#share_memo_' + this.no);
     var $text_date = $target.children('.text-date');
-    $text_date.html(text_body.date);
+    var date_name = this.writing_text.date + " - " + this.writing_text.name;
+    $text_date.html(date_name);
     $text_date.removeClass("label-info");
     $text_date.addClass("label-important");
     $text_date.show();
