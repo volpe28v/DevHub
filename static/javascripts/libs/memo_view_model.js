@@ -22,6 +22,7 @@ MemoViewModel.prototype = {
     var that = this;
     socket.on('text' + this.no, function(text_log) {
       that.setText(text_log);
+      that._updateIndexes();
 
       if ( that.edit_mode ){
         // 編集中の共有メモに他ユーザの変更が来たら編集終了
@@ -325,19 +326,36 @@ MemoViewModel.prototype = {
     }else{
       this.socket.emit('text',{no: this.no, text: this.writing_text.text});
     }
- },
+  },
+
+  select: function(){
+    $('.index-ul').hide();
+    $('#share_memo_index_' + this.no).show();
+  },
 
   showIndexList: function(){
-    var $share_memo = $('#share_memo_' + this.no);
+    if($('#index_inner').is(':visible')){
+      $('#chat_inner').show();
+      $('#index_inner').hide();
+    }else{
+      $('#chat_inner').hide();
+      $('#index_inner').show();
+    }
+  },
 
-    var $index_list = $share_memo.find('.index-list');
-    var $code_out = $share_memo.find('.code-out');
+  _updateIndexes: function(){
+    var $index_list = $('#share_memo_index_' + this.no);
     $index_list.empty();
-    $code_out.find(":header").each(function(){
-      var h_num = parseInt($(this).get()[0].localName.replace("h",""));
-      var prefix = "";
-      for (var i = 1; i < h_num; i++){ prefix += "&emsp;"; }
-      $index_list.append($('<li/>').append($('<a/>').addClass("index-li").attr('href',"#").html(prefix + " " + $(this).text())));
+    this.writing_text.text.split("\n").forEach(function(val){
+      var matches = val.match(/^(#+)/);
+      if (matches){
+        var header_level = matches[1].length;
+        var header_text = val.replace(/#/g,"");
+        $index_list.append(
+          $('<li/>').append(
+            $('<a/>').addClass("index-li").append(
+              $('<div/>').addClass("header-level-" + header_level).html(header_text))));
+      }
     });
   },
 

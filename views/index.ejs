@@ -93,7 +93,7 @@
     <div class="container-fluid viewport">
       <div class="row-fluid flipsnap">
         <div id="chat_area" class="span5">
-          <div class="area-inner">
+          <div id="chat_inner" class="area-inner">
             <div class="dummy-top-space hidden-phone"></div>
             <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
             <div id="login_list">
@@ -121,6 +121,13 @@
                 <img src="/img/loader.gif"/> Loading messages...
               </div>
             </div>
+          </div>
+
+          <div id="index_inner" class="area-inner" style="display:none;">
+            <div class="dummy-top-space hidden-phone"></div>
+            <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
+            <div class="clearfix"></div>
+            <div id="share_memo_index"></div>
           </div>
         </div>
 
@@ -387,13 +394,9 @@
         <button class="diff-done btn btn-info" style="float: left; display: none">
           <i class="icon-resize-vertical icon-white"></i> Done
         </button>
-        <div class="btn-group" style="float: left">
-          <a class="btn dropdown-toggle index-button hidden-phone" data-toggle="dropdown" href="#">
-            <i class="icon-align-left"></i> Index
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu index-list"></ul>
-        </div>
+        <button class="index-button btn hidden-phone" style="float: left">
+          <i class="icon-align-left"></i> Index
+        </button>
         <div class="btn-group" style="float: left">
           <a class="btn dropdown-toggle diff-button hidden-phone" data-toggle="dropdown" href="#">
             <i class="icon-resize-vertical"></i> Diff
@@ -410,6 +413,11 @@
           <div class="diff-view" style="display: none"></div>
         </pre>
       </div>
+    </script>
+
+    <script id="shareMemoIndexTmpl" type="text/x-jsrender">
+      <ul id="share_memo_index_{{>no}}" class="index-ul" data-no="{{>no}}">
+      </ul>
     </script>
 
     <script id="shareMemoNumberTmpl" type="text/x-jsrender">

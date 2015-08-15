@@ -194,9 +194,73 @@ a:hover {
   vertical-align: top;
 }
 
+#hide_index{
+  margin: 3px;
+}
+
 .index-button {
   margin-left: 5px !important;
+  margin-right: 5px !important;
 }
+
+.index-ul {
+  padding: 8px 0px;
+  margin: 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+}
+
+.index-ul a {
+  display: block;
+  color: #555555;
+  padding: 3px 0;
+  text-decoration: none;
+}
+
+.index-ul a:hover {
+  color: white !important;
+  background-color: #0088cc;
+}
+
+.header-level-1 {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.header-level-2 {
+  margin-left: 22px;
+  margin-right: 10px;
+}
+.header-level-3 {
+  margin-left: 34px;
+  margin-right: 10px;
+}
+.header-level-4 {
+  margin-left: 46px;
+  margin-right: 10px;
+}
+.header-level-5 {
+  margin-left: 58px;
+  margin-right: 10px;
+}
+.header-level-6 {
+  margin-left: 70px;
+  margin-right: 10px;
+}
+
 
 .text-base-style {
   background-color: #fff;

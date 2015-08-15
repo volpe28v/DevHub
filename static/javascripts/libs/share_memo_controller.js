@@ -228,6 +228,7 @@ ShareMemoController.prototype = {
 
         window.localStorage.tabSelectedID = "#" + $(this).attr("id");
         that.currentMemoNo = memoViewModel.no;
+        that.currentMemo().select();
 
         $('#memo_area').scrollTop(0);
         return true;
@@ -292,7 +293,6 @@ ShareMemoController.prototype = {
 
         $share_memo.find('.diff-done').show();
         $share_memo.find('.sync-text').hide();
-        $share_memo.find('.index-button').hide();
 
         if (that.currentMemo().diff_block_list.length > 0){
           $('#move_to_diff').fadeIn();
@@ -340,6 +340,17 @@ ShareMemoController.prototype = {
         that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
 
+    $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
+      .on('click','.index-li', function(){
+        that.currentMemo().switchFixMode();
+
+        var index = $(this).closest(".index-ul").find(".index-li").index(this);
+        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+        var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
+        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+        return true;
+      });
+ 
 
     $('#move_to_diff').click(function(){
       var pos = that.currentMemo().getNextDiffPos();
@@ -355,6 +366,11 @@ ShareMemoController.prototype = {
         getName: function() { return that.getName(); }
       }));
     }
+
+    $("#hide_index").click(function(){
+      $('#chat_inner').show();
+      $('#index_inner').hide();
+    });
 
     $("#tab_change").click(function(){
       if ($('#share_memo_tabbable').hasClass("tabs-left")){
