@@ -368,7 +368,6 @@ ShareMemoController.prototype = {
     }
 
     $("#hide_index").click(function(){
-      $('#chat_inner').show();
       $('#index_inner').hide();
     });
 

@@ -93,8 +93,14 @@
     <div class="container-fluid viewport">
       <div class="row-fluid flipsnap">
         <div id="chat_area" class="span5">
+          <div class="dummy-top-space hidden-phone"></div>
+          <div id="index_inner" class="area-inner" style="display:none;">
+            <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
+            <div class="clearfix"></div>
+            <div id="share_memo_index"></div>
+          </div>
+
           <div id="chat_inner" class="area-inner">
-            <div class="dummy-top-space hidden-phone"></div>
             <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
             <div id="login_list">
               <nobr><span id="login_list_body" style="display:block"></span></nobr>
@@ -121,13 +127,6 @@
                 <img src="/img/loader.gif"/> Loading messages...
               </div>
             </div>
-          </div>
-
-          <div id="index_inner" class="area-inner" style="display:none;">
-            <div class="dummy-top-space hidden-phone"></div>
-            <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
-            <div class="clearfix"></div>
-            <div id="share_memo_index"></div>
           </div>
         </div>
 

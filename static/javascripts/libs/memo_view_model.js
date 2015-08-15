@@ -334,13 +334,7 @@ MemoViewModel.prototype = {
   },
 
   showIndexList: function(){
-    if($('#index_inner').is(':visible')){
-      $('#chat_inner').show();
-      $('#index_inner').hide();
-    }else{
-      $('#chat_inner').hide();
-      $('#index_inner').show();
-    }
+    $('#index_inner').toggle();
   },
 
   _updateIndexes: function(){
