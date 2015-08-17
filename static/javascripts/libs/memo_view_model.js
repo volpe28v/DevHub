@@ -344,12 +344,17 @@ MemoViewModel.prototype = {
       var matches = val.match(/^(#+)/);
       if (matches){
         var header_level = matches[1].length;
-        var header_text = val.replace(/#/g,"");
+        var header_text = val.replace(/^#+/g,"");
         $index_list.append(
           $('<li/>').append(
             $('<a/>').addClass("index-li").append(
-              $('<div/>').addClass("header-level-" + header_level).html(header_text))));
+              $('<div/>').addClass("header-level-" + header_level).html($.decora.to_html(header_text)))));
       }
+    });
+
+    var $indexes = $index_list.find(".index-li");
+    $indexes.each(function(){
+      emojify.run($(this).get(0));
     });
   },
 
