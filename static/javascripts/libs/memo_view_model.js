@@ -458,7 +458,6 @@ MemoViewModel.prototype = {
 
     $share_memo.find('.diff-done').hide();
     $share_memo.find('.sync-text').show();
-    $share_memo.find('.index-button').show();
 
     $('#move_to_diff').fadeOut();
 

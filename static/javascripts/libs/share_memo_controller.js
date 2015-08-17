@@ -303,10 +303,6 @@ ShareMemoController.prototype = {
       .on('click','.diff-done', function(){
         that.currentMemo().endDiff();
       })
-      .on('click','.index-button', function(){
-        that.currentMemo().switchFixMode();
-        that.currentMemo().showIndexList();
-      })
       .on('click','.index-li', function(){
         var index = $(this).closest(".index-list").find(".index-li").index(this);
         var $code_out = $(this).closest('.share-memo').find('.code-out');
@@ -366,6 +362,11 @@ ShareMemoController.prototype = {
         getName: function() { return that.getName(); }
       }));
     }
+
+    $("#memo_index").click(function(){
+      $('#chat_area').scrollTop(0);
+      that.currentMemo().showIndexList();
+    });
 
     $("#hide_index").click(function(){
       $('#index_inner').hide();

@@ -198,8 +198,7 @@ a:hover {
   margin: 3px;
 }
 
-.index-button {
-  margin-left: 5px !important;
+.sync-text, .fix-text, .diff-done {
   margin-right: 5px !important;
 }
 
