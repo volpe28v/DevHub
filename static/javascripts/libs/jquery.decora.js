@@ -99,6 +99,40 @@
     });
   }
 
+  function _decorate_html_tag_for_message(target_text){
+    target_text = sanitize(target_text);
+    target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
+    target_text = _decorate_link_tag( target_text );
+    target_text = _decorate_download_tag( target_text );
+    target_text = _decorate_img_tag( target_text, 50 );
+    target_text = _decorate_line_color( target_text );
+    target_text = _decorate_ref( target_text );
+    target_text = _decorate_hr( target_text );
+
+    return target_text;
+  }
+
+  function _create_decorate_html_tag(){
+    var checkbox_no = 0;
+
+    return function(deco_text){
+      // 装飾有り
+      deco_text = sanitize(deco_text);
+      deco_text = _decorate_link_tag( deco_text );
+      deco_text = _decorate_download_tag( deco_text );
+      deco_text = _decorate_img_tag( deco_text, 200 );
+      deco_text = _decorate_xap_tag( deco_text, 200, 200 );
+      var check_result = _decorate_checkbox( deco_text, checkbox_no );
+      checkbox_no = check_result.no;
+      deco_text = _decorate_draggable( check_result.text );
+      deco_text = _decorate_header( deco_text );
+      deco_text = _decorate_line_color( deco_text );
+      deco_text = _decorate_ref( deco_text );
+      deco_text = _decorate_hr( deco_text );
+      return deco_text;
+    }
+  }
+
   function _decorate_raw_tag( text ){
     var is_code = text.split("\n")[0].indexOf("code") != -1;
     if (is_code){
@@ -329,43 +363,35 @@
 
   $.decora = {
     to_html: function(target_text){
+      return this.apply_to_deco_and_raw(
+          target_text,
+          _create_decorate_html_tag(),
+          _decorate_raw_tag);
+    },
+
+    apply_to_deco_and_raw: function(target_text, deco_func, raw_func){
       var bq_sepa_array = target_text.split("```");
-      var checkbox_no = 0;
-      for ( i = 0; i < bq_sepa_array.length; i++){
-        if (i%2 == 0){
-          // 装飾有り
-          var deco_text = sanitize(bq_sepa_array[i]);
-          deco_text = _decorate_link_tag( deco_text );
-          deco_text = _decorate_download_tag( deco_text );
-          deco_text = _decorate_img_tag( deco_text, 200 );
-          deco_text = _decorate_xap_tag( deco_text, 200, 200 );
-          var check_result = _decorate_checkbox( deco_text, checkbox_no );
-          checkbox_no = check_result.no;
-          deco_text = _decorate_draggable( check_result.text );
-          deco_text = _decorate_header( deco_text );
-          deco_text = _decorate_line_color( deco_text );
-          deco_text = _decorate_ref( deco_text );
-          deco_text = _decorate_hr( deco_text );
-          bq_sepa_array[i] = deco_text;
-        }else{
-          // 装飾無し
-          bq_sepa_array[i] = _decorate_raw_tag(bq_sepa_array[i]);
+      for (var i = 0; i < bq_sepa_array.length; i++){
+        if (bq_sepa_array[i] != undefined){
+          if (i%2 == 0){
+            // 装飾有り
+            if ( typeof deco_func === "function"){
+              bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+            }
+          }else{
+            // 装飾無し
+            if ( typeof raw_func === "function"){
+              bq_sepa_array[i] = raw_func(bq_sepa_array[i]);
+            }
+          }
         }
       }
 
       return bq_sepa_array.join('');
     },
+ 
     message_to_html: function(target_text){
-      target_text = sanitize(target_text);
-      target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
-      target_text = _decorate_link_tag( target_text );
-      target_text = _decorate_download_tag( target_text );
-      target_text = _decorate_img_tag( target_text, 50 );
-      target_text = _decorate_line_color( target_text );
-      target_text = _decorate_ref( target_text );
-      target_text = _decorate_hr( target_text );
-
-      return target_text;
+      return _decorate_html_tag_for_message(target_text);
     }
   };
 })(jQuery);

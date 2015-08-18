@@ -339,18 +339,26 @@ MemoViewModel.prototype = {
 
   _updateIndexes: function(){
     var $index_list = $('#share_memo_index_' + this.no);
+
     $index_list.empty();
-    this.writing_text.text.split("\n").forEach(function(val){
-      var matches = val.match(/^(#+)/);
-      if (matches){
-        var header_level = matches[1].length;
-        var header_text = val.replace(/^#+/g,"");
-        $index_list.append(
-          $('<li/>').append(
-            $('<a/>').addClass("index-li").append(
-              $('<div/>').addClass("header-level-" + header_level).html($.decora.to_html(header_text)))));
-      }
-    });
+    $.decora.apply_to_deco_and_raw(this.writing_text.text,
+      function(deco_text){
+        // 装飾ありの場合は目次候補
+        deco_text.split("\n").forEach(function(val){
+          var matches = val.match(/^(#+)/);
+          if (matches){
+            var header_level = matches[1].length;
+            var header_text = val.replace(/^#+/g,"");
+            $index_list.append(
+              $('<li/>').append(
+                $('<a/>').addClass("index-li").append(
+                  $('<div/>').addClass("header-level-" + header_level).html($.decora.to_html(header_text)))));
+          }
+        });
+      },
+      function(raw_text){
+        // 装飾なしは目次対象外
+      });
 
     var $indexes = $index_list.find(".index-li");
     $indexes.each(function(){
