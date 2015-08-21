@@ -20,6 +20,11 @@ function FaviconNumber(data) {
 FaviconNumber.prototype = {
   up: function(){
     if (this.focus_id == $(':focus').attr('id')){ this.off(); return false; }
+
+    this.up_force();
+    return true;
+  },
+  up_force: function(){
     this.newest_count++;
 
     if (this.canUseFavico){
@@ -27,7 +32,6 @@ FaviconNumber.prototype = {
     }else{
       document.title = "(" + this.newest_count + ") " + this.title;
     }
-    return true;
   },
   minus: function(count){
     if (this.focus_id == $(':focus').attr('id')){ this.off(); return false; }

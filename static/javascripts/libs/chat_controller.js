@@ -20,6 +20,7 @@ function ChatController(param){
   this.chatViewModels = [];
 
   // initialize
+  MessageDate.init();
   this.initChat();
   this.initSettings();
   this.initSocket();

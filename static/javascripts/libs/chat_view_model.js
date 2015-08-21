@@ -59,6 +59,7 @@ ChatViewModel.prototype = {
     var that = this;
     return function(data) {
       that.prepend_own_msg(data, function($msg){
+        MessageDate.save(data.date);
         that._msg_post_processing(data, $msg);
       });
     }
@@ -67,6 +68,7 @@ ChatViewModel.prototype = {
   _message_handler: function(){
     var that = this;
     return function(data) {
+      MessageDate.save(data.date);
       that.prepend_msg(data,function($msg){
         that._msg_post_processing(data, $msg);
         that.do_notification(data);
@@ -123,7 +125,10 @@ ChatViewModel.prototype = {
 
         $(that.listId + ' span[rel=tooltip]').tooltip({placement: 'bottom'});
       }else{
-        if (msgs.length == 1){ return; } // 1件の場合はもうデータなし
+        // 1件の場合はもうデータなし
+        if (msgs.length == 1){
+          return;
+        }
         that.load_log_more(msgs[msgs.length-1]._id);
       }
     }
@@ -192,6 +197,7 @@ ChatViewModel.prototype = {
   },
 
   append_msg: function(data){
+    var that = this;
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
     if (data.name == "System") { return false; };
@@ -201,6 +207,20 @@ ChatViewModel.prototype = {
 
     if (this.display_message(msg)){
       $(this.listId).append(msg.li.addClass(msg.css));
+      // 前回の最終メッセージよりも新しければ未読にする
+      MessageDate.save(data.date);
+      if (MessageDate.isNew(data.date)){
+        that.faviconNumber.up_force()
+        msg.li.addClass("unread-msg");
+
+        if (that.include_target_name(data.msg,that.getName())){
+          $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+        }else if (that.include_room_name(data.msg)){
+          $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
+        }else{
+          $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+        }
+      }
       msg.li.fadeIn();
       return true;
     }
@@ -280,7 +300,9 @@ ChatViewModel.prototype = {
 
   get_msg_li_html: function(data){
     if ( data._id != undefined ){
-      return $('<li/>').attr('style','display:none').attr('id','msg_' + data._id.toString()).attr('data-id', data._id.toString());
+      return $('<li/>').attr('style','display:none')
+                       .attr('id','msg_' + data._id.toString())
+                       .attr('data-id', data._id.toString());
     }else{
       return $('<li/>').attr('style','display:none');
     }
