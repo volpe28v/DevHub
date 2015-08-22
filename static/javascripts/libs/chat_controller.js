@@ -415,6 +415,8 @@ ChatController.prototype = {
       }
 
       $('.timeline-radio').on('change', "input", function(){
+        MessageDate.init(); // タイムラインを再読み込みしたら未読解除
+
         var mode = $(this).val();
         window.localStorage.timeline = mode;
 
