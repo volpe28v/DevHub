@@ -15,7 +15,7 @@ function ChatController(param){
   this.hidingMessageCount = 0;
   this.filterName = "";
   this.filterWord = "";
-  this._filterWord = "";
+  this._filterWord = ""; // 前回の検索キーワード
 
   this.chatViewModels = [];
 
@@ -72,12 +72,14 @@ ChatController.prototype = {
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
       $.observable(that).setProperty("filterWord", search_word);
-
       $('#message').addClass("client-command");
+
+      // 検索キーワードが変化していたら1秒後に検索開始
       if (!that.isSearching && that._filterWord != that.filterWord){
         that.isSearching = true;
         setTimeout(function(){
           if (!that.isSearching){ return; }
+          if (that._filterWord == that.filterWord){ that.isSearching = false; return; }
           $('#timeline_all').attr('checked', 'checked');
           $('#timeline_all').trigger("change");
           if (that.filterWord == ""){
@@ -89,7 +91,8 @@ ChatController.prototype = {
           that.isSearching = false;
         },1000);
       }
-      return;
+    }else if (message.match(/^room_name:/)){
+      $('#message').addClass("client-command");
     }else{
       $('#message').removeClass("client-command");
       // 検索中または前回検索済みの場合は検索結果をクリア
