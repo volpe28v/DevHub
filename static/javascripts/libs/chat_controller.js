@@ -93,6 +93,14 @@ ChatController.prototype = {
       }
     }else if (message.match(/^room_name:/)){
       $('#message').addClass("client-command");
+    }else if (message.match(/^m:/)){
+      $('#message').addClass("client-command");
+      $('#timeline_mention').attr('checked', 'checked');
+      $('#timeline_mention').trigger("change");
+    }else if (message.match(/^mo:/)){
+      $('#message').addClass("client-command");
+      $('#timeline_own').attr('checked', 'checked');
+      $('#timeline_own').trigger("change");
     }else{
       $('#message').removeClass("client-command");
       // 検索中または前回検索済みの場合は検索結果をクリア
@@ -100,6 +108,11 @@ ChatController.prototype = {
         that.isSearching = false;
         $.observable(that).setProperty("filterWord", "");
         that._filterWord = "";
+        $('#timeline_all').attr('checked', 'checked');
+        $('#timeline_all').trigger("change");
+      }
+
+      if (!$('#timeline_all:checked').val()){
         $('#timeline_all').attr('checked', 'checked');
         $('#timeline_all').trigger("change");
       }
@@ -148,6 +161,10 @@ ChatController.prototype = {
       return true;
     }).on('keyup',function(event){
       var message = $('#message').val();
+      if ( event.keyCode == 39 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 40) {
+        //矢印キーは除く
+        return;
+      }
       that.doClientCommand(message);
     }).autosize();
 
