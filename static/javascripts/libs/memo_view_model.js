@@ -334,7 +334,7 @@ MemoViewModel.prototype = {
   },
 
   showIndexList: function(){
-    $('#index_inner').toggle();
+    $('#index_inner').slideToggle('fast');
   },
 
   _updateIndexes: function(){
