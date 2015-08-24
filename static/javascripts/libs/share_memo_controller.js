@@ -303,10 +303,11 @@ ShareMemoController.prototype = {
       .on('click','.diff-done', function(){
         that.currentMemo().endDiff();
       })
-      .on('click','.index-li', function(){
-        var index = $(this).closest(".index-list").find(".index-li").index(this);
-        var $code_out = $(this).closest('.share-memo').find('.code-out');
-        var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
+      .on('click','.wip-jump', function(){
+        that.currentMemo().switchFixMode();
+
+        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+        var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
         $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
         return true;
       })
@@ -346,7 +347,6 @@ ShareMemoController.prototype = {
         $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
         return true;
       });
- 
 
     $('#move_to_diff').click(function(){
       var pos = that.currentMemo().getNextDiffPos();

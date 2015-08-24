@@ -92,6 +92,13 @@ MemoViewModel.prototype = {
     $text_date.addClass("label-important");
     $text_date.show();
 
+    var $wip_jump = $target.children('.wip-jump');
+    if (this.writing_text.text.match(/\[WIP\]/)){
+      $wip_jump.show();
+    }else{
+      $wip_jump.hide();
+    }
+
     var is_blank = text_body.text == "";
     if (is_blank){
       $writer.hide();

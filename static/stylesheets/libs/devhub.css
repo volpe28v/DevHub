@@ -198,7 +198,7 @@ a:hover {
   margin: 3px;
 }
 
-.sync-text, .fix-text, .diff-done {
+.sync-text, .fix-text, .diff-done, .diff-button, .wip-jump {
   margin-right: 5px !important;
 }
 
@@ -657,10 +657,6 @@ a:hover {
   color: mintcream;
 }
 
-.text-date{
-  margin: 6px 0px 4px 5px;
-}
-
 .update-log-notify {
   margin: 6px 0px 4px 5px;
 }
@@ -793,14 +789,14 @@ button.close {
 }
 
 .sync-text.btn {
-  width: 71px;  
+  width: 71px;
 }
 
 .fix-text.btn {
-  width: 71px;  
+  width: 71px;
 }
 
 .text-date.label{
-  margin: 3px 0px 0px 5px;
+  margin: 3px 0px 0px 0px;
   display: inline-block;
 }
