@@ -93,11 +93,11 @@ ChatController.prototype = {
       }
     }else if (message.match(/^room_name:/)){
       $('#message').addClass("client-command");
-    }else if (message.match(/^m:/)){
+    }else if (message.match(/^m:$/)){
       $('#message').addClass("client-command");
       $('#timeline_mention').attr('checked', 'checked');
       $('#timeline_mention').trigger("change");
-    }else if (message.match(/^mo:/)){
+    }else if (message.match(/^mo:$/)){
       $('#message').addClass("client-command");
       $('#timeline_own').attr('checked', 'checked');
       $('#timeline_own').trigger("change");
@@ -170,6 +170,8 @@ ChatController.prototype = {
 
     $('#send_button').click(function(){
       that.sendMessage();
+      var message = $('#message').val();
+      that.doClientCommand(message);
       return false;
     });
 
