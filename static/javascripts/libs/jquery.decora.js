@@ -118,6 +118,7 @@
     return function(deco_text){
       // 装飾有り
       deco_text = sanitize(deco_text);
+      deco_text = _decorate_wip( deco_text );
       deco_text = _decorate_link_tag( deco_text );
       deco_text = _decorate_download_tag( deco_text );
       deco_text = _decorate_img_tag( deco_text, 200 );
@@ -209,6 +210,14 @@
     }
 
     return raw_text.join("\n");
+  }
+
+  function _decorate_wip( text ){
+    var wiped_text = text.replace(/\[WIP\]/g,
+        function(){
+          return '<span class="label label-important">[WIP]</span>';
+        });
+    return wiped_text;
   }
 
   function _decorate_link_tag( text ){
