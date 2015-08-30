@@ -36,18 +36,16 @@ $(function() {
         (event.ctrlKey == true && event.keyCode == 13)) {
         $(this).blur(); //入力を確定するためにフォーカス外す
         blogViewModel.add();
+        $('#blog_form').trigger('autosize.resize');
         return false;
       }
-    })
-    .on("focus", "#blog_form", function(){
-      $(this).switchClass("textarea-small", "textarea-large","fast");
-    })
-    .on("blur", "#blog_form", function(){
-      $(this).switchClass("textarea-large", "textarea-small","fast");
-    })
+    });
+
+  $('#blog_form').autosize();
 
   $("#save_btn").click(function(){
-      blogViewModel.add();
+    blogViewModel.add();
+    $('#blog_form').trigger('autosize.resize');
   })
 
   function moveSearchIndex(offset_top){
