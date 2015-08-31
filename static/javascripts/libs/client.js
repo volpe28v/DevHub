@@ -50,7 +50,7 @@ $(function() {
 
     var scrollOption = {
       wheelSpeed: 1,
-      useKeyboard: false,
+      useKeyboard: true,
       suppressScrollX: true
     };
 
