@@ -12,7 +12,11 @@
     "request": "2.39.0",
     "socket.io": "0.9.17",
     "underscore": "^1.7.0",
-    "moment": "2.10.6"
+    "moment": "2.10.6",
+    "grunt": "~0.4.2",
+    "grunt-contrib-cssmin": "~0.6.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-uglify": "~0.5.0"
   },
   "engines": {
     "node": "0.10.28",
