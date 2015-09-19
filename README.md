@@ -59,7 +59,7 @@ $ BASIC_AUTH_USER=user BASIC_AUTH_PASS=pass node app.js -p 3000 -d devhub_db -t 
 ## ビルド
 jsやcssを変更した場合は grunt の実行が必要
 ```
-$ grunt
+$ grunt build
 ```
 
 ## 操作ヒント

@@ -140,5 +140,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask("default", ["uglify", "cssmin","watch"]);
+  grunt.registerTask("build", ["uglify", "cssmin"]);
 };
 
