@@ -56,6 +56,12 @@ $ BASIC_AUTH_USER=user BASIC_AUTH_PASS=pass node app.js -p 3000 -d devhub_db -t 
 * BASIC_AUTH_USER ユーザ名
 * BASIC_AUTH_PASS パスワード
 
+## ビルド
+jsやcssを変更した場合は grunt の実行が必要
+```
+$ grunt
+```
+
 ## 操作ヒント
 ### チャット
 * ユーザ名をクリックで宛先指定
