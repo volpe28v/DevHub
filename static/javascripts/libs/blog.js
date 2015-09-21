@@ -118,9 +118,11 @@ $(function() {
       blogViewModel.cancel($.view(this));
     })
     .on("click",".remove-blog", function(){
-      if (window.confirm('本当に削除しますか？')){
-        blogViewModel.destory($.view(this));
+      if (!window.confirm('Are you sure?')){
+        return true;
       }
+
+      blogViewModel.destory($.view(this));
     })
     .on('keydown','.edit-area',function(event){
       // Ctrl - S or Ctrl - enter

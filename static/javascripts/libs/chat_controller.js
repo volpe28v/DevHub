@@ -229,6 +229,9 @@ ChatController.prototype = {
         that.chatViewModels[$.view(this).index].load_log_more(last_msg_id);
       })
       .on('click', '.remove_msg', function(){
+        if (!window.confirm('Are you sure?')){
+          return true;
+        }
         var data_id = $(this).closest('li').data('id');
         that.chatViewModels[$.view(this).index].remove_msg(data_id);
         return true;

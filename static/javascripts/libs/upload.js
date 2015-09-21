@@ -1,5 +1,9 @@
 $(function() {
   $('.delete-button').click(function(){
+    if (!window.confirm('Are you sure?')){
+      return true;
+    }
+
     $.ajax('upload' , {
       type: 'DELETE',
       cache: false,

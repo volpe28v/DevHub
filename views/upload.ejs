@@ -40,13 +40,14 @@
       <div class="row">
         <div class="span12">
           <table class="table table-condensed">
-            <tr><th>Delete</th><th>Image</th><th>File name</th><th class="file-size">Size (MB)</th></tr>
+            <tr><th>Image</th><th>File name</th><th class="file-size">Size (MB)</th><th></th></tr>
             <% file_info['files'].forEach(function(file){ %>
             <tr>
-              <td><button class="btn btn-danger btn-mini delete-button" data-name="<%= file['name'] %>">Delete</button></td>
               <td class="file-body" data-name="/uploads/<%= file['name'] %>"></td>
               <td><a href="/uploads/<%= file['name'] %>" target="_blank"><%= file['name'] %></a></td>
-              <td class="file-size"><%= (file['size']/1024/1024).toFixed(3) %></td></tr>
+              <td class="file-size"><%= (file['size']/1024/1024).toFixed(3) %></td>
+              <td><i class="icon-trash delete-button" data-name="<%= file['name'] %>"></i></td>
+            </tr>
             <% }); %>
           </table>
         </div>
