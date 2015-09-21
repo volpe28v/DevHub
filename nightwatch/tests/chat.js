@@ -14,6 +14,7 @@ module.exports = {
     client.getAttribute('#chat_body li:first-child', 'id', function(result){
       this.click('#chat_body li:first-child .remove_msg');
       this.pause(1000);
+      this.accept_alert();
       this.assert.elementNotPresent("#" + result.value);
     });
   },
