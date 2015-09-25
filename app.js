@@ -40,21 +40,18 @@ app.set('title_name', program.title_name ? "for " + program.title_name : "");
 app.set('basic_user', process.env.BASIC_AUTH_USER ? process.env.BASIC_AUTH_USER : "");
 app.set('basic_pass', process.env.BASIC_AUTH_PASS ? process.env.BASIC_AUTH_PASS : "");
 app.set('gridfs', process.env.GRIDFS == "true" ? true : false);
-app.set('growl', settings.growl == undefined ? true : settings.growl);
 app.set('menu_links', menu_links);
 
 console.log(' port : ' + app.get('port'));
 console.log(' db_name : ' + app.get('db_name'));
 console.log(' title_name : ' + app.get('title_name'));
-console.log(' growl: ' +  app.get('growl'));
 console.log(' BASIC_AUTH_USER : ' + app.get('basic_user'));
 console.log(' BASIC_AUTH_PASS : ' + app.get('basic_pass'));
 console.log(' GRIDFS: ' + app.get('gridfs'));
 
 var client_info = require('./lib/client_info');
 client_info.options({
-  title: app.get('title_name'),
-  growl: app.get('growl')
+  title: app.get('title_name')
 });
 
 // set routing

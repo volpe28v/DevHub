@@ -20,7 +20,6 @@ exports.post = function(req, res, io) {
     chat_log.add(data,function(){
       io.sockets.emit('message' + data.room_id, data);
       io.sockets.emit('message', data);
-      client_info.send_growl_all(data);
     });
   }
 

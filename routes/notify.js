@@ -19,7 +19,6 @@ exports.get = function(req, res, io) {
 
   chat_log.add(data,function(){
     io.sockets.emit('message' + data.room_id, data);
-    client_info.send_growl_all(data);
     res.end('received msg');
   });
 
@@ -29,7 +28,6 @@ exports.get = function(req, res, io) {
       reply.date = util.getFullDate(new Date());
       chat_log.add(reply);
       io.sockets.emit('message' + data.room_id, reply);
-      client_info.send_growl_all(reply);
     },reply.interval * 1000);
   });
 
