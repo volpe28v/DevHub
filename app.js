@@ -17,14 +17,6 @@ program
   .option('GRIDFS', 'Set "true" when useing gridfs. define with env.')
   .parse(process.argv);
 
-// load settings.json
-var settings = {};
-try{
-  settings = require('./settings.json');
-}catch(e){
-  // ファイルが無ければ設定はデフォルト
-}
-
 var menu_links = [];
 try{
   // メニューにリンクを表示したい場合は以下のファイルに json で記載
