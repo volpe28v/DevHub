@@ -25,7 +25,6 @@
     </script>
   </head>
   <body style=":
-    background-color: #EEE;
     background-attachment: fixed;
     background-position: center top;
     background-repeat:  repeat;
@@ -59,8 +58,9 @@
     <!-- JsRender Templates -->
     <script id="blogBodyTmpl" type="text/x-jsrender">
       <li id="{{:_id}}" class="blog-body">
+        <h1 class="blog-title">{^{:title}}</h1>
         <div class="blog-header">
-          <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
+          By <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
           <div style="float: right">
             <span class="edit-blog"><i class="icon-pencil"></i></span> <span class="remove-blog"><i class="icon-remove"></i></span>
           </div>

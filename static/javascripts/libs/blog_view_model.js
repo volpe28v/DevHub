@@ -412,6 +412,10 @@ BlogViewModel.prototype = {
     var id = item._id;
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
+    $target.find(".code-out tr:first").hide();
+
+    var $blog_title = $target.find(".blog-title");
+    emojify.run($blog_title.get(0));
 
     var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
     emojify.run($index_title.get(0));
@@ -420,7 +424,6 @@ BlogViewModel.prototype = {
     $indexes.each(function(){
       emojify.run($(this).get(0));
     });
-
 
     return $target;
   }

@@ -21,8 +21,7 @@
     <link href="/stylesheets/blog.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
   </head>
-  <body style=":
-    background-color: #EEE;
+  <body style="
     background-attachment: fixed;
     background-position: center top;
     background-repeat:  repeat;
@@ -103,8 +102,9 @@
 
     <script id="blogBodyTmpl" type="text/x-jsrender">
       <li id="{{:_id}}" class="blog-body">
+        <h1 class="blog-title">{^{:title}}</h1>
         <div class="blog-header">
-          <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
+          By <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
           <div style="float: right">
             <span class="edit-blog"><i class="icon-pencil"></i></span> <span class="remove-blog"><i class="icon-trash"></i></span>
             <a href="blog?id={{:_id}}" target="_blank"> Permalink</a>

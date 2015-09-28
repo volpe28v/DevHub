@@ -1,5 +1,4 @@
 var COOKIE_NAME = "dev_hub_name";
-var COOKIE_STYLE_NAME = "dev_hub_style_name";
 var COOKIE_EXPIRES = 365;
 
 var socket = io.connect('/',{query: 'from=devhub'});
