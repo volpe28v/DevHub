@@ -205,6 +205,7 @@ BlogViewModel.prototype = {
     $.observable(blog).setProperty("title", title);
     $.observable(blog).setProperty("name", that.name);
     $.observable(blog).setProperty("indexes", indexes);
+    $.observable(blog).setProperty("avatar", window.localStorage.avatarImage);
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
@@ -217,9 +218,10 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: {
         _id: blog._id,
-        title: title,
+        title: blog.title,
         text: blog.text,
-        name: that.name,
+        name: blog.name,
+        avatar: blog.avatar,
         is_notify: is_notify
       }},
       success: function(data){
