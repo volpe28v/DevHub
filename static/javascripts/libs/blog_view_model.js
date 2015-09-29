@@ -165,8 +165,10 @@ BlogViewModel.prototype = {
       indexes: this._indexes(this.input_text),
       display_indexes: "display: none",
       text:  this.input_text,
-      name:  this.name
+      name:  this.name,
+      avatar: window.localStorage.avatarImage
     };
+
     var that = this;
     $.ajax('blog' , {
       type: 'POST',
@@ -413,6 +415,10 @@ BlogViewModel.prototype = {
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
     $target.find(".code-out tr:first").hide();
+    var $body_tooltip = $target.find("span[rel=tooltip]");
+    if ($body_tooltip != null){
+      $body_tooltip.tooltip({placement: 'bottom'});
+    }
 
     var $blog_title = $target.find(".blog-title");
     emojify.run($blog_title.get(0));
@@ -420,10 +426,15 @@ BlogViewModel.prototype = {
     var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
     emojify.run($index_title.get(0));
 
-    var $indexes = $(".index-li");
+    var $indexes = $(".index-body [data-id=" + id + "] .index-li");
     $indexes.each(function(){
       emojify.run($(this).get(0));
     });
+
+    var $tooltip = $(".index-body [data-id=" + id + "] span[rel=tooltip]");
+    if ($tooltip != null){
+      $tooltip.tooltip({placement: 'left'});
+    }
 
     return $target;
   }

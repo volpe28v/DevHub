@@ -509,7 +509,8 @@ MemoViewModel.prototype = {
           var item = {
             title: that._title(selected_text),
             text: selected_text,
-            name: login_name
+            name: login_name,
+            avatar: window.localStorage.avatarImage
           };
 
           $.ajax('blog' , {

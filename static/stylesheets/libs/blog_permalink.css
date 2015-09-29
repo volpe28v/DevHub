@@ -13,6 +13,10 @@ body{
   overflow: hidden;
 }
 
+.blog-title {
+  color: royalblue;
+}
+
 #blog_permalink_area {
   height: 100%;
   top: 0px;
@@ -376,5 +380,15 @@ hr {
 .index-ul a:hover {
   color: white !important;
   background-color: #0088cc;
+}
+
+.avatar {
+  padding: 1px;
+  background: #fff;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  vertical-align: bottom;
 }
 

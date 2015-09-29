@@ -60,7 +60,11 @@
       <li id="{{:_id}}" class="blog-body">
         <h1 class="blog-title">{^{:title}}</h1>
         <div class="blog-header">
+        {^{if avatar != null && avatar != ""}}
+          By <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span> updated <span class="timestamp" data-livestamp="{{:date}}"></span>
+        {^{else}}
           By <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
+        {^{/if}}
           <div style="float: right">
             <span class="edit-blog"><i class="icon-pencil"></i></span> <span class="remove-blog"><i class="icon-trash"></i></span>
           </div>

@@ -29,7 +29,6 @@ module.exports = {
       .click('#save_btn')
       .pause(500)
       .assert.attributeEquals('.blog-body:first-child .code-out font', 'color', '#ba2636')
-      .assert.containsText('.blog-body:first-child .code-out font', 'this is red color line.')
       .assert.containsText('.index-body:first-child', 'this is red color line.')
   },
 
@@ -39,7 +38,6 @@ module.exports = {
       .click('#save_btn')
       .pause(500)
       .assert.attributeEquals('.blog-body:first-child .code-out input', 'type', 'checkbox')
-      .assert.containsText('.blog-body:first-child .code-out', 'this is a task.')
       .assert.containsText('.index-body:first-child', 'this is a task.')
   },
 
