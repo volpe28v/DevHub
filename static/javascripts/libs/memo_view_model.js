@@ -88,8 +88,7 @@ MemoViewModel.prototype = {
     var $text_date = $target.children('.text-date');
     var date_name = this.writing_text.date + " - " + this.writing_text.name;
     $text_date.html(date_name);
-    $text_date.removeClass("label-info");
-    $text_date.addClass("label-important");
+    $text_date.addClass("writing-name");
     $text_date.show();
 
     var $wip_jump = $target.children('.wip-jump');
@@ -112,8 +111,7 @@ MemoViewModel.prototype = {
       clearTimeout(this.update_timer);
     }
     this.update_timer = setTimeout(function(){
-      $text_date.removeClass("label-important");
-      $text_date.addClass("label-info");
+      $text_date.removeClass("writing-name");
       $writer.removeClass("writing-name");
       that.update_timer = null;
     },3000);
@@ -139,7 +137,11 @@ MemoViewModel.prototype = {
     // 最新の状態をサーバへ送信する
     var code = $share_memo.children('.code').val();
     if (this.code_prev != code){
-      socket.emit('text',{no: this.no, text: code});
+      socket.emit('text',{
+        no: this.no,
+        name: this.getName(),
+        avatar: window.localStorage.avatarImage,
+        text: code});
     }
 
     // 見栄えを閲覧モードへ
@@ -201,7 +203,11 @@ MemoViewModel.prototype = {
     var loop = function() {
       var code = $target_code.val();
       if (that.code_prev != code) {
-        that.socket.emit('text',{no: that.no, text: code});
+        that.socket.emit('text',{
+          no: that.no, 
+          name: that.getName(),
+          avatar: window.localStorage.avatarImage,
+          text: code});
         that.code_prev = code;
       }
 
@@ -258,7 +264,11 @@ MemoViewModel.prototype = {
         var text_array = that.writing_text.text.split("\n");
         text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
         that.writing_text.text = text_array.join("\n");
-        that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+        that.socket.emit('text',{
+          no: that.no,
+          name: that.getName(),
+          avatar: window.localStorage.avatarImage,
+          text: that.writing_text.text});
       },
       helper: function(e, tr){
         var $originals = tr.children();
@@ -285,7 +295,11 @@ MemoViewModel.prototype = {
         var text_array = that.writing_text.text.split("\n");
         text_array.splice(delete_index, 1);
         that.writing_text.text = text_array.join("\n");
-        that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+        that.socket.emit('text',{
+          no: that.no,
+          name: that.getName(),
+          avatar: window.localStorage.avatarImage,
+          text: that.writing_text.text});
       });
     });
 
@@ -300,7 +314,11 @@ MemoViewModel.prototype = {
       var text_array = that.writing_text.text.split("\n");
       text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
       that.writing_text.text = text_array.join("\n");
-      that.socket.emit('text',{no: that.no, text: that.writing_text.text});
+      that.socket.emit('text',{
+        no: that.no,
+        name: that.getName(),
+        avatar: window.localStorage.avatarImage,
+        text: that.writing_text.text});
 
       return false;
     });
@@ -331,7 +349,11 @@ MemoViewModel.prototype = {
       var $target_code = $('#share_memo_' + this.no).children('.code');
       $target_code.val(this.writing_text.text);
     }else{
-      this.socket.emit('text',{no: this.no, text: this.writing_text.text});
+      this.socket.emit('text',{
+        no: this.no,
+        name: this.getName(),
+        avatar: window.localStorage.avatarImage,
+        text: this.writing_text.text});
     }
   },
 
@@ -488,7 +510,11 @@ MemoViewModel.prototype = {
 
   applyToWritingText: function(func){
     this.writing_text.text = func(this.writing_text.text);
-    this.socket.emit('text',{no: this.no, text: this.writing_text.text});
+    this.socket.emit('text',{
+      no: this.no,
+      name: this.getName(),
+      avatar: window.localStorage.avatarImage,
+      text: this.writing_text.text});
   },
 
   showMoveToBlogButton: function($selected_target, login_name){
