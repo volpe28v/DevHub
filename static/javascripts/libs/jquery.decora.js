@@ -10,6 +10,10 @@
       SYM_CHECKED = "[x]",
       SYM_UNCHECKED = "[ ]";
 
+  emojify.setConfig({
+    img_dir: 'img/emoji',  // Directory for emoji images
+  });
+
   $.fn.decora = function( options ){
     var defaults = {
       checkbox_callback: function(that, applyCheckStatus){}
