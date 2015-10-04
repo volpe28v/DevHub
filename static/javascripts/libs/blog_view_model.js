@@ -416,7 +416,6 @@ BlogViewModel.prototype = {
     var id = item._id;
     var $target = $('#' + id);
     $target.find(".code-out").showDecora(item.text);
-    $target.find(".code-out tr:first").hide();
     var $body_tooltip = $target.find("span[rel=tooltip]");
     if ($body_tooltip != null){
       $body_tooltip.tooltip({placement: 'bottom'});

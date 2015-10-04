@@ -142,15 +142,15 @@ $(function() {
       $target = $("#" + $(this).data('id'));
       var target_top = $target.offset().top;
       var base_top = $("#blog_list").offset().top;
-      $('#blog_area').scrollTop(target_top - base_top + 48);
+      $('#blog_area').scrollTop(target_top - base_top + 38);
       blogViewModel.toggleIndexes($.view(this));
     })
     .on("click",".index-li", function(){
       var index = $(this).closest(".index-ul").find(".index-li").index(this);
       var id = $(this).closest(".index-ul").data("id");
       var $code_out = $('#' + id);
-      var pos = $code_out.find(":header").eq(index).offset().top - $('#blog_list').offset().top;
-      $('#blog_area').scrollTop(pos + 48);
+      var pos = $code_out.find(":header").eq(index + 1).offset().top - $('#blog_list').offset().top;
+      $('#blog_area').scrollTop(pos + 42);
       return true;
     })
     .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
