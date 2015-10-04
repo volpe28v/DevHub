@@ -69,6 +69,11 @@ body{
   overflow: hidden;
 }
 
+.memo-alert {
+  color: #3a87ad !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .area-inner {
   margin-right: 14px;
   margin-left: 14px;

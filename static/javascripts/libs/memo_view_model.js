@@ -247,11 +247,19 @@ MemoViewModel.prototype = {
     var that = this;
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
+    var $code_out = $target.find('.code-out');
 
-    $target.find('.code-out').off('keydown');
-    $target.find('.code-out').off('click');
+    $code_out.off('keydown');
+    $code_out.off('click');
+    $code_out.showDecora(this.writing_text.text);
 
-    $target.find('.code-out').showDecora(this.writing_text.text);
+    if (this.writing_text.text == ""){
+      // テキストが空なのでメッセージを表示する
+      $code_out.prepend($('<div/>').addClass('memo-alert alert alert-info').
+        html('This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.'));
+      return;
+    }
+
     $target.find('.code-out').sortable({
       items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
       start: function(event,ui){
