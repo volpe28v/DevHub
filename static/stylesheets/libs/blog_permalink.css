@@ -305,6 +305,10 @@ pre.text-base-style {
   margin-right: 10px;
 }
 
+.edit-blog {
+  margin-left: 10px;
+}
+
 .ref-point,
 .edit-blog,
 .remove-blog {
