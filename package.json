@@ -6,7 +6,7 @@
     "ejs": "1.0.0",
     "express": "3.4.8",
     "grid-fs": "^0.1.2",
-    "mongodb": "1.4.8",
+    "mongodb": "1.4.29",
     "nightwatch": "0.5.22",
     "q": "^1.1.2",
     "request": "2.39.0",
