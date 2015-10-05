@@ -257,7 +257,6 @@ MemoViewModel.prototype = {
       // テキストが空なのでメッセージを表示する
       $code_out.prepend($('<div/>').addClass('memo-alert alert alert-info').
         html('This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.'));
-      return;
     }
 
     $target.find('.code-out').sortable({
