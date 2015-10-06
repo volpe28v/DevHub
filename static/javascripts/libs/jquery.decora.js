@@ -84,6 +84,7 @@
       var img_index = $(this).closest('a').data('index');
       var current_height = Number($img.css('height').replace('px',''));
       var next_height = current_height + 20;
+      $img.css('height', next_height + "px");
 
       options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
       return false;
@@ -95,6 +96,7 @@
       var current_height = Number($img.css('height').replace('px',''));
       var next_height = current_height - 20;
       if (next_height < 20){ next_height = 20; }
+      $img.css('height', next_height + "px");
 
       options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
       return false;
