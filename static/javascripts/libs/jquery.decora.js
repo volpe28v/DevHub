@@ -16,7 +16,8 @@
 
   $.fn.decora = function( options ){
     var defaults = {
-      checkbox_callback: function(that, applyCheckStatus){}
+      checkbox_callback: function(that, applyCheckStatus){},
+      img_size_callback: function(that, applyImgSize){}
     };
 
     var options = $.extend( defaults, options );
@@ -54,14 +55,65 @@
         });
     }
 
+    function _updateImageSize(index, next_height, target_text){
+      var current_index = 0;
+      return target_text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
+        function(){
+          var matched_img = arguments[0];
+          current_index++;
+          var matched_link = arguments[3];
+          if (current_index != index){
+            return matched_img;
+          }else{
+            return matched_link + " " + next_height;
+          }
+        });
+    }
+
     $(this).on('click',':checkbox', function(){
       var check_no = $(this).data('no');
       if (check_no == undefined){ return; }
       var is_checked = $(this).attr("checked") ? true : false;
       var that = this;
 
-      options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked))
+      options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked));
+    })
+    .on('click','.img-plus', function(){
+      var that = this;
+      var $img = $(this).closest('a').find('img');
+      var img_index = $(this).closest('a').data('index');
+      var current_height = Number($img.css('height').replace('px',''));
+      var next_height = current_height + 20;
+
+      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+      return false;
+    })
+    .on('click','.img-minus', function(){
+      var that = this;
+      var $img = $(this).closest('a').find('img');
+      var img_index = $(this).closest('a').data('index');
+      var current_height = Number($img.css('height').replace('px',''));
+      var next_height = current_height - 20;
+      if (next_height < 20){ next_height = 20; }
+
+      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+      return false;
+    })
+    .on('dblclick','.img-plus', function(){
+      return false;
+    })
+    .on('dblclick','.img-minus', function(){
+      return false;
+    })
+    .on('mouseenter','.thumbnail', function(){
+      $(this).find(".img-plus").show();
+      $(this).find(".img-minus").show();
+    })
+    .on('mouseleave','.thumbnail', function(){
+      $(this).find(".img-plus").hide();
+      $(this).find(".img-minus").hide();
     });
+
     return this;
   }
 
@@ -253,19 +305,17 @@
   }
 
   function _decorate_img_tag( text, default_height){
+    var img_index = 0;
     var img_text = text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
         function(){
+          img_index++;
           var matched_link = arguments[3];
           var height = arguments[7];
           if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
             height = default_height;
           }
           var prefix = arguments[1] ? arguments[1] : "";
-          if (height){
-            return prefix + '<a href="' + matched_link + '" class="thumbnail" style="vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/></a>';
-          }else{
-            return prefix + '<a href="' + matched_link + '" target="_blank" class="thumbnail" style="display: inline-block; vertical-align: top;"><img src="' + matched_link + '"/></a>';
-          }
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
         });
     return img_text;
   }

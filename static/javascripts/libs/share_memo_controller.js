@@ -315,6 +315,10 @@ ShareMemoController.prototype = {
         checkbox_callback: function(context, applyCheckStatus){
           // チェック対象のテキストを更新する
           that.currentMemo().applyToWritingText(applyCheckStatus);
+        },
+        img_size_callback: function(context, applyImgSize){
+          // チェック対象のテキストを更新する
+          that.currentMemo().applyToWritingText(applyImgSize);
         }
       })
       .on('dblclick','.code', function(e){
