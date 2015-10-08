@@ -57,7 +57,9 @@
 
     function _updateImageSize(index, next_height, target_text){
       var current_index = 0;
-      return target_text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
+
+      var deco_func = function(target_text){
+        return target_text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
         function(){
           var matched_img = arguments[0];
           current_index++;
@@ -68,6 +70,18 @@
             return matched_link + " " + next_height;
           }
         });
+      };
+
+      var bq_sepa_array = target_text.split("```");
+      for (var i = 0; i < bq_sepa_array.length; i++){
+        if (bq_sepa_array[i] != undefined){
+          if (i%2 == 0){
+            bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+          }
+        }
+      }
+
+      return bq_sepa_array.join('```');
     }
 
     $(this).on('click',':checkbox', function(){
@@ -110,6 +124,24 @@
     .on('mouseenter','.thumbnail', function(){
       $(this).find(".img-plus").show();
       $(this).find(".img-minus").show();
+
+      var that = this;
+      var img_index = $(this).data('index');
+      $(this).find("img").resizable({
+        aspectRatio: true,
+        autoHide: true,
+        start: function(e, ui){
+          // リサイズ中は colorbox を無効化
+          $(that).on('click', function(){ return false; });
+        },
+        stop: function(e, ui){
+          var next_height = $(this).height();
+          options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+
+          // リサイズ後は colorbox を有効化
+          $(that).on('click', function(){ return true; });
+        }
+      });
     })
     .on('mouseleave','.thumbnail', function(){
       $(this).find(".img-plus").hide();
@@ -149,11 +181,11 @@
   function _set_colorbox($dom){
     $dom.colorbox({
       transition: "none",
-    rel: "img",
-    maxWidth: "100%",
-    maxHeight: "100%",
-    initialWidth: "200px",
-    initialHeight: "200px"
+      rel: "img",
+      maxWidth: "100%",
+      maxHeight: "100%",
+      initialWidth: "200px",
+      initialHeight: "200px"
     });
   }
 
