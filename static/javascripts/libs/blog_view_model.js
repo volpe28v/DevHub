@@ -349,6 +349,11 @@ BlogViewModel.prototype = {
   toggleIndexes: function(view){
     var index = view.index;
     var blog = this.items[index];
+    for (var i = 0; i < this.items.length ; i++){
+      if (this.items[i] != blog){
+        $.observable(this.items[i]).setProperty("display_indexes", "display: none");
+      }
+    }
 
     if (blog.indexes.length <= 0){ return; }
 

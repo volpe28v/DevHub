@@ -38,8 +38,8 @@ body{
 
 .index-body a{
   min-height: 46px;
-  border: 1px solid #ccc;
-  background-color: #fefefe;
+  border: 1px solid #bce8f1 !important;
+  background-color: #d9edf7;
 }
 
 .index-body a:hover {
@@ -54,6 +54,7 @@ body{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #3a87ad;
 }
 
 .writer {
@@ -449,7 +450,7 @@ hr {
   padding: 3px 0;
   text-decoration: none;
   min-height: 0px;
-  border: 0px;
+  border: 0px !important;
   background-color: white;
 }
 
