@@ -194,7 +194,8 @@
     target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
     target_text = _decorate_link_tag( target_text );
     target_text = _decorate_download_tag( target_text );
-    target_text = _decorate_img_tag( target_text, 50 );
+    img_result = _decorate_img_tag( target_text, 50, 0);
+    target_text = img_result.text;
     target_text = _decorate_line_color( target_text );
     target_text = _decorate_ref( target_text );
     target_text = _decorate_hr( target_text );
@@ -204,6 +205,7 @@
 
   function _create_decorate_html_tag(){
     var checkbox_no = 0;
+    var img_no = 0;
 
     return function(deco_text){
       // 装飾有り
@@ -211,11 +213,18 @@
       deco_text = _decorate_wip( deco_text );
       deco_text = _decorate_link_tag( deco_text );
       deco_text = _decorate_download_tag( deco_text );
-      deco_text = _decorate_img_tag( deco_text, 200 );
+
+      var img_result = _decorate_img_tag( deco_text, 200, img_no );
+      img_no = img_result.no;
+      deco_text = img_result.text;
+
       deco_text = _decorate_xap_tag( deco_text, 200, 200 );
+
       var check_result = _decorate_checkbox( deco_text, checkbox_no );
       checkbox_no = check_result.no;
-      deco_text = _decorate_draggable( check_result.text );
+      deco_text = check_result.text;
+
+      deco_text = _decorate_draggable( deco_text );
       deco_text = _decorate_header( deco_text );
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
@@ -338,8 +347,7 @@
     return img_text;
   }
 
-  function _decorate_img_tag( text, default_height){
-    var img_index = 0;
+  function _decorate_img_tag( text, default_height, img_index){
     var img_text = text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
         function(){
           img_index++;
@@ -351,7 +359,7 @@
           var prefix = arguments[1] ? arguments[1] : "";
           return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
         });
-    return img_text;
+    return {text: img_text, no: img_index};
   }
 
   // for SilverLight
