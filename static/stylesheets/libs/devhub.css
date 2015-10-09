@@ -293,11 +293,15 @@ a:hover {
   right: 50px;
 }
 
-#move_to_diff {
+#diff_controller {
   opacity: 0.8;
   position: fixed;
   bottom: 50%;
   right: 50px;
+}
+
+#diff_done {
+  padding-top: 5px;
 }
 
 .code {

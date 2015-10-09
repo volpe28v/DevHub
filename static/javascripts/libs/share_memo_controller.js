@@ -295,7 +295,7 @@ ShareMemoController.prototype = {
         $share_memo.find('.sync-text').hide();
 
         if (that.currentMemo().diff_block_list.length > 0){
-          $('#move_to_diff').fadeIn();
+          $('#diff_controller').fadeIn();
         }
 
         return true;
@@ -355,6 +355,11 @@ ShareMemoController.prototype = {
     $('#move_to_diff').click(function(){
       var pos = that.currentMemo().getNextDiffPos();
       $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
+    });
+
+    $('#diff_done').click(function(){
+      that.currentMemo().endDiff();
+      $('#memo_area').scrollTop(0);
     });
 
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
