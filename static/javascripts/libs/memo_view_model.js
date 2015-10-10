@@ -9,6 +9,8 @@ function MemoViewModel(param){
   this.code_prev = "";
   this.writing_loop_timer = { id: -1, code_no: 0};
   this.is_shown_move_to_blog = false;
+  this.is_selected = false;
+  this.is_existed_update = true;
 
   this.diff_mode = false;
   this.diff_block_list = [];
@@ -23,6 +25,7 @@ MemoViewModel.prototype = {
     socket.on('text' + this.no, function(text_log) {
       that.setText(text_log);
       that._updateIndexes();
+      that.is_existed_update = true;
 
       if ( that.edit_mode ){
         // 編集中の共有メモに他ユーザの変更が来たら編集終了
@@ -31,8 +34,10 @@ MemoViewModel.prototype = {
           that.switchFixShareMemo($target.children('.code').caretLine());
         }
       }else{
-        // 同共有メモを編集していない場合はメモ本文を更新
-        that.showText();
+        // 同共有メモを開いている場合にはリアルタイムに更新
+        if (that.is_selected){
+          that.showText();
+        }
       }
     });
 
@@ -204,7 +209,7 @@ MemoViewModel.prototype = {
       var code = $target_code.val();
       if (that.code_prev != code) {
         that.socket.emit('text',{
-          no: that.no, 
+          no: that.no,
           name: that.getName(),
           avatar: window.localStorage.avatarImage,
           text: code});
@@ -244,6 +249,10 @@ MemoViewModel.prototype = {
   },
 
   showText: function(){
+    // メモに更新があれば実行
+    if (!this.is_existed_update){ return; }
+    this.is_existed_update = false;
+
     var that = this;
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
@@ -367,6 +376,12 @@ MemoViewModel.prototype = {
   select: function(){
     $('.index-ul').hide();
     $('#share_memo_index_' + this.no).show();
+    this.is_selected = true;
+    this.showText();
+  },
+
+  unselect: function(){
+    this.is_selected = false;
   },
 
   showIndexList: function(){

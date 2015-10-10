@@ -227,6 +227,10 @@ ShareMemoController.prototype = {
         var memoViewModel = that.memoViewModels[$.view(this).index];
 
         window.localStorage.tabSelectedID = "#" + $(this).attr("id");
+
+        for (var i = 0; i < that.memoViewModels.length; i++){
+          that.memoViewModels[i].unselect();
+        }
         that.currentMemoNo = memoViewModel.no;
         that.currentMemo().select();
 
