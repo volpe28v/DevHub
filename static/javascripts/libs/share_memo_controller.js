@@ -142,7 +142,9 @@ ShareMemoController.prototype = {
         that.matched_next();
       }
     }else{
-      that.matched_next();
+      if (that.matched_num > 0){
+        that.matched_next();
+      }
     }
   },
 
@@ -200,6 +202,11 @@ ShareMemoController.prototype = {
             }
           },1000);
         }
+        if (that.keyword != ""){
+          $("#search_clear").show();
+        }else{
+          $("#search_clear").hide();
+        }
       })
       .on("focus", ".search-query", function(){
         $(this).switchClass("input-small", "input-large","fast");
@@ -208,6 +215,15 @@ ShareMemoController.prototype = {
         if (that.keyword == ""){
           $(this).switchClass("input-large", "input-small","fast");
         }
+      })
+      .on("click", "#search_clear", function(){
+        $(".search-query").val("");
+        $(".search-query").switchClass("input-large", "input-small","fast");
+        that.keyword = "";
+        that.search();
+        that.isSearching = false;
+        $('#memo_area').scrollTop(0);
+        $(this).hide();
       })
       .on("click", "#prev_match", function(){
         that.matched_prev();

@@ -13,6 +13,20 @@ body{
   overflow: hidden;
 }
 
+#search_form {
+  position: relative;
+}
+
+#search_clear {
+  display: none;
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  right: 7px;
+  top: 12px;
+  cursor: pointer;
+}
+
 #blog_input_area {
   padding: 10px 10px 0 10px;
 

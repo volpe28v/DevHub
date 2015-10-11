@@ -21,6 +21,20 @@ body{
   display: none;
 }
 
+#search_form {
+  position: relative;
+}
+
+#search_clear {
+  display: none;
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  right: 7px;
+  top: 12px;
+  cursor: pointer;
+}
+
 #matched_control {
   margin-right: 5px;
   margin-left: 5px;

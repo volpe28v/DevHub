@@ -72,8 +72,22 @@ $(function() {
       }else{
         // 検索した場合はトップへスクロール
         $('#blog_area').scrollTop(0);
+        $('#index_area').scrollTop(0);
+      }
+
+      if (blogViewModel.hasKeyword()){
+        $("#search_clear").show();
+      }else{
+        $("#search_clear").hide();
       }
       return false;
+    })
+    .on('keyup', ".search-query", function(event){
+        if($(this).val() != ""){
+          $("#search_clear").show();
+        }else{
+          $("#search_clear").hide();
+        }
     })
     .on("focus", ".search-query", function(){
       $(this).switchClass("input-small", "input-large","fast");
@@ -82,6 +96,14 @@ $(function() {
       if (!blogViewModel.hasKeyword()){
         $(this).switchClass("input-large", "input-small","fast");
       }
+    })
+    .on("click", "#search_clear", function(){
+      $(this).hide();
+      $(".search-query").val("");
+      $(".search-query").switchClass("input-large", "input-small","fast");
+      blogViewModel.search();
+      $('#blog_area').scrollTop(0);
+      $('#index_area').scrollTop(0);
     })
     .on("click", "#prev_match", function(){
       blogViewModel.prev(function(index_top, blog_top){
