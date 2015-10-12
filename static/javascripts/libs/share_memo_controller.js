@@ -119,6 +119,11 @@ ShareMemoController.prototype = {
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
 
+      // 検索前に一旦最新の表示に更新する
+      for (var i = 0; i < that.memoViewModels.length; i++){
+        that.memoViewModels[i].showText();
+      }
+ 
       that.before_keyword = that.keyword;
       that.matched_doms = [];
       var reg_keyword = new RegExp(that.keyword,"i");
