@@ -248,14 +248,21 @@ BlogViewModel.prototype = {
 
   _indexes: function(text){
     var indexes = [];
-    text.split("\n").forEach(function(val){
-      var matches = val.match(/^(#+)/);
-      if (matches){
-        var header_level = matches[1].length;
-        var header_text = val.replace(/#/g,"");
-        indexes.push({header: '<div class="header-level-' + header_level + '">' + header_text + '</div>'});
+
+    $.decora.apply_to_deco_and_raw(text,
+      function(deco_text){
+        deco_text.split("\n").forEach(function(val){
+          var matches = val.match(/^(#+)/);
+          if (matches){
+            var header_level = matches[1].length;
+            var header_text = val.replace(/#/g,"");
+            indexes.push({header: '<div class="header-level-' + header_level + '">' + header_text + '</div>'});
+          }
+        });
+      },
+      function(raw_text){
       }
-    });
+    );
     return indexes;
   },
 
