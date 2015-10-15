@@ -379,7 +379,7 @@
     </script>
 
     <script id="shareMemoTabTmpl" type="text/x-jsrender">
-      <li class="share-memo-tab" data-no="{{>no}}">
+      <li id="share_memo_li_{{>no}}" class="share-memo-tab" data-no="{{>no}}">
         <a class="share-memo-tab-elem" id="share_memo_tab_{{>no}}" href="#share_memo_{{>no}}" data-toggle="tab" data-no="{{>no}}" style="display:none">
           <span class="share-memo-title">{^{:title}}</span>
           <div class="writer silent-name">{^{:writer}}</div>

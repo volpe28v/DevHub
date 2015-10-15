@@ -397,6 +397,22 @@ ShareMemoController.prototype = {
       }));
     }
 
+    $("#share_memo_nav").sortable({
+      items: ".share-memo-tab",
+      placeholder: 'draggable-placeholder',
+      revert: true,
+      tolerance: "pointer",
+      distance: 20,
+      forcePlaceholderSize: true,
+      scroll: false,
+      stop: function(event,ui){
+        var memo_tabs = $(this).sortable('toArray');
+        var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); }).join(',');
+
+        socket.emit('memo_tab_numbers', {numbers: tab_numbers});
+      }
+    });
+
     $("#memo_index").click(function(){
       $('#chat_area').scrollTop(0);
       that.currentMemo().showIndexList();
@@ -473,6 +489,13 @@ ShareMemoController.prototype = {
         $('#share_memo_tab_' + i).css("display", "block");
       }
       $('#memo_number').val(that.memo_number);
+    });
+
+    socket.on('memo_tab_numbers', function(data){
+      if (data == null){ return; }
+      data.numbers.split(',').forEach(function(num){
+        $('#share_memo_nav').append($('#share_memo_li_' + num));
+      });
     });
   },
 
