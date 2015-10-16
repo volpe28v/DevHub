@@ -14,6 +14,8 @@ function ShareMemoController(param){
   this.memoViewModels = [];
   this.currentMemoNo = 0;
 
+  this.isMovingTab = false;
+
   // searchBox
   this.isSearching = false;
   this.keyword = "";
@@ -241,6 +243,8 @@ ShareMemoController.prototype = {
 
     $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
       .on('click','.share-memo-tab-elem', function(){
+        if (that.isMovingTab){ return true; }
+
         // 遷移前のメモを表示モードに戻す
         that.currentMemo().switchFixMode();
 
@@ -405,7 +409,12 @@ ShareMemoController.prototype = {
       distance: 20,
       forcePlaceholderSize: true,
       scroll: false,
+      start: function(event,ui){
+        that.isMovingTab = true;
+      },
       stop: function(event,ui){
+        that.isMovingTab = false;
+
         var memo_tabs = $(this).sortable('toArray');
         var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); }).join(',');
 
