@@ -416,7 +416,7 @@ ShareMemoController.prototype = {
         that.isMovingTab = false;
 
         var memo_tabs = $(this).sortable('toArray');
-        var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); }).join(',');
+        var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); });
 
         socket.emit('memo_tab_numbers', {numbers: tab_numbers});
       }
@@ -490,21 +490,35 @@ ShareMemoController.prototype = {
       socket.emit('memo_number', {num: num});
     });
 
+    function apply_memo_number(num){
+      that.memo_number = num;
+      $('.share-memo-tab-elem').each(function(i){
+        if (i< that.memo_number){
+          $(this).fadeIn("fast");
+          $(this).css("display", "block");
+        }else{
+          $(this).hide();
+        }
+      });
+    }
+
     socket.on('memo_number', function(data){
-      that.memo_number = data.num;
-      $('.share-memo-tab-elem').hide();
-      for (var i = 1; i <= that.memo_number; i++){
-        $('#share_memo_tab_' + i).fadeIn("fast");
-        $('#share_memo_tab_' + i).css("display", "block");
-      }
-      $('#memo_number').val(that.memo_number);
+      apply_memo_number(data.num);
+      $('#memo_number').val(data.num);
     });
 
     socket.on('memo_tab_numbers', function(data){
       if (data == null){ return; }
-      data.numbers.split(',').forEach(function(num){
+
+      if (typeof data.numbers == 'string'){ // 旧バージョンからの変換処理
+        data.numbers = data.numbers.split(',');
+      }
+
+      data.numbers.forEach(function(num){
         $('#share_memo_nav').append($('#share_memo_li_' + num));
       });
+
+      apply_memo_number(that.memo_number);
     });
   },
 
