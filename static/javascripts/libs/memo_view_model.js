@@ -23,7 +23,7 @@ MemoViewModel.prototype = {
   initSocket: function(){
     var that = this;
     socket.on('text' + this.no, function(text_log) {
-      that.setText(text_log);
+      if (that.setText(text_log) == false){ return; };
       that._updateIndexes();
       that.is_existed_update = true;
 
@@ -74,6 +74,8 @@ MemoViewModel.prototype = {
 
   setText: function(text_body){
     var that = this;
+    if (this.writing_text.text == text_body.text){ return false; }
+
     this.writing_text = text_body;
     $.observable(this).setProperty("writer", this.writing_text.name);
     $.observable(this).setProperty("title", this._title(this.writing_text.text));
@@ -120,6 +122,8 @@ MemoViewModel.prototype = {
       $writer.removeClass("writing-name");
       that.update_timer = null;
     },3000);
+
+    return true;
   },
 
   switchFixMode: function(){
