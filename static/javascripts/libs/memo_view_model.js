@@ -74,7 +74,8 @@ MemoViewModel.prototype = {
 
   setText: function(text_body){
     var that = this;
-    if (this.writing_text.text == text_body.text){ return false; }
+    // メモのハッシュ値が変更あれば更新する
+    if (text_body.hash != undefined && this.writing_text.hash == text_body.hash){ return false; }
 
     this.writing_text = text_body;
     $.observable(this).setProperty("writer", this.writing_text.name);
