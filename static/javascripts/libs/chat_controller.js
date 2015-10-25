@@ -67,6 +67,39 @@ ChatController.prototype = {
     }
   },
 
+  doFilterTimeline: function(){
+    var that = this;
+    MessageDate.init(); // タイムラインを再読み込みしたら未読解除
+    $.observable(this).setProperty("hidingMessageCount", 0);
+
+    if (window.localStorage.timeline == "mention"){
+      $('#mention_alert').slideDown();
+    }else{
+      $('#mention_alert').slideUp();
+    }
+    if (window.localStorage.timeline == "own"){
+      $('#mention_own_alert').slideDown();
+    }else{
+      $('#mention_own_alert').slideUp();
+    }
+ 
+    if (that.filterWord != ""){
+      $('#filter_word_alert').slideDown();
+    }else{
+      $('#filter_word_alert').slideUp();
+    }
+ 
+    if (that.filterName != ""){
+      $('#filter_name_alert').slideDown();
+    }else{
+      $('#filter_name_alert').slideUp();
+    }
+ 
+    this.chatViewModels.forEach(function(vm){
+      vm.reloadTimeline();
+    });
+  },
+ 
   doClientCommand: function(message){
     var that = this;
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
@@ -80,13 +113,8 @@ ChatController.prototype = {
         setTimeout(function(){
           if (!that.isSearching){ return; }
           if (that._filterWord == that.filterWord){ that.isSearching = false; return; }
-          $('#timeline_all').attr('checked', 'checked');
-          $('#timeline_all').trigger("change");
-          if (that.filterWord == ""){
-            $('#filter_word_alert').slideUp();
-          }else{
-            $('#filter_word_alert').slideDown();
-          }
+          that.doFilterTimeline();
+
           that._filterWord = that.filterWord;
           that.isSearching = false;
         },1000);
@@ -95,26 +123,26 @@ ChatController.prototype = {
       $('#message').addClass("client-command");
     }else if (message.match(/^m:$/)){
       $('#message').addClass("client-command");
-      $('#timeline_mention').attr('checked', 'checked');
-      $('#timeline_mention').trigger("change");
+      window.localStorage.timeline = "mention";
+      that.doFilterTimeline();
     }else if (message.match(/^mo:$/)){
       $('#message').addClass("client-command");
-      $('#timeline_own').attr('checked', 'checked');
-      $('#timeline_own').trigger("change");
+      window.localStorage.timeline = "own";
+      that.doFilterTimeline();
     }else{
       $('#message').removeClass("client-command");
+      // mention か mention & own の場合はフィルタリングを解除
+      if (window.localStorage.timeline != "all"){
+        window.localStorage.timeline = "all";
+        that.doFilterTimeline();
+      }
+
       // 検索中または前回検索済みの場合は検索結果をクリア
       if (that.isSearching == true || that._filterWord != ""){
         that.isSearching = false;
         $.observable(that).setProperty("filterWord", "");
         that._filterWord = "";
-        $('#timeline_all').attr('checked', 'checked');
-        $('#timeline_all').trigger("change");
-      }
-
-      if (!$('#timeline_all:checked').val()){
-        $('#timeline_all').attr('checked', 'checked');
-        $('#timeline_all').trigger("change");
+        that.doFilterTimeline();
       }
     }
 
@@ -182,13 +210,9 @@ ChatController.prototype = {
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
         $.observable(that).setProperty("filterName", $(this).data("name"));
-
-        $('#timeline_all').attr('checked', 'checked');
-        $('#timeline_all').trigger("change");
-
-        $('#filter_name_alert').slideDown();
         $('.tooltip').hide();
         $('#chat_area').scrollTop(0);
+        that.doFilterTimeline();
       }else{
         var name = $(this).data("name");
         that.setMessage("@" + name + "さん");
@@ -427,47 +451,10 @@ ChatController.prototype = {
 
       // for Timeline
       if(window.localStorage.timeline == 'own'){
-        $('#timeline_own').attr('checked', 'checked');
         $('#mention_own_alert').show();
       }else if (window.localStorage.timeline == 'mention'){
-        $('#timeline_mention').attr('checked', 'checked');
         $('#mention_alert').show();
-      }else{
-        $('#timeline_all').attr('checked', 'checked');
       }
-
-      $('.timeline-radio').on('change', "input", function(){
-        MessageDate.init(); // タイムラインを再読み込みしたら未読解除
-
-        var mode = $(this).val();
-        window.localStorage.timeline = mode;
-
-        if (mode == 'all'){
-          if (that.filterWord == ""){
-            $('#filter_word_alert').slideUp();
-          }
-          if (that.filterName == ""){
-            $('#filter_name_alert').slideUp();
-          }
-
-          $('#mention_own_alert').slideUp();
-          $('#mention_alert').slideUp();
-        }else if (mode == 'own'){
-          $('.alert').hide();
-          $('#mention_own_alert').slideDown();
-          $.observable(that).setProperty("filterName", "");
-        }else{
-          $('.alert').hide();
-          $('#mention_alert').slideDown();
-          $.observable(that).setProperty("filterName", "");
-        }
-
-        $.observable(that).setProperty("hidingMessageCount", 0);
-
-        that.chatViewModels.forEach(function(vm){
-          vm.reloadTimeline();
-        });
-      });
 
       // for Send Message Key
       if(window.localStorage.sendkey == 'ctrl'){
@@ -485,10 +472,14 @@ ChatController.prototype = {
 
       $('#chat_body').on('click', '.close', function(){
         var data_id = $(this).closest(".alert").attr('id');
-        if (data_id == "memtion_own_alert"){
-
+        if (data_id == "mention_own_alert"){
+          window.localStorage.timeline = "all";
+          $('#message').val("");
+          $('#message').removeClass("client-command");
         }else if (data_id == "mention_alert"){
-
+          window.localStorage.timeline = "all";
+          $('#message').val("");
+          $('#message').removeClass("client-command");
         }else if (data_id == "filter_name_alert"){
           $.observable(that).setProperty("filterName", "");
         }else if (data_id == "filter_word_alert"){
@@ -498,8 +489,8 @@ ChatController.prototype = {
           $('#message').removeClass("client-command");
         }
 
-        $('#timeline_all').attr('checked', 'checked');
-        $('#timeline_all').trigger("change");
+        that.doFilterTimeline();
+
         return false;
       });
     }else{
