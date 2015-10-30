@@ -3,6 +3,12 @@ body{
   margin : 0px;
 }
 
+.fixed {
+  position: fixed;
+  width: 100%;
+  z-index: 10000;
+}
+
 .perfect-scrollbar-body-style {
   overflow : hidden;
 }
@@ -217,6 +223,11 @@ a:hover {
   margin: 3px;
 }
 
+.memo-control {
+  background-color: white;
+  padding: 5px 0;
+}
+
 .sync-text, .fix-text, .diff-done, .diff-button, .wip-jump {
   margin-right: 5px !important;
 }
@@ -255,8 +266,7 @@ a:hover {
 }
 
 .current-index {
-  background-color: red;
-
+  background-color: #efefef;
 }
 
 .header-level-1 {
@@ -701,11 +711,11 @@ a:hover {
 }
 
 .checkbox-count {
-  float: right;
+  float: left;
   font-size: 14px;
   font-weight: bold;
   color: #b7282e;
-  margin: 10px 5px 0 0;
+  margin: 10px 5px 0 20px;
 }
 
 .checkbox-count-done {

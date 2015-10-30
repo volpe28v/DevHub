@@ -16,6 +16,7 @@ function MemoViewModel(param){
   this.diff_block_list = [];
   this.diff_index = 0;
 
+  this.currentIndexNo = -1;
   this.initSocket();
 }
 
@@ -93,13 +94,13 @@ MemoViewModel.prototype = {
     $timestamp.attr("data-livestamp", this.writing_text.date);
 
     var $target = $('#share_memo_' + this.no);
-    var $text_date = $target.children('.text-date');
+    var $text_date = $target.find('.text-date');
     var date_name = this.writing_text.date + " - " + this.writing_text.name;
     $text_date.html(date_name);
     $text_date.addClass("writing-name");
     $text_date.show();
 
-    var $wip_jump = $target.children('.wip-jump');
+    var $wip_jump = $target.find('.wip-jump');
     if (this.writing_text.text.match(/\[WIP\]/)){
       $wip_jump.show();
     }else{
@@ -158,8 +159,8 @@ MemoViewModel.prototype = {
     this.showText();
     $share_memo.children('.code').hide();
     $share_memo.children('pre').show();
-    $share_memo.children('.fix-text').hide();
-    $share_memo.children('.sync-text').show();
+    $share_memo.find('.fix-text').hide();
+    $share_memo.find('.sync-text').show();
 
     // 閲覧モード時に編集していたキャレット位置を表示する
     var $target_tr = $share_memo.find('table tr').eq(row - 1);
@@ -200,8 +201,8 @@ MemoViewModel.prototype = {
     $target_code.focus();
 
     $share_memo.children('pre').hide();
-    $share_memo.children('.fix-text').show();
-    $share_memo.children('.sync-text').hide();
+    $share_memo.find('.fix-text').show();
+    $share_memo.find('.sync-text').hide();
 
     this.code_prev = $target_code.val();
     this.writingLoopStart();
@@ -394,6 +395,9 @@ MemoViewModel.prototype = {
   },
 
   setCurrentIndex: function(no){
+    if (this.currentIndexNo == no){ return; }
+
+    this.currentIndexNo = no;
     var $index_lists = $('#share_memo_index_' + this.no).find('li');
     $index_lists.removeClass('current-index');
     $index_lists.eq(no).addClass('current-index');

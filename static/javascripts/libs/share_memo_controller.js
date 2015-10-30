@@ -1,7 +1,8 @@
 var SHARE_MEMO_NUMBER = 30;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
-var CODE_INDEX_ADJUST_HEIGHT = 10;
+var CODE_INDEX_ADJUST_HEIGHT = 40;
+var CONTROL_FIXED_TOP = 40;
 
 function ShareMemoController(param){
   this.socket = param.socket;
@@ -455,18 +456,33 @@ ShareMemoController.prototype = {
       $('#memo_area').scrollTop(0);
     });
 
+    var control_offset_base = 0;
     $('#memo_area').scroll(function(){
       var pos = $("#memo_area").scrollTop();
-      console.log(pos);
+      var offset = $('#share-memo').offset().top;
 
+      // for control
+      var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
+      var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
+      var control_offset = $control.offset().top;
+      if ( control_offset != CONTROL_FIXED_TOP ){
+        control_offset_base = control_offset - offset;
+      }
+
+      if ( control_offset_base < pos){
+        $control.addClass('fixed');
+        $control.css("top", CONTROL_FIXED_TOP);
+        $dummy.height($control.outerHeight()).show();
+      }else{
+        $control.removeClass('fixed');
+        $dummy.hide();
+      }
+
+      // for index cursor
       var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
       var headers = $code_out.find(":header");
-      var offset = $('#share-memo').offset().top;
       for (var i = headers.length - 1; i >= 0; i--){
-        if (headers.eq(i).offset().top - offset < pos){
-          console.log(headers.eq(i).text());
-          console.log(headers.eq(i).offset().top - offset);
-
+        if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
           that.currentMemo().setCurrentIndex(i);
           break;
         }
