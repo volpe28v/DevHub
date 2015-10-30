@@ -393,6 +393,12 @@ MemoViewModel.prototype = {
     $('#index_inner').slideToggle('fast');
   },
 
+  setCurrentIndex: function(no){
+    var $index_lists = $('#share_memo_index_' + this.no).find('li');
+    $index_lists.removeClass('current-index');
+    $index_lists.eq(no).addClass('current-index');
+  },
+
   _updateIndexes: function(){
     var $index_list = $('#share_memo_index_' + this.no);
 

@@ -455,6 +455,24 @@ ShareMemoController.prototype = {
       $('#memo_area').scrollTop(0);
     });
 
+    $('#memo_area').scroll(function(){
+      var pos = $("#memo_area").scrollTop();
+      console.log(pos);
+
+      var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+      var headers = $code_out.find(":header");
+      var offset = $('#share-memo').offset().top;
+      for (var i = headers.length - 1; i >= 0; i--){
+        if (headers.eq(i).offset().top - offset < pos){
+          console.log(headers.eq(i).text());
+          console.log(headers.eq(i).offset().top - offset);
+
+          that.currentMemo().setCurrentIndex(i);
+          break;
+        }
+      }
+    });
+
     // 前回の状態を復元する
     if ( window.localStorage ){
       // タブスタイル

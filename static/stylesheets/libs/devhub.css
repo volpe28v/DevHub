@@ -254,6 +254,11 @@ a:hover {
   background-color: #0088cc;
 }
 
+.current-index {
+  background-color: red;
+
+}
+
 .header-level-1 {
   margin-left: 10px;
   margin-right: 10px;
