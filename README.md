@@ -83,7 +83,7 @@ $ grunt build
 
 ### 通知
 * チャットメッセージをポップアップでデスクトップ表示
-* Settings にて WebNotification を有効にする
+* Settings にて通知を有効にする
 
 ### アバター
 * ユーザ名の代わりにお好きなアイコンを表示
@@ -96,6 +96,11 @@ https://github.com/hashrock/hubot-devhub
 
 ### Redmine, GitHub, Gitlab, GitBucket
 https://github.com/hashrock/DevhubHook
+
+### ChromeExtension
+[DevHubNotifier](https://chrome.google.com/webstore/detail/devhubnotifier/bieodlolkaahjlgebjijmafnmccgncdf)
+* ログインなしに複数のDevHubからチャット通知を受けられる ChromeExtension.
+* [GitHub](https://github.com/volpe28v/DevHubNotifier)
 
 ## 汎用通知API
 ### チャットへの通知
