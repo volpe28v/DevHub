@@ -219,6 +219,16 @@ ChatController.prototype = {
       }
     });
 
+    $('#chat_body').exResize(function(){
+      $('.chat-control').addClass('chat-fixed');
+      $('.chat-control-dummy').show();
+      $('.chat-control').width($(this).outerWidth());
+    });
+
+    $('.chat-control').exResize(function(){
+      $('.chat-control-dummy').height($(this).outerHeight());
+    });
+
     // アップロードボタン
     $('#upload_chat_button').click(function(){
       $('#upload_chat').click();

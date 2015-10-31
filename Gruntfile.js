@@ -23,6 +23,8 @@ module.exports = function(grunt){
             "static/javascripts/libs/jquery.autosize.js",
             "static/javascripts/libs/jquery.colorbox-min.js",
             "static/javascripts/libs/jquery.selection.js",
+            "static/javascripts/libs/jquery.exfixed.js",
+            "static/javascripts/libs/jquery.exresize.js",
             "static/javascripts/libs/perfect-scrollbar.jquery.min.js",
             "static/javascripts/libs/prettify.js",
             "static/javascripts/libs/sanitize.js",

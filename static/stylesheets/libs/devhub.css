@@ -13,6 +13,20 @@ body{
   z-index: 1000;
 }
 
+.chat-fixed {
+  position: fixed;
+  z-index: 1000;
+}
+
+.chat-control {
+  background-color: white;
+}
+
+#chat_nav{
+  background-color: white;
+}
+
+
 .perfect-scrollbar-body-style {
   overflow : hidden;
 }

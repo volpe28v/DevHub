@@ -103,22 +103,25 @@
           </div>
 
           <div id="chat_inner" class="area-inner">
-            <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
-            <div id="login_list">
-              <nobr><span id="login_list_body" style="display:block"></span></nobr>
+            <div class="chat-control">
+              <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
+              <div id="login_list">
+                <nobr><span id="login_list_body" style="display:block"></span></nobr>
+              </div>
+              <form id="form" class="form-inline">
+                <table>
+                  <tr>
+                    <td style=""><input type="text" name="name" id="name" style="width:50px" placeholder="Name"/></td>
+                    <td style="width: 100%; padding-right: 11px;">
+                      <textarea name="message" id="message" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
+                    </td>
+                    <td><button id="send_button" class="btn btn-small btn-primary">Send</button></td>
+                    <td><input type="file" id="upload_chat" name="file" style="display:none"></input><button id="upload_chat_button" class="btn btn-small btn-inverse visible-phone" style="display:none"><i class="icon-upload icon-white"></i></button></td>
+                  </tr>
+                </table>
+              </form>
             </div>
-            <form id="form" class="form-inline">
-              <table>
-                <tr>
-                  <td style=""><input type="text" name="name" id="name" style="width:50px" placeholder="Name"/></td>
-                  <td style="width: 100%; padding-right: 11px;">
-                    <textarea name="message" id="message" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
-                  </td>
-                  <td><button id="send_button" class="btn btn-small btn-primary">Send</button></td>
-                  <td><input type="file" id="upload_chat" name="file" style="display:none"></input><button id="upload_chat_button" class="btn btn-small btn-inverse visible-phone" style="display:none"><i class="icon-upload icon-white"></i></button></td>
-                </tr>
-              </table>
-            </form>
+            <div class="chat-control-dummy" style="display:none;"></div>
             <div id="chat_body" class="text-base-style">
               <div id="alert_timeline"></div>
               <div id="chat_tabbable"  class="tabbable">
