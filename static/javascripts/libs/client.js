@@ -11,6 +11,8 @@ var shareMemoController = null;
 // for favicon
 var faviconNumber = null;
 
+var zenMode = false;
+
 $(function() {
   init_websocket();
 
@@ -26,6 +28,9 @@ $(function() {
     socket: socket,
     setMessage: function(message){
       chatController.setMessage(message);
+    },
+    zenMode: function(){
+      return zenMode;
     }
   });
 
@@ -92,29 +97,36 @@ $(function() {
 
   // ナビバー消去
   $("#both_zen").click(function(){
+    zenMode = true;
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
+    $("#memo_area").trigger("scroll");
   });
 
   $("#memo_zen").click(function(){
+    zenMode = true;
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
     $("#chat_area").hide();
     $("#memo_area").removeClass("span7 memo-area");
     $("#memo_area").addClass("span12 memo-area-zen");
+    $("#memo_area").trigger("scroll");
   });
 
   $("#chat_zen").click(function(){
+    zenMode = true;
     $(".navbar").fadeOut();
     $(".dummy-top-space").fadeOut();
     $("#memo_area").hide();
     $("#chat_area").removeClass("span5");
     $("#chat_area").addClass("span12");
+    $("#memo_area").trigger("scroll");
   });
 
   // ショートカットキー
   $(document).on("keyup", function (e) {
     if (e.keyCode == 27){ // ESC key return fullscreen mode.
+      zenMode = false;
       $(".navbar").fadeIn();
       $(".dummy-top-space").fadeIn();
 
@@ -125,6 +137,7 @@ $(function() {
 
       $("#memo_area").fadeIn();
       $("#chat_area").fadeIn();
+      $("#memo_area").trigger("scroll");
     } else if (e.ctrlKey && e.ctrlKey == true ){
       /*
       if (e.keyCode == 73){ // Ctrl - i : focus chat form

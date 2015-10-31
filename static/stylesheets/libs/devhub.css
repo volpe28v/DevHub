@@ -3,10 +3,14 @@ body{
   margin : 0px;
 }
 
+.navbar {
+  z-index: 2000;
+}
+
 .fixed {
   position: fixed;
   width: 100%;
-  z-index: 10000;
+  z-index: 1000;
 }
 
 .perfect-scrollbar-body-style {

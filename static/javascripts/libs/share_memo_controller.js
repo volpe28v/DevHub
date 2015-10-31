@@ -3,10 +3,12 @@ var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
 var CONTROL_FIXED_TOP = 40;
+var CONTROL_FIXED_ZEN_TOP = 0;
 
 function ShareMemoController(param){
   this.socket = param.socket;
   this.setMessage = param.setMessage;
+  this.zenMode = param.zenMode;
   this.memo_number = 1;
 
   this.doing_up = false;
@@ -464,14 +466,14 @@ ShareMemoController.prototype = {
       // for control
       var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
       var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
-      var control_offset = $control.offset().top;
-      if ( control_offset != CONTROL_FIXED_TOP ){
-        control_offset_base = control_offset - offset;
+      var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+      if (!$control.hasClass('fixed')){
+        control_offset_base = $control.offset().top - offset;
       }
 
       if ( control_offset_base < pos){
         $control.addClass('fixed');
-        $control.css("top", CONTROL_FIXED_TOP);
+        $control.css("top", fixed_top);
         $dummy.height($control.outerHeight()).show();
       }else{
         $control.removeClass('fixed');
