@@ -396,7 +396,11 @@
               <i class="icon-resize-vertical"></i> Diff
               <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu diff-list"></ul>
+            <ul class="dropdown-menu diff-list">
+            {^{for diffTitles}}
+              <li><a class="diff-li" href="#">{^{:title}}</a></li>
+            {{/for}}
+            </ul>
           </div>
           <button class="wip-jump btn btn-danger" style="float: left; display: none">
             <i class="icon-fire icon-white"></i> WIP
@@ -416,6 +420,9 @@
 
     <script id="shareMemoIndexTmpl" type="text/x-jsrender">
       <ul id="share_memo_index_{{>no}}" class="index-ul" data-no="{{>no}}">
+      {^{for indexes}}
+        <li><a class="index-li"><div data-link="class{>class}">{^{:body}}</div></a></li>
+      {{/for}}
       </ul>
     </script>
 

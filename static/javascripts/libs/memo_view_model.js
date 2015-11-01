@@ -12,6 +12,8 @@ function MemoViewModel(param){
   this.is_selected = false;
   this.is_existed_update = true;
 
+  this.indexes = []; //binding
+  this.diffTitles = []; //binding
   this.diff_mode = false;
   this.diff_block_list = [];
   this.diff_index = 0;
@@ -404,9 +406,11 @@ MemoViewModel.prototype = {
   },
 
   _updateIndexes: function(){
+    console.log("updateIndexes");
+    var that = this;
     var $index_list = $('#share_memo_index_' + this.no);
 
-    $index_list.empty();
+    $.observable(that.indexes).remove(0, that.indexes.length);
     $.decora.apply_to_deco_and_raw(this.writing_text.text,
       function(deco_text){
         // 装飾ありの場合は目次候補
@@ -415,10 +419,12 @@ MemoViewModel.prototype = {
           if (matches){
             var header_level = matches[1].length;
             var header_text = val.replace(/^#+/g,"");
-            $index_list.append(
-              $('<li/>').append(
-                $('<a/>').addClass("index-li").append(
-                  $('<div/>').addClass("header-level-" + header_level).html($.decora.to_html(header_text)))));
+
+            $.observable(that.indexes).insert(
+              {
+                class: "header-level-" + header_level,
+                body: $.decora.to_html(header_text)
+              });
           }
         });
       },
@@ -443,10 +449,9 @@ MemoViewModel.prototype = {
 
   showDiffList: function(){
     var $share_memo = $('#share_memo_' + this.no);
-    var $diff_list = $share_memo.find('.diff-list');
     var text_log = this._getLogsForDiff();
 
-    $diff_list.empty();
+    $.observable(this.diffTitles).remove(0, this.diffTitles.length);
     var current_date = moment();
     for (var i = 1; i < text_log.length; i++){
       var diff_date = moment(text_log[i].date);
@@ -454,7 +459,7 @@ MemoViewModel.prototype = {
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
         diff_class += " today-diff-list";
       }
-      $diff_list.append($('<li/>').append($('<a/>').addClass(diff_class).attr('href',"#").html(text_log[i].date + " - " + text_log[i].name)));
+      $.observable(this.diffTitles).insert({title: text_log[i].date + " - " + text_log[i].name});
     }
   },
 
