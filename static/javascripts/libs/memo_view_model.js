@@ -406,7 +406,6 @@ MemoViewModel.prototype = {
   },
 
   _updateIndexes: function(){
-    console.log("updateIndexes");
     var that = this;
     var $index_list = $('#share_memo_index_' + this.no);
 
