@@ -356,7 +356,7 @@ ChatViewModel.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@([^ .]+?)さん|@all|@" + that.room, "g");
+    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room, "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.getName()||
           arguments[0] == "@みなさん"     ||
@@ -371,8 +371,12 @@ ChatViewModel.prototype = {
     return deco_msg;
   },
 
+  escape_reg: function(target){
+    return target.replace(/\W/g,"\\$&");
+  },
+
   include_target_name: function(msg,name){
-    var name_reg = RegExp("@" + name + "( |　|さん|$)");
+    var name_reg = RegExp("@" + this.escape_reg(name) + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
         msg.match("@みなさん") ||
         msg.toLowerCase().match("@all")){
@@ -382,7 +386,7 @@ ChatViewModel.prototype = {
   },
 
   include_room_name: function(msg){
-    var room_reg = RegExp("@" + this.room + "( |　|さん|$)");
+    var room_reg = RegExp("@" + this.escape_reg(this.room) + "( |　|さん|$)");
     if (msg.match(room_reg)){
       return true;
     }
