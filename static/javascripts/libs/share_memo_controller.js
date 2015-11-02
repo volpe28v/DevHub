@@ -546,10 +546,6 @@ ShareMemoController.prototype = {
     socket.on('memo_tab_numbers', function(data){
       if (data == null){ return; }
 
-      if (typeof data.numbers == 'string'){ // 旧バージョンからの変換処理
-        data.numbers = data.numbers.split(',');
-      }
-
       data.numbers.forEach(function(num){
         $('#share_memo_nav').append($('#share_memo_li_' + num));
       });
