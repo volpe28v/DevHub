@@ -183,6 +183,7 @@ MemoViewModel.prototype = {
 
   switchEditShareMemo: function(row, offset){
     var $share_memo = $('#share_memo_' + this.no);
+    this.setCurrentIndex(-1);
     this.edit_mode = true;
 
     offset = offset == undefined ? $(window).height()/3 : offset - 94;
@@ -398,11 +399,14 @@ MemoViewModel.prototype = {
 
   setCurrentIndex: function(no){
     if (this.currentIndexNo == no){ return; }
+    if (this.edit_mode){ return; }
 
     this.currentIndexNo = no;
     var $index_lists = $('#share_memo_index_' + this.no).find('li');
     $index_lists.removeClass('current-index');
-    $index_lists.eq(no).addClass('current-index');
+    if (no != -1){
+      $index_lists.eq(no).addClass('current-index');
+    }
   },
 
   _updateIndexes: function(){
