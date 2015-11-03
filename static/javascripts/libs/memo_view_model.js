@@ -458,7 +458,7 @@ MemoViewModel.prototype = {
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
         diff_class += " today-diff-list";
       }
-      $.observable(this.diffTitles).insert({title: text_log[i].date + " - " + text_log[i].name});
+      $.observable(this.diffTitles).insert({title: text_log[i].date + " - " + text_log[i].name, class: diff_class});
     }
   },
 
