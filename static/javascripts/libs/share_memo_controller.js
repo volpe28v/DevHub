@@ -344,6 +344,10 @@ ShareMemoController.prototype = {
           $('#diff_controller').fadeIn();
         }
 
+        // 一つ目のDiffに移動
+        var pos = that.currentMemo().getNextDiffPos();
+        $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+ 
         return true;
       })
       .on('click','.diff-done', function(){
