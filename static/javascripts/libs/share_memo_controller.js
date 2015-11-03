@@ -2,6 +2,7 @@ var SHARE_MEMO_NUMBER = 30;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
+var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 
@@ -268,7 +269,20 @@ ShareMemoController.prototype = {
 
     $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
       .on('click','.sync-text', function(){
-        that.currentMemo().switchEditShareMemo(0);
+        // 表示しているメモの先頭にカーソルを当てて編集状態へ
+        var pos = $("#memo_area").scrollTop();
+        var offset = $('#share-memo').offset().top;
+        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+        var $code_out_lines = $code_out.find(".code-out-tr");
+        var row = 0;
+        for (var i = $code_out_lines.length - 1; i >= 0; i--){
+          if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
+            row = i;
+            break;
+          }
+        }
+ 
+        that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
       })
       .on("click", ".ref-point", function(){
         var id = $(this).attr("id");
@@ -357,7 +371,8 @@ ShareMemoController.prototype = {
         that.currentMemo().switchFixShareMemo($(this).caretLine(), e.pageY);
       })
       .on('click','.fix-text', function(){
-        that.currentMemo().switchFixShareMemo(1);
+        var $code = $(this).closest('.share-memo').find('.code');
+        that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
       })
       .on('keydown','.code',function(event){
         // Ctrl - S or Ctrl - enter
