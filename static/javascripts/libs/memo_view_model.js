@@ -279,6 +279,7 @@ MemoViewModel.prototype = {
 
     $target.find('.code-out').sortable({
       items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
+      distance: 6,
       start: function(event,ui){
         that.drag_index = ui.item.index();
       },
