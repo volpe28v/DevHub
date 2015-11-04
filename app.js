@@ -49,6 +49,7 @@ client_info.options({
 // set routing
 var routes = {
   index: require('./routes/index'),
+  react: require('./routes/react'),
   notify: require('./routes/notify'),
   memo: require('./routes/memo'),
   upload : app.get('gridfs') ? require('./routes/upload_db') : require('./routes/upload'),
@@ -56,6 +57,7 @@ var routes = {
 };
 
 app.get('/', function(req,res){ routes.index.get(req,res,app); });
+app.get('/react', function(req,res){ routes.react.get(req,res,app); });
 app.get('/notify', function(req, res) { routes.notify.get(req,res,io); });
 app.get('/memo', function(req, res) { routes.memo.get(req,res,io); });
 
