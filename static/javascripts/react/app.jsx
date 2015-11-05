@@ -1,7 +1,8 @@
 var CommentBox = React.createClass({
   getInitialState: function () {
     return {
-      comments: null
+      comments: [],
+      memo: { text: "" }
     };
   },
 
@@ -30,12 +31,33 @@ var CommentBox = React.createClass({
       console.log(name);
     });
 
+    // for chat
+    this.socket.on('chat_number', function(number){
+      console.log(number.num);
+    });
+
     this.no = 1;
     this.socket.on('latest_log' + this.no, function(comments){
       that.setState({ comments: comments });
     });
 
+    this.socket.on('message_own' + this.no, function(message){
+      that.state.comments.unshift(message);
+      that.setState({ comments: that.state.comments });
+    });
+
+    this.socket.on('message' + this.no, function(message){
+      that.state.comments.unshift(message);
+      that.setState({ comments: that.state.comments });
+    });
+
     this.socket.emit('latest_log', {room_id: this.no});
+
+    // for memo
+    this.socket.on('text' + this.no, function(memo){
+      that.setState({ memo: memo });
+      console.log(memo);
+    });
   },
 
   submitComment: function (comment, callback) {
@@ -49,13 +71,19 @@ var CommentBox = React.createClass({
   },
   render: function() {
     return (
+  <div className="container">
+    <div className="left">
       <div className="commentBox">
-        <h3>Comments:</h3>
-        <CommentList comments={this.state.comments}/>
         <CommentForm submitComment={this.submitComment}
                      name={this.state.name}/>
+        <CommentList comments={this.state.comments}/>
       </div>
-    );
+    </div>
+    <div className="contents">
+      <Memo memo={this.state.memo}/>
+    </div>
+  </div>
+   );
   }
 });
 
@@ -79,8 +107,8 @@ var Comment = React.createClass({
   render: function () {
     return (
       <div className="comment">
-        <span className="author">{this.props.comment.name}</span> said:<br/>
-        <div className="body">{this.props.comment.msg}</div>
+        <span className="comment-author">{this.props.comment.name}</span>
+        <span className="comment-body">{this.props.comment.msg}</span>
       </div>
     );
   }
@@ -112,6 +140,18 @@ var CommentForm = React.createClass({
     );
   }
 });
+
+var Memo = React.createClass({
+  render: function () {
+    return (
+      <div className="memo">
+        <div>{this.props.memo.name} - {this.props.memo.date}</div>
+        <pre>{this.props.memo.text}</pre>
+      </div>
+    );
+  }
+});
+
 
 React.render(
   <CommentBox/>,
