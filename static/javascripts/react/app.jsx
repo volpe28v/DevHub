@@ -1,7 +1,8 @@
-var CommentBox = React.createClass({
+var DevHub = React.createClass({
   getInitialState: function () {
     return {
-      comments: [],
+      chatRooms: [],
+      currentRoom: null,
       memo: { text: "" }
     };
   },
@@ -32,32 +33,52 @@ var CommentBox = React.createClass({
     });
 
     // for chat
+    var chatHander = function createChatHandler(room_id){
+      return function(){
+        that.socket.on('latest_log' + room_id, function(comments){
+          that.state.chatRooms[room_id - 1].comments = comments;
+          that.setState({ chatRooms: that.state.chatRooms});
+          console.log(that.state.chatRooms);
+        });
+
+        that.socket.on('room_name' + room_id, function(room_name){
+          that.state.chatRooms[room_id - 1].name = room_name;;
+          that.setState({ chatRooms: that.state.chatRooms});
+        });
+
+        that.socket.on('message_own' + room_id, function(message){
+          that.state.chatRooms[room_id - 1].comments.unshift(message);
+          that.setState({ chatRooms: that.state.chatRooms});
+        });
+
+        that.socket.on('message' + room_id, function(message){
+          that.state.chatRooms[room_id - 1].comments.unshift(message);
+          that.setState({ chatRooms: that.state.chatRooms});
+        });
+      };
+    };
+
     this.socket.on('chat_number', function(number){
       console.log(number.num);
-    });
 
-    this.no = 1;
-    this.socket.on('latest_log' + this.no, function(comments){
-      that.setState({ comments: comments });
-    });
+      for (var i = 0; i < number.num; i++){
+        var room_id = i + 1;
+        that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, comments: [] };
 
-    this.socket.on('message_own' + this.no, function(message){
-      that.state.comments.unshift(message);
-      that.setState({ comments: that.state.comments });
-    });
+        (chatHander(room_id))();
+        that.socket.emit('latest_log', {room_id: room_id});
+        that.socket.emit('room_name', {room_id: room_id});
+      }
 
-    this.socket.on('message' + this.no, function(message){
-      that.state.comments.unshift(message);
-      that.setState({ comments: that.state.comments });
+      that.setState({ currentRoom: that.state.chatRooms[0]});
     });
-
-    this.socket.emit('latest_log', {room_id: this.no});
 
     // for memo
+    /*
     this.socket.on('text' + this.no, function(memo){
       that.setState({ memo: memo });
-      console.log(memo);
     });
+    */
   },
 
   submitComment: function (comment, callback) {
@@ -65,45 +86,98 @@ var CommentBox = React.createClass({
       {
         name: comment.author,
         //avatar:avatar,
-        room_id: this.no,
+        room_id: this.state.currentRoom.id,
         msg: comment.text,
       });
   },
+
+  handleClick: function(){
+    var current_index = this.state.currentRoom.id - 1;
+    current_index++;
+    if (current_index >= this.state.chatRooms.length){
+      current_index = 0;
+    }
+
+    this.setState({ currentRoom: this.state.chatRooms[current_index]});
+  },
+
   render: function() {
     return (
   <div className="container">
-    <div className="left">
-      <div className="commentBox">
-        <CommentForm submitComment={this.submitComment}
-                     name={this.state.name}/>
-        <CommentList comments={this.state.comments}/>
-      </div>
+    <div className="left" onClick={this.handleClick}>
+      <ChatIndex chatRooms={this.state.chatRooms}/>
     </div>
     <div className="contents">
-      <Memo memo={this.state.memo}/>
+      <CommentForm submitComment={this.submitComment} name={this.state.name}/>
+      <ChatList room={this.state.currentRoom}/>
     </div>
   </div>
    );
   }
+
+      //<Memo memo={this.state.memo}/>
 });
 
-var CommentList = React.createClass({
+var ChatIndex = React.createClass({
+  render: function(){
+    Indexes = this.props.chatRooms.map(function (room) {
+      return (<ChatIndexElem room={room} />);
+    });
+    return (
+      <div className="chatIndex">
+        <ul>
+        {Indexes}
+        </ul>
+      </div>
+    );
+  }
+});
+
+var ChatIndexElem = React.createClass({
+  render: function(){
+    if (this.props.room.comments.length > 0){
+      return (
+        <li>{this.props.room.name} ({this.props.room.comments[0].date})</li>
+      );
+    }else{
+      return (
+        <li>{this.props.room.name}</li>
+      );
+    }
+  }
+});
+
+var ChatRoom = React.createClass({
+  render: function(){
+    var Lists = this.props.chatRooms.map(function (room) {
+      return (<ChatList room={room} />);
+    });
+
+    return (
+      <div>
+      {Lists}
+      </div>
+    )
+  }
+});
+
+var ChatList = React.createClass({
   render: function () {
     var Comments = (<div>Loading comments...</div>);
-    if (this.props.comments) {
-      Comments = this.props.comments.map(function (comment) {
-        return (<Comment comment={comment} />);
+    if (this.props.room) {
+      Comments = this.props.room.comments.map(function (comment) {
+        return (<ChatComment comment={comment} />);
       });
     }
     return (
-      <div className="commentList">
+      <div className="chatList">
         {Comments}
       </div>
     );
   }
 });
 
-var Comment = React.createClass({
+var ChatComment = React.createClass({
   render: function () {
     return (
       <div className="comment">
@@ -133,7 +207,7 @@ var CommentForm = React.createClass({
   render: function () {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input type="text" name="author" ref="author" placeholder="Name" required value={this.props.name}/><br/>
+        <input type="text" name="author" ref="author" placeholder="Name" required value={this.props.name} defaultValue="" /><br/>
         <textarea name="text" ref="text" placeholder="Comment" required></textarea><br/>
         <button type="submit" ref="submitButton">Post comment</button>
       </form>
@@ -154,6 +228,6 @@ var Memo = React.createClass({
 
 
 React.render(
-  <CommentBox/>,
+  <DevHub/>,
   document.getElementById('content')
 );
