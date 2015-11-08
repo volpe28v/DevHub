@@ -38,7 +38,6 @@ var DevHub = React.createClass({
         that.socket.on('latest_log' + room_id, function(comments){
           that.state.chatRooms[room_id - 1].comments = comments;
           that.setState({ chatRooms: that.state.chatRooms});
-          console.log(that.state.chatRooms);
         });
 
         that.socket.on('room_name' + room_id, function(room_name){
@@ -59,18 +58,19 @@ var DevHub = React.createClass({
     };
 
     this.socket.on('chat_number', function(number){
-      console.log(number.num);
 
       for (var i = 0; i < number.num; i++){
         var room_id = i + 1;
-        that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, comments: [] };
+        that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, is_visible: false, comments: [] };
 
         (chatHander(room_id))();
         that.socket.emit('latest_log', {room_id: room_id});
         that.socket.emit('room_name', {room_id: room_id});
       }
 
-      that.setState({ currentRoom: that.state.chatRooms[0]});
+      that.state.chatRooms[0].is_visible = true;
+      that.setState({ chatRooms: that.state.chatRooms});
+//      that.setState({ currentRoom: that.state.chatRooms[0]});
     });
 
     // for memo
@@ -91,37 +91,39 @@ var DevHub = React.createClass({
       });
   },
 
-  handleClick: function(){
-    var current_index = this.state.currentRoom.id - 1;
-    current_index++;
-    if (current_index >= this.state.chatRooms.length){
-      current_index = 0;
+  handleClick: function(room_id){
+    for(var i = 0; i < this.state.chatRooms.length; i++){
+      if (this.state.chatRooms[i].id == room_id){
+        this.state.chatRooms[i].is_visible = true;
+      }else{
+        this.state.chatRooms[i].is_visible = false;
+      }
     }
-
-    this.setState({ currentRoom: this.state.chatRooms[current_index]});
+    this.setState({chatRooms: this.state.chatRooms});
   },
 
   render: function() {
+    chatLists = this.state.chatRooms.map(function (room) {
+      return (<ChatList room={room} />);
+    });
+
     return (
   <div className="container">
-    <div className="left" onClick={this.handleClick}>
-      <ChatIndex chatRooms={this.state.chatRooms}/>
+    <div className="left">
+      <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleClick}/>
     </div>
-    <div className="contents">
-      <CommentForm submitComment={this.submitComment} name={this.state.name}/>
-      <ChatList room={this.state.currentRoom}/>
-    </div>
+    {chatLists}
   </div>
    );
   }
-
       //<Memo memo={this.state.memo}/>
 });
 
 var ChatIndex = React.createClass({
   render: function(){
+    var that = this;
     Indexes = this.props.chatRooms.map(function (room) {
-      return (<ChatIndexElem room={room} />);
+      return (<li><ChatIndexElem room={room} onClick={that.props.onClick} /></li>);
     });
     return (
       <div className="chatIndex">
@@ -134,17 +136,22 @@ var ChatIndex = React.createClass({
 });
 
 var ChatIndexElem = React.createClass({
+  _onClick: function(){
+    this.props.onClick(this.props.room.id);
+  },
+
   render: function(){
     if (this.props.room.comments.length > 0){
       return (
-        <li>{this.props.room.name} ({this.props.room.comments[0].date})</li>
+        <div onClick={this._onClick}>{this.props.room.name} ({this.props.room.comments[0].date})</div>
       );
     }else{
       return (
-        <li>{this.props.room.name}</li>
+        <div onClick={this._onClick}>{this.props.room.name}</div>
       );
     }
   }
+
 });
 
 var ChatRoom = React.createClass({
@@ -169,11 +176,19 @@ var ChatList = React.createClass({
         return (<ChatComment comment={comment} />);
       });
     }
-    return (
-      <div className="chatList">
-        {Comments}
-      </div>
-    );
+    if (this.props.room.is_visible){
+      return (
+        <div className="contents">
+          {Comments}
+        </div>
+      );
+    }else{
+      return (
+        <div className="contents hide">
+          {Comments}
+        </div>
+      );
+    }
   }
 });
 

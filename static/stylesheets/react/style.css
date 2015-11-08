@@ -8,6 +8,10 @@
   flex: 1;
 }
 
+.hide {
+  display: none;
+}
+
 .comment-author {
   margin-right: 10px;
 }
