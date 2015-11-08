@@ -3,6 +3,7 @@ var DevHub = React.createClass({
     return {
       chatRooms: [],
       currentRoom: null,
+      memos: [],
       memo: { text: "" }
     };
   },
@@ -58,7 +59,6 @@ var DevHub = React.createClass({
     };
 
     this.socket.on('chat_number', function(number){
-
       for (var i = 0; i < number.num; i++){
         var room_id = i + 1;
         that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, is_visible: false, comments: [] };
@@ -70,15 +70,30 @@ var DevHub = React.createClass({
 
       that.state.chatRooms[0].is_visible = true;
       that.setState({ chatRooms: that.state.chatRooms});
-//      that.setState({ currentRoom: that.state.chatRooms[0]});
     });
 
     // for memo
-    /*
-    this.socket.on('text' + this.no, function(memo){
-      that.setState({ memo: memo });
+    var memoHander = function createMemoHandler(memo_id){
+      return function(){
+        that.socket.on('text' + memo_id, function(memo){
+          that.state.memos[memo_id].latest = memo;
+          that.setState({ memos: that.state.memos});
+        });
+      }
+    }
+
+    this.socket.on('memo_tab_numbers', function(data){
+      console.log(data.numbers);
+      for (var i = 0; i < data.numbers.length; i++){
+        var memo_id = Number(data.numbers[i]);
+        that.state.memos[memo_id] = { id: memo_id, is_visible: false, latest: null };
+
+        (memoHander(memo_id))();
+      }
+
+      that.state.memos[Number(data.numbers[0])].is_visible = true;
+      that.setState({ memos: that.state.memos});
     });
-    */
   },
 
   submitComment: function (comment, callback) {
@@ -107,12 +122,17 @@ var DevHub = React.createClass({
       return (<ChatList room={room} />);
     });
 
+    memos = this.state.memos.map(function (memo) {
+      return (<Memo memo={memo} />);
+    });
+
     return (
   <div className="container">
     <div className="left">
       <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleClick}/>
     </div>
     {chatLists}
+    {memos}
   </div>
    );
   }
@@ -232,13 +252,38 @@ var CommentForm = React.createClass({
 
 var Memo = React.createClass({
   render: function () {
-    return (
-      <div className="memo">
-        <div>{this.props.memo.name} - {this.props.memo.date}</div>
-        <pre>{this.props.memo.text}</pre>
-      </div>
-    );
-  }
+    if (this.props.memo.is_visible){
+      if (this.props.memo.latest){
+        return (
+          <div className="contents">
+            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
+            <pre>{this.props.memo.latest.text}</pre>
+          </div>
+        );
+      }else{
+        return (
+          <div className="contents">
+            <div>none</div>
+          </div>
+        );
+      }
+    }else{
+      if (this.props.memo.latest){
+        return (
+          <div className="contents hide">
+            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
+            <pre>{this.props.memo.latest.text}</pre>
+          </div>
+        );
+      }else{
+        return (
+          <div className="contents hide">
+            <div>none</div>
+          </div>
+        );
+      }
+    }
+ }
 });
 
 
