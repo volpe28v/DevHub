@@ -18,4 +18,6 @@ lib/menu_links.json
 node_modules
 npm-debug.log
 
+static/javascripts/react/dist/.module-cache/
+
 nightwatch/reports/
