@@ -1,3 +1,8 @@
+var React = require('react');
+var ChatIndex = require('./chat_index.jsx');
+var ChatRoom = require('./chat_room.jsx');
+var MemoList = require('./memo_list.jsx');
+
 var DevHub = React.createClass({
   getInitialState: function () {
     return {
@@ -83,7 +88,6 @@ var DevHub = React.createClass({
     }
 
     this.socket.on('memo_tab_numbers', function(data){
-      console.log(data.numbers);
       for (var i = 0; i < data.numbers.length; i++){
         var memo_id = Number(data.numbers[i]);
         that.state.memos[memo_id] = { id: memo_id, is_visible: false, latest: null };
@@ -118,108 +122,15 @@ var DevHub = React.createClass({
   },
 
   render: function() {
-    chatLists = this.state.chatRooms.map(function (room) {
-      return (<ChatList room={room} />);
-    });
-
-    memos = this.state.memos.map(function (memo) {
-      return (<Memo memo={memo} />);
-    });
-
     return (
   <div className="container">
     <div className="left">
       <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleClick}/>
     </div>
-    {chatLists}
-    {memos}
+    <ChatRoom rooms={this.state.chatRooms}/>
+    <MemoList memos={this.state.memos}/>
   </div>
    );
-  }
-      //<Memo memo={this.state.memo}/>
-});
-
-var ChatIndex = React.createClass({
-  render: function(){
-    var that = this;
-    Indexes = this.props.chatRooms.map(function (room) {
-      return (<li><ChatIndexElem room={room} onClick={that.props.onClick} /></li>);
-    });
-    return (
-      <div className="chatIndex">
-        <ul>
-        {Indexes}
-        </ul>
-      </div>
-    );
-  }
-});
-
-var ChatIndexElem = React.createClass({
-  _onClick: function(){
-    this.props.onClick(this.props.room.id);
-  },
-
-  render: function(){
-    if (this.props.room.comments.length > 0){
-      return (
-        <div onClick={this._onClick}>{this.props.room.name} ({this.props.room.comments[0].date})</div>
-      );
-    }else{
-      return (
-        <div onClick={this._onClick}>{this.props.room.name}</div>
-      );
-    }
-  }
-
-});
-
-var ChatRoom = React.createClass({
-  render: function(){
-    var Lists = this.props.chatRooms.map(function (room) {
-      return (<ChatList room={room} />);
-    });
-
-    return (
-      <div>
-      {Lists}
-      </div>
-    )
-  }
-});
-
-var ChatList = React.createClass({
-  render: function () {
-    var Comments = (<div>Loading comments...</div>);
-    if (this.props.room) {
-      Comments = this.props.room.comments.map(function (comment) {
-        return (<ChatComment comment={comment} />);
-      });
-    }
-    if (this.props.room.is_visible){
-      return (
-        <div className="contents">
-          {Comments}
-        </div>
-      );
-    }else{
-      return (
-        <div className="contents hide">
-          {Comments}
-        </div>
-      );
-    }
-  }
-});
-
-var ChatComment = React.createClass({
-  render: function () {
-    return (
-      <div className="comment">
-        <span className="comment-author">{this.props.comment.name}</span>
-        <span className="comment-body">{this.props.comment.msg}</span>
-      </div>
-    );
   }
 });
 
@@ -248,42 +159,6 @@ var CommentForm = React.createClass({
       </form>
     );
   }
-});
-
-var Memo = React.createClass({
-  render: function () {
-    if (this.props.memo.is_visible){
-      if (this.props.memo.latest){
-        return (
-          <div className="contents">
-            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
-            <pre>{this.props.memo.latest.text}</pre>
-          </div>
-        );
-      }else{
-        return (
-          <div className="contents">
-            <div>none</div>
-          </div>
-        );
-      }
-    }else{
-      if (this.props.memo.latest){
-        return (
-          <div className="contents hide">
-            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
-            <pre>{this.props.memo.latest.text}</pre>
-          </div>
-        );
-      }else{
-        return (
-          <div className="contents hide">
-            <div>none</div>
-          </div>
-        );
-      }
-    }
- }
 });
 
 
