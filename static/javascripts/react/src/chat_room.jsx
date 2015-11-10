@@ -22,19 +22,16 @@ var ChatList = React.createClass({
         return (<ChatComment comment={comment} key={comment._id}/>);
       });
     }
-    if (this.props.room.is_visible){
-      return (
-        <div>
-          {comments}
-        </div>
-      );
-    }else{
-      return (
-        <div className="hide">
-          {comments}
-        </div>
-      );
+    var className = '';
+    if (!this.props.room.is_visible){
+      className = 'hide';
     }
+
+    return (
+      <div className={className}>
+        {comments}
+      </div>
+    );
   }
 });
 

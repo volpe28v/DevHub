@@ -16,38 +16,26 @@ var MemoList = React.createClass({
 
 var Memo = React.createClass({
   render: function () {
-    if (this.props.memo.is_visible){
-      if (this.props.memo.latest){
-        return (
-          <div>
-            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
-            <pre>{this.props.memo.latest.text}</pre>
-          </div>
-        );
-      }else{
-        return (
-          <div>
-            <div>none</div>
-          </div>
-        );
-      }
-    }else{
-      if (this.props.memo.latest){
-        return (
-          <div className="hide">
-            <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
-            <pre>{this.props.memo.latest.text}</pre>
-          </div>
-        );
-      }else{
-        return (
-          <div className="hide">
-            <div>none</div>
-          </div>
-        );
-      }
+    var className = '';
+    if (!this.props.memo.is_visible){
+      className = 'hide';
     }
- }
+
+    if (this.props.memo.latest){
+      return (
+        <div className={className}>
+          <div>{this.props.memo.latest.name} - {this.props.memo.latest.date}</div>
+          <pre>{this.props.memo.latest.text}</pre>
+        </div>
+      );
+    }else{
+      return (
+        <div>
+          <div>none</div>
+        </div>
+      );
+    }
+  }
 });
 
 module.exports = MemoList;

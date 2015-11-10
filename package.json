@@ -25,6 +25,10 @@
   },
   "devDependencies": {
     "browserify": "^12.0.1",
-    "reactify": "^1.1.1"
+    "reactify": "^1.1.1",
+    "watchify": "^3.6.0"
+  },
+  "scripts": {
+    "watchify": "watchify -t reactify static/javascripts/react/src/app.jsx -o static/javascripts/react/dist/app.js -v"
   }
 }
