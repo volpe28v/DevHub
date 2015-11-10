@@ -1,6 +1,7 @@
 var React = require('react');
 var ChatIndex = require('./chat_index.jsx');
 var ChatRoom = require('./chat_room.jsx');
+var MemoIndex= require('./memo_index.jsx');
 var MemoList = require('./memo_list.jsx');
 
 var DevHub = React.createClass({
@@ -110,7 +111,7 @@ var DevHub = React.createClass({
       });
   },
 
-  handleClick: function(room_id){
+  handleChatIndexClick: function(room_id){
     for(var i = 0; i < this.state.chatRooms.length; i++){
       if (this.state.chatRooms[i].id == room_id){
         this.state.chatRooms[i].is_visible = true;
@@ -121,11 +122,24 @@ var DevHub = React.createClass({
     this.setState({chatRooms: this.state.chatRooms});
   },
 
+  handleMemoIndexClick: function(id){
+    for(var i = 0; i < this.state.memos.length; i++){
+      if (this.state.memos[i] == null){ continue; }
+      if (this.state.memos[i].id == id){
+        this.state.memos[i].is_visible = true;
+      }else{
+        this.state.memos[i].is_visible = false;
+      }
+    }
+    this.setState({memos: this.state.memos});
+  },
+
   render: function() {
     return (
   <div className="container">
     <div className="left">
-      <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleClick}/>
+      <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleChatIndexClick}/>
+      <MemoIndex memos={this.state.memos} onClick={this.handleMemoIndexClick}/>
     </div>
     <ChatRoom rooms={this.state.chatRooms}/>
     <MemoList memos={this.state.memos}/>

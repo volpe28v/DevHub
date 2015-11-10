@@ -1,4 +1,5 @@
 var React = require('react');
+
 var ChatIndex = React.createClass({
   render: function(){
     var that = this;

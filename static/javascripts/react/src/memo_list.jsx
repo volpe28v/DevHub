@@ -30,9 +30,7 @@ var Memo = React.createClass({
       );
     }else{
       return (
-        <div>
-          <div>none</div>
-        </div>
+        <div></div>
       );
     }
   }

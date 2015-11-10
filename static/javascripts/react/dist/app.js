@@ -19017,6 +19017,7 @@ module.exports = require('./lib/React');
 var React = require('react');
 var ChatIndex = require('./chat_index.jsx');
 var ChatRoom = require('./chat_room.jsx');
+var MemoIndex= require('./memo_index.jsx');
 var MemoList = require('./memo_list.jsx');
 
 var DevHub = React.createClass({displayName: "DevHub",
@@ -19126,7 +19127,7 @@ var DevHub = React.createClass({displayName: "DevHub",
       });
   },
 
-  handleClick: function(room_id){
+  handleChatIndexClick: function(room_id){
     for(var i = 0; i < this.state.chatRooms.length; i++){
       if (this.state.chatRooms[i].id == room_id){
         this.state.chatRooms[i].is_visible = true;
@@ -19137,11 +19138,24 @@ var DevHub = React.createClass({displayName: "DevHub",
     this.setState({chatRooms: this.state.chatRooms});
   },
 
+  handleMemoIndexClick: function(id){
+    for(var i = 0; i < this.state.memos.length; i++){
+      if (this.state.memos[i] == null){ continue; }
+      if (this.state.memos[i].id == id){
+        this.state.memos[i].is_visible = true;
+      }else{
+        this.state.memos[i].is_visible = false;
+      }
+    }
+    this.setState({memos: this.state.memos});
+  },
+
   render: function() {
     return (
   React.createElement("div", {className: "container"}, 
     React.createElement("div", {className: "left"}, 
-      React.createElement(ChatIndex, {chatRooms: this.state.chatRooms, onClick: this.handleClick})
+      React.createElement(ChatIndex, {chatRooms: this.state.chatRooms, onClick: this.handleChatIndexClick}), 
+      React.createElement(MemoIndex, {memos: this.state.memos, onClick: this.handleMemoIndexClick})
     ), 
     React.createElement(ChatRoom, {rooms: this.state.chatRooms}), 
     React.createElement(MemoList, {memos: this.state.memos})
@@ -19156,8 +19170,9 @@ ReactDOM.render(
   document.getElementById('content')
 );
 
-},{"./chat_index.jsx":160,"./chat_room.jsx":161,"./memo_list.jsx":162,"react":158,"react-dom":2}],160:[function(require,module,exports){
+},{"./chat_index.jsx":160,"./chat_room.jsx":161,"./memo_index.jsx":162,"./memo_list.jsx":163,"react":158,"react-dom":2}],160:[function(require,module,exports){
 var React = require('react');
+
 var ChatIndex = React.createClass({displayName: "ChatIndex",
   render: function(){
     var that = this;
@@ -19248,6 +19263,45 @@ module.exports = ChatRoom;
 },{"react":158}],162:[function(require,module,exports){
 var React = require('react');
 
+var MemoIndex = React.createClass({displayName: "MemoIndex",
+  render: function(){
+    var that = this;
+    var indexes = this.props.memos.map(function (memo){
+      return (React.createElement("li", {key: memo.id}, React.createElement(MemoIndexElem, {memo: memo, onClick: that.props.onClick})));
+    });
+    return (
+      React.createElement("div", {className: "memoIndex"}, 
+        React.createElement("ul", null, 
+        indexes
+        )
+      )
+    );
+  }
+});
+
+var MemoIndexElem = React.createClass({displayName: "MemoIndexElem",
+  _onClick: function(){
+    this.props.onClick(this.props.memo.id);
+  },
+
+  render: function(){
+    if (this.props.memo.latest){
+      return (
+        React.createElement("div", {onClick: this._onClick}, this.props.memo.latest.name, " (", this.props.memo.latest.date, ")")
+      );
+    }else{
+      return (
+        React.createElement("div", {onClick: this._onClick}, "No.", this.props.memo.id)
+      );
+    }
+  }
+});
+
+module.exports = MemoIndex;
+
+},{"react":158}],163:[function(require,module,exports){
+var React = require('react');
+
 var MemoList = React.createClass({displayName: "MemoList",
   render: function(){
     memos = this.props.memos.map(function (memo) {
@@ -19278,9 +19332,7 @@ var Memo = React.createClass({displayName: "Memo",
       );
     }else{
       return (
-        React.createElement("div", null, 
-          React.createElement("div", null, "none")
-        )
+        React.createElement("div", null)
       );
     }
   }
