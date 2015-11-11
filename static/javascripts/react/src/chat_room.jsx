@@ -1,4 +1,13 @@
 var React = require('react');
+var List = require('material-ui/lib/lists/list');
+var ListDivider = require('material-ui/lib/lists/list-divider');
+var ListItem = require('material-ui/lib/lists/list-item');
+
+var Card = require('material-ui/lib/card/card');
+var CardHeader = require('material-ui/lib/card/card-header');
+var CardText = require('material-ui/lib/card/card-text');
+var CardTitle = require('material-ui/lib/card/card-title');
+
 
 var ChatRoom = React.createClass({
   render: function(){
@@ -28,22 +37,40 @@ var ChatList = React.createClass({
     }
 
     return (
-      <div className={className}>
+  <Card
+      className={className}
+  >
         {comments}
-      </div>
-    );
+  </Card>
+   );
   }
 });
 
+/*
+      <List
+        className={className}
+        subheader={this.props.room.name}>
+        {comments}
+      </List>
+      */
+ 
 var ChatComment = React.createClass({
   render: function () {
     return (
-      <div className="comment">
-        <span className="comment-author">{this.props.comment.name}</span>
-        <span className="comment-body">{this.props.comment.msg}</span>
-      </div>
-    );
+    <CardHeader
+      title={this.props.comment.name}
+      subtitle={this.props.comment.msg}/>
+ 
+   );
   }
 });
 
+/*
+      <ListItem
+        primaryText={this.props.comment.name}
+        secondaryText={
+          <p>{this.props.comment.msg}</p>
+        }
+      />
+*/ 
 module.exports = ChatRoom;

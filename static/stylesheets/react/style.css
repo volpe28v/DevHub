@@ -1,9 +1,18 @@
+#content {
+  padding: 10px;
+}
+
+li {
+  list-style:none;
+}
+
 .container{
   display: flex;
 }
 .left{
-  width: 300px;
+  width: 150px;
 }
+
 .contents{
   flex: 1;
 }

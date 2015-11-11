@@ -139,9 +139,11 @@ var DevHub = React.createClass({
   <div className="container">
     <div className="left">
       <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleChatIndexClick}/>
-      <MemoIndex memos={this.state.memos} onClick={this.handleMemoIndexClick}/>
     </div>
     <ChatRoom rooms={this.state.chatRooms}/>
+    <div className="left">
+      <MemoIndex memos={this.state.memos} onClick={this.handleMemoIndexClick}/>
+    </div>
     <MemoList memos={this.state.memos}/>
   </div>
    );
