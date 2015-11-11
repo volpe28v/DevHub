@@ -4,6 +4,9 @@ var ChatRoom = require('./chat_room.jsx');
 var MemoIndex= require('./memo_index.jsx');
 var MemoList = require('./memo_list.jsx');
 
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+
 var DevHub = React.createClass({
   getInitialState: function () {
     return {
@@ -141,14 +144,17 @@ var DevHub = React.createClass({
       <ChatIndex chatRooms={this.state.chatRooms} onClick={this.handleChatIndexClick}/>
     </div>
     <ChatRoom rooms={this.state.chatRooms}/>
-    <div className="left">
-      <MemoIndex memos={this.state.memos} onClick={this.handleMemoIndexClick}/>
-    </div>
     <MemoList memos={this.state.memos}/>
   </div>
    );
   }
 });
+
+    /*
+    <div className="left">
+      <MemoIndex memos={this.state.memos} onClick={this.handleMemoIndexClick}/>
+    </div>
+    */
 
 var ReactDOM = require('react-dom');
 ReactDOM.render(

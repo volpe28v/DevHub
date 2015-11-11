@@ -15,6 +15,7 @@ li {
 
 .contents{
   flex: 1;
+  margin: 0px 5px;
 }
 
 .hide {
@@ -23,4 +24,8 @@ li {
 
 .comment-author {
   margin-right: 10px;
+}
+
+.avatar-td {
+  vertical-align: top;
 }

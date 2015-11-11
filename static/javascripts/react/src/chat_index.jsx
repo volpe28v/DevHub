@@ -23,18 +23,10 @@ var ChatIndexElem = React.createClass({
   },
 
   render: function(){
-    if (this.props.room.comments.length > 0){
-      return (
-        <RaisedButton label={this.props.room.name} onClick={this._onClick} primary={true} />
-      );
-    }else{
-      return (
-        <div onClick={this._onClick}>{this.props.room.name}</div>
-      );
-    }
+    return (
+      <RaisedButton label={this.props.room.name} onClick={this._onClick} primary={true} />
+    );
   }
 });
 
-        //<div onClick={this._onClick}>{this.props.room.name} ({this.props.room.comments[0].date})</div>
-        //<RaisedButton label="Hi" primary={true} />
 module.exports = ChatIndex;

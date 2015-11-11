@@ -3,7 +3,9 @@ var Card = require('material-ui/lib/card/card');
 var CardHeader = require('material-ui/lib/card/card-header');
 var CardText = require('material-ui/lib/card/card-text');
 var CardTitle = require('material-ui/lib/card/card-title');
-
+var CardActions = require('material-ui/lib/card/card-actions');
+var Avatar = require('material-ui/lib/avatar');
+var FlatButton= require('material-ui/lib/flat-button');
 
 var MemoList = React.createClass({
   render: function(){
@@ -27,20 +29,45 @@ var Memo = React.createClass({
     }
 
     if (this.props.memo.latest){
+      var title = this.props.memo.latest.text.split('\n')[0];
+      var name_date = this.props.memo.latest.date + " - " + this.props.memo.latest.name;
+      if (this.props.memo.latest.avatar){
       return (
   <Card
-      className={className}
-  >
+    initiallyExpanded={false} >
     <CardHeader
-      title={this.props.memo.latest.name}
-      subtitle={this.props.memo.latest.date}/>
-    <CardText>
+      title={title}
+      subtitle={name_date}
+      avatar={<Avatar src={this.props.memo.latest.avatar}/>}
+      actAsExpander={true}
+      showExpandableButton={true}>
+    </CardHeader>
+    <CardText expandable={true}>
       <pre>{this.props.memo.latest.text}</pre>
     </CardText>
-  
   </Card>
       );
-    }else{
+ 
+      }else{
+        var name = this.props.memo.latest.name.slice(0,1);
+      return (
+  <Card
+    initiallyExpanded={false} >
+    <CardHeader
+      title={title}
+      subtitle={name_date}
+      avatar={<Avatar>{name}</Avatar>}
+      actAsExpander={true}
+      showExpandableButton={true}>
+    </CardHeader>
+    <CardText expandable={true}>
+      <pre>{this.props.memo.latest.text}</pre>
+    </CardText>
+  </Card>
+      );
+
+      }
+   }else{
       return (
         <div></div>
       );
