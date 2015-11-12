@@ -43,7 +43,7 @@ var DevHub = React.createClass({
     });
 
     // for chat
-    var chatHander = function createChatHandler(room_id){
+    var chatHandler = function createChatHandler(room_id){
       return function(){
         that.socket.on('latest_log' + room_id, function(comments){
           that.state.chatRooms[room_id - 1].comments = comments;
@@ -70,9 +70,9 @@ var DevHub = React.createClass({
     this.socket.on('chat_number', function(number){
       for (var i = 0; i < number.num; i++){
         var room_id = i + 1;
-        that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, is_visible: false, comments: [] };
+        that.state.chatRooms[i] = { id: room_id, name: "room" + room_id, is_visible: false, comments: null };
 
-        (chatHander(room_id))();
+        (chatHandler(room_id))();
         that.socket.emit('latest_log', {room_id: room_id});
         that.socket.emit('room_name', {room_id: room_id});
       }

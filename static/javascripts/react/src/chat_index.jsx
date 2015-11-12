@@ -1,18 +1,17 @@
 var React = require('react');
-var RaisedButton = require('material-ui/lib/raised-button');
+var List = require('material-ui/lib/lists/list');
+var ListItem = require('material-ui/lib/lists/list-item');
 
 var ChatIndex = React.createClass({
   render: function(){
     var that = this;
     var indexes = this.props.chatRooms.map(function (room) {
-      return (<li key={room.id}><ChatIndexElem room={room} onClick={that.props.onClick} /></li>);
+      return (<ChatIndexElem key={room.id} room={room} onClick={that.props.onClick} />);
     });
     return (
-      <div className="chatIndex">
-        <ul>
+      <List>
         {indexes}
-        </ul>
-      </div>
+      </List>
     );
   }
 });
@@ -24,7 +23,7 @@ var ChatIndexElem = React.createClass({
 
   render: function(){
     return (
-      <RaisedButton label={this.props.room.name} onClick={this._onClick} primary={true} />
+      <ListItem primaryText={this.props.room.name} onClick={this._onClick} />
     );
   }
 });

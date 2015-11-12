@@ -14,7 +14,7 @@ var MemoList = React.createClass({
     });
 
     return (
-      <div className="contents">
+      <div className="contents2">
       {memos}
       </div>
     )

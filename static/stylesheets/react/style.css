@@ -10,16 +10,31 @@ li {
   display: flex;
 }
 .left{
-  width: 150px;
+  width: 100px;
 }
 
-.contents{
+.contents1{
   flex: 1;
   margin: 0px 5px;
 }
 
+.contents2{
+  flex: 1.75;
+  margin-left: 10px;
+}
+
 .hide {
   display: none;
+}
+
+.chat-comment-date {
+  font-size: 12px !important;
+  float: right;
+  color: gray;
+}
+
+.comment-table {
+  width: 100%;
 }
 
 .comment-author {
@@ -27,5 +42,6 @@ li {
 }
 
 .avatar-td {
+  width: 46px;
   vertical-align: top;
 }
