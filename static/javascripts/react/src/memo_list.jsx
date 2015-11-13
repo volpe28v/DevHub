@@ -31,9 +31,17 @@ var Memo = React.createClass({
     if (this.props.memo.latest){
       var title = this.props.memo.latest.text.split('\n')[0];
       var name_date = this.props.memo.latest.date + " - " + this.props.memo.latest.name;
+      var avatar = "";
       if (this.props.memo.latest.avatar){
+        avatar=(<Avatar src={this.props.memo.latest.avatar}/>);
+      }else{
+        var name = this.props.memo.latest.name.slice(0,1);
+        avatar=(<Avatar>{name}</Avatar>);
+      }
+
       return (
   <Card
+    className="memo-card"
     initiallyExpanded={false} >
     <CardHeader
       title={title}
@@ -42,31 +50,15 @@ var Memo = React.createClass({
       actAsExpander={true}
       showExpandableButton={true}>
     </CardHeader>
-    <CardText expandable={true}>
-      <pre>{this.props.memo.latest.text}</pre>
+    <CardText expandable={false}>
+      <pre>{this.props.memo.diff}</pre>
     </CardText>
-  </Card>
-      );
- 
-      }else{
-        var name = this.props.memo.latest.name.slice(0,1);
-      return (
-  <Card
-    initiallyExpanded={false} >
-    <CardHeader
-      title={title}
-      subtitle={name_date}
-      avatar={<Avatar>{name}</Avatar>}
-      actAsExpander={true}
-      showExpandableButton={true}>
-    </CardHeader>
     <CardText expandable={true}>
       <pre>{this.props.memo.latest.text}</pre>
     </CardText>
   </Card>
       );
 
-      }
    }else{
       return (
         <div></div>

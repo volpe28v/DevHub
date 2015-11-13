@@ -1,4 +1,5 @@
 var React = require('react');
+
 var List = require('material-ui/lib/lists/list');
 var ListDivider = require('material-ui/lib/lists/list-divider');
 var ListItem = require('material-ui/lib/lists/list-item');
@@ -54,11 +55,11 @@ var ChatComment = React.createClass({
     var msg = {__html: this.props.comment.msg.replace(/\n/g, '<br/>')};
     if (this.props.comment.avatar){
       return (
-        <li>
+        <li key={this.props.comment._id}>
           <table className="comment-table"><tbody><tr><td className='avatar-td'>
             <Avatar src={this.props.comment.avatar} />
           </td><td>
-            <div dangerouslySetInnerHTML={msg} />
+            <div key={this.props.comment._id} dangerouslySetInnerHTML={msg} />
             <div className="chat-comment-date">{this.props.comment.date}</div>
           </td></tr></tbody></table>
         </li>
@@ -69,7 +70,7 @@ var ChatComment = React.createClass({
         name = this.props.comment.name.slice(0,1);
       }
       return (
-        <li>
+        <li key={this.props.comment._id}>
           <table className="comment-table"><tbody><tr><td className='avatar-td'>
             <Avatar>{name}</Avatar>
           </td><td>

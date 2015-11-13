@@ -85,7 +85,46 @@ var DevHub = React.createClass({
     var memoHander = function createMemoHandler(memo_id){
       return function(){
         that.socket.on('text' + memo_id, function(memo){
-          that.state.memos[memo_id].latest = memo;
+          var memo_no = that.getMemoIndex(memo.no);
+
+          // 最新の変更部分を取得
+          if (that.state.memos[memo_no].latest){
+            that.state.memos[memo_no].diff = that.getMemoDiff(that.state.memos[memo_no].latest.text, memo.text);
+          }else{
+            if (that.state.memos[memo_no].logs != null && that.state.memos[memo_no].logs[0] != null){
+              var diff = that.getMemoDiff(that.state.memos[memo_no].logs[0].text, memo.text);
+              if (diff == ''){
+                diff = that.getMemoDiff(that.state.memos[memo_no].logs[1].text, that.state.memos[memo_no].logs[0].text);
+              }
+              that.state.memos[memo_no].diff = diff;
+            }else{
+              that.state.memos[memo_no].diff = '';
+            }
+          }
+          that.state.memos[memo_no].latest = memo;
+          that.setState({ memos: that.state.memos.sort(function(a,b){
+            if ( a.latest == null ) return 1;
+            if ( b.latest == null ) return -1;
+            if ( a.latest.date > b.latest.date ) return -1;
+            if ( a.latest.date < b.latest.date ) return 1;
+            return 0;
+          })});
+        });
+
+        that.socket.on('text_logs' + memo_id, function(logs){
+          var memo_no = that.getMemoIndex(logs[0].no);
+          that.state.memos[memo_no].logs = logs;
+
+          if (that.state.memos[memo_no].latest != null){
+            if (that.state.memos[memo_no].logs[0] != null){
+              var diff = that.getMemoDiff(that.state.memos[memo_no].logs[0].text, that.state.memos[memo_no].latest.text);
+              if (diff == ''){
+                diff = that.getMemoDiff(that.state.memos[memo_no].logs[1].text, that.state.memos[memo_no].logs[0].text);
+              }
+              that.state.memos[memo_no].diff = diff;
+            }
+          }
+ 
           that.setState({ memos: that.state.memos});
         });
       }
@@ -102,6 +141,46 @@ var DevHub = React.createClass({
       that.state.memos[Number(data.numbers[0])].is_visible = true;
       that.setState({ memos: that.state.memos});
     });
+  },
+
+  getMemoIndex: function(no){
+    var that = this;
+    var memo_no = 0;
+    var empty_no = 0;
+    for (var i = 0; i < that.state.memos.length; i++){
+      if (that.state.memos[i] == null){ continue; }
+      if (that.state.memos[i].latest == null && that.state.memos[i].logs == null){
+        empty_no = i;
+      }else if (that.state.memos[i].latest != null && that.state.memos[i].latest.no == no){
+        memo_no = i;
+        break;
+      }else if (that.state.memos[i].logs != null && that.state.memos[i].logs[0].no == no){
+        memo_no = i;
+        break;
+      }
+    }
+    if (memo_no == 0){
+      memo_no = empty_no;
+    }
+
+    return memo_no;
+  },
+
+  getMemoDiff: function(before, after){
+    var beforeArray = before.split('\n');
+    var afterArray = after.split('\n');
+
+    for (var i = 0; i < beforeArray.length; i++){
+      if (beforeArray[i] != afterArray[i]){
+        if (i == 0){
+          return afterArray[i] + '\n' + afterArray[i+1];
+        }else{ 
+          return afterArray[i-1] + '\n' + afterArray[i] + '\n' + afterArray[i+1];
+        }
+      }
+    }
+
+    return '';
   },
 
   submitComment: function (comment, callback) {

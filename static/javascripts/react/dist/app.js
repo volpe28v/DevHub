@@ -25550,7 +25550,46 @@ var DevHub = React.createClass({displayName: "DevHub",
     var memoHander = function createMemoHandler(memo_id){
       return function(){
         that.socket.on('text' + memo_id, function(memo){
-          that.state.memos[memo_id].latest = memo;
+          var memo_no = that.getMemoIndex(memo.no);
+
+          // 最新の変更部分を取得
+          if (that.state.memos[memo_no].latest){
+            that.state.memos[memo_no].diff = that.getMemoDiff(that.state.memos[memo_no].latest.text, memo.text);
+          }else{
+            if (that.state.memos[memo_no].logs != null && that.state.memos[memo_no].logs[0] != null){
+              var diff = that.getMemoDiff(that.state.memos[memo_no].logs[0].text, memo.text);
+              if (diff == ''){
+                diff = that.getMemoDiff(that.state.memos[memo_no].logs[1].text, that.state.memos[memo_no].logs[0].text);
+              }
+              that.state.memos[memo_no].diff = diff;
+            }else{
+              that.state.memos[memo_no].diff = '';
+            }
+          }
+          that.state.memos[memo_no].latest = memo;
+          that.setState({ memos: that.state.memos.sort(function(a,b){
+            if ( a.latest == null ) return 1;
+            if ( b.latest == null ) return -1;
+            if ( a.latest.date > b.latest.date ) return -1;
+            if ( a.latest.date < b.latest.date ) return 1;
+            return 0;
+          })});
+        });
+
+        that.socket.on('text_logs' + memo_id, function(logs){
+          var memo_no = that.getMemoIndex(logs[0].no);
+          that.state.memos[memo_no].logs = logs;
+
+          if (that.state.memos[memo_no].latest != null){
+            if (that.state.memos[memo_no].logs[0] != null){
+              var diff = that.getMemoDiff(that.state.memos[memo_no].logs[0].text, that.state.memos[memo_no].latest.text);
+              if (diff == ''){
+                diff = that.getMemoDiff(that.state.memos[memo_no].logs[1].text, that.state.memos[memo_no].logs[0].text);
+              }
+              that.state.memos[memo_no].diff = diff;
+            }
+          }
+ 
           that.setState({ memos: that.state.memos});
         });
       }
@@ -25567,6 +25606,46 @@ var DevHub = React.createClass({displayName: "DevHub",
       that.state.memos[Number(data.numbers[0])].is_visible = true;
       that.setState({ memos: that.state.memos});
     });
+  },
+
+  getMemoIndex: function(no){
+    var that = this;
+    var memo_no = 0;
+    var empty_no = 0;
+    for (var i = 0; i < that.state.memos.length; i++){
+      if (that.state.memos[i] == null){ continue; }
+      if (that.state.memos[i].latest == null && that.state.memos[i].logs == null){
+        empty_no = i;
+      }else if (that.state.memos[i].latest != null && that.state.memos[i].latest.no == no){
+        memo_no = i;
+        break;
+      }else if (that.state.memos[i].logs != null && that.state.memos[i].logs[0].no == no){
+        memo_no = i;
+        break;
+      }
+    }
+    if (memo_no == 0){
+      memo_no = empty_no;
+    }
+
+    return memo_no;
+  },
+
+  getMemoDiff: function(before, after){
+    var beforeArray = before.split('\n');
+    var afterArray = after.split('\n');
+
+    for (var i = 0; i < beforeArray.length; i++){
+      if (beforeArray[i] != afterArray[i]){
+        if (i == 0){
+          return afterArray[i] + '\n' + afterArray[i+1];
+        }else{ 
+          return afterArray[i-1] + '\n' + afterArray[i] + '\n' + afterArray[i+1];
+        }
+      }
+    }
+
+    return '';
   },
 
   submitComment: function (comment, callback) {
@@ -25662,6 +25741,7 @@ module.exports = ChatIndex;
 
 },{"material-ui/lib/lists/list":17,"material-ui/lib/lists/list-item":16,"react":226}],229:[function(require,module,exports){
 var React = require('react');
+
 var List = require('material-ui/lib/lists/list');
 var ListDivider = require('material-ui/lib/lists/list-divider');
 var ListItem = require('material-ui/lib/lists/list-item');
@@ -25717,11 +25797,11 @@ var ChatComment = React.createClass({displayName: "ChatComment",
     var msg = {__html: this.props.comment.msg.replace(/\n/g, '<br/>')};
     if (this.props.comment.avatar){
       return (
-        React.createElement("li", null, 
+        React.createElement("li", {key: this.props.comment._id}, 
           React.createElement("table", {className: "comment-table"}, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {className: "avatar-td"}, 
             React.createElement(Avatar, {src: this.props.comment.avatar})
           ), React.createElement("td", null, 
-            React.createElement("div", {dangerouslySetInnerHTML: msg}), 
+            React.createElement("div", {key: this.props.comment._id, dangerouslySetInnerHTML: msg}), 
             React.createElement("div", {className: "chat-comment-date"}, this.props.comment.date)
           ))))
         )
@@ -25732,7 +25812,7 @@ var ChatComment = React.createClass({displayName: "ChatComment",
         name = this.props.comment.name.slice(0,1);
       }
       return (
-        React.createElement("li", null, 
+        React.createElement("li", {key: this.props.comment._id}, 
           React.createElement("table", {className: "comment-table"}, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {className: "avatar-td"}, 
             React.createElement(Avatar, null, name)
           ), React.createElement("td", null, 
@@ -25824,9 +25904,17 @@ var Memo = React.createClass({displayName: "Memo",
     if (this.props.memo.latest){
       var title = this.props.memo.latest.text.split('\n')[0];
       var name_date = this.props.memo.latest.date + " - " + this.props.memo.latest.name;
+      var avatar = "";
       if (this.props.memo.latest.avatar){
+        avatar=(React.createElement(Avatar, {src: this.props.memo.latest.avatar}));
+      }else{
+        var name = this.props.memo.latest.name.slice(0,1);
+        avatar=(React.createElement(Avatar, null, name));
+      }
+
       return (
   React.createElement(Card, {
+    className: "memo-card", 
     initiallyExpanded: false}, 
     React.createElement(CardHeader, {
       title: title, 
@@ -25835,23 +25923,8 @@ var Memo = React.createClass({displayName: "Memo",
       actAsExpander: true, 
       showExpandableButton: true}
     ), 
-    React.createElement(CardText, {expandable: true}, 
-      React.createElement("pre", null, this.props.memo.latest.text)
-    )
-  )
-      );
- 
-      }else{
-        var name = this.props.memo.latest.name.slice(0,1);
-      return (
-  React.createElement(Card, {
-    initiallyExpanded: false}, 
-    React.createElement(CardHeader, {
-      title: title, 
-      subtitle: name_date, 
-      avatar: React.createElement(Avatar, null, name), 
-      actAsExpander: true, 
-      showExpandableButton: true}
+    React.createElement(CardText, {expandable: false}, 
+      React.createElement("pre", null, this.props.memo.diff)
     ), 
     React.createElement(CardText, {expandable: true}, 
       React.createElement("pre", null, this.props.memo.latest.text)
@@ -25859,7 +25932,6 @@ var Memo = React.createClass({displayName: "Memo",
   )
       );
 
-      }
    }else{
       return (
         React.createElement("div", null)

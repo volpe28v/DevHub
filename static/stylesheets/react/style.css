@@ -45,3 +45,7 @@ li {
   width: 46px;
   vertical-align: top;
 }
+
+.memo-card {
+  margin-bottom: 10px;
+}
