@@ -174,10 +174,16 @@ var DevHub = React.createClass({
       if (beforeArray[i] != afterArray[i]){
         if (i == 0){
           return afterArray[i] + '\n' + afterArray[i+1];
-        }else{ 
+        }else if (i >= afterArray.length - 1){ 
+          return afterArray[i-1] + '\n' + afterArray[i];
+        }else{
           return afterArray[i-1] + '\n' + afterArray[i] + '\n' + afterArray[i+1];
         }
       }
+    }
+
+    if (beforeArray.length != afterArray.length){
+      return afterArray[afterArray.length - 2] + '\n' + afterArray[afterArray.length - 1];
     }
 
     return '';
