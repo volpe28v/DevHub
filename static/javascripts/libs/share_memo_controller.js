@@ -107,7 +107,7 @@ ShareMemoController.prototype = {
     // 移動したタブ名を見せたいのでタイムラグを入れる
     setTimeout(function(){
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
-      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 16);
     },700);
   },
 
@@ -347,7 +347,7 @@ ShareMemoController.prototype = {
         // 一つ目のDiffに移動
         var pos = that.currentMemo().getNextDiffPos();
         $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
- 
+
         return true;
       })
       .on('click','.diff-done', function(){
@@ -358,7 +358,7 @@ ShareMemoController.prototype = {
 
         var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
         var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
         return true;
       })
       .decora({
