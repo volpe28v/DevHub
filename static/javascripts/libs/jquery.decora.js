@@ -226,6 +226,7 @@
 
       deco_text = _decorate_draggable( deco_text );
       deco_text = _decorate_header( deco_text );
+      deco_text = _decorate_list( deco_text );
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
       deco_text = _decorate_hr( deco_text );
@@ -424,6 +425,13 @@
       return '<h' + header_num + '>' + _decorate_line_color(matched_text) + '</h' + header_num + '>';
     });
     return header_text;
+  }
+
+  function _decorate_list( text ){
+    return text.replace(/^(\*)[ ]*(.*)$/mg, function(){
+      var matched_text = arguments[2];
+      return '<ul class="list-ul"><li>' + _decorate_line_color(matched_text) + '</li></ul>';
+    });
   }
 
   function _decorate_line_color( text ){

@@ -312,6 +312,9 @@ a:hover {
   margin-right: 10px;
 }
 
+.list-ul {
+  margin-bottom: 2px;
+}
 
 .text-base-style {
   background-color: #fff;
