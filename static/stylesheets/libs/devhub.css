@@ -619,6 +619,7 @@ a:hover {
 
 .login-symbol {
   cursor: pointer;
+  display: inline-block;
 }
 
 .login-symbol:hover {

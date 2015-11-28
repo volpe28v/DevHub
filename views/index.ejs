@@ -273,15 +273,15 @@
     <script id="loginNameTmpl" type="text/x-jsrender">
       {^{if pomo_min == 0}}
         {^{if avatar != null && avatar != ""}}
-          <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span><wbr>
+          <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span>
         {^{else}}
-          <span data-link="class{>color_id}" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}}</span><wbr>
+          <span data-link="class{>color_id}" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}}</span>
         {^{/if}}
       {^{else}}
         {^{if avatar != null && avatar != ""}}
-          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}">{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}">{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span>
         {^{else}}
-          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span><wbr>
+          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span>
         {^{/if}}
       {^{/if}}
     </script>
