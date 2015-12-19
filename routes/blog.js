@@ -1,4 +1,5 @@
 var blog_model = require('../lib/blog');
+var tag_model = require('../lib/tag');
 var chat_log = require('../lib/chat_log');
 var client_info = require('../lib/client_info');
 var util = require('../lib/util');
@@ -30,6 +31,15 @@ exports.post = function(req, res, io) {
       notify(blog);
     }
   });
+
+  // タグ更新
+  if (is_create){
+    var reg = /\[.+?\]/g;
+    var tags = blog.title.match(reg).map(function(m){ return m.replace("[","").replace("]",""); });
+    tag_model.save(tags);
+  }else{
+
+  }
 };
 
 exports.get = function(req, res){

@@ -75,12 +75,14 @@ app.delete('/blog', routes.blog.delete);
 var chat_log = require('./lib/chat_log');
 var text_log = require('./lib/text_log');
 var blog = require('./lib/blog');
+var tag = require('./lib/tag');
 
 var mongo_builder = require('./lib/mongo_builder');
 mongo_builder.ready(app.get('db_name'), function(db){
   chat_log.set_db(db);
   text_log.set_db(db);
   blog.set_db(db);
+  tag.set_db(db);
   routes.upload.set_db(db);
 
   server.listen(app.get('port'));
