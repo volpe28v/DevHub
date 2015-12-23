@@ -4,13 +4,6 @@ var chat_log = require('../lib/chat_log');
 var client_info = require('../lib/client_info');
 var util = require('../lib/util');
 
-function get_tags(line){
-  var reg = /\[.+?\]/g;
-  var found_tags = line.match(reg);
-  if (found_tags == null){ return []; }
-  return found_tags.map(function(m){ return m.replace("[","").replace("]",""); });
-}
-
 exports.post = function(req, res, io) {
   var blog = req.body.blog;
   var is_needed_notify = blog._id ? (blog.is_notify ? true : false) : true;
@@ -31,30 +24,31 @@ exports.post = function(req, res, io) {
     });
   }
 
-  blog.date = util.getFullDate(new Date());
-  blog_model.save(blog,function(blog){
+  // タグ更新
+  var tag_promise = null;
+  if (is_create){
+    tag_promise = tag_model.save(blog.title);
+  }else{
+    tag_promise = blog_model.find(blog._id).then(function(blogs, all_count){
+      console.log("find: " + blogs[0]._id);
+      return tag_model.delete(blogs[0].title);
+    }).then(function(results){
+      console.log("u deleted: " + results.join(" "));
+      return tag_model.save(blog.title);
+    });
+  }
+
+  tag_promise.then(function(results){
+    console.log("tag saved: " + results.join(" "));
+
+    blog.date = util.getFullDate(new Date());
+    return blog_model.save(blog);
+  }).then(function(blog){
     res.send({blog: blog});
     if (is_needed_notify){
       notify(blog);
     }
   });
-
-  // タグ更新
-  if (is_create){
-    var tags = get_tags(blog.title);
-      tag_model.save(get_tags(blog.title)).then(function(results){
-        console.log("saved: " + results.join(" "));
-      });
-  }else{
-    blog_model.find(blog._id, function(blogs, all_count){
-      tag_model.save(get_tags(blog.title)).then(function(results){
-        console.log("u saved: " + results.join(" "));
-        return tag_model.delete(get_tags(blogs[0].title));
-      }).then(function(results){
-        console.log("u deleted: " + results.join(" "));
-      });
-    });
-  }
 };
 
 exports.get = function(req, res){
@@ -68,20 +62,20 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   var blog_id = req.query._id;
-  blog_model.find(blog_id, function(blogs, all_count){
+  blog_model.find(blog_id).then(function(blogs, all_count){
     res.send({body: blogs, count: all_count});
   });
 };
 
 exports.body_older = function(req, res){
   var last_id = req.query._id;
-  blog_model.find_older(last_id, function(blogs){
+  blog_model.find_older(last_id).then(function(blogs){
     res.send({body: blogs});
   });
 };
 
 exports.body_search = function(req, res){
-  blog_model.search(req.query.keyword,function(blogs){
+  blog_model.search(req.query.keyword).then(function(blogs){
     res.send({body: blogs, count: blogs.length});
   });
 };
@@ -89,12 +83,12 @@ exports.body_search = function(req, res){
 exports.delete = function(req, res) {
   var blog = req.body.blog;
 
-  blog_model.find(blog._id, function(blogs, all_count){
-    tag_model.delete(get_tags(blogs[0].title)).then(function(results){
-      blog_model.delete(blog, function(){
-        res.send("delete ok");
-      });
-    });
+  blog_model.find(blog._id).then(function(blogs, all_count){
+    return tag_model.delete(blogs[0].title);
+  }).then(function(results){
+    return blog_model.delete(blog);
+  }).then(function(){
+    res.send("delete ok");
   });
 };
 
