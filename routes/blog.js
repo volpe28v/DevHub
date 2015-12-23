@@ -62,8 +62,8 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   var blog_id = req.query._id;
-  blog_model.find(blog_id).then(function(blogs, all_count){
-    res.send({body: blogs, count: all_count});
+  blog_model.find(blog_id).then(function(blogs){
+    res.send(blogs);
   });
 };
 
@@ -83,8 +83,8 @@ exports.body_search = function(req, res){
 exports.delete = function(req, res) {
   var blog = req.body.blog;
 
-  blog_model.find(blog._id).then(function(blogs, all_count){
-    return tag_model.delete(blogs[0].title);
+  blog_model.find(blog._id).then(function(blogs){
+    return tag_model.delete(blogs.body[0].title);
   }).then(function(results){
     return blog_model.delete(blog);
   }).then(function(){
