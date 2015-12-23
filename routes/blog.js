@@ -29,9 +29,9 @@ exports.post = function(req, res, io) {
   if (is_create){
     tag_promise = tag_model.save(blog.title);
   }else{
-    tag_promise = blog_model.find(blog._id).then(function(blogs, all_count){
-      console.log("find: " + blogs[0]._id);
-      return tag_model.delete(blogs[0].title);
+    tag_promise = blog_model.find(blog._id).then(function(blogs){
+      console.log("find: " + blogs.body[0]._id);
+      return tag_model.delete(blogs.body[0].title);
     }).then(function(results){
       console.log("u deleted: " + results.join(" "));
       return tag_model.save(blog.title);
@@ -62,8 +62,8 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   var blog_id = req.query._id;
-  blog_model.find(blog_id).then(function(blogs){
-    res.send(blogs);
+  Promise.all([tag_model.get(), blog_model.find(blog_id)]).then(function(results){
+    res.send({tags: results[0], blogs: results[1]});
   });
 };
 

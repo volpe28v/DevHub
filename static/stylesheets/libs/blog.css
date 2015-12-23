@@ -51,7 +51,7 @@ body{
 }
 
 .index-body a{
-  min-height: 46px;
+  min-height: 50px;
   border: 1px solid #bce8f1 !important;
   background-color: #d9edf7;
 }
@@ -69,6 +69,7 @@ body{
   overflow: hidden;
   text-overflow: ellipsis;
   color: #3a87ad;
+  line-height: 21px;
 }
 
 .writer {
@@ -483,4 +484,7 @@ hr {
   vertical-align: bottom;
 }
 
-
+.tag-name {
+  margin: 0px 2px;
+  cursor: pointer;
+}

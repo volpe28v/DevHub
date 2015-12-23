@@ -94,10 +94,11 @@ BlogViewModel.prototype = {
       type: 'GET',
       cache: false,
       success: function(data){
+        that.tags = data.tags;
+        var blogs = data.blogs;
         $.observable(that.items).remove(0,that.items.length);
-        $.observable(that).setProperty("item_count", data.count);
-        var blogs = data.body;
-        blogs.forEach(function(blog){
+        $.observable(that).setProperty("item_count", blogs.count);
+        blogs.body.forEach(function(blog){
           that._addItem(blog);
         });
         $.observable(that).setProperty("matched_num", 0);
@@ -161,7 +162,7 @@ BlogViewModel.prototype = {
     if (this.input_text == ""){ return; }
 
     var item = {
-      title: this._title(this.input_text),
+      title: this._title_plane(this.input_text),
       indexes: this._indexes(this.input_text),
       display_indexes: "display: none",
       text:  this.input_text,
@@ -218,7 +219,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: {
         _id: blog._id,
-        title: blog.title,
+        title: this._title_plane(blog.text),
         text: blog.text,
         name: blog.name,
         avatar: blog.avatar,
@@ -230,7 +231,7 @@ BlogViewModel.prototype = {
     });
   },
 
-  _title: function(text){
+  _title_plane: function(text){
     var blog_lines = text.split('\n');
     var title = "";
     for (var i = 0; i < blog_lines.length; i++){
@@ -243,6 +244,26 @@ BlogViewModel.prototype = {
     };
 
     title = $('<div/>').html($.decora.to_html(title)).text();
+    return title;
+  },
+
+  _title: function(text){
+    var title = this._title_plane(text);
+    var that = this;
+
+    // タグ装飾
+    title = title.replace(/\[(.+?)\]/g,
+      function(){
+        var tag = arguments[1];
+        var tag_count = 0;
+        for (var i = 0; i < that.tags.length; i++){
+          if (that.tags[i].tag_name == tag){
+            tag_count = that.tags[i].count;
+          }
+        }
+
+        return '<span class="tag-name label" data-tag="' + tag + '">' + tag + ' (' + tag_count + ')' + '</span>';
+      });
     return title;
   },
 
