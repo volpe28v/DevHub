@@ -4,6 +4,13 @@ var chat_log = require('../lib/chat_log');
 var client_info = require('../lib/client_info');
 var util = require('../lib/util');
 
+function get_tags(line){
+  var reg = /\[.+?\]/g;
+  var found_tags = line.match(reg);
+  if (found_tags == null){ return []; }
+  return found_tags.map(function(m){ return m.replace("[","").replace("]",""); });
+}
+
 exports.post = function(req, res, io) {
   var blog = req.body.blog;
   var is_needed_notify = blog._id ? (blog.is_notify ? true : false) : true;
@@ -34,11 +41,19 @@ exports.post = function(req, res, io) {
 
   // タグ更新
   if (is_create){
-    var reg = /\[.+?\]/g;
-    var tags = blog.title.match(reg).map(function(m){ return m.replace("[","").replace("]",""); });
-    tag_model.save(tags);
+    var tags = get_tags(blog.title);
+      tag_model.save(get_tags(blog.title)).then(function(results){
+        console.log("saved: " + results.join(" "));
+      });
   }else{
-
+    blog_model.find(blog._id, function(blogs, all_count){
+      tag_model.save(get_tags(blog.title)).then(function(results){
+        console.log("u saved: " + results.join(" "));
+        return tag_model.delete(get_tags(blogs[0].title));
+      }).then(function(results){
+        console.log("u deleted: " + results.join(" "));
+      });
+    });
   }
 };
 
@@ -74,8 +89,12 @@ exports.body_search = function(req, res){
 exports.delete = function(req, res) {
   var blog = req.body.blog;
 
-  blog_model.delete(blog, function(){
-    res.send("delete ok");
+  blog_model.find(blog._id, function(blogs, all_count){
+    tag_model.delete(get_tags(blogs[0].title)).then(function(results){
+      blog_model.delete(blog, function(){
+        res.send("delete ok");
+      });
+    });
   });
 };
 
