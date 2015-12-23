@@ -146,6 +146,10 @@ $(function() {
 
       blogViewModel.destory($.view(this));
     })
+    .on("click", ".tag-name", function(){
+      var tag = $(this).data("tag");
+      blogViewModel.search_by_tag(tag);
+    })
     .on('keydown','.edit-area',function(event){
       // Ctrl - S or Ctrl - enter
       if ((event.ctrlKey == true && event.keyCode == 83) ||
@@ -174,6 +178,10 @@ $(function() {
       var pos = $code_out.find(":header").eq(index + 1).offset().top - $('#blog_list').offset().top;
       $('#blog_area').scrollTop(pos + 42);
       return true;
+    })
+    .on("click", ".tag-name", function(){
+      var tag = $(this).data("tag");
+      blogViewModel.search_by_tag(tag);
     })
     .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();

@@ -24,6 +24,12 @@ BlogViewModel.prototype = {
     return this.keyword != "" ? true : false;
   },
 
+  search_by_tag: function(tag){
+    $('.search-query').val("tag:" + tag);
+    $('.search-query').trigger("keyup");
+    this.search();
+  },
+
   search: function(){
     this.keyword = $('.search-query').val().replace(/^[\s　]+|[\s　]+$/g, "");
     // キーワード無しの場合は全blog更新
