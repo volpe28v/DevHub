@@ -1,4 +1,5 @@
 var blog_model = require('../lib/blog');
+var tag_model = require('../lib/tag');
 var chat_log = require('../lib/chat_log');
 var client_info = require('../lib/client_info');
 var util = require('../lib/util');
@@ -23,9 +24,27 @@ exports.post = function(req, res, io) {
     });
   }
 
-  blog.date = util.getFullDate(new Date());
-  blog_model.save(blog,function(blog){
-    res.send({blog: blog});
+  // タグ更新
+  var tag_promise = null;
+  if (is_create){
+    tag_promise = tag_model.save(blog.title);
+  }else{
+    tag_promise = blog_model.find(blog._id).then(function(blogs){
+      console.log("find: " + blogs.body[0]._id);
+      return tag_model.delete(blogs.body[0].title);
+    }).then(function(results){
+      console.log("tag deleted: " + results.join(" "));
+      return tag_model.save(blog.title);
+    });
+  }
+
+  tag_promise.then(function(results){
+    console.log("tag saved: " + results.join(" "));
+
+    blog.date = util.getFullDate(new Date());
+    return Promise.all([tag_model.get(), blog_model.save(blog)]);
+  }).then(function(results){
+    res.send({tags: results[0], blog: results[1]});
     if (is_needed_notify){
       notify(blog);
     }
@@ -43,20 +62,20 @@ exports.get = function(req, res){
 
 exports.body = function(req, res){
   var blog_id = req.query._id;
-  blog_model.find(blog_id, function(blogs, all_count){
-    res.send({body: blogs, count: all_count});
+  Promise.all([tag_model.get(), blog_model.find(blog_id)]).then(function(results){
+    res.send({tags: results[0], blogs: results[1]});
   });
 };
 
 exports.body_older = function(req, res){
   var last_id = req.query._id;
-  blog_model.find_older(last_id, function(blogs){
+  blog_model.find_older(last_id).then(function(blogs){
     res.send({body: blogs});
   });
 };
 
 exports.body_search = function(req, res){
-  blog_model.search(req.query.keyword,function(blogs){
+  blog_model.search(req.query.keyword).then(function(blogs){
     res.send({body: blogs, count: blogs.length});
   });
 };
@@ -64,7 +83,11 @@ exports.body_search = function(req, res){
 exports.delete = function(req, res) {
   var blog = req.body.blog;
 
-  blog_model.delete(blog, function(){
+  blog_model.find(blog._id).then(function(blogs){
+    return tag_model.delete(blogs.body[0].title);
+  }).then(function(results){
+    return blog_model.delete(blog);
+  }).then(function(){
     res.send("delete ok");
   });
 };
