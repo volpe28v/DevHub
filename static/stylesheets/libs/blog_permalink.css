@@ -396,3 +396,6 @@ hr {
   vertical-align: bottom;
 }
 
+.tag-name {
+  margin: 0px 2px;
+}

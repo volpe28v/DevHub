@@ -125,8 +125,9 @@ BlogViewModel.prototype = {
       cache: false,
       data: {_id: id},
       success: function(data){
-        var blogs = data.body;
-        blogs.forEach(function(blog){
+        that.tags = data.tags;
+        var blogs = data.blogs;
+        blogs.body.forEach(function(blog){
           that._addItem(blog);
         });
       }
