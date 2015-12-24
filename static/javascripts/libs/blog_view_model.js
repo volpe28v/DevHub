@@ -56,6 +56,10 @@ BlogViewModel.prototype = {
       cache: false,
       data: {keyword: keyword},
       success: function(data){
+        // 検索後にスクロールを上部へ
+        $('#index_area').scrollTop(0);
+        $('#blog_area').scrollTop(0);
+
         $.observable(that.items).remove(0,that.items.length);
         $.observable(that).setProperty("item_count", data.count);
         var blogs = data.body;
@@ -89,6 +93,7 @@ BlogViewModel.prototype = {
 
         that._change_state_load_more();
         that.load_end();
+
       }
     });
   },
@@ -100,6 +105,9 @@ BlogViewModel.prototype = {
       type: 'GET',
       cache: false,
       success: function(data){
+        $('#index_area').scrollTop(0);
+        $('#blog_area').scrollTop(0);
+
         that.tags = data.tags;
         var blogs = data.blogs;
         $.observable(that.items).remove(0,that.items.length);

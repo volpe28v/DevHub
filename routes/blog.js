@@ -92,4 +92,30 @@ exports.delete = function(req, res) {
   });
 };
 
+exports.reset_tags = function(req, res){
+  console.log("start reset tags");
+  function tag_save_task(line){
+    return function(){
+      return tag_model.save(line);
+    }
+  }
+  tag_model.delete_all().then(function(){
+    return blog_model.all_titles();
+  }).then(function(titles){
+    var tasks = [];
+    titles.forEach(function(title){
+      if (title.title != undefined){
+        tasks.push(tag_save_task(title.title));
+      }
+    });
 
+    return tasks.reduce(function(promise, task, i) {
+      return promise.then(function(_) {
+        return task();
+      })
+    }, Promise.resolve());
+  }).then(function(){
+    console.log("end reset tags");
+    res.send("reset tags ok");
+  });
+};

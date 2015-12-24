@@ -70,6 +70,7 @@ app.get('/blog/body_search', routes.blog.body_search);
 app.get('/blog/body_older', routes.blog.body_older);
 app.post('/blog', function(req,res){ routes.blog.post(req,res,io); });
 app.delete('/blog', routes.blog.delete);
+app.get('/blog/reset_tags', routes.blog.reset_tags);
 
 // set db and listen app
 var chat_log = require('./lib/chat_log');

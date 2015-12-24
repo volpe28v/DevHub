@@ -69,10 +69,6 @@ $(function() {
           moveSearchIndex(index_top);
           moveSearchLine(blog_top);
         });
-      }else{
-        // 検索した場合はトップへスクロール
-        $('#blog_area').scrollTop(0);
-        $('#index_area').scrollTop(0);
       }
 
       if (blogViewModel.hasKeyword()){
@@ -102,8 +98,6 @@ $(function() {
       $(".search-query").val("");
       $(".search-query").switchClass("input-large", "input-small","fast");
       blogViewModel.search();
-      $('#blog_area').scrollTop(0);
-      $('#index_area').scrollTop(0);
     })
     .on("click", "#prev_match", function(){
       blogViewModel.prev(function(index_top, blog_top){
