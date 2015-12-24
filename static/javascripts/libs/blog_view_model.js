@@ -182,6 +182,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: item},
       success: function(data){
+        that.tags = data.tags;
         that._pushItem(data.blog);
       }
     });
@@ -206,19 +207,9 @@ BlogViewModel.prototype = {
     var index = view.index;
     var blog = this.items[index];
 
-    // 名前・タイトルを更新
-    var title = that._title(blog.text);
-    var indexes = this._indexes(blog.text);
-    $.observable(blog).setProperty("title", title);
-    $.observable(blog).setProperty("name", that.name);
-    $.observable(blog).setProperty("indexes", indexes);
-    $.observable(blog).setProperty("avatar", window.localStorage.avatarImage);
-
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
     $target.find('.edit-form').hide();
-
-    this._decorate(blog);
 
     $.ajax('blog' , {
       type: 'POST',
@@ -227,12 +218,18 @@ BlogViewModel.prototype = {
         _id: blog._id,
         title: this._title_plane(blog.text),
         text: blog.text,
-        name: blog.name,
-        avatar: blog.avatar,
+        name: that.name,
+        avatar: window.localStorage.avatarImage,
         is_notify: is_notify
       }},
       success: function(data){
+        that.tags = data.tags;
+        $.observable(blog).setProperty("name", data.blog.name);
+        $.observable(blog).setProperty("indexes", that._indexes(data.blog.text));
+        $.observable(blog).setProperty("avatar", data.blog.avatar);
+        $.observable(blog).setProperty("title", that._title(data.blog.title));
         $.observable(blog).setProperty("date", data.blog.date);
+        that._decorate(blog);
       }
     });
   },

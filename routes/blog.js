@@ -33,7 +33,7 @@ exports.post = function(req, res, io) {
       console.log("find: " + blogs.body[0]._id);
       return tag_model.delete(blogs.body[0].title);
     }).then(function(results){
-      console.log("u deleted: " + results.join(" "));
+      console.log("tag deleted: " + results.join(" "));
       return tag_model.save(blog.title);
     });
   }
@@ -42,9 +42,9 @@ exports.post = function(req, res, io) {
     console.log("tag saved: " + results.join(" "));
 
     blog.date = util.getFullDate(new Date());
-    return blog_model.save(blog);
-  }).then(function(blog){
-    res.send({blog: blog});
+    return Promise.all([tag_model.get(), blog_model.save(blog)]);
+  }).then(function(results){
+    res.send({tags: results[0], blog: results[1]});
     if (is_needed_notify){
       notify(blog);
     }
