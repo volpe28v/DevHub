@@ -19,7 +19,7 @@
     "grunt-contrib-uglify": "~0.5.0"
   },
   "engines": {
-    "node": "0.10.28",
+    "node": "0.12.7",
     "npm": "1.4.9"
   }
 }
