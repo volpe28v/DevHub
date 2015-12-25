@@ -88,7 +88,9 @@ exports.delete = function(req, res) {
   }).then(function(results){
     return blog_model.delete(blog);
   }).then(function(){
-    res.send("delete ok");
+    return tag_model.get();
+  }).then(function(tags){
+    res.send({tags: tags});
   });
 };
 
