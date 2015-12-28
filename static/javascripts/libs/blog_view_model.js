@@ -98,6 +98,14 @@ BlogViewModel.prototype = {
     });
   },
 
+  _update_tags: function(){
+    var that = this;
+    // 全タグ数を更新
+    this.items.forEach(function(blog){
+      $.observable(blog).setProperty("title", that._title(blog.text));
+    });
+  },
+
   refresh: function(){
     this.load_start();
     var that = this;
@@ -193,11 +201,7 @@ BlogViewModel.prototype = {
       success: function(data){
         that.tags = data.tags;
         that._pushItem(data.blog);
-
-        // 全タグ数を更新
-        that.items.forEach(function(blog){
-          $.observable(blog).setProperty("title", that._title(blog.text));
-        });
+        that._update_tags();
       }
     });
 
@@ -244,11 +248,7 @@ BlogViewModel.prototype = {
         $.observable(blog).setProperty("title", that._title(data.blog.title));
         $.observable(blog).setProperty("date", data.blog.date);
         that._decorate(blog);
-
-        // 全タグ数を更新
-        that.items.forEach(function(blog){
-          $.observable(blog).setProperty("title", that._title(blog.text));
-        });
+        that._update_tags();
       }
     });
   },
@@ -331,11 +331,7 @@ BlogViewModel.prototype = {
       data: {blog: remove_blog},
       success: function(data){
         that.tags = data.tags;
-
-         // 全タグ数を更新
-        that.items.forEach(function(blog){
-          $.observable(blog).setProperty("title", that._title(blog.text));
-        });
+        that._update_tags();
       }
     });
 
