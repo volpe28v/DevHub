@@ -488,3 +488,16 @@ hr {
   margin: 0px 2px;
   cursor: pointer;
 }
+
+#tag_list .tag-name {
+  display: inline-block;
+  margin: 3px 1px;
+}
+
+button.close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}

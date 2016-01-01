@@ -67,14 +67,26 @@
       </div>
     </div>
 
+    <!-- modal -->
+    <div id="tags_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Tags</h3>
+      </div>
+      <div class="modal-body">
+        <div id="tag_list"></div>
+      </div>
+    </div>
+
     <!-- JsRender Templates -->
     <script id="blogNaviTmpl" type="text/x-jsrender">
       <ul class="nav pull-right">
+        <li><a href="#tags_modal" rel="tooltip" title="Tags" data-toggle="modal" href="#"><i class="icon-white icon-tags"></i></a></li>
         <li><a id="scroll_top" href="#"><i class="icon-white icon-arrow-up"></i></a></li>
       </ul>
 
       <form id="search_form" class="navbar-form pull-right">
-        <input type="text" class="search-query input-small" placeholder="foo name:hoge" data-link="keyword">
+        <input type="text" class="search-query input-middle" placeholder="foo name:hoge tag:fuga" data-link="keyword">
         <i id="search_clear" class="icon-remove"></i>
       </form>
 
@@ -99,6 +111,12 @@
 
     <script id="blogCountTmpl" type="text/x-jsrender">
       <span class="count" data-link="item_count"></span><span class="unit"> blogs.</span>
+    </script>
+
+    <script id="tagListTmpl" type="text/x-jsrender">
+      <span class="tag-name label" data-tag="{{>tag_name}}">
+        <span data-link="tag_name"></span> (<span data-link="count"></span>)
+      </span>
     </script>
 
     <script id="blogBodyTmpl" type="text/x-jsrender">

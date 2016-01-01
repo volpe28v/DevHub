@@ -85,18 +85,9 @@ $(function() {
           $("#search_clear").hide();
         }
     })
-    .on("focus", ".search-query", function(){
-      $(this).switchClass("input-small", "input-large","fast");
-    })
-    .on("blur", ".search-query", function(){
-      if (!blogViewModel.hasKeyword()){
-        $(this).switchClass("input-large", "input-small","fast");
-      }
-    })
     .on("click", "#search_clear", function(){
       $(this).hide();
       $(".search-query").val("");
-      $(".search-query").switchClass("input-large", "input-small","fast");
       blogViewModel.search();
     })
     .on("click", "#prev_match", function(){
@@ -119,6 +110,12 @@ $(function() {
       return false;
     });
 
+  $.templates("#tagListTmpl").link("#tag_list", blogViewModel.tags)
+    .on("click", ".tag-name", function(){
+      var tag = $(this).data("tag");
+      blogViewModel.search_by_tag(tag);
+      $('#tags_modal').modal('hide');
+    });
 
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){

@@ -7,6 +7,8 @@ function BlogViewModel(name, start, end){
   this.keyword = "";
   this.before_keyword = "";
 
+  this.tags = [];
+
   this.matched_doms = [];
   this.matched_index = 0;
   this.matched_num = 0;
@@ -116,7 +118,8 @@ BlogViewModel.prototype = {
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
-        that.tags = data.tags;
+        $.observable(that.tags).refresh(data.tags);
+
         var blogs = data.blogs;
         $.observable(that.items).remove(0,that.items.length);
         $.observable(that).setProperty("item_count", blogs.count);
@@ -141,7 +144,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {_id: id},
       success: function(data){
-        that.tags = data.tags;
+        $.observable(that.tags).refresh(data.tags);
         var blogs = data.blogs;
         blogs.body.forEach(function(blog){
           that._addItem(blog);
@@ -199,7 +202,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: item},
       success: function(data){
-        that.tags = data.tags;
+        $.observable(that.tags).refresh(data.tags);
         that._pushItem(data.blog);
         that._update_tags();
       }
@@ -241,7 +244,7 @@ BlogViewModel.prototype = {
         is_notify: is_notify
       }},
       success: function(data){
-        that.tags = data.tags;
+        $.observable(that.tags).refresh(data.tags);
         $.observable(blog).setProperty("name", data.blog.name);
         $.observable(blog).setProperty("indexes", that._indexes(data.blog.text));
         $.observable(blog).setProperty("avatar", data.blog.avatar);
@@ -330,7 +333,7 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: remove_blog},
       success: function(data){
-        that.tags = data.tags;
+        $.observable(that.tags).refresh(data.tags);
         that._update_tags();
       }
     });
