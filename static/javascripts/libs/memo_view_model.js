@@ -83,6 +83,7 @@ MemoViewModel.prototype = {
     this.writing_text = text_body;
     $.observable(this).setProperty("writer", this.writing_text.name);
     $.observable(this).setProperty("title", this._title(this.writing_text.text));
+    $.observable(this).setProperty("bytes", this.writing_text.text.length);
 
     // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);

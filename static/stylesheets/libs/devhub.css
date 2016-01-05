@@ -737,12 +737,19 @@ a:hover {
   font-size: 14px;
   font-weight: bold;
   color: #b7282e;
-  margin: 10px 5px 0 20px;
+  margin: 10px 0px 0 20px;
 }
 
 .checkbox-count-done {
   color: #228b22;
 }
+
+.memo-bytes {
+  float: left;
+  color: #BBB;
+  margin: 10px 0 0 15px;
+}
+
 
 .remove_text {
   margin: 0 5px 0 0;
@@ -783,7 +790,6 @@ a:hover {
 
 .writing-name {
   color: red !important;
-  font-weight: bold !important;
 }
 
 .timestamp {
