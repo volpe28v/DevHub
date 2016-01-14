@@ -264,6 +264,8 @@ ShareMemoController.prototype = {
         that.currentMemo().select();
 
         $('#memo_area').scrollTop(0);
+        adjustMemoControllbox();
+
         return true;
       });
 
@@ -478,7 +480,7 @@ ShareMemoController.prototype = {
     });
 
     var control_offset_base = 0;
-    $('#memo_area').scroll(function(){
+    function adjustMemoControllbox(){
       var pos = $("#memo_area").scrollTop();
       var offset = $('#share-memo').offset().top;
 
@@ -486,8 +488,11 @@ ShareMemoController.prototype = {
       var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
       var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
       var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+
       if (!$control.hasClass('fixed')){
-        control_offset_base = $control.offset().top - offset;
+        var control_offset_base_tmp = $control.offset().top - offset;
+        if (control_offset_base_tmp < 0){ return; } // 初回表示時は調整しない
+        control_offset_base = control_offset_base_tmp;
       }
 
       if ( control_offset_base < pos){
@@ -508,6 +513,10 @@ ShareMemoController.prototype = {
           break;
         }
       }
+    }
+
+    $('#memo_area').scroll(function(){
+      adjustMemoControllbox();
     });
 
     // 前回の状態を復元する
