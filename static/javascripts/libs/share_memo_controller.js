@@ -22,13 +22,14 @@ function ShareMemoController(param){
 
   // searchBox
   this.isSearching = false;
-  this.keyword = "";
   this.before_keyword = "";
-  this.matched_navi_style = "display:none";
-  this.matched_index = 0;
-  this.matched_num = 0;
   this.matched_doms = [];
-  this.matched_title = "";
+
+  this.keyword = ko.observable('');
+  this.matched_navi_style = ko.observable("none");
+  this.matched_index = ko.observable(0);
+  this.matched_num = ko.observable(0);
+  this.matched_title = ko.observable("");
 
   this.init_sharememo();
   this.init_dropzone();
@@ -111,17 +112,17 @@ ShareMemoController.prototype = {
     },700);
   },
 
-  search: function(){
+  search: function(keyword){
     var that = this;
-    if (that.keyword == ""){
-      that.before_keyword = that.keyword;
+    if (keyword == ""){
+      that.before_keyword = keyword;
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
 
-      $.observable(that).setProperty("matched_num", 0);
-      $.observable(that).setProperty("matched_index", 0);
-      $.observable(that).setProperty("matched_navi_style", "display: none;");
-    }else if(that.before_keyword != that.keyword){
+      that.matched_num(0);
+      that.matched_index(0);
+      that.matched_navi_style("none");
+    }else if(that.before_keyword != keyword){
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
 
@@ -130,9 +131,9 @@ ShareMemoController.prototype = {
         that.memoViewModels[i].showText();
       }
  
-      that.before_keyword = that.keyword;
+      that.before_keyword = keyword;
       that.matched_doms = [];
-      var reg_keyword = new RegExp(that.keyword,"i");
+      var reg_keyword = new RegExp(keyword,"i");
       $(".code-out").each(function(){
         var matched_doms = $(this).find("td").map(function(){
           if ($(this).text().match(reg_keyword)){
@@ -145,36 +146,37 @@ ShareMemoController.prototype = {
         Array.prototype.push.apply(that.matched_doms, matched_doms);
       });
 
-      $.observable(that).setProperty("matched_num", that.matched_doms.length);
-      $.observable(that).setProperty("matched_index", 0);
-      $.observable(that).setProperty("matched_navi_style", "display: inline;");
-      $.observable(that).setProperty("matched_title", "");
-      if (that.matched_num > 0){
+      that.matched_num(that.matched_doms.length);
+      that.matched_index(0);
+      that.matched_navi_style("inline");
+      that.matched_title("");
+      if (that.matched_num() > 0){
         that.matched_next();
       }
     }else{
-      if (that.matched_num > 0){
+      if (that.matched_num() > 0){
         that.matched_next();
       }
     }
   },
 
   matched_next: function(){
-    var index = this.matched_index + 1;
-    if (index > this.matched_num){ index = 1; }
+    var index = this.matched_index() + 1;
+    if (index > this.matched_num()){ index = 1; }
     this._matched_move(index);
   },
 
   matched_prev: function(){
-    var index = this.matched_index - 1;
-    if (index < 1){ index = this.matched_num; }
+    var index = this.matched_index() - 1;
+    if (index < 1){ index = this.matched_num(); }
     this._matched_move(index);
   },
 
   _matched_move: function(next_index){
-    var $prev_target = $(this.matched_doms[this.matched_index - 1]);
-    $.observable(this).setProperty("matched_index", next_index);
-    var $next_target = $(this.matched_doms[this.matched_index - 1]);
+    var that = this;
+    var $prev_target = $(this.matched_doms[this.matched_index() - 1]);
+    this.matched_index(next_index);
+    var $next_target = $(this.matched_doms[this.matched_index() - 1]);
 
     $prev_target.removeClass("matched_strong_line").addClass("matched_line");
     $next_target.removeClass("matched_line").addClass("matched_strong_line");
@@ -183,7 +185,7 @@ ShareMemoController.prototype = {
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     var $target_tab = $("#share_memo_tab_" + no);
     var title = $target_tab.find(".share-memo-title").text();
-    $.observable(this).setProperty("matched_title", title);
+    that.matched_title(title);
 
     if (data_no != no){
       var no = $next_target.closest(".share-memo").data("no");
@@ -193,57 +195,56 @@ ShareMemoController.prototype = {
     $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
   },
 
+  do_search: function(){
+    var that = this;
+    that.search(that.keyword());
+    that.isSearching = false;
+    return false;
+  },
+
+  do_incremental_search: function(){
+    var that = this;
+    if (!that.isSearching && event.keyCode != 13){
+      that.isSearching = true;
+      setTimeout(function(){
+        if (that.isSearching){
+          that.search(that.keyword());
+          that.isSearching = false;
+        }
+      },1000);
+    }
+    if (that.keyword() != ""){
+      $("#search_clear").show();
+    }else{
+      $("#search_clear").hide();
+    }
+  },
+
+  do_search_clear: function(){
+    var that = this;
+    that.keyword("");
+    that.search("");
+    that.isSearching = false;
+    $('#memo_area').scrollTop(0);
+    $("#search_clear").hide();
+  },
+
+  do_prev_match: function(){
+    var that = this;
+    that.matched_prev();
+    return false;
+  },
+
+  do_next_match: function(){
+    var that = this;
+    that.matched_next();
+    return false;
+  },
+
   init_sharememo: function(){
     var that = this;
 
-    $.templates("#searchBoxTmpl").link("#search_box", this)
-      .on("submit", "#search_form", function(){
-        that.search();
-        that.isSearching = false;
-        return false;
-      })
-      .on('keyup', ".search-query", function(event){
-        that.keyword = $(this).val();
-        if (!that.isSearching && event.keyCode != 13){
-          that.isSearching = true;
-          setTimeout(function(){
-            if (that.isSearching){
-              that.search();
-              that.isSearching = false;
-            }
-          },1000);
-        }
-        if (that.keyword != ""){
-          $("#search_clear").show();
-        }else{
-          $("#search_clear").hide();
-        }
-      })
-      .on("focus", ".search-query", function(){
-        $(this).switchClass("input-small", "input-large","fast");
-      })
-      .on("blur", ".search-query", function(){
-        if (that.keyword == ""){
-          $(this).switchClass("input-large", "input-small","fast");
-        }
-      })
-      .on("click", "#search_clear", function(){
-        $(".search-query").val("");
-        $(".search-query").switchClass("input-large", "input-small","fast");
-        that.keyword = "";
-        that.search();
-        that.isSearching = false;
-        $('#memo_area').scrollTop(0);
-        $(this).hide();
-      })
-      .on("click", "#prev_match", function(){
-        that.matched_prev();
-        return false;
-      })
-      .on("click", "#next_match",function(){
-        that.matched_next();
-        return false;
-      });
+    ko.applyBindings(that, $('#search_box').get(0));
 
     $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
       .on('click','.share-memo-tab-elem', function(){

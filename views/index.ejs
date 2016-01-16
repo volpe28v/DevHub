@@ -87,7 +87,24 @@
             <li><a href="#settings_modal" rel="tooltip" title="Settings" data-toggle="modal"><i class="icon-white icon-cog"></i></a></li>
           </ul>
 
-          <div id="search_box"></div>
+          <div id="search_box">
+            <form id="search_form" class="navbar-form pull-right" data-bind="submit: do_search">
+              <input type="text" class="search-query input-small" placeholder="Search Memo" data-bind="value: keyword, valueUpdate: 'keyup', event: {keyup: do_incremental_search}">
+              <i id="search_clear" class="icon-remove" data-bind="click: do_search_clear"></i>
+            </form>
+
+            <form id="matched_control" class="navbar-form pull-right">
+              <div class="btn-group">
+                <button id="prev_match" class="btn btn-inverse" style="display: none" data-bind="click: do_prev_match, style: {display: matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
+                <button id="next_match" class="btn btn-inverse" style="display: none" data-bind="click: do_next_match, style: {display: matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
+              </div>
+            </form>
+
+            <span id="matched_count" class="navbar-text pull-right" style="display: none" data-bind="style: {display: matched_navi_style}">
+              <span data-bind="text: matched_title"></span>
+              <span data-bind="text: matched_index"></span>/<span data-bind="text: matched_num"></span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -284,28 +301,6 @@
           <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span>
         {^{/if}}
       {^{/if}}
-    </script>
-
-    <script id="searchBoxTmpl" type="text/x-jsrender">
-      <form id="search_form" class="navbar-form pull-right">
-        <input type="text" class="search-query input-small" placeholder="Search Memo" data-link="keyword">
-        <i id="search_clear" class="icon-remove"></i>
-      </form>
-
-      <form id="matched_control" class="navbar-form pull-right">
-        <div class="btn-group">
-          <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
-          <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
-        </div>
-      </form>
-
-      <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
-      </span>
-
-      <span id="matched_title" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_title"></span>
-      </span>
     </script>
 
     <script id="alertTimelineTmpl" type="text/x-jsrender">
