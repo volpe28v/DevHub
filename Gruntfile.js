@@ -16,6 +16,7 @@ module.exports = function(grunt){
         files: {
           "static/javascripts/devhub.min.js" : [
             "static/javascripts/libs/jsviews.min.js",
+            "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/jquery.cookie.js",
             "static/javascripts/libs/jquery.inview.min.js",
             "static/javascripts/libs/jquery.finger.min.js",
