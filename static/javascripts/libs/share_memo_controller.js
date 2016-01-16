@@ -229,18 +229,6 @@ ShareMemoController.prototype = {
     $("#search_clear").hide();
   },
 
-  do_prev_match: function(){
-    var that = this;
-    that.matched_prev();
-    return false;
-  },
-
-  do_next_match: function(){
-    var that = this;
-    that.matched_next();
-    return false;
-  },
-
   init_sharememo: function(){
     var that = this;
 
