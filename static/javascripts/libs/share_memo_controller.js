@@ -7,6 +7,8 @@ var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 
 function ShareMemoController(param){
+  var that = this;
+
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.zenMode = param.zenMode;
@@ -15,10 +17,12 @@ function ShareMemoController(param){
   this.doing_up = false;
   this.doing_down = false;
 
-  this.memoViewModels = [];
+  this.memoViewModels = ko.observableArray([]);
   this.currentMemoNo = 0;
 
   this.isMovingTab = false;
+
+  this.control_offset_base = 0;
 
   // searchBox
   this.isSearching = false;
@@ -31,15 +35,43 @@ function ShareMemoController(param){
   this.matched_num = ko.observable(0);
   this.matched_title = ko.observable("");
 
+  this.currentMemo = function(){
+    console.log(that);
+    console.log(that.memoViewModels());
+    console.log(that.currentMemoNo);
+    return that.memoViewModels()[that.currentMemoNo-1];
+  }
+
+  this.select_memo_tab = function(data){
+    console.log(that);
+    if (that.isMovingTab){ return true; }
+
+    // 遷移前のメモを表示モードに戻す
+    that.currentMemo().switchFixMode();
+
+    // タブ選択のIDを記憶する
+    //var memoViewModel = that.memoViewModels[$.view(this).index];
+    var memoViewModel = data;
+
+    window.localStorage.tabSelectedID = "#share_memo_tab_" + this.no;
+
+    for (var i = 0; i < that.memoViewModels().length; i++){
+      that.memoViewModels()[i].unselect();
+    }
+    that.currentMemoNo = memoViewModel.no;
+    that.currentMemo().select();
+
+    $('#memo_area').scrollTop(0);
+    that.adjustMemoControllbox();
+
+    return true;
+  }
+ 
   this.init_sharememo();
   this.init_dropzone();
 }
 
 ShareMemoController.prototype = {
-  currentMemo: function(){
-    return this.memoViewModels[this.currentMemoNo-1];
-  },
-
   setName: function(name){
     this.login_name = name;
   },
@@ -54,7 +86,7 @@ ShareMemoController.prototype = {
 
   setFocus: function(){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
-    var targetMemo = this.memoViewModels[data_no-1];
+    var targetMemo = this.memoViewModels()[data_no-1];
     if (targetMemo.edit_mode){
       $('#share_memo_' + data_no).find(".code").focus();
     }else{
@@ -127,8 +159,8 @@ ShareMemoController.prototype = {
       $(".matched_line").removeClass("matched_line");
 
       // 検索前に一旦最新の表示に更新する
-      for (var i = 0; i < that.memoViewModels.length; i++){
-        that.memoViewModels[i].showText();
+      for (var i = 0; i < that.memoViewModels().length; i++){
+        that.memoViewModels()[i].showText();
       }
  
       that.before_keyword = keyword;
@@ -229,11 +261,50 @@ ShareMemoController.prototype = {
     $("#search_clear").hide();
   },
 
+  adjustMemoControllbox: function(){
+    var that = this;
+    var pos = $("#memo_area").scrollTop();
+    var offset = $('#share-memo').offset().top;
+
+    // for control
+    var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
+    var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
+    var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+
+    if (!$control.hasClass('fixed')){
+      var control_offset_base_tmp = $control.offset().top - offset;
+      if (control_offset_base_tmp < 0){ return; } // 初回表示時は調整しない
+      that.control_offset_base = control_offset_base_tmp;
+    }
+
+    if ( that.control_offset_base < pos){
+      $control.addClass('fixed');
+      $control.css("top", fixed_top);
+      $dummy.height($control.outerHeight()).show();
+    }else{
+      $control.removeClass('fixed');
+      $dummy.hide();
+    }
+
+    // for index cursor
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var headers = $code_out.find(":header");
+    for (var i = headers.length - 1; i >= 0; i--){
+      if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
+        that.currentMemo().setCurrentIndex(i);
+        break;
+      }
+    }
+  },
+
+
   init_sharememo: function(){
     var that = this;
 
     ko.applyBindings(that, $('#search_box').get(0));
+    ko.applyBindings(that, $('#share-memo').get(0));
 
+    /*
     $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
       .on('click','.share-memo-tab-elem', function(){
         if (that.isMovingTab){ return true; }
@@ -257,6 +328,7 @@ ShareMemoController.prototype = {
 
         return true;
       });
+    */
 
     $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
       .on('click','.sync-text', function(){
@@ -407,7 +479,8 @@ ShareMemoController.prototype = {
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
-      $.observable(this.memoViewModels).insert(new MemoViewModel({
+      //$.observable(this.memoViewModels).insert(new MemoViewModel({
+      this.memoViewModels.unshift(new MemoViewModel({
         no: i,
         socket: this.socket,
         getName: function() { return that.getName(); }

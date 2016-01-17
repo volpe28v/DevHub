@@ -4,10 +4,11 @@ function MemoViewModel(param){
   this.getName = param.getName; //function
   this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
-  this.title = "- No." + this.no + " -";
+  this.title = ko.observable("- No." + this.no + " -");
   this.update_timer = null;
   this.code_prev = "";
   this.writing_loop_timer = { id: -1, code_no: 0};
+  this.writer = ko.observable("");
   this.is_shown_move_to_blog = false;
   this.is_selected = false;
   this.is_existed_update = true;
@@ -81,8 +82,8 @@ MemoViewModel.prototype = {
     if (text_body.hash != undefined && this.writing_text.hash == text_body.hash){ return false; }
 
     this.writing_text = text_body;
-    $.observable(this).setProperty("writer", this.writing_text.name);
-    $.observable(this).setProperty("title", this._title(this.writing_text.text));
+    this.writer(this.writing_text.name);
+    this.title(this._title(this.writing_text.text));
     $.observable(this).setProperty("bytes", this.writing_text.text.length);
 
     // バインドだけで実現できない画面処理

@@ -157,12 +157,22 @@
             <div class="dummy-top-space hidden-phone"></div>
             <div id="share-memo">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
-                <ul id="share_memo_nav" class="nav nav-tabs"></ul>
+                <ul id="share_memo_nav" class="nav nav-tabs" data-bind="foreach: memoViewModels">
+                  <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}" class="share-memo-tab">
+                    <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
+                      <span class="share-memo-title" data-bind="text: title"></span>
+                      <div class="writer silent-name" data-bind="text: writer"></div>
+                      <div>
+                        <span class="timestamp"></span>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
                 <div class="share-memo-tab-content tab-content"></div>
               </div>
             </div>
             <footer>
-            <span>© 2012 Naoki KODAMA. All rights reserved.</span>
+              <span>© 2012 Naoki KODAMA. All rights reserved.</span>
             </footer>
           </div>
         </div>
