@@ -95,12 +95,12 @@
 
             <form id="matched_control" class="navbar-form pull-right">
               <div class="btn-group">
-                <button id="prev_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_prev, style: {display: matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
-                <button id="next_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_next, style: {display: matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
+                <button id="prev_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_prev, visible: matched_navi_visible"><i class="icon-chevron-up icon-white"></i></button>
+                <button id="next_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_next, visible: matched_navi_visible"><i class="icon-chevron-down icon-white"></i></button>
               </div>
             </form>
 
-            <span id="matched_count" class="navbar-text pull-right" style="display: none" data-bind="style: {display: matched_navi_style}">
+            <span id="matched_count" class="navbar-text pull-right" style="display: none" data-bind="visible: matched_navi_visible">
               <span data-bind="text: matched_title"></span>
               <span data-bind="text: matched_index"></span>/<span data-bind="text: matched_num"></span>
             </span>

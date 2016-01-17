@@ -26,7 +26,7 @@ function ShareMemoController(param){
   this.matched_doms = [];
 
   this.keyword = ko.observable('');
-  this.matched_navi_style = ko.observable("none");
+  this.matched_navi_visible = ko.observable(false);
   this.matched_index = ko.observable(0);
   this.matched_num = ko.observable(0);
   this.matched_title = ko.observable("");
@@ -121,7 +121,7 @@ ShareMemoController.prototype = {
 
       that.matched_num(0);
       that.matched_index(0);
-      that.matched_navi_style("none");
+      that.matched_navi_visible(false);
     }else if(that.before_keyword != keyword){
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
@@ -148,7 +148,7 @@ ShareMemoController.prototype = {
 
       that.matched_num(that.matched_doms.length);
       that.matched_index(0);
-      that.matched_navi_style("inline");
+      that.matched_navi_visible(true);
       that.matched_title("");
       if (that.matched_num() > 0){
         that.matched_next();
@@ -202,7 +202,7 @@ ShareMemoController.prototype = {
     return false;
   },
 
-  do_incremental_search: function(){
+  do_incremental_search: function(data, event){
     var that = this;
     if (!that.isSearching && event.keyCode != 13){
       that.isSearching = true;
