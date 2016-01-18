@@ -15,18 +15,15 @@ function MemoViewModel(param){
   this.is_existed_update = true;
 
   this.indexes = []; //binding
-  this.diffTitles = []; //binding
+  this.diffTitles = ko.observableArray([]); //binding
   this.diff_mode = false;
   this.diff_block_list = [];
   this.diff_index = 0;
 
   this.currentIndexNo = -1;
-  this.initSocket();
-}
 
-MemoViewModel.prototype = {
-  initSocket: function(){
-    var that = this;
+  var that = this;
+  this.initSocket = function(){
     socket.on('text' + this.no, function(text_log) {
       if (that.setText(text_log) == false){ return; };
       that._updateIndexes();
@@ -56,9 +53,9 @@ MemoViewModel.prototype = {
         }
       }
     });
-  },
+  }
 
-  _title: function(text){
+  this._title = function(text){
     var text_lines = text.split('\n');
     var title = "";
     for (var i = 0; i < text_lines.length; i++){
@@ -75,9 +72,9 @@ MemoViewModel.prototype = {
       title = " - No." + this.no + " - ";
     }
     return title;
-  },
+  }
 
-  setText: function(text_body){
+  this.setText = function(text_body){
     var that = this;
     // メモのハッシュ値が変更あれば更新する
     if (text_body.hash != undefined && this.writing_text.hash == text_body.hash){ return false; }
@@ -131,9 +128,9 @@ MemoViewModel.prototype = {
     },3000);
 
     return true;
-  },
+  }
 
-  switchFixMode: function(){
+  this.switchFixMode = function(){
     if ( this.edit_mode){
       this.switchFixShareMemo(1);
     }
@@ -141,9 +138,9 @@ MemoViewModel.prototype = {
     if ( this.diff_mode ){
       this.endDiff();
     }
-  },
+  }
 
-  switchFixShareMemo: function(row, offset){
+  this.switchFixShareMemo = function(row, offset){
     var $share_memo = $('#share_memo_' + this.no);
     this.edit_mode = false;
 
@@ -177,14 +174,14 @@ MemoViewModel.prototype = {
     this.writingLoopStop();
 
     $("#move_to_blog").fadeOut();
-  },
+  }
 
-  writingLoopStop: function(){
+  this.writingLoopStop = function(){
     clearInterval(this.writing_loop_timer.id);
     this.writing_loop_timer = { id: -1, code_no: 0};
-  },
+  }
 
-  switchEditShareMemo: function(row, offset){
+  this.switchEditShareMemo = function(row, offset){
     var $share_memo = $('#share_memo_' + this.no);
     this.setCurrentIndex(-1);
     this.edit_mode = true;
@@ -212,10 +209,9 @@ MemoViewModel.prototype = {
 
     this.code_prev = $target_code.val();
     this.writingLoopStart();
-  },
+  }
 
-  writingLoopStart: function(){
-    var that = this;
+  this.writingLoopStart = function(){
     $target_code = $('#share_memo_' + this.no).children('.code');
     var loop = function() {
       var code = $target_code.val();
@@ -241,9 +237,9 @@ MemoViewModel.prototype = {
       this.writingLoopStop();
     }
     this.writing_loop_timer = {id: setInterval(loop, 500), code_no: this.no};
-  },
+  }
 
-  _getFocusFromInputTask: function(){
+  this._getFocusFromInputTask = function(){
     var $focus_dom = $(':focus');
     if ($focus_dom && $focus_dom.hasClass('input-task')){
       return $focus_dom.closest('tr').index();
@@ -251,16 +247,16 @@ MemoViewModel.prototype = {
     return -1;
   },
 
-  _setFocusToInputTask: function($target, focus_index){
+  this._setFocusToInputTask = function($target, focus_index){
     if (focus_index >= 0){
       var $focus_dom = $target.find('.code-out').find('tr:eq(' + focus_index + ')').find('.input-task');
       if ($focus_dom){
         $focus_dom.focus();
       }
     }
-  },
+  }
 
-  showText: function(){
+  this.showText = function(){
     // メモに更新があれば実行
     if (!this.is_existed_update){ return; }
     this.is_existed_update = false;
@@ -367,9 +363,9 @@ MemoViewModel.prototype = {
     }
 
     this._setFocusToInputTask($target, focus_index);
-  },
+  }
 
-  insert: function(row, text){
+  this.insert = function(row, text){
     var text_array = this.writing_text.text.split("\n");
     text_array.splice(row,0,text);
     this.writing_text.text = text_array.join("\n");
@@ -384,24 +380,24 @@ MemoViewModel.prototype = {
         avatar: window.localStorage.avatarImage,
         text: this.writing_text.text});
     }
-  },
+  }
 
-  select: function(){
+  this.select = function(){
     $('.index-ul').hide();
     $('#share_memo_index_' + this.no).show();
     this.is_selected = true;
     this.showText();
-  },
+  }
 
-  unselect: function(){
+  this.unselect = function(){
     this.is_selected = false;
-  },
+  }
 
-  showIndexList: function(){
+  this.showIndexList = function(){
     $('#index_inner').slideToggle('fast');
-  },
+  }
 
-  setCurrentIndex: function(no){
+  this.setCurrentIndex = function(no){
     if (this.currentIndexNo == no){ return; }
     if (this.edit_mode){ return; }
 
@@ -411,10 +407,9 @@ MemoViewModel.prototype = {
     if (no != -1){
       $index_lists.eq(no).addClass('current-index');
     }
-  },
+  }
 
-  _updateIndexes: function(){
-    var that = this;
+  this._updateIndexes = function(){
     var $index_list = $('#share_memo_index_' + this.no);
 
     $.observable(that.indexes).remove(0, that.indexes.length);
@@ -443,22 +438,22 @@ MemoViewModel.prototype = {
     $indexes.each(function(){
       emojify.run($(this).get(0));
     });
-  },
+  }
 
-  _getLogsForDiff: function(){
+  this._getLogsForDiff = function(){
     var out_logs = this.text_logs;
     if (this.writing_text.date != out_logs[0].date){
       out_logs.unshift(this.writing_text);
     }
 
     return out_logs;
-  },
+  }
 
-  showDiffList: function(){
+  this.showDiffList = function(){
     var $share_memo = $('#share_memo_' + this.no);
     var text_log = this._getLogsForDiff();
 
-    $.observable(this.diffTitles).remove(0, this.diffTitles.length);
+    this.diffTitles([]);
     var current_date = moment();
     for (var i = 1; i < text_log.length; i++){
       var diff_date = moment(text_log[i].date);
@@ -466,11 +461,11 @@ MemoViewModel.prototype = {
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
         diff_class += " today-diff-list";
       }
-      $.observable(this.diffTitles).insert({title: text_log[i].date + " - " + text_log[i].name, class: diff_class});
+      this.diffTitles.push({title: text_log[i].date + " - " + text_log[i].name, class: diff_class});
     }
-  },
+  }
 
-  createDiff: function(index){
+  this.createDiff = function(index){
     index++; // 0番目はリストに表示しないので 1番目の履歴は 0で来る
     var text_log = this._getLogsForDiff();
     var baseHtml = $.decora.to_html(text_log[index].text);
@@ -500,9 +495,9 @@ MemoViewModel.prototype = {
 
     $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + this.diff_block_list.length);
     return diff_body;
-  },
+  }
 
-  _createDiffBlockList: function(diff_body){
+  this._createDiffBlockList = function(diff_body){
     // 差分グループを生成
     var diff_list = $(diff_body).find(".insert,.delete");
     this.diff_block_list = [];
@@ -527,9 +522,9 @@ MemoViewModel.prototype = {
         }
       }
     }
-  },
+  }
 
-  getNextDiffPos: function(){
+  this.getNextDiffPos = function(){
     var pos = this.diff_block_list[this.diff_index].offset().top;
     if (++this.diff_index >= this.diff_block_list.length){ this.diff_index = 0; }
 
@@ -540,9 +535,9 @@ MemoViewModel.prototype = {
       $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff ' + this.diff_index + '/' + this.diff_block_list.length);
     }
     return pos;
-  },
+  }
 
-  endDiff: function(){
+  this.endDiff = function(){
     var $share_memo = $("#share_memo_" + this.no);
     $share_memo.find('.code-out').show();
     $share_memo.find('.diff-view').hide();
@@ -555,9 +550,9 @@ MemoViewModel.prototype = {
     this.diff_index = 0;
     this.diff_mode = false;
     this.diff_block_list = [];
-  },
+  }
 
-  applyToWritingText: function(func){
+  this.applyToWritingText = function(func){
     this.writing_text.text = func(this.writing_text.text);
     this.socket.emit('text',{
       no: this.no,
@@ -566,8 +561,7 @@ MemoViewModel.prototype = {
       text: this.writing_text.text});
   },
 
-  showMoveToBlogButton: function($selected_target, login_name){
-    var that = this;
+  this.showMoveToBlogButton = function($selected_target, login_name){
     this.is_shown_move_to_blog = true;
     var before_pos = $('#share-memo').offset().top * -1;
     if ($(".navbar").is(':visible')){
@@ -603,4 +597,6 @@ MemoViewModel.prototype = {
         });
     }
   }
+
+  this.initSocket();
 }
