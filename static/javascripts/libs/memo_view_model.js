@@ -5,6 +5,7 @@ function MemoViewModel(param){
   this.writing_text = {text: "", name: "" , date: undefined};
   this.text_logs = [];
   this.title = ko.observable("- No." + this.no + " -");
+  this.bytes = ko.observable("");
   this.update_timer = null;
   this.code_prev = "";
   this.writing_loop_timer = { id: -1, code_no: 0};
@@ -84,7 +85,7 @@ MemoViewModel.prototype = {
     this.writing_text = text_body;
     this.writer(this.writing_text.name);
     this.title(this._title(this.writing_text.text));
-    $.observable(this).setProperty("bytes", this.writing_text.text.length);
+    this.bytes(this.writing_text.text.length + "bytes");
 
     // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);

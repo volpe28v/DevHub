@@ -295,6 +295,7 @@ function ShareMemoController(param){
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
 
+    /*
     $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
       .on('click','.sync-text', function(){
         // 表示しているメモの先頭にカーソルを当てて編集状態へ
@@ -419,6 +420,7 @@ function ShareMemoController(param){
       .on('select','.code',function(event){
         that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
+      */
 
     $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
       .on('click','.index-li', function(){

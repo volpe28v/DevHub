@@ -168,7 +168,43 @@
                     </a>
                   </li>
                 </ul>
-                <div class="share-memo-tab-content tab-content"></div>
+                <div class="share-memo-tab-content tab-content" data-bind="foreach: memoViewModels">
+                  <div data-bind="attr: {id: 'share_memo_' + no, 'data-no': no}" class="share-memo tab-pane">
+                    <div class="memo-control">
+                      <button class="sync-text btn btn-primary" style="float: left">
+                        <i class="icon-edit icon-white"></i> Edit
+                      </button>
+                      <button class="fix-text btn btn-info" style="float: left; display: none">
+                        <i class="icon-edit icon-white"></i> Done
+                      </button>
+                      <button class="diff-done btn btn-info" style="float: left; display: none">
+                        <i class="icon-resize-vertical icon-white"></i> Done
+                      </button>
+                      <div class="btn-group" style="float: left">
+                        <a class="btn dropdown-toggle diff-button hidden-phone" data-toggle="dropdown" href="#">
+                          <i class="icon-resize-vertical"></i> Diff
+                          <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu diff-list" data-bind="foreach: diffTitles">
+                          <li><a data-bind="css: class, html: title" href="#"></a></li>
+                        </ul>
+                      </div>
+                      <button class="wip-jump btn btn-danger" style="float: left; display: none">
+                        <i class="icon-fire icon-white"></i> WIP
+                      </button>
+                      <span class="text-date"></span>
+                      <span class="memo-bytes" data-bind="text: bytes"></span>
+                      <span class="checkbox-count" style="display: none"></span>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="memo-control-dummy" style="display:none;"></div>
+                    <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                    <pre class="code-out-base">
+                      <div class="code-out"></div>
+                      <div class="diff-view" style="display: none"></div>
+                    </pre>
+                  </div>
+                </div>
               </div>
             </div>
             <footer>
