@@ -91,7 +91,6 @@ function ShareMemoController(param){
   }
 
   this.down = function(){
-    var that = this;
     if (!this.doing_down){
       $('#memo_area').scrollTop($('#memo_area').scrollTop() + 400);
       that.doing_down = false;
@@ -99,7 +98,6 @@ function ShareMemoController(param){
   }
 
   this.up = function(){
-    var that = this;
     if (!this.doing_up){
       $('#memo_area').scrollTop($('#memo_area').scrollTop() - 400);
       that.doing_up = false;
@@ -136,7 +134,6 @@ function ShareMemoController(param){
   }
 
   this.search = function(keyword){
-    var that = this;
     if (keyword == ""){
       that.before_keyword = keyword;
       $(".matched_strong_line").removeClass("matched_strong_line");
@@ -196,7 +193,6 @@ function ShareMemoController(param){
   }
 
   this._matched_move = function(next_index){
-    var that = this;
     var $prev_target = $(this.matched_doms[this.matched_index() - 1]);
     this.matched_index(next_index);
     var $next_target = $(this.matched_doms[this.matched_index() - 1]);
@@ -219,14 +215,12 @@ function ShareMemoController(param){
   }
 
   this.do_search = function(){
-    var that = this;
     that.search(that.keyword());
     that.isSearching = false;
     return false;
   }
 
   this.do_incremental_search = function(data, event){
-    var that = this;
     if (!that.isSearching && event.keyCode != 13){
       that.isSearching = true;
       setTimeout(function(){
@@ -244,7 +238,6 @@ function ShareMemoController(param){
   }
 
   this.do_search_clear = function(){
-    var that = this;
     that.keyword("");
     that.search("");
     that.isSearching = false;
@@ -289,30 +282,48 @@ function ShareMemoController(param){
     }
   }
 
-  this.init_sharememo = function(){
-    var that = this;
+  this.do_edit = function(){
+    // 表示しているメモの先頭にカーソルを当てて編集状態へ
+    var pos = $("#memo_area").scrollTop();
+    var offset = $('#share-memo').offset().top;
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var $code_out_lines = $code_out.find(".code-out-tr");
+    var row = 0;
+    for (var i = $code_out_lines.length - 1; i >= 0; i--){
+      if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
+        row = i;
+        break;
+      }
+    }
 
+    that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
+
+  this.do_diff_list = function(){
+    that.currentMemo().switchFixShareMemo(1);
+    that.currentMemo().showDiffList();
+  }
+
+  this.do_fix =  function(element){
+    var $code = $(element).closest('.share-memo').find('.code');
+    that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
+ 
+  this.wip_jump = function(){
+    that.currentMemo().switchFixMode();
+
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
+    return true;
+  }
+ 
+  this.init_sharememo = function(){
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
 
-    /*
-    $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
-      .on('click','.sync-text', function(){
-        // 表示しているメモの先頭にカーソルを当てて編集状態へ
-        var pos = $("#memo_area").scrollTop();
-        var offset = $('#share-memo').offset().top;
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var $code_out_lines = $code_out.find(".code-out-tr");
-        var row = 0;
-        for (var i = $code_out_lines.length - 1; i >= 0; i--){
-          if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
-            row = i;
-            break;
-          }
-        }
- 
-        that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-      })
+    // knockout では動的に生成される子要素に event をバインドできない？
+    $(".share-memo-tab-content")
       .on("click", ".ref-point", function(){
         var id = $(this).attr("id");
         that.setMessage("[ref:" + id + "]");
@@ -329,11 +340,7 @@ function ShareMemoController(param){
         var row = $(this).find("table tr").length - 1;
         that.currentMemo().switchEditShareMemo(row, e.pageY);
       })
-      .on('click','.diff-button', function(){
-        that.currentMemo().switchFixShareMemo(1);
-        that.currentMemo().showDiffList();
-      })
-      .on('mouseover','.diff-li', function(){
+     .on('mouseover','.diff-li', function(){
         var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
         var index = diff_li_array.index(this);
         diff_li_array.each(function(i, li){
@@ -382,14 +389,6 @@ function ShareMemoController(param){
       .on('click','.diff-done', function(){
         that.currentMemo().endDiff();
       })
-      .on('click','.wip-jump', function(){
-        that.currentMemo().switchFixMode();
-
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
-        return true;
-      })
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
           // チェック対象のテキストを更新する
@@ -402,10 +401,6 @@ function ShareMemoController(param){
       })
       .on('dblclick','.code', function(e){
         that.currentMemo().switchFixShareMemo($(this).caretLine(), e.pageY);
-      })
-      .on('click','.fix-text', function(){
-        var $code = $(this).closest('.share-memo').find('.code');
-        that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
       })
       .on('keydown','.code',function(event){
         // Ctrl - S or Ctrl - enter
@@ -420,7 +415,6 @@ function ShareMemoController(param){
       .on('select','.code',function(event){
         that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
-      */
 
     $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
       .on('click','.index-li', function(){
@@ -613,8 +607,6 @@ function ShareMemoController(param){
   }
 
   this.init_dropzone = function(){
-    var that = this;
-
     // 閲覧モードの行指定でドロップ
     new DropZone({
       dropTarget: $('.code-out'),

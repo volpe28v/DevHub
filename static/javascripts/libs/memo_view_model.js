@@ -75,7 +75,6 @@ function MemoViewModel(param){
   }
 
   this.setText = function(text_body){
-    var that = this;
     // メモのハッシュ値が変更あれば更新する
     if (text_body.hash != undefined && this.writing_text.hash == text_body.hash){ return false; }
 
@@ -261,7 +260,6 @@ function MemoViewModel(param){
     if (!this.is_existed_update){ return; }
     this.is_existed_update = false;
 
-    var that = this;
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
     var $code_out = $target.find('.code-out');
@@ -461,7 +459,7 @@ function MemoViewModel(param){
       if (current_date.format("YYYY-MM-DD") == diff_date.format("YYYY-MM-DD")){
         diff_class += " today-diff-list";
       }
-      this.diffTitles.push({title: text_log[i].date + " - " + text_log[i].name, class: diff_class});
+      this.diffTitles.push({title: text_log[i].date + " - " + text_log[i].name, diff_class: diff_class});
     }
   }
 
