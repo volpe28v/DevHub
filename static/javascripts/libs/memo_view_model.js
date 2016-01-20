@@ -2,7 +2,7 @@ function MemoViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
   this.getName = param.getName; //function
-  this.writing_text = {text: "", name: "" , date: undefined};
+  this.writing_text = ko.observable({text: "", name: "" , date: undefined});
   this.text_logs = [];
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
@@ -76,12 +76,12 @@ function MemoViewModel(param){
 
   this.setText = function(text_body){
     // メモのハッシュ値が変更あれば更新する
-    if (text_body.hash != undefined && this.writing_text.hash == text_body.hash){ return false; }
+    if (text_body.hash != undefined && this.writing_text().hash == text_body.hash){ return false; }
 
-    this.writing_text = text_body;
-    this.writer(this.writing_text.name);
-    this.title(this._title(this.writing_text.text));
-    this.bytes(this.writing_text.text.length + "bytes");
+    this.writing_text(text_body);
+    this.writer(this.writing_text().name);
+    this.title(this._title(this.writing_text().text));
+    this.bytes(this.writing_text().text.length + "bytes");
 
     // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);
@@ -92,17 +92,17 @@ function MemoViewModel(param){
     $writer.addClass("writing-name");
 
     var $timestamp = $target_tab.find('.timestamp');
-    $timestamp.attr("data-livestamp", this.writing_text.date);
+    $timestamp.attr("data-livestamp", this.writing_text().date);
 
     var $target = $('#share_memo_' + this.no);
     var $text_date = $target.find('.text-date');
-    var date_name = this.writing_text.date + " - " + this.writing_text.name;
+    var date_name = this.writing_text().date + " - " + this.writing_text().name;
     $text_date.html(date_name);
     $text_date.addClass("writing-name");
     $text_date.show();
 
     var $wip_jump = $target.find('.wip-jump');
-    if (this.writing_text.text.match(/\[WIP\]/)){
+    if (this.writing_text().text.match(/\[WIP\]/)){
       $wip_jump.show();
     }else{
       $wip_jump.hide();
@@ -187,7 +187,7 @@ function MemoViewModel(param){
 
     offset = offset == undefined ? $(window).height()/3 : offset - 94;
     var $target_code = $share_memo.children(".code");
-    $target_code.val(this.writing_text.text);
+    //$target_code.val(this.writing_text.text);
 
     $target_code.show();
     $target_code.keyup(); //call autofit
@@ -266,9 +266,9 @@ function MemoViewModel(param){
 
     $code_out.off('keydown');
     $code_out.off('click');
-    $code_out.showDecora(this.writing_text.text);
+    $code_out.showDecora(this.writing_text().text);
 
-    if (this.writing_text.text == ""){
+    if (this.writing_text().text == ""){
       // テキストが空なのでメッセージを表示する
       $code_out.prepend($('<div/>').addClass('memo-alert alert alert-info').
         html('This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.'));
@@ -284,14 +284,14 @@ function MemoViewModel(param){
         var drag_stop_index = ui.item.index();
         if (drag_stop_index == that.drag_index){ return; }
 
-        var text_array = that.writing_text.text.split("\n");
+        var text_array = that.writing_text().text.split("\n");
         text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
-        that.writing_text.text = text_array.join("\n");
+        that.writing_text().text = text_array.join("\n");
         that.socket.emit('text',{
           no: that.no,
           name: that.getName(),
           avatar: window.localStorage.avatarImage,
-          text: that.writing_text.text});
+          text: that.writing_text().text});
       },
       helper: function(e, tr){
         var $originals = tr.children();
@@ -315,14 +315,14 @@ function MemoViewModel(param){
       $this_tr.fadeOut('normal', function(){
         $(this).remove();
 
-        var text_array = that.writing_text.text.split("\n");
+        var text_array = that.writing_text().text.split("\n");
         text_array.splice(delete_index, 1);
-        that.writing_text.text = text_array.join("\n");
+        that.writing_text().text = text_array.join("\n");
         that.socket.emit('text',{
           no: that.no,
           name: that.getName(),
           avatar: window.localStorage.avatarImage,
-          text: that.writing_text.text});
+          text: that.writing_text().text});
       });
     });
 
@@ -334,14 +334,14 @@ function MemoViewModel(param){
       var input_text = $(this).val();
       $(this).val("");
 
-      var text_array = that.writing_text.text.split("\n");
+      var text_array = that.writing_text().text.split("\n");
       text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
-      that.writing_text.text = text_array.join("\n");
+      that.writing_text().text = text_array.join("\n");
       that.socket.emit('text',{
         no: that.no,
         name: that.getName(),
         avatar: window.localStorage.avatarImage,
-        text: that.writing_text.text});
+        text: that.writing_text().text});
 
       return false;
     });
@@ -364,19 +364,19 @@ function MemoViewModel(param){
   }
 
   this.insert = function(row, text){
-    var text_array = this.writing_text.text.split("\n");
+    var text_array = this.writing_text().text.split("\n");
     text_array.splice(row,0,text);
-    this.writing_text.text = text_array.join("\n");
+    this.writing_text().text = text_array.join("\n");
 
     if (this.edit_mode){
       var $target_code = $('#share_memo_' + this.no).children('.code');
-      $target_code.val(this.writing_text.text);
+      $target_code.val(this.writing_text().text);
     }else{
       this.socket.emit('text',{
         no: this.no,
         name: this.getName(),
         avatar: window.localStorage.avatarImage,
-        text: this.writing_text.text});
+        text: this.writing_text().text});
     }
   }
 
@@ -411,7 +411,7 @@ function MemoViewModel(param){
     var $index_list = $('#share_memo_index_' + this.no);
 
     $.observable(that.indexes).remove(0, that.indexes.length);
-    $.decora.apply_to_deco_and_raw(this.writing_text.text,
+    $.decora.apply_to_deco_and_raw(this.writing_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
         deco_text.split("\n").forEach(function(val){
@@ -440,8 +440,8 @@ function MemoViewModel(param){
 
   this._getLogsForDiff = function(){
     var out_logs = this.text_logs;
-    if (this.writing_text.date != out_logs[0].date){
-      out_logs.unshift(this.writing_text);
+    if (this.writing_text().date != out_logs[0].date){
+      out_logs.unshift(this.writing_text());
     }
 
     return out_logs;
@@ -551,12 +551,12 @@ function MemoViewModel(param){
   }
 
   this.applyToWritingText = function(func){
-    this.writing_text.text = func(this.writing_text.text);
+    this.writing_text().text = func(this.writing_text().text);
     this.socket.emit('text',{
       no: this.no,
       name: this.getName(),
       avatar: window.localStorage.avatarImage,
-      text: this.writing_text.text});
+      text: this.writing_text().text});
   },
 
   this.showMoveToBlogButton = function($selected_target, login_name){

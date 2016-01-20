@@ -319,6 +319,16 @@ function ShareMemoController(param){
   }
  
   this.init_sharememo = function(){
+    ko.bindingHandlers.htmlWithBinding = {
+      'init': function() {
+        return { 'controlsDescendantBindings': true };
+      },
+      'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        element.innerHTML = valueAccessor();
+        ko.applyBindingsToDescendants(bindingContext, element);
+      }
+    };
+
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
 
