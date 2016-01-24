@@ -62,7 +62,7 @@ function ShareMemoController(param){
 
     return true;
   }
- 
+
   this.setName = function(name){
     this.login_name = name;
   }
@@ -337,7 +337,7 @@ function ShareMemoController(param){
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
 
-    // knockout では動的に生成される子要素に event をバインドできない？
+    //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
       .on('dblclick','.code-out tr', function(e){
         // クリック時の行数を取得してキャレットに設定する
@@ -427,6 +427,7 @@ function ShareMemoController(param){
         that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
 
+    //TODO knokcout に置き換える
     $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
       .on('click','.index-li', function(){
         that.currentMemo().switchFixMode();
@@ -448,6 +449,7 @@ function ShareMemoController(param){
       $('#memo_area').scrollTop(0);
     });
 
+    //TODO knokcout に置き換える
     $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
@@ -511,44 +513,6 @@ function ShareMemoController(param){
     $("#scroll_top").click(function(){
       $('#memo_area').scrollTop(0);
     });
-
-    /*
-    var control_offset_base = 0;
-    function adjustMemoControllbox(){
-      var pos = $("#memo_area").scrollTop();
-      var offset = $('#share-memo').offset().top;
-
-      // for control
-      var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
-      var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
-      var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
-
-      if (!$control.hasClass('fixed')){
-        var control_offset_base_tmp = $control.offset().top - offset;
-        if (control_offset_base_tmp < 0){ return; } // 初回表示時は調整しない
-        control_offset_base = control_offset_base_tmp;
-      }
-
-      if ( control_offset_base < pos){
-        $control.addClass('fixed');
-        $control.css("top", fixed_top);
-        $dummy.height($control.outerHeight()).show();
-      }else{
-        $control.removeClass('fixed');
-        $dummy.hide();
-      }
-
-      // for index cursor
-      var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-      var headers = $code_out.find(":header");
-      for (var i = headers.length - 1; i >= 0; i--){
-        if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
-          that.currentMemo().setCurrentIndex(i);
-          break;
-        }
-      }
-    }
-    */
 
     $('#memo_area').scroll(function(){
       that.adjustMemoControllbox();
