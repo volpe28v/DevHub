@@ -308,7 +308,7 @@ function ShareMemoController(param){
     var $code = $(element).closest('.share-memo').find('.code');
     that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }
- 
+
   this.wip_jump = function(){
     that.currentMemo().switchFixMode();
 
@@ -317,14 +317,19 @@ function ShareMemoController(param){
     $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
     return true;
   }
- 
+
+  this.set_ref_point = function(element){
+    var id = $(element).attr("id");
+    that.setMessage("[ref:" + id + "]");
+  }
+
   this.init_sharememo = function(){
-    ko.bindingHandlers.htmlWithBinding = {
+    ko.bindingHandlers.decoHtml = {
       'init': function() {
         return { 'controlsDescendantBindings': true };
       },
       'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        element.innerHTML = valueAccessor();
+        $(element).showDecora(valueAccessor());
         ko.applyBindingsToDescendants(bindingContext, element);
       }
     };
@@ -334,10 +339,6 @@ function ShareMemoController(param){
 
     // knockout では動的に生成される子要素に event をバインドできない？
     $(".share-memo-tab-content")
-      .on("click", ".ref-point", function(){
-        var id = $(this).attr("id");
-        that.setMessage("[ref:" + id + "]");
-      })
       .on('dblclick','.code-out tr', function(e){
         // クリック時の行数を取得してキャレットに設定する
         var row = $(this).closest("table").find("tr").index(this);

@@ -187,7 +187,6 @@ function MemoViewModel(param){
 
     offset = offset == undefined ? $(window).height()/3 : offset - 94;
     var $target_code = $share_memo.children(".code");
-    //$target_code.val(this.writing_text.text);
 
     $target_code.show();
     $target_code.keyup(); //call autofit
@@ -266,7 +265,7 @@ function MemoViewModel(param){
 
     $code_out.off('keydown');
     $code_out.off('click');
-    $code_out.showDecora(this.writing_text().text);
+//    $code_out.showDecora(this.writing_text().text);
 
     if (this.writing_text().text == ""){
       // テキストが空なのでメッセージを表示する
@@ -364,13 +363,15 @@ function MemoViewModel(param){
   }
 
   this.insert = function(row, text){
-    var text_array = this.writing_text().text.split("\n");
+    var org_text = this.writing_text();
+    var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
-    this.writing_text().text = text_array.join("\n");
+    org_text.text = text_array.join("\n");
+
+    this.writing_text(org_text);
 
     if (this.edit_mode){
       var $target_code = $('#share_memo_' + this.no).children('.code');
-      $target_code.val(this.writing_text().text);
     }else{
       this.socket.emit('text',{
         no: this.no,
