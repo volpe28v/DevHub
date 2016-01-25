@@ -173,8 +173,8 @@
 
   // private method
   function _set_to_table(html){
-    var table_html = '<table><tr class="code-out-tr"><td>';
-    table_html += html.replace(/[\n]/g,'</td></tr class="code-out-tr"><tr class="code-out-tr"><td>');
+    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: $parent.edit_specific_row.bind($data, $element, event)}, dblclickBubble: false"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: $parent.edit_specific_row.bind($data, $element, event)}, dblclickBubble: false"><td>');
     return table_html += "</td></tr></table>";
   }
 

@@ -323,6 +323,20 @@ function ShareMemoController(param){
     that.setMessage("[ref:" + id + "]");
   }
 
+  this.edit_specific_row = function(element, event){
+    // クリック時の行数を取得してキャレットに設定する
+    var row = $(element).closest("table").find("tr").index(element);
+    that.currentMemo().switchEditShareMemo(row, event.pageY);
+
+    return false;
+  }
+
+  this.edit_memo = function(element, event){
+    // 文字列が無い場合は最下部にキャレットを設定する
+    var row = $(element).find("table tr").length - 1;
+    that.currentMemo().switchEditShareMemo(row, event.pageY);
+  }
+
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
       'init': function() {
@@ -339,19 +353,7 @@ function ShareMemoController(param){
 
     //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
-      .on('dblclick','.code-out tr', function(e){
-        // クリック時の行数を取得してキャレットに設定する
-        var row = $(this).closest("table").find("tr").index(this);
-        that.currentMemo().switchEditShareMemo(row, e.pageY);
-
-        return false;
-      })
-      .on('dblclick','.code-out', function(e){
-        // 文字列が無い場合は最下部にキャレットを設定する
-        var row = $(this).find("table tr").length - 1;
-        that.currentMemo().switchEditShareMemo(row, e.pageY);
-      })
-     .on('mouseover','.diff-li', function(){
+      .on('mouseover','.diff-li', function(){
         var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
         var index = diff_li_array.index(this);
         diff_li_array.each(function(i, li){
