@@ -331,12 +331,6 @@ function ShareMemoController(param){
     return false;
   }
 
-  this.edit_memo = function(element, event){
-    // 文字列が無い場合は最下部にキャレットを設定する
-    var row = $(element).find("table tr").length - 1;
-    that.currentMemo().switchEditShareMemo(row, event.pageY);
-  }
-
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
       'init': function() {
@@ -353,52 +347,6 @@ function ShareMemoController(param){
 
     //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
-      .on('mouseover','.diff-li', function(){
-        var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-        var index = diff_li_array.index(this);
-        diff_li_array.each(function(i, li){
-          if (i < index){
-            $(li).addClass("in_diff_range");
-          }else if(i > index){
-            $(li).removeClass("in_diff_range");
-          }
-        });
-      })
-      .on('mouseout','.diff-li', function(){
-        var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-        diff_li_array.each(function(i, li){
-          $(li).removeClass("in_diff_range");
-        });
-      })
-      .on('click','.diff-li', function(){
-        var $share_memo = $(this).closest('.share-memo');
-        var $code_out = $share_memo.find('.code-out');
-        var share_memo_no = $share_memo.data('no');
-        var index = $(this).closest(".diff-list").find(".diff-li").index(this);
-
-        // diff 生成
-        var $diff_out = $share_memo.find('.diff-view');
-        $diff_out.empty();
-        $diff_out.append(that.currentMemo().createDiff(index));
-        $diff_out.showDecora();
-
-        // diff 画面を有効化
-        $diff_out.show();
-        $code_out.hide();
-
-        $share_memo.find('.diff-done').show();
-        $share_memo.find('.sync-text').hide();
-
-        if (that.currentMemo().diff_block_list.length > 0){
-          $('#diff_controller').fadeIn();
-        }
-
-        // 一つ目のDiffに移動
-        var pos = that.currentMemo().getNextDiffPos();
-        $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
-
-        return true;
-      })
       .on('click','.diff-done', function(){
         that.currentMemo().endDiff();
       })

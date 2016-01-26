@@ -265,7 +265,6 @@ function MemoViewModel(param){
 
     $code_out.off('keydown');
     $code_out.off('click');
-//    $code_out.showDecora(this.writing_text().text);
 
     if (this.writing_text().text == ""){
       // テキストが空なのでメッセージを表示する
@@ -448,6 +447,12 @@ function MemoViewModel(param){
     return out_logs;
   }
 
+  this.edit_memo = function(element, event){
+    // 文字列が無い場合は最下部にキャレットを設定する
+    var row = $(element).find("table tr").length - 1;
+    that.switchEditShareMemo(row, event.pageY);
+  }
+
   this.showDiffList = function(){
     var $share_memo = $('#share_memo_' + this.no);
     var text_log = this._getLogsForDiff();
@@ -464,6 +469,55 @@ function MemoViewModel(param){
     }
   }
 
+  this.fill_diff_list = function(element){
+    var diff_li_array = $(element).closest(".diff-list").find(".diff-li");
+    var index = diff_li_array.index(element);
+    diff_li_array.each(function(i, li){
+      if (i < index){
+        $(li).addClass("in_diff_range");
+      }else if(i > index){
+        $(li).removeClass("in_diff_range");
+      }
+    });
+  }
+
+  this.unfill_diff_list = function(element){
+    var diff_li_array = $(element).closest(".diff-list").find(".diff-li");
+    diff_li_array.each(function(i, li){
+      $(li).removeClass("in_diff_range");
+    });
+  }
+ 
+  this.show_diff = function(element){
+    var $share_memo = $(element).closest('.share-memo');
+    var $code_out = $share_memo.find('.code-out');
+    var share_memo_no = $share_memo.data('no');
+    var index = $(element).closest(".diff-list").find(".diff-li").index(element);
+
+    // diff 生成
+    var $diff_out = $share_memo.find('.diff-view');
+    $diff_out.empty();
+    $diff_out.append(that.createDiff(index));
+    $diff_out.showDecora();
+
+    // diff 画面を有効化
+    $diff_out.show();
+    $code_out.hide();
+
+    $share_memo.find('.diff-done').show();
+    $share_memo.find('.sync-text').hide();
+
+    if (that.diff_block_list.length > 0){
+      $('#diff_controller').fadeIn();
+    }
+
+    // 一つ目のDiffに移動
+    var pos = that.getNextDiffPos();
+    $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+
+    return true;
+  }
+ 
   this.createDiff = function(index){
     index++; // 0番目はリストに表示しないので 1番目の履歴は 0で来る
     var text_log = this._getLogsForDiff();
