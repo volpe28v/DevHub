@@ -42,9 +42,6 @@ function ShareMemoController(param){
   this.select_memo_tab = function(data){
     if (that.isMovingTab){ return true; }
 
-    // 遷移前のメモを表示モードに戻す
-    that.currentMemo().switchFixMode();
-
     // タブ選択のIDを記憶する
     //var memoViewModel = that.memoViewModels[$.view(this).index];
     var memoViewModel = this;
@@ -150,7 +147,7 @@ function ShareMemoController(param){
       for (var i = 0; i < that.memoViewModels().length; i++){
         that.memoViewModels()[i].showText();
       }
- 
+
       that.before_keyword = keyword;
       that.matched_doms = [];
       var reg_keyword = new RegExp(keyword,"i");
@@ -310,7 +307,7 @@ function ShareMemoController(param){
   }
 
   this.wip_jump = function(){
-    that.currentMemo().switchFixMode();
+    that.currentMemo().switchFixShareMemo(1);
 
     var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
     var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
@@ -380,7 +377,7 @@ function ShareMemoController(param){
     //TODO knokcout に置き換える
     $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
       .on('click','.index-li', function(){
-        that.currentMemo().switchFixMode();
+        that.currentMemo().switchFixShareMemo(1);
 
         var index = $(this).closest(".index-ul").find(".index-li").index(this);
         var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');

@@ -4,15 +4,11 @@ function DisplayState(parent){
   this.enter = function(){
     console.log("DisplayState Enter " + parent.no);
 
-    $('.index-ul').hide();
-    $('#share_memo_index_' + parent.no).show();
     parent.showText();
   }
 
   this.updateText = function(new_text){
     if (parent.setText(new_text) == false){ return; };
-    parent._updateIndexes();
-    parent.is_existed_update = true;
     parent.showText();
   }
 
@@ -27,15 +23,21 @@ function EditState(parent){
   this.enter = function(){
     console.log("EditState Enter " + parent.no);
 
+    parent.setEditText();
   }
 
   this.updateText = function(new_text){
     parent.setText(new_text);
 
+    // 編集中の共有メモに他ユーザの変更が来たら編集終了
+    if( parent.getName() != new_text.name ){
+      var $target = $('#share_memo_' + parent.no);
+      parent.switchFixShareMemo($target.children('.code').caretLine());
+    }
   }
 
   this.exit = function(){
-
+    parent.is_save_history = true;
   }
 }
 
@@ -71,7 +73,7 @@ function DiffState(parent){
   }
 
   this.exit = function(){
-
+    parent.endDiff();
   }
 }
 
@@ -102,11 +104,11 @@ function MemoViewModel(param){
   this.display_text = ko.observable("");
   this.edit_text = ko.observable("");
   this.delayed_text = ko.pureComputed(this.edit_text).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
-  //this.writing_text = ko.observable({text: "", name: "" , date: undefined}).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 400 } });
-  var isFirst = true;
+  var is_first = true;
+  this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
     console.log("change stop!");
-    if (isFirst){ isFirst = false; return; }
+    if (is_first){ is_first = false; return; }
     console.log("change update!");
 
     that.socket.emit('text',{
@@ -115,6 +117,11 @@ function MemoViewModel(param){
       avatar: window.localStorage.avatarImage,
       text: that.edit_text()
     });
+
+    if (that.is_save_history){
+      socket.emit('add_history',{no: that.no});
+      that.is_save_history = false;
+    }
 
     // Blogへ移動ボタンの表示状態を制御
     var $target_code = $('#share_memo_' + this.no).children('.code');
@@ -165,25 +172,6 @@ function MemoViewModel(param){
   this.initSocket = function(){
     socket.on('text' + this.no, function(text_log) {
       that.current_state.updateText(text_log);
-
-      /*
-      if (that.setText(text_log) == false){ return; };
-      that._updateIndexes();
-      that.is_existed_update = true;
-
-      if ( that.edit_mode ){
-        // 編集中の共有メモに他ユーザの変更が来たら編集終了
-        if( that.getName() != text_log.name ){
-          var $target = $('#share_memo_' + that.no);
-          that.switchFixShareMemo($target.children('.code').caretLine());
-        }
-      }else{
-        // 同共有メモを開いている場合にはリアルタイムに更新
-        if (that.is_selected){
-          that.showText();
-        }
-      }
-      */
     });
 
     socket.on('text_logs' + this.no, function(data){
@@ -221,6 +209,7 @@ function MemoViewModel(param){
     // メモのハッシュ値が変更あれば更新する
     if (text_body.hash != undefined && this.writing_text().hash == text_body.hash){ return false; }
 
+    this.is_existed_update = true;
     this.writing_text(text_body);
     this.writer(this.writing_text().name);
     this.title(this._title(this.writing_text().text));
@@ -265,35 +254,20 @@ function MemoViewModel(param){
     return true;
   }
 
-  this.switchFixMode = function(){
-    if ( this.edit_mode){
-      this.switchFixShareMemo(1);
-    }
-
-    if ( this.diff_mode ){
-      this.endDiff();
-    }
+  this.setEditText = function(){
+    this.edit_text(this.writing_text().text);
   }
 
   this.switchFixShareMemo = function(row, offset){
+    this.set_state(this.states.display);
+
     var $share_memo = $('#share_memo_' + this.no);
     this.edit_mode = false;
 
     offset = offset == undefined ? $(window).height()/3 : offset - 14;
     if ($share_memo.children('.code').css('display') == "none"){ return; }
 
-    // 最新の状態をサーバへ送信する
-    var code = $share_memo.children('.code').val();
-    if (this.code_prev != code){
-      socket.emit('text',{
-        no: this.no,
-        name: this.getName(),
-        avatar: window.localStorage.avatarImage,
-        text: code});
-    }
-
     // 見栄えを閲覧モードへ
-    this.showText();
     $share_memo.children('.code').hide();
     $share_memo.children('pre').show();
     $share_memo.find('.fix-text').hide();
@@ -305,8 +279,6 @@ function MemoViewModel(param){
       $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - offset);
     }
-    socket.emit('add_history',{no: $share_memo.data('no')});
-    this.writingLoopStop();
 
     $("#move_to_blog").fadeOut();
   }
@@ -317,6 +289,8 @@ function MemoViewModel(param){
   }
 
   this.switchEditShareMemo = function(row, offset){
+    this.set_state(this.states.edit);
+
     var $share_memo = $('#share_memo_' + this.no);
     this.setCurrentIndex(-1);
     this.edit_mode = true;
@@ -392,7 +366,10 @@ function MemoViewModel(param){
 
   this.showText = function(){
     // メモに更新があれば実行
-    if (!this.is_existed_update){ return; }
+    if (!this.is_existed_update){
+      console.log("no update");
+      return;
+    }
     this.is_existed_update = false;
 
     that.display_text(that.writing_text().text);
@@ -400,6 +377,8 @@ function MemoViewModel(param){
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
     var $code_out = $target.find('.code-out');
+
+    this._updateIndexes();
 
     // WIPの表示
     var $wip_jump = $target.find('.wip-jump');
@@ -527,7 +506,7 @@ function MemoViewModel(param){
   }
 
   this.select = function(){
-    this.set_state(this.states.display);
+    this.switchFixShareMemo(1);
   }
 
   this.unselect = function(){
