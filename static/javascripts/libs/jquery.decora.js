@@ -502,7 +502,7 @@
 
       return bq_sepa_array.join('');
     },
- 
+
     message_to_html: function(target_text){
       return _decorate_html_tag_for_message(target_text);
     }

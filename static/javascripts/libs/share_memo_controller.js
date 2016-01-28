@@ -337,7 +337,7 @@ function ShareMemoController(param){
         return { 'controlsDescendantBindings': true };
       },
       'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).showDecora(valueAccessor());
+        $(element).showDecora(ko.unwrap(valueAccessor()));
         ko.applyBindingsToDescendants(bindingContext, element);
       }
     };

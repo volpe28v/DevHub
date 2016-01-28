@@ -1,8 +1,148 @@
+function DisplayState(parent){
+  this.parent = parent;
+
+  this.enter = function(){
+    console.log("DisplayState Enter " + parent.no);
+
+    $('.index-ul').hide();
+    $('#share_memo_index_' + parent.no).show();
+    parent.showText();
+  }
+
+  this.updateText = function(new_text){
+    if (parent.setText(new_text) == false){ return; };
+    parent._updateIndexes();
+    parent.is_existed_update = true;
+    parent.showText();
+  }
+
+  this.exit = function(){
+
+  }
+}
+
+function EditState(parent){
+  this.parent = parent;
+
+  this.enter = function(){
+    console.log("EditState Enter " + parent.no);
+
+  }
+
+  this.updateText = function(new_text){
+    parent.setText(new_text);
+
+  }
+
+  this.exit = function(){
+
+  }
+}
+
+function HideState(parent){
+  this.parent = parent;
+
+  this.enter = function(){
+    console.log("HideState Enter " + parent.no);
+
+  }
+
+  this.updateText = function(new_text){
+    parent.setText(new_text);
+
+  }
+
+  this.exit = function(){
+
+  }
+}
+
+function DiffState(parent){
+  this.parent = parent;
+
+  this.enter = function(){
+    console.log("DiffState Enter " + parent.no);
+
+  }
+
+  this.updateText = function(new_text){
+    parent.setText(new_text);
+
+  }
+
+  this.exit = function(){
+
+  }
+}
+
+function SearchState(parent){
+  this.parent = parent;
+
+  this.enter = function(){
+    console.log("SearchState Enter " + parent.no);
+
+  }
+
+  this.updateText = function(new_text){
+    parent.setText(new_text);
+
+  }
+
+  this.exit = function(){
+
+  }
+}
+
+
 function MemoViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
   this.getName = param.getName; //function
   this.writing_text = ko.observable({text: "", name: "" , date: undefined});
+  this.display_text = ko.observable("");
+  this.edit_text = ko.observable("");
+  this.delayed_text = ko.pureComputed(this.edit_text).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+  //this.writing_text = ko.observable({text: "", name: "" , date: undefined}).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 400 } });
+  var isFirst = true;
+  this.delayed_text.subscribe(function (val) {
+    console.log("change stop!");
+    if (isFirst){ isFirst = false; return; }
+    console.log("change update!");
+
+    that.socket.emit('text',{
+      no: that.no,
+      name: that.getName(),
+      avatar: window.localStorage.avatarImage,
+      text: that.edit_text()
+    });
+
+    // Blogへ移動ボタンの表示状態を制御
+    var $target_code = $('#share_memo_' + this.no).children('.code');
+    if (that.is_shown_move_to_blog){
+      if ($target_code.selection('get') == ""){
+        $("#move_to_blog").fadeOut();
+        that.is_shown_move_to_blog = false;
+      }
+    }
+
+  }, this);
+
+  this.states = {
+    display: new DisplayState(this),
+    edit: new EditState(this),
+    hide: new HideState(this),
+    diff: new DiffState(this),
+    search: new SearchState(this),
+  }
+
+  this.current_state = this.states.hide;
+
+  this.set_state = function(next){
+    that.current_state.exit();
+    that.current_state = next;
+    that.current_state.enter();
+  }
+
   this.text_logs = [];
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
@@ -11,7 +151,6 @@ function MemoViewModel(param){
   this.writing_loop_timer = { id: -1, code_no: 0};
   this.writer = ko.observable("");
   this.is_shown_move_to_blog = false;
-  this.is_selected = false;
   this.is_existed_update = true;
 
   this.indexes = []; //binding
@@ -25,6 +164,9 @@ function MemoViewModel(param){
   var that = this;
   this.initSocket = function(){
     socket.on('text' + this.no, function(text_log) {
+      that.current_state.updateText(text_log);
+
+      /*
       if (that.setText(text_log) == false){ return; };
       that._updateIndexes();
       that.is_existed_update = true;
@@ -41,6 +183,7 @@ function MemoViewModel(param){
           that.showText();
         }
       }
+      */
     });
 
     socket.on('text_logs' + this.no, function(data){
@@ -101,14 +244,7 @@ function MemoViewModel(param){
     $text_date.addClass("writing-name");
     $text_date.show();
 
-    var $wip_jump = $target.find('.wip-jump');
-    if (this.writing_text().text.match(/\[WIP\]/)){
-      $wip_jump.show();
-    }else{
-      $wip_jump.hide();
-    }
-
-    var is_blank = text_body.text == "";
+    var is_blank = this.writing_text().text == "";
     if (is_blank){
       $writer.hide();
       $timestamp.hide();
@@ -206,7 +342,7 @@ function MemoViewModel(param){
     $share_memo.find('.sync-text').hide();
 
     this.code_prev = $target_code.val();
-    this.writingLoopStart();
+    //this.writingLoopStart();
   }
 
   this.writingLoopStart = function(){
@@ -259,9 +395,19 @@ function MemoViewModel(param){
     if (!this.is_existed_update){ return; }
     this.is_existed_update = false;
 
+    that.display_text(that.writing_text().text);
+
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
     var $code_out = $target.find('.code-out');
+
+    // WIPの表示
+    var $wip_jump = $target.find('.wip-jump');
+    if (this.writing_text().text.match(/\[WIP\]/)){
+      $wip_jump.show();
+    }else{
+      $wip_jump.hide();
+    }
 
     $code_out.off('keydown');
     $code_out.off('click');
@@ -381,14 +527,11 @@ function MemoViewModel(param){
   }
 
   this.select = function(){
-    $('.index-ul').hide();
-    $('#share_memo_index_' + this.no).show();
-    this.is_selected = true;
-    this.showText();
+    this.set_state(this.states.display);
   }
 
   this.unselect = function(){
-    this.is_selected = false;
+    this.set_state(this.states.hide);
   }
 
   this.showIndexList = function(){
