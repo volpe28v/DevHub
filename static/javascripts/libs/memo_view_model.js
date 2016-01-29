@@ -64,12 +64,10 @@ function DiffState(parent){
 
   this.enter = function(){
     console.log("DiffState Enter " + parent.no);
-
   }
 
   this.updateText = function(new_text){
     parent.setText(new_text);
-
   }
 
   this.exit = function(){
@@ -611,6 +609,8 @@ function MemoViewModel(param){
   }
  
   this.show_diff = function(element){
+    that.set_state(that.states.diff);
+
     var $share_memo = $(element).closest('.share-memo');
     var $code_out = $share_memo.find('.code-out');
     var share_memo_no = $share_memo.data('no');

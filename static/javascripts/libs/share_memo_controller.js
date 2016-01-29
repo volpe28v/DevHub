@@ -43,7 +43,6 @@ function ShareMemoController(param){
     if (that.isMovingTab){ return true; }
 
     // タブ選択のIDを記憶する
-    //var memoViewModel = that.memoViewModels[$.view(this).index];
     var memoViewModel = this;
 
     window.localStorage.tabSelectedID = "#share_memo_tab_" + this.no;
@@ -345,7 +344,7 @@ function ShareMemoController(param){
     //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
       .on('click','.diff-done', function(){
-        that.currentMemo().endDiff();
+        that.currentMemo().switchFixShareMemo(1);
       })
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
@@ -392,7 +391,7 @@ function ShareMemoController(param){
     });
 
     $('#diff_done').click(function(){
-      that.currentMemo().endDiff();
+      that.currentMemo().switchFixShareMemo(1);
       $('#memo_area').scrollTop(0);
     });
 
