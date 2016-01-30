@@ -80,16 +80,14 @@ function SearchState(parent){
 
   this.enter = function(){
     console.log("SearchState Enter " + parent.no);
-
+    parent.showText();
   }
 
   this.updateText = function(new_text){
     parent.setText(new_text);
-
   }
 
   this.exit = function(){
-
   }
 }
 
@@ -509,6 +507,10 @@ function MemoViewModel(param){
 
   this.unselect = function(){
     this.set_state(this.states.hide);
+  }
+
+  this.beginSearch = function(){
+    this.set_state(this.states.search);
   }
 
   this.showIndexList = function(){

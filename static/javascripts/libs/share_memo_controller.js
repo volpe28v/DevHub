@@ -144,7 +144,8 @@ function ShareMemoController(param){
 
       // 検索前に一旦最新の表示に更新する
       for (var i = 0; i < that.memoViewModels().length; i++){
-        that.memoViewModels()[i].showText();
+        //that.memoViewModels()[i].showText();
+        that.memoViewModels()[i].beginSearch();
       }
 
       that.before_keyword = keyword;
