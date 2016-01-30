@@ -320,7 +320,7 @@ function ShareMemoController(param){
     that.setMessage("[ref:" + id + "]");
   }
 
-  this.edit_specific_row = function(element, event){
+  this.edit_specific_row = function(data, event, element){
     // クリック時の行数を取得してキャレットに設定する
     var row = $(element).closest("table").find("tr").index(element);
     that.currentMemo().switchEditShareMemo(row, event.pageY);

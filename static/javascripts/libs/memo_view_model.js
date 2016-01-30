@@ -569,7 +569,7 @@ function MemoViewModel(param){
     return out_logs;
   }
 
-  this.edit_memo = function(element, event){
+  this.edit_memo = function(data, event, element){
     // 文字列が無い場合は最下部にキャレットを設定する
     var row = $(element).find("table tr").length - 1;
     that.switchEditShareMemo(row, event.pageY);

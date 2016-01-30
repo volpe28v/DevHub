@@ -200,7 +200,7 @@
                     <div class="memo-control-dummy" style="display:none;"></div>
                     <textarea data-bind="textInput: edit_text" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
                     <pre class="code-out-base">
-                      <div class="code-out" data-bind="event: {dblclick: edit_memo.bind($data, $element, event)}, decoHtml: display_text"></div>
+                      <div class="code-out" data-bind="event: {dblclick: function(data, event){ edit_memo(data, event, $element)}}, decoHtml: display_text"></div>
                       <div class="diff-view" style="display: none"></div>
                     </pre>
                   </div>
