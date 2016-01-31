@@ -173,8 +173,8 @@
 
   // private method
   function _set_to_table(html){
-    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ $parent.edit_specific_row(data, event, $element)}}, dblclickBubble: false"><td>';
-    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ $parent.edit_specific_row(data, event, $element)}}, dblclickBubble: false"><td>');
+    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
     return table_html += "</td></tr></table>";
   }
 

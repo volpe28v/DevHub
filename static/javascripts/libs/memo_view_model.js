@@ -3,7 +3,6 @@ function DisplayState(parent){
 
   this.enter = function(){
     console.log("DisplayState Enter " + parent.no);
-
     parent.showText();
   }
 
@@ -64,6 +63,8 @@ function DiffState(parent){
 
   this.enter = function(){
     console.log("DiffState Enter " + parent.no);
+
+    parent.setDisplayControl();
   }
 
   this.updateText = function(new_text){
@@ -87,7 +88,13 @@ function SearchState(parent){
     parent.setText(new_text);
   }
 
-  this.exit = function(){
+  this.exit = function(next){
+    // 遷移先が Dispay Edit Diff なら検索終了
+    if (next == parent.states.display ||
+        next == parent.states.edit    ||
+        next == parent.states.diff       ){
+      parent.notifyEndSearch();
+    }
   }
 }
 
@@ -96,16 +103,17 @@ function MemoViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
   this.getName = param.getName; //function
+  this.notifyEndSearch = param.endSearch; //function
+
   this.writing_text = ko.observable({text: "", name: "" , date: undefined});
   this.display_text = ko.observable("");
   this.edit_text = ko.observable("");
-  this.delayed_text = ko.pureComputed(this.edit_text).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+  this.delayed_text = ko.pureComputed(this.edit_text)
+    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
   var is_first = true;
   this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
-    console.log("change stop!");
     if (is_first){ is_first = false; return; }
-    console.log("change update!");
 
     that.socket.emit('text',{
       no: that.no,
@@ -127,7 +135,6 @@ function MemoViewModel(param){
         that.is_shown_move_to_blog = false;
       }
     }
-
   }, this);
 
   this.states = {
@@ -138,12 +145,14 @@ function MemoViewModel(param){
     search: new SearchState(this),
   }
 
+  // 初期状態
   this.current_state = this.states.hide;
 
   this.set_state = function(next){
-    that.current_state.exit();
+    var before = that.current_state;
+    that.current_state.exit(next);
     that.current_state = next;
-    that.current_state.enter();
+    that.current_state.enter(before);
   }
 
   this.text_logs = [];
@@ -255,19 +264,19 @@ function MemoViewModel(param){
   }
 
   this.switchFixShareMemo = function(row, offset){
+    console.log(row + " : " + offset);
     this.set_state(this.states.display);
 
-    var $share_memo = $('#share_memo_' + this.no);
     this.edit_mode = false;
 
-    offset = offset == undefined ? $(window).height()/3 : offset - 14;
-    if ($share_memo.children('.code').css('display') == "none"){ return; }
+    this.setDisplayControl();
+    this.setDisplayPos(row, offset);
+  }
 
-    // 見栄えを閲覧モードへ
-    $share_memo.children('.code').hide();
-    $share_memo.children('pre').show();
-    $share_memo.find('.fix-text').hide();
-    $share_memo.find('.sync-text').show();
+  this.setDisplayPos = function(row, offset){
+    var $share_memo = $('#share_memo_' + this.no);
+
+    offset = offset == undefined ? $(window).height()/3 : offset - 14;
 
     // 閲覧モード時に編集していたキャレット位置を表示する
     var $target_tr = $share_memo.find('table tr').eq(row - 1);
@@ -275,6 +284,15 @@ function MemoViewModel(param){
       $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - offset);
     }
+  }
+
+  this.setDisplayControl = function(){
+    var $share_memo = $('#share_memo_' + this.no);
+    // 見栄えを閲覧モードへ
+    $share_memo.children('.code').hide();
+    $share_memo.children('pre').show();
+    $share_memo.find('.fix-text').hide();
+    $share_memo.find('.sync-text').show();
 
     $("#move_to_blog").fadeOut();
   }
@@ -509,8 +527,17 @@ function MemoViewModel(param){
     this.set_state(this.states.hide);
   }
 
+  this.displaySpecificRow = function(data, event, element){
+    that.switchFixShareMemo($(element).caretLine(), event.pageY);
+  }
+
   this.beginSearch = function(){
     this.set_state(this.states.search);
+    this.setDisplayControl();
+  }
+
+  this.endSearch = function(){
+    this.set_state(this.states.display);
   }
 
   this.showIndexList = function(){
@@ -569,10 +596,18 @@ function MemoViewModel(param){
     return out_logs;
   }
 
-  this.edit_memo = function(data, event, element){
+  this.editMemo = function(data, event, element){
     // 文字列が無い場合は最下部にキャレットを設定する
     var row = $(element).find("table tr").length - 1;
     that.switchEditShareMemo(row, event.pageY);
+  }
+
+  this.editSpecificRow = function(data, event, element){
+    // クリック時の行数を取得してキャレットに設定する
+    var row = $(element).closest("table").find("tr").index(element);
+    that.switchEditShareMemo(row, event.pageY);
+
+    return false;
   }
 
   this.showDiffList = function(){

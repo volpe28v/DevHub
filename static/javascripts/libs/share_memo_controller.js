@@ -26,10 +26,10 @@ function ShareMemoController(param){
 
   // searchBox
   this.isSearching = false;
+  this.keyword = ko.observable('');
   this.before_keyword = "";
   this.matched_doms = [];
 
-  this.keyword = ko.observable('');
   this.matched_navi_visible = ko.observable(false);
   this.matched_index = ko.observable(0);
   this.matched_num = ko.observable(0);
@@ -45,13 +45,16 @@ function ShareMemoController(param){
     // タブ選択のIDを記憶する
     var memoViewModel = this;
 
-    window.localStorage.tabSelectedID = "#share_memo_tab_" + this.no;
+    window.localStorage.tabSelectedID = "#share_memo_tab_" + memoViewModel.no;
 
-    for (var i = 0; i < that.memoViewModels().length; i++){
-      that.memoViewModels()[i].unselect();
-    }
+    that.currentMemo().unselect();
     that.currentMemoNo = memoViewModel.no;
-    that.currentMemo().select();
+    if (that.keyword() == ""){
+      that.currentMemo().select();
+    }else{
+      // 検索中
+      that.currentMemo().beginSearch();
+    }
 
     $('#memo_area').scrollTop(0);
     that.adjustMemoControllbox();
@@ -129,7 +132,8 @@ function ShareMemoController(param){
     },700);
   }
 
-  this.search = function(keyword){
+  this.search = function(){
+    var keyword = that.keyword();
     if (keyword == ""){
       that.before_keyword = keyword;
       $(".matched_strong_line").removeClass("matched_strong_line");
@@ -143,10 +147,9 @@ function ShareMemoController(param){
       $(".matched_line").removeClass("matched_line");
 
       // 検索前に一旦最新の表示に更新する
-      for (var i = 0; i < that.memoViewModels().length; i++){
-        //that.memoViewModels()[i].showText();
-        that.memoViewModels()[i].beginSearch();
-      }
+      that.memoViewModels().forEach(function(vm){
+        that.currentMemo() == vm ? vm.beginSearch() : vm.showText();
+      });
 
       that.before_keyword = keyword;
       that.matched_doms = [];
@@ -212,7 +215,7 @@ function ShareMemoController(param){
   }
 
   this.do_search = function(){
-    that.search(that.keyword());
+    that.search();
     that.isSearching = false;
     return false;
   }
@@ -222,7 +225,7 @@ function ShareMemoController(param){
       that.isSearching = true;
       setTimeout(function(){
         if (that.isSearching){
-          that.search(that.keyword());
+          that.search();
           that.isSearching = false;
         }
       },1000);
@@ -235,10 +238,13 @@ function ShareMemoController(param){
   }
 
   this.do_search_clear = function(){
+    that.currentMemo().endSearch();
+  }
+
+  this.end_search_controll = function(){
     that.keyword("");
-    that.search("");
+    that.search();
     that.isSearching = false;
-    $('#memo_area').scrollTop(0);
     $("#search_clear").hide();
   }
 
@@ -320,14 +326,6 @@ function ShareMemoController(param){
     that.setMessage("[ref:" + id + "]");
   }
 
-  this.edit_specific_row = function(data, event, element){
-    // クリック時の行数を取得してキャレットに設定する
-    var row = $(element).closest("table").find("tr").index(element);
-    that.currentMemo().switchEditShareMemo(row, event.pageY);
-
-    return false;
-  }
-
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
       'init': function() {
@@ -344,9 +342,6 @@ function ShareMemoController(param){
 
     //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
-      .on('click','.diff-done', function(){
-        that.currentMemo().switchFixShareMemo(1);
-      })
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
           // チェック対象のテキストを更新する
@@ -356,9 +351,6 @@ function ShareMemoController(param){
           // チェック対象のテキストを更新する
           that.currentMemo().applyToWritingText(applyImgSize);
         }
-      })
-      .on('dblclick','.code', function(e){
-        that.currentMemo().switchFixShareMemo($(this).caretLine(), e.pageY);
       })
       .on('keydown','.code',function(event){
         // Ctrl - S or Ctrl - enter
@@ -403,7 +395,8 @@ function ShareMemoController(param){
       this.memoViewModels.push(new MemoViewModel({
         no: i,
         socket: this.socket,
-        getName: function() { return that.getName(); }
+        getName: function() { return that.getName(); },
+        endSearch: that.end_search_controll
       }));
     }
 
