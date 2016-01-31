@@ -186,7 +186,16 @@
                           <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu diff-list" data-bind="foreach: diffTitles">
-                          <li><a data-bind="css: diff_class, html: title, click: $parent.show_diff.bind($data, $element), event: {mouseover: $parent.fill_diff_list.bind($data, $element), mouseout: $parent.unfill_diff_list.bind($data, $element)}" href="#"></a></li>
+                          <li>
+                            <a data-bind="
+                              css: diff_class,
+                              html: title,
+                              click: $parent.show_diff.bind($data, $element),
+                              event: {
+                                mouseover: $parent.fill_diff_list.bind($data, $element),
+                                mouseout: $parent.unfill_diff_list.bind($data, $element)
+                              }" href="#"></a>
+                          </li>
                         </ul>
                       </div>
                       <button data-bind="click: $parent.wip_jump" class="wip-jump btn btn-danger" style="float: left; display: none">
@@ -198,9 +207,17 @@
                       <div class="clearfix"></div>
                     </div>
                     <div class="memo-control-dummy" style="display:none;"></div>
-                    <textarea data-bind="textInput: edit_text, event: {dblclick: function(data, event){ displaySpecificRow(data, event, $element) }}" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                    <textarea data-bind="
+                      textInput: edit_text,
+                      event: {
+                        dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
+                        keydown: function(data, event){ return switchDisplayIfEditEndKey(data, event, $element)},
+                        select: function(data, event){ selectText(data, event, $element)}
+                      }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
                     <pre class="code-out-base">
-                      <div class="code-out" data-bind="event: {dblclick: function(data, event){ editMemo(data, event, $element) }}, decoHtml: display_text"></div>
+                      <div class="code-out" data-bind="
+                        event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
+                        decoHtml: display_text"></div>
                       <div class="diff-view" style="display: none"></div>
                     </pre>
                   </div>

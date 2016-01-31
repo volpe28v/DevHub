@@ -264,7 +264,6 @@ function MemoViewModel(param){
   }
 
   this.switchFixShareMemo = function(row, offset){
-    console.log(row + " : " + offset);
     this.set_state(this.states.display);
 
     this.edit_mode = false;
@@ -529,6 +528,24 @@ function MemoViewModel(param){
 
   this.displaySpecificRow = function(data, event, element){
     that.switchFixShareMemo($(element).caretLine(), event.pageY);
+  }
+
+  this.switchDisplayIfEditEndKey = function(data, event, element){
+    // Ctrl - S or Ctrl - enter
+    if ((event.ctrlKey == true && event.keyCode == 83) ||
+        (event.ctrlKey == true && event.keyCode == 13)) {
+      event.returnvalue = false;
+      var caret_top = $(element).textareaHelper('caretPos').top + $(element).offset().top;
+      that.switchFixShareMemo($(element).caretLine(), caret_top);
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  this.selectText = function(data, event, element){
+    console.log("selectText");
+    that.showMoveToBlogButton($(element), that.getName());
   }
 
   this.beginSearch = function(){

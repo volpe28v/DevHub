@@ -351,19 +351,6 @@ function ShareMemoController(param){
           // チェック対象のテキストを更新する
           that.currentMemo().applyToWritingText(applyImgSize);
         }
-      })
-      .on('keydown','.code',function(event){
-        // Ctrl - S or Ctrl - enter
-        if ((event.ctrlKey == true && event.keyCode == 83) ||
-          (event.ctrlKey == true && event.keyCode == 13)) {
-          event.returnvalue = false;
-          var caret_top = $(this).textareaHelper('caretPos').top + $(this).offset().top;
-          that.currentMemo().switchFixShareMemo($(this).caretLine(), caret_top);
-          return false;
-        }
-      })
-      .on('select','.code',function(event){
-        that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
 
     //TODO knokcout に置き換える
