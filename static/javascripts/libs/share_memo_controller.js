@@ -326,6 +326,16 @@ function ShareMemoController(param){
     that.setMessage("[ref:" + id + "]");
   }
 
+  this.select_index_li = function(data, event, element){
+    that.currentMemo().switchFixShareMemo(1);
+
+    var index = $(element).closest(".index-ul").find(".index-li").index(element);
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+    return false;
+  }
+
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
       'init': function() {
@@ -339,8 +349,8 @@ function ShareMemoController(param){
 
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
+    ko.applyBindings(that, $('#index_inner').get(0));
 
-    //TODO 以下のバインドを直接メソッドバインドしていく
     $(".share-memo-tab-content")
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
@@ -354,6 +364,7 @@ function ShareMemoController(param){
       });
 
     //TODO knokcout に置き換える
+    /*
     $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
       .on('click','.index-li', function(){
         that.currentMemo().switchFixShareMemo(1);
@@ -364,6 +375,7 @@ function ShareMemoController(param){
         $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
         return true;
       });
+      */
 
     $('#move_to_diff').click(function(){
       var pos = that.currentMemo().getNextDiffPos();

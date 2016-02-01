@@ -165,8 +165,8 @@ function MemoViewModel(param){
   this.is_shown_move_to_blog = false;
   this.is_existed_update = true;
 
-  this.indexes = []; //binding
-  this.diffTitles = ko.observableArray([]); //binding
+  this.indexes = ko.observableArray([]);
+  this.diffTitles = ko.observableArray([]);
   this.diff_mode = false;
   this.diff_block_list = [];
   this.diff_index = 0;
@@ -520,10 +520,12 @@ function MemoViewModel(param){
 
   this.select = function(){
     this.switchFixShareMemo(1);
+    $('#share_memo_index_' + that.no).show();
   }
 
   this.unselect = function(){
     this.set_state(this.states.hide);
+    $('#share_memo_index_' + that.no).hide();
   }
 
   this.displaySpecificRow = function(data, event, element){
@@ -576,7 +578,7 @@ function MemoViewModel(param){
   this._updateIndexes = function(){
     var $index_list = $('#share_memo_index_' + this.no);
 
-    $.observable(that.indexes).remove(0, that.indexes.length);
+    that.indexes([]);
     $.decora.apply_to_deco_and_raw(this.writing_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
@@ -586,9 +588,9 @@ function MemoViewModel(param){
             var header_level = matches[1].length;
             var header_text = val.replace(/^#+/g,"");
 
-            $.observable(that.indexes).insert(
+            that.indexes.push(
               {
-                class: "header-level-" + header_level,
+                index_class: "header-level-" + header_level,
                 body: $.decora.to_html(header_text)
               });
           }
