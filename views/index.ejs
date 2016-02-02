@@ -220,10 +220,14 @@
                         keydown: function(data, event){ return switchDisplayIfEditEndKey(data, event, $element)},
                         select: function(data, event){ selectText(data, event, $element)}
                       }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                    <div data-bind="visible: is_memo_empty, event: {dblclick: $parent.do_edit}" class="memo-alert alert alert-info">
+                      This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.
+                    </div>
                     <pre class="code-out-base">
                       <div class="code-out" data-bind="
                         event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
-                        decoHtml: display_text"></div>
+                        decoHtml: display_text">
+                       </div>
                       <div class="diff-view" style="display: none"></div>
                     </pre>
                   </div>

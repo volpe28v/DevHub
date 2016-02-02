@@ -110,6 +110,11 @@ function MemoViewModel(param){
   this.delayed_text = ko.pureComputed(this.edit_text)
     .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
   var is_first = true;
+  this.is_memo_empty = ko.computed(function(){
+    return this.writing_text().text == "";
+  }, this);
+
+
   this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
     if (is_first){ is_first = false; return; }
@@ -402,12 +407,6 @@ function MemoViewModel(param){
 
     $code_out.off('keydown');
     $code_out.off('click');
-
-    if (this.writing_text().text == ""){
-      // テキストが空なのでメッセージを表示する
-      $code_out.prepend($('<div/>').addClass('memo-alert alert alert-info').
-        html('This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.'));
-    }
 
     $target.find('.code-out').sortable({
       items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
