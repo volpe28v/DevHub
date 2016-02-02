@@ -21,7 +21,6 @@ function EditState(parent){
 
   this.enter = function(){
     console.log("EditState Enter " + parent.no);
-
     parent.setEditText();
   }
 

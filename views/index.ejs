@@ -325,7 +325,14 @@
             <div class="control-group">
               <label class="control-label">Enable share memo</label>
               <div class="controls">
-                <select id="memo_number" class="span1"></select>
+                <select id="memo_number" class="span1" data-bind="
+                  value: memo_number,
+                  event: {change: change_memo_number}
+                  ">
+                  <!-- ko foreach: memoViewModels -->
+                  <option data-bind="text: no, attr: {value: no}"></option>
+                  <!-- /ko -->
+                </select>
                 tabs.
               </div>
             </div>
@@ -344,10 +351,10 @@
 
     <div id ="diff_controller" style="display: none">
       <div id="move_to_diff">
-        <button class="btn btn-success"><i class="icon-arrow-down icon-white"></i> Next Diff</button>
+        <button data-bind="click: move_diff" class="btn btn-success"><i class="icon-arrow-down icon-white"></i> Next Diff</button>
       </div>
       <div id="diff_done">
-        <button class="btn btn-success"><i class="icon-ok icon-white"></i> Done</button>
+        <button data-bind="click: done_diff" class="btn btn-success"><i class="icon-ok icon-white"></i> Done</button>
       </div>
     </div>
 
@@ -428,18 +435,6 @@
     </script>
 
     <script id="chatNumberTmpl" type="text/x-jsrender">
-      <option value="{{>no}}">{{>no}}</option>
-    </script>
-
-    <script id="shareMemoIndexTmpl" type="text/x-jsrender">
-      <ul id="share_memo_index_{{>no}}" class="index-ul" data-no="{{>no}}">
-      {^{for indexes}}
-        <li><a class="index-li"><div data-link="class{>class}">{^{:body}}</div></a></li>
-      {{/for}}
-      </ul>
-    </script>
-
-    <script id="shareMemoNumberTmpl" type="text/x-jsrender">
       <option value="{{>no}}">{{>no}}</option>
     </script>
 

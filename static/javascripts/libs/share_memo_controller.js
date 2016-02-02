@@ -12,7 +12,8 @@ function ShareMemoController(param){
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.zenMode = param.zenMode;
-  this.memo_number = 1;
+
+  this.memo_number = ko.observable(1);
 
   this.doing_up = false;
   this.doing_down = false;
@@ -107,7 +108,7 @@ function ShareMemoController(param){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     data_no -= 1;
     if (data_no <= 0){
-      data_no = this.memo_number;
+      data_no = this.memo_number();
     }
     $("#share_memo_tab_" + data_no).click();
   }
@@ -115,7 +116,7 @@ function ShareMemoController(param){
   this.next = function(){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     data_no += 1;
-    if (data_no > this.memo_number){
+    if (data_no > this.memo_number()){
       data_no = 1;
     }
     $("#share_memo_tab_" + data_no).click();
@@ -336,6 +337,22 @@ function ShareMemoController(param){
     return false;
   }
 
+  this.move_diff = function(){
+    var pos = that.currentMemo().getNextDiffPos();
+    $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
+  }
+
+  this.done_diff = function(){
+    that.currentMemo().switchFixShareMemo(1);
+    $('#memo_area').scrollTop(0);
+  }
+
+  this.change_memo_number = function(){
+    console.log("change_memo_number");
+    console.log(that.memo_number());
+    socket.emit('memo_number', {num: that.memo_number()});
+  }
+
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
       'init': function() {
@@ -350,6 +367,8 @@ function ShareMemoController(param){
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
     ko.applyBindings(that, $('#index_inner').get(0));
+    ko.applyBindings(that, $('#diff_controller').get(0));
+    ko.applyBindings(that, $('#memo_number').get(0));
 
     $(".share-memo-tab-content")
       .decora({
@@ -362,33 +381,6 @@ function ShareMemoController(param){
           that.currentMemo().applyToWritingText(applyImgSize);
         }
       });
-
-    //TODO knokcout に置き換える
-    /*
-    $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
-      .on('click','.index-li', function(){
-        that.currentMemo().switchFixShareMemo(1);
-
-        var index = $(this).closest(".index-ul").find(".index-li").index(this);
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
-        return true;
-      });
-      */
-
-    $('#move_to_diff').click(function(){
-      var pos = that.currentMemo().getNextDiffPos();
-      $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
-    });
-
-    $('#diff_done').click(function(){
-      that.currentMemo().switchFixShareMemo(1);
-      $('#memo_area').scrollTop(0);
-    });
-
-    //TODO knokcout に置き換える
-    $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
@@ -487,15 +479,13 @@ function ShareMemoController(param){
       }
     });
 
-    $('#memo_number').bind('change',function(){
-      var num = $(this).val();
-      socket.emit('memo_number', {num: num});
-    });
-
     function apply_memo_number(num){
-      that.memo_number = num;
+      if (that.memo_number() != num){
+        that.memo_number(num);
+      }
+
       $('.share-memo-tab-elem').each(function(i){
-        if (i< that.memo_number){
+        if ( i < that.memo_number()){
           $(this).fadeIn("fast");
           $(this).css("display", "block");
         }else{
@@ -506,7 +496,6 @@ function ShareMemoController(param){
 
     socket.on('memo_number', function(data){
       apply_memo_number(data.num);
-      $('#memo_number').val(data.num);
     });
 
     socket.on('memo_tab_numbers', function(data){
@@ -516,7 +505,7 @@ function ShareMemoController(param){
         $('#share_memo_nav').append($('#share_memo_li_' + num));
       });
 
-      apply_memo_number(that.memo_number);
+      apply_memo_number(that.memo_number());
     });
   }
 
