@@ -163,7 +163,6 @@ function MemoViewModel(param){
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
   this.update_timer = null;
-  this.code_prev = "";
   this.writing_loop_timer = { id: -1, code_no: 0};
   this.writer = ko.observable("");
   this.is_shown_move_to_blog = false;
@@ -331,37 +330,6 @@ function MemoViewModel(param){
     $share_memo.children('pre').hide();
     $share_memo.find('.fix-text').show();
     $share_memo.find('.sync-text').hide();
-
-    this.code_prev = $target_code.val();
-    //this.writingLoopStart();
-  }
-
-  this.writingLoopStart = function(){
-    $target_code = $('#share_memo_' + this.no).children('.code');
-    var loop = function() {
-      var code = $target_code.val();
-      if (that.code_prev != code) {
-        that.socket.emit('text',{
-          no: that.no,
-          name: that.getName(),
-          avatar: window.localStorage.avatarImage,
-          text: code});
-        that.code_prev = code;
-      }
-
-      // Blogへ移動ボタンの表示状態を制御
-      if (that.is_shown_move_to_blog){
-        if ($target_code.selection('get') == ""){
-          $("#move_to_blog").fadeOut();
-          that.is_shown_move_to_blog = false;
-        }
-      }
-    };
-    // 念のためタイマー止めとく
-    if (this.writing_loop_timer.id != -1){
-      this.writingLoopStop();
-    }
-    this.writing_loop_timer = {id: setInterval(loop, 500), code_no: this.no};
   }
 
   this._getFocusFromInputTask = function(){
@@ -661,7 +629,7 @@ function MemoViewModel(param){
       $(li).removeClass("in_diff_range");
     });
   }
- 
+
   this.show_diff = function(element){
     that.set_state(that.states.diff);
 
@@ -693,7 +661,7 @@ function MemoViewModel(param){
 
     return true;
   }
- 
+
   this.createDiff = function(index){
     index++; // 0番目はリストに表示しないので 1番目の履歴は 0で来る
     var text_log = this._getLogsForDiff();
@@ -821,6 +789,8 @@ function MemoViewModel(param){
                 caret: 'start'
               });
               $('#memo_area').scrollTop(before_pos);
+
+              that.edit_text($selected_target.val());
             }
           });
         });
