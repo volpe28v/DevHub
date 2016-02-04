@@ -104,20 +104,16 @@ function MemoViewModel(param){
   this.getName = param.getName; //function
   this.notifyEndSearch = param.endSearch; //function
 
-  this.writing_text = ko.observable({text: "", name: "" , date: undefined});
+  this.latest_text = ko.observable({text: "", name: "" , date: undefined});
   this.display_text = ko.observable("");
   this.edit_text = ko.observable("");
   this.delayed_text = ko.pureComputed(this.edit_text)
     .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
-  var is_first = true;
-  this.is_memo_empty = ko.computed(function(){
-    return this.writing_text().text == "";
-  }, this);
-
 
   this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
-    if (is_first){ is_first = false; return; }
+    // 最新メモと差分があれば送信する
+    if (this.edit_text() == this.latest_text().text){ return; }
 
     that.socket.emit('text',{
       no: that.no,
@@ -140,6 +136,11 @@ function MemoViewModel(param){
       }
     }
   }, this);
+
+  this.is_memo_empty = ko.pureComputed(function(){
+    return this.latest_text().text == "";
+  }, this);
+
 
   this.states = {
     display: new DisplayState(this),
@@ -215,13 +216,13 @@ function MemoViewModel(param){
 
   this.setText = function(text_body){
     // メモのハッシュ値が変更あれば更新する
-    if (text_body.hash != undefined && this.writing_text().hash == text_body.hash){ return false; }
+    if (text_body.hash != undefined && this.latest_text().hash == text_body.hash){ return false; }
 
     this.is_existed_update = true;
-    this.writing_text(text_body);
-    this.writer(this.writing_text().name);
-    this.title(this._title(this.writing_text().text));
-    this.bytes(this.writing_text().text.length + "bytes");
+    this.latest_text(text_body);
+    this.writer(this.latest_text().name);
+    this.title(this._title(this.latest_text().text));
+    this.bytes(this.latest_text().text.length + "bytes");
 
     // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);
@@ -232,16 +233,16 @@ function MemoViewModel(param){
     $writer.addClass("writing-name");
 
     var $timestamp = $target_tab.find('.timestamp');
-    $timestamp.attr("data-livestamp", this.writing_text().date);
+    $timestamp.attr("data-livestamp", this.latest_text().date);
 
     var $target = $('#share_memo_' + this.no);
     var $text_date = $target.find('.text-date');
-    var date_name = this.writing_text().date + " - " + this.writing_text().name;
+    var date_name = this.latest_text().date + " - " + this.latest_text().name;
     $text_date.html(date_name);
     $text_date.addClass("writing-name");
     $text_date.show();
 
-    var is_blank = this.writing_text().text == "";
+    var is_blank = this.latest_text().text == "";
     if (is_blank){
       $writer.hide();
       $timestamp.hide();
@@ -263,7 +264,7 @@ function MemoViewModel(param){
   }
 
   this.setEditText = function(){
-    this.edit_text(this.writing_text().text);
+    this.edit_text(this.latest_text().text);
   }
 
   this.switchFixShareMemo = function(row, offset){
@@ -357,7 +358,7 @@ function MemoViewModel(param){
     }
     this.is_existed_update = false;
 
-    that.display_text(that.writing_text().text);
+    that.display_text(that.latest_text().text);
 
     var $target = $('#share_memo_' + this.no);
     var focus_index = this._getFocusFromInputTask();
@@ -367,7 +368,7 @@ function MemoViewModel(param){
 
     // WIPの表示
     var $wip_jump = $target.find('.wip-jump');
-    if (this.writing_text().text.match(/\[WIP\]/)){
+    if (this.latest_text().text.match(/\[WIP\]/)){
       $wip_jump.show();
     }else{
       $wip_jump.hide();
@@ -386,14 +387,14 @@ function MemoViewModel(param){
         var drag_stop_index = ui.item.index();
         if (drag_stop_index == that.drag_index){ return; }
 
-        var text_array = that.writing_text().text.split("\n");
+        var text_array = that.latest_text().text.split("\n");
         text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
-        that.writing_text().text = text_array.join("\n");
+        that.latest_text().text = text_array.join("\n");
         that.socket.emit('text',{
           no: that.no,
           name: that.getName(),
           avatar: window.localStorage.avatarImage,
-          text: that.writing_text().text});
+          text: that.latest_text().text});
       },
       helper: function(e, tr){
         var $originals = tr.children();
@@ -417,14 +418,14 @@ function MemoViewModel(param){
       $this_tr.fadeOut('normal', function(){
         $(this).remove();
 
-        var text_array = that.writing_text().text.split("\n");
+        var text_array = that.latest_text().text.split("\n");
         text_array.splice(delete_index, 1);
-        that.writing_text().text = text_array.join("\n");
+        that.latest_text().text = text_array.join("\n");
         that.socket.emit('text',{
           no: that.no,
           name: that.getName(),
           avatar: window.localStorage.avatarImage,
-          text: that.writing_text().text});
+          text: that.latest_text().text});
       });
     });
 
@@ -436,14 +437,14 @@ function MemoViewModel(param){
       var input_text = $(this).val();
       $(this).val("");
 
-      var text_array = that.writing_text().text.split("\n");
+      var text_array = that.latest_text().text.split("\n");
       text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
-      that.writing_text().text = text_array.join("\n");
+      that.latest_text().text = text_array.join("\n");
       that.socket.emit('text',{
         no: that.no,
         name: that.getName(),
         avatar: window.localStorage.avatarImage,
-        text: that.writing_text().text});
+        text: that.latest_text().text});
 
       return false;
     });
@@ -466,12 +467,12 @@ function MemoViewModel(param){
   }
 
   this.insert = function(row, text){
-    var org_text = this.writing_text();
+    var org_text = this.latest_text();
     var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
     org_text.text = text_array.join("\n");
 
-    this.writing_text(org_text);
+    this.latest_text(org_text);
 
     if (this.edit_mode){
       var $target_code = $('#share_memo_' + this.no).children('.code');
@@ -480,7 +481,7 @@ function MemoViewModel(param){
         no: this.no,
         name: this.getName(),
         avatar: window.localStorage.avatarImage,
-        text: this.writing_text().text});
+        text: this.latest_text().text});
     }
   }
 
@@ -545,7 +546,7 @@ function MemoViewModel(param){
     var $index_list = $('#share_memo_index_' + this.no);
 
     that.indexes([]);
-    $.decora.apply_to_deco_and_raw(this.writing_text().text,
+    $.decora.apply_to_deco_and_raw(this.latest_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
         deco_text.split("\n").forEach(function(val){
@@ -574,8 +575,8 @@ function MemoViewModel(param){
 
   this._getLogsForDiff = function(){
     var out_logs = this.text_logs;
-    if (this.writing_text().date != out_logs[0].date){
-      out_logs.unshift(this.writing_text());
+    if (this.latest_text().date != out_logs[0].date){
+      out_logs.unshift(this.latest_text());
     }
 
     return out_logs;
@@ -750,12 +751,12 @@ function MemoViewModel(param){
   }
 
   this.applyToWritingText = function(func){
-    this.writing_text().text = func(this.writing_text().text);
+    this.latest_text().text = func(this.latest_text().text);
     this.socket.emit('text',{
       no: this.no,
       name: this.getName(),
       avatar: window.localStorage.avatarImage,
-      text: this.writing_text().text});
+      text: this.latest_text().text});
   },
 
   this.showMoveToBlogButton = function($selected_target, login_name){
