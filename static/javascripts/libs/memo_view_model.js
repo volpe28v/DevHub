@@ -303,12 +303,12 @@ function MemoViewModel(param){
     $share_memo.find('.fix-text').hide();
     $share_memo.find('.sync-text').show();
 
+    $('#share_memo_index_' + that.no).show();
     $("#move_to_blog").fadeOut();
   }
 
-  this.writingLoopStop = function(){
-    clearInterval(this.writing_loop_timer.id);
-    this.writing_loop_timer = { id: -1, code_no: 0};
+  this.unsetDisplayControl = function(){
+    $('#share_memo_index_' + that.no).hide();
   }
 
   this.switchEditShareMemo = function(row, offset){
@@ -485,12 +485,11 @@ function MemoViewModel(param){
 
   this.select = function(){
     this.switchFixShareMemo(1);
-    $('#share_memo_index_' + that.no).show();
   }
 
   this.unselect = function(){
     this.set_state(this.states.hide);
-    $('#share_memo_index_' + that.no).hide();
+    this.unsetDisplayControl();
   }
 
   this.displaySpecificRow = function(data, event, element){
