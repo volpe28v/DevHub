@@ -88,6 +88,7 @@ function ShareMemoController(param){
 
   this.top = function(){
     $('#memo_area').scrollTop(0);
+    that.adjustMemoControllbox();
   }
 
   this.down = function(){
@@ -279,6 +280,13 @@ function ShareMemoController(param){
     var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
     var headers = $code_out.find(":header");
     for (var i = headers.length - 1; i >= 0; i--){
+      if (i == 0){
+        if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 >= pos){
+          that.currentMemo().setCurrentIndex(-1);
+          break;
+        }
+      }
+
       if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
         that.currentMemo().setCurrentIndex(i);
         break;
@@ -443,6 +451,7 @@ function ShareMemoController(param){
 
     $("#scroll_top").click(function(){
       $('#memo_area').scrollTop(0);
+      that.adjustMemoControllbox();
     });
 
     $('#memo_area').scroll(function(){

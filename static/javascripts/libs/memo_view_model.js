@@ -11,9 +11,11 @@ function DisplayState(parent){
     parent.showText();
   }
 
-  this.exit = function(){
-
+  this.setIndex = function(no){
+    parent._updateIndexPos(no);
   }
+
+  this.exit = function(){}
 }
 
 function EditState(parent){
@@ -22,6 +24,7 @@ function EditState(parent){
   this.enter = function(){
     console.log("EditState Enter " + parent.no);
     parent.setEditText();
+    parent._updateIndexPos(-1);
   }
 
   this.updateText = function(new_text){
@@ -31,8 +34,12 @@ function EditState(parent){
     if( parent.getName() != new_text.name ){
       var $target = $('#share_memo_' + parent.no);
       parent.switchFixShareMemo($target.children('.code').caretLine());
+    }else{
+      parent.setEditText();
     }
   }
+
+  this.setIndex = function(no){}
 
   this.exit = function(){
     parent.is_save_history = true;
@@ -44,17 +51,14 @@ function HideState(parent){
 
   this.enter = function(){
     console.log("HideState Enter " + parent.no);
-
   }
 
   this.updateText = function(new_text){
     parent.setText(new_text);
-
   }
 
-  this.exit = function(){
-
-  }
+  this.setIndex = function(no){}
+  this.exit = function(){}
 }
 
 function DiffState(parent){
@@ -70,6 +74,7 @@ function DiffState(parent){
     parent.setText(new_text);
   }
 
+  this.setIndex = function(no){}
   this.exit = function(){
     parent.endDiff();
   }
@@ -85,6 +90,10 @@ function SearchState(parent){
 
   this.updateText = function(new_text){
     parent.setText(new_text);
+  }
+
+  this.setIndex = function(no){
+    parent._updateIndexPos(no);
   }
 
   this.exit = function(next){
@@ -269,9 +278,6 @@ function MemoViewModel(param){
 
   this.switchFixShareMemo = function(row, offset){
     this.set_state(this.states.display);
-
-    this.edit_mode = false;
-
     this.setDisplayControl();
     this.setDisplayPos(row, offset);
   }
@@ -309,8 +315,6 @@ function MemoViewModel(param){
     this.set_state(this.states.edit);
 
     var $share_memo = $('#share_memo_' + this.no);
-    this.setCurrentIndex(-1);
-    this.edit_mode = true;
 
     offset = offset == undefined ? $(window).height()/3 : offset - 94;
     var $target_code = $share_memo.children(".code");
@@ -470,19 +474,13 @@ function MemoViewModel(param){
     var org_text = this.latest_text();
     var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
-    org_text.text = text_array.join("\n");
 
-    this.latest_text(org_text);
-
-    if (this.edit_mode){
-      var $target_code = $('#share_memo_' + this.no).children('.code');
-    }else{
-      this.socket.emit('text',{
-        no: this.no,
-        name: this.getName(),
-        avatar: window.localStorage.avatarImage,
-        text: this.latest_text().text});
-    }
+    this.socket.emit('text',{
+      no: this.no,
+      name: this.getName(),
+      avatar: window.localStorage.avatarImage,
+      text: text_array.join("\n")
+    });
   }
 
   this.select = function(){
@@ -531,11 +529,14 @@ function MemoViewModel(param){
   }
 
   this.setCurrentIndex = function(no){
-    if (this.currentIndexNo == no){ return; }
-    if (this.edit_mode){ return; }
+    this.current_state.setIndex(no);
+  }
+
+  this._updateIndexPos = function(no){
+    if (that.currentIndexNo == no){ return; }
 
     this.currentIndexNo = no;
-    var $index_lists = $('#share_memo_index_' + this.no).find('li');
+    var $index_lists = $('#share_memo_index_' + that.no).find('li');
     $index_lists.removeClass('current-index');
     if (no != -1){
       $index_lists.eq(no).addClass('current-index');
