@@ -357,7 +357,6 @@ function MemoViewModel(param){
   this.showText = function(){
     // メモに更新があれば実行
     if (!this.is_existed_update){
-      console.log("no update");
       return;
     }
     this.is_existed_update = false;
@@ -510,7 +509,6 @@ function MemoViewModel(param){
   }
 
   this.selectText = function(data, event, element){
-    console.log("selectText");
     that.showMoveToBlogButton($(element), that.getName());
   }
 

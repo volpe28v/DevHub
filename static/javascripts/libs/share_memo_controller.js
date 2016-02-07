@@ -356,10 +356,14 @@ function ShareMemoController(param){
   }
 
   this.change_memo_number = function(){
-    console.log("change_memo_number");
-    console.log(that.memo_number());
     socket.emit('memo_number', {num: that.memo_number()});
   }
+
+  this.showIndex = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showIndexList();
+  }
+
 
   this.init_sharememo = function(){
     ko.bindingHandlers.decoHtml = {
@@ -373,6 +377,8 @@ function ShareMemoController(param){
     };
 
     ko.applyBindings(that, $('#search_box').get(0));
+    ko.applyBindings(that, $('#scroll_top').get(0));
+    ko.applyBindings(that, $('#memo_index').get(0));
     ko.applyBindings(that, $('#share-memo').get(0));
     ko.applyBindings(that, $('#index_inner').get(0));
     ko.applyBindings(that, $('#diff_controller').get(0));
@@ -420,11 +426,6 @@ function ShareMemoController(param){
       }
     });
 
-    $("#memo_index").click(function(){
-      $('#chat_area').scrollTop(0);
-      that.currentMemo().showIndexList();
-    });
-
     $("#hide_index").click(function(){
       $('#index_inner').hide();
     });
@@ -447,11 +448,6 @@ function ShareMemoController(param){
         });
         window.localStorage.tabChanged = 'false';
       }
-    });
-
-    $("#scroll_top").click(function(){
-      $('#memo_area').scrollTop(0);
-      that.adjustMemoControllbox();
     });
 
     $('#memo_area').scroll(function(){
