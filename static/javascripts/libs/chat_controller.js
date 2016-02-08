@@ -11,7 +11,7 @@ function ChatController(param){
 
   // Models
   this.message = "";
-  this.loginElemList = [];
+  this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = 0;
   this.filterName = "";
   this.filterWord = "";
@@ -82,24 +82,24 @@ ChatController.prototype = {
     }else{
       $('#mention_own_alert').slideUp();
     }
- 
+
     if (that.filterWord != ""){
       $('#filter_word_alert').slideDown();
     }else{
       $('#filter_word_alert').slideUp();
     }
- 
+
     if (that.filterName != ""){
       $('#filter_name_alert').slideDown();
     }else{
       $('#filter_name_alert').slideUp();
     }
- 
+
     this.chatViewModels.forEach(function(vm){
       vm.reloadTimeline();
     });
   },
- 
+
   doClientCommand: function(message){
     var that = this;
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
@@ -152,6 +152,8 @@ ChatController.prototype = {
   initChat: function(){
     var that = this;
 
+    ko.applyBindings(that, $('#chat_inner').get(0));
+
     $('#message').textcomplete([
       {
         match: /\B:([\-+\w]*)$/,
@@ -203,8 +205,6 @@ ChatController.prototype = {
       return false;
     });
 
-    // ログインリストのバインディング
-    $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
     $.templates("#alertTimelineTmpl").link("#alert_timeline", that);
 
     $('#chat_area').on('click', '.login-symbol', function(event){
@@ -362,12 +362,14 @@ ChatController.prototype = {
             pomo_min: login_list[i].pomo_min
           };
         if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
+          login_elem.has_avatar = true;
           avatar_elems.push(login_elem);
         }else{
+          login_elem.has_avatar = false;
           login_elems.push(login_elem);
         }
       }
-      $.observable(that.loginElemList).refresh(avatar_elems.concat(login_elems));
+      that.loginElemList(avatar_elems.concat(login_elems));
       $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
   },
@@ -390,9 +392,9 @@ ChatController.prototype = {
   },
 
   getId: function(name){
-    for(var i = 0; i < this.loginElemList.length; ++i ){
-      if ( this.loginElemList[i].name == name ){
-        return this.loginElemList[i].id;
+    for(var i = 0; i < this.loginElemList().length; ++i ){
+      if ( this.loginElemList()[i].name == name ){
+        return this.loginElemList()[i].id;
       }
     }
     return 0;

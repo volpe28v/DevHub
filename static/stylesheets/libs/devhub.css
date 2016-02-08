@@ -620,6 +620,7 @@ a:hover {
 .login-symbol {
   cursor: pointer;
   display: inline-block;
+  vertical-align: middle;
 }
 
 .login-symbol:hover {
