@@ -12,9 +12,9 @@ function ChatController(param){
   // Models
   this.message = "";
   this.loginElemList = ko.observableArray([]);
-  this.hidingMessageCount = 0;
-  this.filterName = "";
-  this.filterWord = "";
+  this.hidingMessageCount = ko.observable(0);
+  this.filterName = ko.observable("");
+  this.filterWord = ko.observable("");
   this._filterWord = ""; // 前回の検索キーワード
 
   this.chatViewModels = [];
@@ -70,7 +70,7 @@ ChatController.prototype = {
   doFilterTimeline: function(){
     var that = this;
     MessageDate.init(); // タイムラインを再読み込みしたら未読解除
-    $.observable(this).setProperty("hidingMessageCount", 0);
+    that.hidingMessageCount(0);
 
     if (window.localStorage.timeline == "mention"){
       $('#mention_alert').slideDown();
@@ -83,13 +83,13 @@ ChatController.prototype = {
       $('#mention_own_alert').slideUp();
     }
 
-    if (that.filterWord != ""){
+    if (that.filterWord() != ""){
       $('#filter_word_alert').slideDown();
     }else{
       $('#filter_word_alert').slideUp();
     }
 
-    if (that.filterName != ""){
+    if (that.filterName() != ""){
       $('#filter_name_alert').slideDown();
     }else{
       $('#filter_name_alert').slideUp();
@@ -104,18 +104,18 @@ ChatController.prototype = {
     var that = this;
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
-      $.observable(that).setProperty("filterWord", search_word);
+      that.filterWord(search_word);
       $('#message').addClass("client-command");
 
       // 検索キーワードが変化していたら1秒後に検索開始
-      if (!that.isSearching && that._filterWord != that.filterWord){
+      if (!that.isSearching && that._filterWord != that.filterWord()){
         that.isSearching = true;
         setTimeout(function(){
           if (!that.isSearching){ return; }
-          if (that._filterWord == that.filterWord){ that.isSearching = false; return; }
+          if (that._filterWord == that.filterWord()){ that.isSearching = false; return; }
           that.doFilterTimeline();
 
-          that._filterWord = that.filterWord;
+          that._filterWord = that.filterWord();
           that.isSearching = false;
         },1000);
       }
@@ -140,7 +140,7 @@ ChatController.prototype = {
       // 検索中または前回検索済みの場合は検索結果をクリア
       if (that.isSearching == true || that._filterWord != ""){
         that.isSearching = false;
-        $.observable(that).setProperty("filterWord", "");
+        that.filterWord("");
         that._filterWord = "";
         that.doFilterTimeline();
       }
@@ -205,11 +205,11 @@ ChatController.prototype = {
       return false;
     });
 
-    $.templates("#alertTimelineTmpl").link("#alert_timeline", that);
+    //$.templates("#alertTimelineTmpl").link("#alert_timeline", that);
 
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
-        $.observable(that).setProperty("filterName", $(this).data("name"));
+        that.filterName($(this).data("name"));
         $('.tooltip').hide();
         $('#chat_area').scrollTop(0);
         that.doFilterTimeline();
@@ -401,15 +401,15 @@ ChatController.prototype = {
   },
 
   upHidingCount: function(){
-    $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+    this.hidingMessageCount(this.hidingMessageCount() + 1);
   },
 
   getFilterName: function(){
-    return this.filterName;
+    return this.filterName();
   },
 
   getFilterWord: function(){
-    return this.filterWord;
+    return this.filterWord();
   },
 
   initSettings: function(){
@@ -493,9 +493,9 @@ ChatController.prototype = {
           $('#message').val("");
           $('#message').removeClass("client-command");
         }else if (data_id == "filter_name_alert"){
-          $.observable(that).setProperty("filterName", "");
+          that.filterName("");
         }else if (data_id == "filter_word_alert"){
-          $.observable(that).setProperty("filterWord", "");
+          that.filterWord("");
           that._filterWord = "";
           $('#message').val("");
           $('#message').removeClass("client-command");

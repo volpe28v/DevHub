@@ -153,7 +153,40 @@
             </div>
             <div class="chat-control-dummy" style="display:none;"></div>
             <div id="chat_body" class="text-base-style">
-              <div id="alert_timeline"></div>
+              <div id="alert_timeline">
+                <div id="mention_own_alert" class="alert" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display Mention & Own mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="mention_alert" class="alert alert-error" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display Mention only mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="filter_name_alert" class="alert alert-info" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterName"></span> only mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="filter_word_alert" class="alert alert-success" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterWord"></span> search mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+              </div>
               <div id="chat_tabbable"  class="tabbable">
                 <ul id="chat_nav" class="nav nav-tabs"></ul>
                 <div class="chat-tab-content tab-content"></div>
@@ -374,41 +407,6 @@
     </div>
 
     <!-- JsRender Templates -->
-    <script id="alertTimelineTmpl" type="text/x-jsrender">
-      <div id="mention_own_alert" class="alert" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display Mention & Own mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="mention_alert" class="alert alert-error" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display Mention only mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="filter_name_alert" class="alert alert-info" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display <span data-link="filterName"></span> only mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="filter_word_alert" class="alert alert-success" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display <span data-link="filterWord"></span> search mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-    </script>
-
     <script id="chatTabTmpl" type="text/x-jsrender">
       <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}}
       {^{if mentionCount != 0}}
