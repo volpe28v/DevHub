@@ -188,8 +188,25 @@
                 </div>
               </div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul id="chat_nav" class="nav nav-tabs"></ul>
-                <div class="chat-tab-content tab-content"></div>
+                <ul id="chat_nav" data-bind="foreach: chatViewModels" class="nav nav-tabs">
+                  <li data-bind="css{active: isActive}"><a class="chat-tab-elem" data-bind="attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
+                    <span data-bind="text: room"></span>
+                    <!-- ko if: mentionCount() != 0 -->
+                    <span class="label label-important" data-bind="text: mentionCount"></span>
+                    <!-- /ko -->
+                    <!-- ko if: unreadRoomCount() != 0 -->
+                    <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
+                    <!-- /ko -->
+                    <!-- ko if: unreadCount() != 0 -->
+                    <span class="label label-default" data-bind="text: unreadCount"></span>
+                    <!-- /ko -->
+                  </a></li>
+                </ul>
+                <div class="chat-tab-content tab-content" data-bind="foreach: chatViewModels">
+                  <div class="tab-pane" data-bind="attr: {id:'tab_' + no}">
+                    <ul data-bind="attr: {id: 'list_' + no}" class="chat-list"></ul>
+                  </div>
+                </div>
               </div>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...

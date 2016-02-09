@@ -17,7 +17,7 @@ function ChatController(param){
   this.filterWord = ko.observable("");
   this._filterWord = ""; // 前回の検索キーワード
 
-  this.chatViewModels = [];
+  this.chatViewModels = ko.observableArray([]);
 
   // initialize
   MessageDate.init();
@@ -95,7 +95,7 @@ ChatController.prototype = {
       $('#filter_name_alert').slideUp();
     }
 
-    this.chatViewModels.forEach(function(vm){
+    this.chatViewModels().forEach(function(vm){
       vm.reloadTimeline();
     });
   },
@@ -205,8 +205,6 @@ ChatController.prototype = {
       return false;
     });
 
-    //$.templates("#alertTimelineTmpl").link("#alert_timeline", that);
-
     $('#chat_area').on('click', '.login-symbol', function(event){
       if (event.shiftKey == true ){
         that.filterName($(this).data("name"));
@@ -240,6 +238,7 @@ ChatController.prototype = {
     });
 
     // for chat list
+    /*
     $.templates("#chatTabTmpl").link("#chat_nav", this.chatViewModels)
       .on('click', '.chat-tab-elem', function(){
         var thisVm = that.chatViewModels[$.view(this).getIndex()];
@@ -254,6 +253,8 @@ ChatController.prototype = {
         thisVm.set_active(true);
         return true;
       });
+    */
+    /*
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
       .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
         // ログ追加読み込みイベント
@@ -279,6 +280,7 @@ ChatController.prototype = {
         that.chatViewModels[$.view(this).index].clear_unread();
         return true;
       });
+      */
   },
 
   setName: function(name){
@@ -321,12 +323,14 @@ ChatController.prototype = {
       }
 
       $('#chat_number').val(number.num);
-      that.chatViewModels.forEach(function(vm){
+      that.chatViewModels().forEach(function(vm){
         vm.destroySocket();
       });
-      $.observable(that.chatViewModels).refresh([]);
+      //$.observable(that.chatViewModels).refresh([]);
+      that.chatViewModels([]);
       for (var i = 1; i <= number.num; i++){
-        $.observable(that.chatViewModels).insert(new ChatViewModel({
+        //$.observable(that.chatViewModels).insert(new ChatViewModel({
+        that.chatViewModels.push(new ChatViewModel({
           no: i,
           socket: that.socket,
           getId: function(name) {return that.getId(name); },

@@ -9,12 +9,12 @@ function ChatViewModel(param){
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
-  this.room = "Room" + this.no;
+  this.room = ko.observable("Room" + this.no);
 
-  this.mentionCount = 0;
-  this.unreadRoomCount = 0;
-  this.unreadCount = 0;
-  this.isActive = false;
+  this.mentionCount = ko.observable(0);
+  this.unreadRoomCount = ko.observable(0);
+  this.unreadCount = ko.observable(0);
+  this.isActive = ko.observable(false);
 
   this.isLoadingLog = false;
   this.loadingAfterEvent = null;
@@ -76,11 +76,11 @@ ChatViewModel.prototype = {
           $msg.addClass("unread-msg");
 
           if (that.include_target_name(data.msg,that.getName())){
-            $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+            that.mentionCount(that.mentionCount() + 1);
           }else if (that.include_room_name(data.msg)){
-            $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
+            that.unreadRoomCount(that.unreadRoomCount() + 1);
           }else{
-            $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+            that.unreadCount(that.unreadCount() + 1);
           }
         }
       });
@@ -137,7 +137,8 @@ ChatViewModel.prototype = {
   _room_name_handler: function() {
     var that = this;
     return function(room_name){
-      $.observable(that).setProperty("room", room_name);
+//      $.observable(that).setProperty("room", room_name);
+      that.room(room_name);
     }
   },
 
@@ -189,11 +190,11 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
-    this.faviconNumber.minus(this.mentionCount + this.unreadCount + this.unreadRoomCount);
+    this.faviconNumber.minus(this.mentionCount() + this.unreadCount() + this.unreadRoomCount());
     $(this.listId).find('li').removeClass("unread-msg");
-    $.observable(this).setProperty("mentionCount", 0);
-    $.observable(this).setProperty("unreadRoomCount", 0);
-    $.observable(this).setProperty("unreadCount", 0);
+    this.mentionCount(0);
+    this.unreadRoomCount(0);
+    this.unreadCount(0);
   },
 
   append_msg: function(data){
@@ -214,11 +215,11 @@ ChatViewModel.prototype = {
         msg.li.addClass("unread-msg");
 
         if (that.include_target_name(data.msg,that.getName())){
-          $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+          that.mentionCount(that.mentionCount() + 1);
         }else if (that.include_room_name(data.msg)){
-          $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
+          that.unreadRoomCount(that.unreadRoomCount() + 1);
         }else{
-          $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+          that.unreadCount(that.unreadCount() + 1);
         }
       }
       msg.li.fadeIn();
@@ -356,13 +357,13 @@ ChatViewModel.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room, "g");
+    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room(), "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.getName()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
-      }else if (arguments[0] == "@" + that.room){
+      }else if (arguments[0] == "@" + that.room()){
         return '<span class="target-room">' + arguments[0] + '</span>'
       }else{
         return '<span class="target-other">' + arguments[0] + '</span>'
@@ -386,7 +387,7 @@ ChatViewModel.prototype = {
   },
 
   include_room_name: function(msg){
-    var room_reg = RegExp("@" + this.escape_reg(this.room) + "( |　|さん|$)");
+    var room_reg = RegExp("@" + this.escape_reg(this.room()) + "( |　|さん|$)");
     if (msg.match(room_reg)){
       return true;
     }
