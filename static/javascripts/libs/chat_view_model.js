@@ -137,7 +137,6 @@ ChatViewModel.prototype = {
   _room_name_handler: function() {
     var that = this;
     return function(room_name){
-//      $.observable(that).setProperty("room", room_name);
       that.room(room_name);
     }
   },

@@ -326,10 +326,8 @@ ChatController.prototype = {
       that.chatViewModels().forEach(function(vm){
         vm.destroySocket();
       });
-      //$.observable(that.chatViewModels).refresh([]);
       that.chatViewModels([]);
       for (var i = 1; i <= number.num; i++){
-        //$.observable(that.chatViewModels).insert(new ChatViewModel({
         that.chatViewModels.push(new ChatViewModel({
           no: i,
           socket: that.socket,
