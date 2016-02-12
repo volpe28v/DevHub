@@ -189,22 +189,26 @@
               </div>
               <div id="chat_tabbable"  class="tabbable">
                 <ul id="chat_nav" data-bind="foreach: chatViewModels" class="nav nav-tabs">
-                  <li data-bind="css{active: isActive}"><a class="chat-tab-elem" data-bind="attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
-                    <span data-bind="text: room"></span>
-                    <!-- ko if: mentionCount() != 0 -->
-                    <span class="label label-important" data-bind="text: mentionCount"></span>
-                    <!-- /ko -->
-                    <!-- ko if: unreadRoomCount() != 0 -->
-                    <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
-                    <!-- /ko -->
-                    <!-- ko if: unreadCount() != 0 -->
-                    <span class="label label-default" data-bind="text: unreadCount"></span>
-                    <!-- /ko -->
-                  </a></li>
+                  <li data-bind="css{active: isActive}">
+                    <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
+                      <span data-bind="text: room"></span>
+                      <!-- ko if: mentionCount() != 0 -->
+                      <span class="label label-important" data-bind="text: mentionCount"></span>
+                      <!-- /ko -->
+                      <!-- ko if: unreadRoomCount() != 0 -->
+                      <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
+                      <!-- /ko -->
+                      <!-- ko if: unreadCount() != 0 -->
+                      <span class="label label-default" data-bind="text: unreadCount"></span>
+                      <!-- /ko -->
+                    </a>
+                  </li>
                 </ul>
                 <div class="chat-tab-content tab-content" data-bind="foreach: chatViewModels">
                   <div class="tab-pane" data-bind="attr: {id:'tab_' + no}">
-                    <ul data-bind="attr: {id: 'list_' + no}" class="chat-list"></ul>
+                    <ul data-bind="foreach: messages, click: clear_unread, attr: {id: 'list_' + no}" class="chat-list">
+                      <li data-bind="css: css, attr: {id: 'msg_' + _id, 'data-id': _id}, decoHtmlMsg: html"></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -422,11 +426,6 @@
     <div id="loading">
       <img src="img/blog_loader.gif" >
     </div>
-
-    <!-- JsRender Templates -->
-    <script id="chatNumberTmpl" type="text/x-jsrender">
-      <option value="{{>no}}">{{>no}}</option>
-    </script>
 
     <div id="share_memo_pre_tmp"></div>
   </body>

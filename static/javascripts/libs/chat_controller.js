@@ -1,6 +1,8 @@
 var LOGIN_COLOR_MAX = 9;
 
 function ChatController(param){
+  var that = this;
+
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
@@ -25,6 +27,23 @@ function ChatController(param){
   this.initSettings();
   this.initSocket();
   this.initDropzone();
+
+  this.selectChatTab = function(){
+    var thisVm = this;
+    if (thisVm.isActive()){
+      // 部屋名をフォームに設定する
+      that.setMessage("@" + thisVm.room() + " ");
+    }
+
+    that.chatViewModels().forEach(function(vm){
+      if (vm == thisVm){
+        thisVm.set_active(true);
+      }else{
+        vm.set_active(false);
+      }
+    });
+    return true;
+  }
 }
 
 ChatController.prototype = {
@@ -152,6 +171,16 @@ ChatController.prototype = {
   initChat: function(){
     var that = this;
 
+    ko.bindingHandlers.decoHtmlMsg = {
+      'init': function() {
+        return { 'controlsDescendantBindings': true };
+      },
+      'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        $(element).html(valueAccessor());
+        ko.applyBindingsToDescendants(bindingContext, element);
+      }
+    };
+
     ko.applyBindings(that, $('#chat_inner').get(0));
 
     $('#message').textcomplete([
@@ -239,22 +268,6 @@ ChatController.prototype = {
 
     // for chat list
     /*
-    $.templates("#chatTabTmpl").link("#chat_nav", this.chatViewModels)
-      .on('click', '.chat-tab-elem', function(){
-        var thisVm = that.chatViewModels[$.view(this).getIndex()];
-        if (thisVm.isActive){
-          // 部屋名をフォームに設定する
-          that.setMessage("@" + thisVm.room + " ");
-        }
-
-        that.chatViewModels.forEach(function(vm){
-          vm.set_active(false);
-        });
-        thisVm.set_active(true);
-        return true;
-      });
-    */
-    /*
     $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
       .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
         // ログ追加読み込みイベント
@@ -276,10 +289,6 @@ ChatController.prototype = {
         that.showRefPoint(id);
         return true;
       })
-      .on('click', '.chat-list', function(){
-        that.chatViewModels[$.view(this).index].clear_unread();
-        return true;
-      });
       */
   },
 

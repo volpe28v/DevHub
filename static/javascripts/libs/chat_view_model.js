@@ -11,6 +11,8 @@ function ChatViewModel(param){
   this.faviconNumber = param.faviconNumber;
   this.room = ko.observable("Room" + this.no);
 
+  this.messages = ko.observableArray([]);
+
   this.mentionCount = ko.observable(0);
   this.unreadRoomCount = ko.observable(0);
   this.unreadCount = ko.observable(0);
@@ -69,6 +71,7 @@ ChatViewModel.prototype = {
     var that = this;
     return function(data) {
       MessageDate.save(data.date);
+
       that.prepend_msg(data,function($msg){
         that._msg_post_processing(data, $msg);
         that.do_notification(data);
@@ -172,11 +175,7 @@ ChatViewModel.prototype = {
   },
 
   set_active: function(is_active){
-    if (is_active){
-      this.isActive = true;
-    }else{
-      this.isActive = false;
-    }
+    this.isActive(is_active);
   },
 
   load_log_more: function(id){
@@ -206,12 +205,12 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.listId).append(msg.li.addClass(msg.css));
+
       // 前回の最終メッセージよりも新しければ未読にする
       MessageDate.save(data.date);
       if (MessageDate.isNew(data.date)){
         that.faviconNumber.up_force()
-        msg.li.addClass("unread-msg");
+        msg.css += " unread-msg";
 
         if (that.include_target_name(data.msg,that.getName())){
           that.mentionCount(that.mentionCount() + 1);
@@ -221,13 +220,16 @@ ChatViewModel.prototype = {
           that.unreadCount(that.unreadCount() + 1);
         }
       }
-      msg.li.fadeIn();
+
+      that.messages.push(msg);
       return true;
     }
     return false;
   },
 
   prepend_msg: function(data, callback){
+    var that = this;
+
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
     if (data.name == "System"){ return false; }
@@ -236,12 +238,12 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.listId).prepend(msg.li);
-      msg.li.addClass("text-highlight",0);
-      msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500);
-      });
-      callback(msg.li);
+      that.messages.unshift(msg);
+
+      var $msg = $('#msg_' + msg._id);
+      $msg.addClass("text-highlight",0);
+      $msg.switchClass("text-highlight", msg.css, 700);
+      callback($msg);
       return true;
     }else{
       this.upHidingCount();
@@ -250,16 +252,17 @@ ChatViewModel.prototype = {
   },
 
   prepend_own_msg: function(data, callback){
+    var that = this;
     if (this.exist_msg(data)){ return false; }
     var msg = this.get_msg_html(data);
 
-    $(this.listId).prepend(msg.li);
     if (this.display_message(msg)){
-      msg.li.addClass("text-highlight",0);
-      msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500);
-      });
-      callback(msg.li);
+      that.messages.unshift(msg);
+
+      var $msg = $('#msg_' + msg._id);
+      $msg.addClass("text-highlight",0);
+      $msg.switchClass("text-highlight", msg.css, 700);
+      callback($msg);
       return true;
     }else{
       this.upHidingCount();
@@ -277,34 +280,28 @@ ChatViewModel.prototype = {
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
     if ( data.name == this.getName()){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "own_msg"
+        html: this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "own_msg",
+        _id: data._id.toString()
       };
     } else if (this.include_target_name(data.msg,this.getName())){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "target_msg"
+        html: this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "target_msg",
+        _id: data._id.toString()
       };
     } else if (this.include_room_name(data.msg)){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="room_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "room_msg"
+        html: this.get_msg_body(data) + ' <span class="room_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "room_msg",
+        _id: data._id.toString()
       };
     }else{
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>'),
-        css: "normal_msg"
+        html: this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>',
+        css: "normal_msg",
+        _id: data._id.toString()
       };
-    }
-  },
-
-  get_msg_li_html: function(data){
-    if ( data._id != undefined ){
-      return $('<li/>').attr('style','display:none')
-                       .attr('id','msg_' + data._id.toString())
-                       .attr('data-id', data._id.toString());
-    }else{
-      return $('<li/>').attr('style','display:none');
     }
   },
 
