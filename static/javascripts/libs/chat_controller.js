@@ -267,29 +267,14 @@ ChatController.prototype = {
     });
 
     // for chat list
-    /*
-    $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
-      .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-        // ログ追加読み込みイベント
-        if (!isInView){ return false; }
+    $('.chat-tab-content').on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+      // ログ追加読み込みイベント
+      if (!isInView){ return false; }
 
-        var last_msg_id = $(this).data("id");
-        that.chatViewModels[$.view(this).index].load_log_more(last_msg_id);
-      })
-      .on('click', '.remove_msg', function(){
-        if (!window.confirm('Are you sure?')){
-          return true;
-        }
-        var data_id = $(this).closest('li').data('id');
-        that.chatViewModels[$.view(this).index].remove_msg(data_id);
-        return true;
-      })
-      .on('click', '.ref-point', function(){
-        var id = $(this).attr("id");
-        that.showRefPoint(id);
-        return true;
-      })
-      */
+      var data = ko.dataFor(this);
+      var parent = ko.contextFor(this).$parent;
+      parent.load_log_more(data._id);
+    });
   },
 
   setName: function(name){
@@ -345,7 +330,8 @@ ChatController.prototype = {
           getFilterName: function() {return that.getFilterName(); },
           getFilterWord: function() {return that.getFilterWord(); },
           upHidingCount: function() {return that.upHidingCount(); },
-          faviconNumber: that.faviconNumber
+          faviconNumber: that.faviconNumber,
+          showRefPoint: that.showRefPoint
         }));
       }
 

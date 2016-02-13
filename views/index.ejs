@@ -207,7 +207,7 @@
                 <div class="chat-tab-content tab-content" data-bind="foreach: chatViewModels">
                   <div class="tab-pane" data-bind="attr: {id:'tab_' + no}">
                     <ul data-bind="foreach: messages, click: clear_unread, attr: {id: 'list_' + no}" class="chat-list">
-                      <li data-bind="css: css, attr: {id: 'msg_' + _id, 'data-id': _id}, decoHtmlMsg: html"></li>
+                      <li data-bind="css: css, attr: {id: 'msg_' + _id, 'data-id': _id}, decoHtmlMsg: html, visible: is_visible"></li>
                     </ul>
                   </div>
                 </div>

@@ -9,6 +9,7 @@ function ChatViewModel(param){
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
+  this.showRefPoint = param.showRefPoint; // function
   this.room = ko.observable("Room" + this.no);
 
   this.messages = ko.observableArray([]);
@@ -28,11 +29,34 @@ function ChatViewModel(param){
   this.on_room_name = this._room_name_handler();
 
   this.listId = "#list_" + this.no;
-  this.initSocket();
+  this.init();
+
+  var that = this;
+  this.set_ref_point = function(element){
+    var id = $(element).attr("id");
+    that.showRefPoint(id);
+    return true;
+  }
+
+  this.remove_msg = function(element){
+    var this_msg = this;
+    if (!window.confirm('Are you sure?')){
+      return true;
+    }
+    var data_id = $(element).closest('li').data('id');
+
+    that.socket.emit('remove_message', {id: data_id});
+    $("#msg_" + data_id).fadeOut('normal', function(){
+      $(this).remove();
+      that.messages.remove(this_msg);
+    });
+ 
+    return true;
+  }
 }
 
 ChatViewModel.prototype = {
-  initSocket: function(){
+  init: function(){
     this.socket.on('message_own' + this.no, this.on_message_own);
     this.socket.on('message' + this.no, this.on_message);
     this.socket.on('latest_log' + this.no, this.on_latest_log);
@@ -221,6 +245,7 @@ ChatViewModel.prototype = {
         }
       }
 
+      msg.is_visible = true;
       that.messages.push(msg);
       return true;
     }
@@ -238,11 +263,17 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
+      var msg_css = msg.css;
+      msg.css = "";
+      msg.is_visible = false;
       that.messages.unshift(msg);
 
       var $msg = $('#msg_' + msg._id);
       $msg.addClass("text-highlight",0);
-      $msg.switchClass("text-highlight", msg.css, 700);
+      $msg.slideDown('fast',function(){
+        $msg.switchClass("text-highlight", msg_css, 700);
+      });
+
       callback($msg);
       return true;
     }else{
@@ -257,11 +288,17 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
+      var msg_css = msg.css;
+      msg.css = "";
+      msg.is_visible = false;
       that.messages.unshift(msg);
 
       var $msg = $('#msg_' + msg._id);
       $msg.addClass("text-highlight",0);
-      $msg.switchClass("text-highlight", msg.css, 700);
+      $msg.slideDown('fast',function(){
+        $msg.switchClass("text-highlight", msg_css, 700);
+      });
+
       callback($msg);
       return true;
     }else{
@@ -280,7 +317,7 @@ ChatViewModel.prototype = {
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
     if ( data.name == this.getName()){
       return {
-        html: this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
+        html: this.get_msg_body(data) + '<a data-bind="click: $parent.remove_msg.bind($data, $element)" class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
         css: "own_msg",
         _id: data._id.toString()
       };
@@ -390,13 +427,6 @@ ChatViewModel.prototype = {
     return false;
   },
 
-  remove_msg: function(id){
-    this.socket.emit('remove_message', {id:id});
-    $("#msg_" + id).fadeOut('normal', function(){
-      $(this).remove();
-    });
-  },
-
   setColorbox: function($dom){
     $dom.colorbox({
       transition: "none",
@@ -433,14 +463,14 @@ ChatViewModel.prototype = {
         return false;
       }
     }else if (this.getFilterName() != ""){
-      if (msg.li.find(".login-symbol").data("name") != this.getFilterName()){
+      if ($(msg.html).find(".login-symbol").data("name") != this.getFilterName()){
         return false;
       }
     }
 
     if (this.getFilterWord() != ""){
       var reg = RegExp(this.getFilterWord(),"im");
-      if (!msg.li.find(".msg").text().match(reg)){
+      if (!$(msg.html).find(".msg").text().match(reg)){
         return false;
       }
     }
