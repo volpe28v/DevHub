@@ -1,6 +1,8 @@
 var LOGIN_COLOR_MAX = 9;
 
 function ChatViewModel(param){
+  var that = this;
+
   this.no = param.no;
   this.socket = param.socket;
   this.getId = param.getId; // function
@@ -10,10 +12,10 @@ function ChatViewModel(param){
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
   this.showRefPoint = param.showRefPoint; // function
+
+  // Models
   this.room = ko.observable("Room" + this.no);
-
   this.messages = ko.observableArray([]);
-
   this.mentionCount = ko.observable(0);
   this.unreadRoomCount = ko.observable(0);
   this.unreadCount = ko.observable(0);
@@ -31,7 +33,6 @@ function ChatViewModel(param){
   this.listId = "#list_" + this.no;
   this.init();
 
-  var that = this;
   this.set_ref_point = function(element){
     var id = $(element).attr("id");
     that.showRefPoint(id);
@@ -366,9 +367,9 @@ ChatViewModel.prototype = {
 
     // avatar の undefined ガード処理が入る前のデータを弾くために文字列でも判定しておく
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
-      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }else{
-      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }
   },
 

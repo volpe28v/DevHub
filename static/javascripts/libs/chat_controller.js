@@ -7,11 +7,9 @@ function ChatController(param){
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
-  this.loginName = "";
-
-  this.isSearching = false;
 
   // Models
+  this.loginName = ko.observable("");
   this.inputMessage = ko.observable("");
   this.inputMessage.subscribe(function (message){
     that.doClientCommand(message);
@@ -28,16 +26,9 @@ function ChatController(param){
     that.doFilterTimeline();
   }, this);
 
-
   this.chatViewModels = ko.observableArray([]);
 
-  // initialize
-  MessageDate.init();
-  this.initChat();
-  this.initSettings();
-  this.initSocket();
-  this.initDropzone();
-
+  // Member function
   this.selectChatTab = function(){
     var thisVm = this;
     if (thisVm.isActive()){
@@ -54,6 +45,51 @@ function ChatController(param){
     });
     return true;
   }
+
+  this.keydownInputMessage = function(data, event, element){
+    if(window.localStorage.sendkey == 'ctrl'){
+      if ( event.ctrlKey && event.keyCode == 13) {
+        return that.sendMessage();
+      }
+    }else if (window.localStorage.sendkey == 'shift'){
+      if ( event.shiftKey && event.keyCode == 13) {
+        return that.sendMessage();
+      }
+    }else{
+      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
+        return true;
+      }else if(event.keyCode == 13){
+        return that.sendMessage();
+      }
+    }
+    return true;
+  }
+
+  this.keydownInputName = function(data, event){
+    if ( event.keyCode == 13) {
+      that.changedLoginName(that.loginName());
+    }
+    return true;
+  }
+
+  this.inputLoginName = function(data, event, element){
+    if (event.shiftKey == true ){
+      that.filterName($(element).data("name"));
+      $('.tooltip').hide();
+      $('#chat_area').scrollTop(0);
+      that.doFilterTimeline();
+    }else{
+      var name = $(element).data("name");
+      that.setMessage("@" + name + "さん");
+    }
+  }
+
+  // initialize
+  MessageDate.init();
+  this.initChat();
+  this.initSettings();
+  this.initSocket();
+  this.initDropzone();
 }
 
 ChatController.prototype = {
@@ -81,7 +117,7 @@ ChatController.prototype = {
 
     // 絵文字サジェストが表示中は送信しない
     if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
-      var name = $('#name').val();
+      var name = that.loginName();
       var message = that.inputMessage();
       var avatar = window.localStorage.avatarImage;
 
@@ -90,17 +126,17 @@ ChatController.prototype = {
         $('#message').trigger('autosize.resize');
         var room_id = $("#chat_nav").find(".active").find("a").data("id");
         that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
-
-        if (that.loginName != name){
-          that.loginName = name;
-          that.changedLoginName(name);
-        }
       }
 
       return false;
     }else{
       return true;
     }
+  },
+
+  uploadFile: function(){
+    $('#upload_chat').click();
+    return false;
   },
 
   doFilterTimeline: function(){
@@ -198,54 +234,7 @@ ChatController.prototype = {
         index: 1,
         maxCount: 8
       }
-    ]).on('keydown',function(event){
-      if(window.localStorage.sendkey == 'ctrl'){
-        if ( event.ctrlKey && event.keyCode == 13) {
-          return that.sendMessage();
-        }
-      }else if (window.localStorage.sendkey == 'shift'){
-        if ( event.shiftKey && event.keyCode == 13) {
-          return that.sendMessage();
-        }
-      }else{
-        if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
-          return true;
-        }else if(event.keyCode == 13){
-          return that.sendMessage();
-        }
-      }
-
-      return true;
-    }).on('keyup',function(event){
-      /*
-      var message = $('#message').val();
-      if ( event.keyCode == 39 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 40) {
-        //矢印キーは除く
-        return;
-      }
-      that.doClientCommand(message);
-      */
-      return true;
-    }).autosize();
-
-    $('#send_button').click(function(){
-      that.sendMessage();
-      var message = $('#message').val();
-      that.doClientCommand(message);
-      return false;
-    });
-
-    $('#chat_area').on('click', '.login-symbol', function(event){
-      if (event.shiftKey == true ){
-        that.filterName($(this).data("name"));
-        $('.tooltip').hide();
-        $('#chat_area').scrollTop(0);
-        that.doFilterTimeline();
-      }else{
-        var name = $(this).data("name");
-        that.setMessage("@" + name + "さん");
-      }
-    });
+    ]).autosize();
 
     $('#chat_body').exResize(function(){
       $('.chat-control').addClass('chat-fixed');
@@ -255,12 +244,6 @@ ChatController.prototype = {
 
     $('.chat-control').exResize(function(){
       $('.chat-control-dummy').height($(this).outerHeight());
-    });
-
-    // アップロードボタン
-    $('#upload_chat_button').click(function(){
-      $('#upload_chat').click();
-      return false;
     });
 
     emojify.setConfig({
@@ -279,13 +262,11 @@ ChatController.prototype = {
   },
 
   setName: function(name){
-    this.loginName = name;
-    $('#name').val(name);
-    this.changedLoginName(name);
+    this.loginName(name);
   },
 
   getName: function(){
-    return this.loginName;
+    return this.loginName();
   },
 
   focus: function(){
@@ -450,10 +431,9 @@ ChatController.prototype = {
         window.localStorage.avatarImage = $('#avatar').val();
         $('#avatar_img').attr('src', window.localStorage.avatarImage);
 
-        var name = $('#name').val();
         that.socket.emit('name',
           {
-            name:name,
+            name: that.loginName(),
             avatar: window.localStorage.avatarImage
           });
         return false;

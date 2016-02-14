@@ -118,7 +118,7 @@
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}" style="display: none" class="index-ul">
-                <li class="index-li" data-bind="click: function(data,event){ return $root.select_index_li(data,event,$element) }">
+                <li class="index-li" data-bind="click: function(data, event){ return $root.select_index_li(data,event,$element) }">
                   <a><div data-bind="css: index_class, html: body"></div></a>
                 </li>
               </ul>
@@ -131,22 +131,34 @@
               <div id="login_list">
                 <span id="login_list_body" data-bind="foreach: loginElemList" style="display:block">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
-                  <span data-bind="css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <span data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
                   <!-- /ko -->
                 </span>
               </div>
               <form id="form" class="form-inline">
                 <table>
                   <tr>
-                    <td style=""><input type="text" name="name" id="name" style="width:50px" placeholder="Name"/></td>
+                    <td style=""><input type="text" data-bind="textInput: loginName, event: {keydown: keydownInputName}" name="name" id="name" style="width:50px" placeholder="Name"/></td>
                     <td style="width: 100%; padding-right: 11px;">
-                      <textarea name="message" id="message" data-bind="textInput: inputMessage" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
+                      <textarea
+                        name="message"
+                        id="message"
+                        data-bind="
+                          textInput: inputMessage,
+                          event: {keydown: function(data, event){ return keydownInputMessage(data, event, $element)}}"
+                        style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;"
+                        rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
                     </td>
-                    <td><button id="send_button" class="btn btn-small btn-primary">Send</button></td>
-                    <td><input type="file" id="upload_chat" name="file" style="display:none"></input><button id="upload_chat_button" class="btn btn-small btn-inverse visible-phone" style="display:none"><i class="icon-upload icon-white"></i></button></td>
+                    <td><button id="send_button" data-bind="click: sendMessage" class="btn btn-small btn-primary">Send</button></td>
+                    <td>
+                      <input type="file" id="upload_chat" name="file" style="display:none"></input>
+                      <button id="upload_chat_button" data-bind="click: uploadFile", class="btn btn-small btn-inverse visible-phone" style="display:none">
+                        <i class="icon-upload icon-white"></i>
+                      </button>
+                    </td>
                   </tr>
                 </table>
               </form>
