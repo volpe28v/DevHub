@@ -12,12 +12,22 @@ function ChatController(param){
   this.isSearching = false;
 
   // Models
-  this.message = "";
+  this.inputMessage = ko.observable("");
+  this.inputMessage.subscribe(function (message){
+    that.doClientCommand(message);
+  }, this);
+
   this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = ko.observable(0);
   this.filterName = ko.observable("");
+
   this.filterWord = ko.observable("");
-  this._filterWord = ""; // 前回の検索キーワード
+  this.delayedFilterWord = ko.pureComputed(this.filterWord)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterWord.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
+
 
   this.chatViewModels = ko.observableArray([]);
 
@@ -48,7 +58,8 @@ function ChatController(param){
 
 ChatController.prototype = {
   setMessage: function(message){
-    var exist_msg = $('#message').val();
+    var that = this;
+    var exist_msg = that.inputMessage();
     if ( exist_msg == ""){
       exist_msg += message + " ";
     }else{
@@ -58,20 +69,25 @@ ChatController.prototype = {
         exist_msg += " " + message + " ";
       }
     }
-    $('#message').focus().val(exist_msg).trigger('autosize.resize');
+    that.inputMessage(exist_msg);
+    $('#message').focus().trigger('autosize.resize');
   },
 
   sendMessage: function(){
     var that = this;
 
+    // 検索中は送信しない
+    if (that.filterWord() != ""){ return false; }
+
     // 絵文字サジェストが表示中は送信しない
     if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
       var name = $('#name').val();
-      var message = $('#message').val();
+      var message = that.inputMessage();
       var avatar = window.localStorage.avatarImage;
 
       if ( message && name ){
-        $('#message').attr('value', '').trigger('autosize.resize');
+        that.inputMessage("");
+        $('#message').trigger('autosize.resize');
         var room_id = $("#chat_nav").find(".active").find("a").data("id");
         that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
 
@@ -80,6 +96,7 @@ ChatController.prototype = {
           that.changedLoginName(name);
         }
       }
+
       return false;
     }else{
       return true;
@@ -125,19 +142,6 @@ ChatController.prototype = {
       var search_word = RegExp.$1;
       that.filterWord(search_word);
       $('#message').addClass("client-command");
-
-      // 検索キーワードが変化していたら1秒後に検索開始
-      if (!that.isSearching && that._filterWord != that.filterWord()){
-        that.isSearching = true;
-        setTimeout(function(){
-          if (!that.isSearching){ return; }
-          if (that._filterWord == that.filterWord()){ that.isSearching = false; return; }
-          that.doFilterTimeline();
-
-          that._filterWord = that.filterWord();
-          that.isSearching = false;
-        },1000);
-      }
     }else if (message.match(/^room_name:/)){
       $('#message').addClass("client-command");
     }else if (message.match(/^m:$/)){
@@ -150,17 +154,11 @@ ChatController.prototype = {
       that.doFilterTimeline();
     }else{
       $('#message').removeClass("client-command");
+      that.filterWord("");
+
       // mention か mention & own の場合はフィルタリングを解除
       if (window.localStorage.timeline != "all"){
         window.localStorage.timeline = "all";
-        that.doFilterTimeline();
-      }
-
-      // 検索中または前回検索済みの場合は検索結果をクリア
-      if (that.isSearching == true || that._filterWord != ""){
-        that.isSearching = false;
-        that.filterWord("");
-        that._filterWord = "";
         that.doFilterTimeline();
       }
     }
@@ -201,7 +199,7 @@ ChatController.prototype = {
         maxCount: 8
       }
     ]).on('keydown',function(event){
-     if(window.localStorage.sendkey == 'ctrl'){
+      if(window.localStorage.sendkey == 'ctrl'){
         if ( event.ctrlKey && event.keyCode == 13) {
           return that.sendMessage();
         }
@@ -219,12 +217,15 @@ ChatController.prototype = {
 
       return true;
     }).on('keyup',function(event){
+      /*
       var message = $('#message').val();
       if ( event.keyCode == 39 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 40) {
         //矢印キーは除く
         return;
       }
       that.doClientCommand(message);
+      */
+      return true;
     }).autosize();
 
     $('#send_button').click(function(){
