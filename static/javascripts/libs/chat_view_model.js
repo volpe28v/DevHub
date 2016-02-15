@@ -218,6 +218,8 @@ ChatViewModel.prototype = {
     this.mentionCount(0);
     this.unreadRoomCount(0);
     this.unreadCount(0);
+
+    return true;
   },
 
   append_msg: function(data){

@@ -354,13 +354,15 @@ ChatController.prototype = {
   },
 
   initDropzone: function(){
+    var that = this;
     this.dropZone = new DropZone({
       dropTarget: $('#chat_area'),
       fileTarget: $('#upload_chat'),
       alertTarget: $('#loading'),
       pasteValid: true,
-      uploadedAction: function(that, res){
-        $('#message').val($('#message').val() + ' ' + res.fileName + ' ').trigger('autosize.resize');
+      uploadedAction: function(local_that, res){
+        that.inputMessage(that.inputMessage() + ' ' + res.fileName + ' ');
+        $('#message').trigger('autosize.resize');
       }
     });
   },
@@ -464,18 +466,17 @@ ChatController.prototype = {
         var data_id = $(this).closest(".alert").attr('id');
         if (data_id == "mention_own_alert"){
           window.localStorage.timeline = "all";
-          $('#message').val("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }else if (data_id == "mention_alert"){
           window.localStorage.timeline = "all";
-          $('#message').val("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }else if (data_id == "filter_name_alert"){
           that.filterName("");
         }else if (data_id == "filter_word_alert"){
           that.filterWord("");
-          that._filterWord = "";
-          $('#message').val("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }
 
