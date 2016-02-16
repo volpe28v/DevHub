@@ -2,18 +2,18 @@ function BlogViewModel(name, start, end){
   this.name = name;
   this.input_text = ko.observable("");
   this.items = [];
-  this.item_count = 0;
+  this.item_count = ko.observable(0);
   this.remain_count = 0;
-  this.keyword = "";
+  this.keyword = ko.observable("");
   this.before_keyword = "";
 
   this.tags = [];
 
   this.matched_doms = [];
-  this.matched_index = 0;
-  this.matched_num = 0;
-  this.matched_navi_style = "display: none;";
-  this.matched_title = "";
+  this.matched_index = ko.observable(0);
+  this.matched_num = ko.observable(0);
+  this.matched_title = ko.observable("");
+  this.is_visible_navi = ko.observable(false);
 
   this.load_start = start;
   this.load_end = end;
@@ -22,6 +22,36 @@ function BlogViewModel(name, start, end){
 }
 
 BlogViewModel.prototype = {
+  moveSearchIndex: function(offset_top){
+    var target_top = offset_top;
+    var base_top = $("#index_list").offset().top;
+    $('#index_area').scrollTop(target_top - base_top - $(window).height()/2 + 54);
+  },
+
+  moveSearchLine: function(offset_top){
+    var target_top = offset_top;
+    var base_top = $("#blog_list").offset().top;
+    $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
+  },
+
+  submitSearch: function(){
+    var that = this;
+    if(!that.search()){
+      // 検索済みの場合はマッチ箇所に移動する
+      that.next(function(index_top, blog_top){
+        that.moveSearchIndex(index_top);
+        that.moveSearchLine(blog_top);
+      });
+    }
+
+    if (that.hasKeyword()){
+      $("#search_clear").show();
+    }else{
+      $("#search_clear").hide();
+    }
+    return false;
+  },
+ 
   keydownBlogForm: function(data, event, element){
     var that = this;
     // Ctrl - S or Ctrl - enter
@@ -37,7 +67,7 @@ BlogViewModel.prototype = {
   },
  
   hasKeyword: function(){
-    return this.keyword != "" ? true : false;
+    return this.keyword() != "" ? true : false;
   },
 
   search_by_tag: function(tag){
@@ -47,20 +77,20 @@ BlogViewModel.prototype = {
   },
 
   search: function(){
-    this.keyword = $('.search-query').val().replace(/^[\s　]+|[\s　]+$/g, "");
+    this.keyword($('.search-query').val().replace(/^[\s　]+|[\s　]+$/g, ""));
     // キーワード無しの場合は全blog更新
-    if (this.keyword == ""){
+    if (this.keyword() == ""){
       this.before_keyword = "";
       this.refresh();
       return true;
     }
 
     // キーワード変化無しの場合は移動モード
-    if (this.before_keyword == this.keyword){ return false; }
+    if (this.before_keyword == this.keyword()){ return false; }
 
     // 検索
-    this.before_keyword = this.keyword;
-    this._search(this.keyword);
+    this.before_keyword = this.keyword();
+    this._search(this.keyword());
     return true;
   },
 
@@ -77,12 +107,12 @@ BlogViewModel.prototype = {
         $('#blog_area').scrollTop(0);
 
         $.observable(that.items).remove(0,that.items.length);
-        $.observable(that).setProperty("item_count", data.count);
+        that.item_count(data.count);
         var blogs = data.body;
 
         // 検索キーワードを含む行に色付けする
         that.matched_doms = [];
-        var reg_keywords = that.keyword.split(" ").map(function(key){ return new RegExp(key,"i"); });
+        var reg_keywords = that.keyword().split(" ").map(function(key){ return new RegExp(key,"i"); });
         blogs.forEach(function(blog){
           var matched_doms = that._addItem(blog).find("td").map(function(){
             for (var i = 0; i < reg_keywords.length; i++){
@@ -99,12 +129,13 @@ BlogViewModel.prototype = {
           Array.prototype.push.apply(that.matched_doms, matched_doms);
         });
 
-        $.observable(that).setProperty("matched_num", that.matched_doms.length);
-        $.observable(that).setProperty("matched_index", 0);
-        if (that.matched_num > 0){
-          $.observable(that).setProperty("matched_navi_style", "display: inline;");
+        that.matched_num(that.matched_doms.length);
+        that.matched_index(0);
+
+        if (that.matched_num() > 0){
+          that.is_visible_navi(true);
         }else{
-          $.observable(that).setProperty("matched_navi_style", "display: none;");
+          that.is_visible_navi(false);
         }
 
         that._change_state_load_more();
@@ -136,13 +167,13 @@ BlogViewModel.prototype = {
 
         var blogs = data.blogs;
         $.observable(that.items).remove(0,that.items.length);
-        $.observable(that).setProperty("item_count", blogs.count);
+        that.item_count(blogs.count);
         blogs.body.forEach(function(blog){
           that._addItem(blog);
         });
-        $.observable(that).setProperty("matched_num", 0);
-        $.observable(that).setProperty("matched_index", 0);
-        $.observable(that).setProperty("matched_navi_style", "display: none;");
+        that.matched_num(0);
+        that.matched_index(0);
+        that.is_visible_navi(false);
         that._change_state_load_more();
 
         that.load_end();
@@ -169,7 +200,7 @@ BlogViewModel.prototype = {
 
   load_more: function(){
     var that = this;
-    if (that.keyword != ""){ return; }
+    if (that.keyword() != ""){ return; }
     if (that.loading_more){ return; }
 
     var last_id = that.items[that.items.length - 1]._id;
@@ -190,7 +221,7 @@ BlogViewModel.prototype = {
   },
 
   _change_state_load_more: function(){
-    this.remain_count =  this.item_count - this.items.length;
+    this.remain_count =  this.item_count() - this.items.length;
     if (this.remain_count > 0){
       $.observable(this).setProperty("load_more_style", "display: inline;");
     }else{
@@ -357,28 +388,27 @@ BlogViewModel.prototype = {
   },
 
   next: function(callback){
-    $(this.matched_doms[this.matched_index - 1])
+    $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_strong_line")
       .addClass("matched_line");
 
-    var index = this.matched_index + 1;
-    if (index > this.matched_num){ index = 1; }
+    var index = this.matched_index() + 1;
+    if (index > this.matched_num()){ index = 1; }
 
     // タイトルを取得
     var view_index = $.view($(this.matched_doms[index - 1])).index;
     var blog = this.items[view_index];
     var title = this._title(blog.text);
 
-    $.observable(this).setProperty({
-      "matched_index": index,
-      "matched_title": title
-    });
+    that.matched_index(index);
+    that.matched_title(title);
+
     callback(
       $(".index-body [data-id=" + blog._id + "]").offset().top,
-      $(this.matched_doms[this.matched_index - 1]).offset().top
+      $(this.matched_doms[this.matched_index() - 1]).offset().top
     );
 
-    $(this.matched_doms[this.matched_index - 1])
+    $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_line")
       .addClass("matched_strong_line");
 
@@ -387,29 +417,27 @@ BlogViewModel.prototype = {
   },
 
   prev: function(callback){
-    $(this.matched_doms[this.matched_index - 1])
+    $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_strong_line")
       .addClass("matched_line");
 
-    var index = this.matched_index - 1;
-    if (index < 1){ index = this.matched_num; }
+    var index = this.matched_index() - 1;
+    if (index < 1){ index = this.matched_num(); }
 
     // タイトルを取得
     var view_index = $.view($(this.matched_doms[index - 1])).index;
     var blog = this.items[view_index];
     var title = this._title(blog.text);
 
-    $.observable(this).setProperty({
-      "matched_index": index,
-      "matched_title": title
-    });
-
+    that.matched_index(index);
+    that.matched_title(title);
+ 
     callback(
       $(".index-body [data-id=" + blog._id + "]").offset().top,
-      $(this.matched_doms[this.matched_index - 1]).offset().top
+      $(this.matched_doms[this.matched_index() - 1]).offset().top
     );
 
-    $(this.matched_doms[this.matched_index - 1])
+    $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_line")
       .addClass("matched_strong_line");
 

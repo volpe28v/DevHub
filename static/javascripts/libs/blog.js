@@ -50,24 +50,8 @@ $(function() {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
-  $.templates("#blogCountTmpl").link("#blog_count", blogViewModel);
+  /*
   $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
-    .on("submit", "#search_form", function(){
-      if(!blogViewModel.search()){
-        // 検索済みの場合はマッチ箇所に移動する
-        blogViewModel.next(function(index_top, blog_top){
-          moveSearchIndex(index_top);
-          moveSearchLine(blog_top);
-        });
-      }
-
-      if (blogViewModel.hasKeyword()){
-        $("#search_clear").show();
-      }else{
-        $("#search_clear").hide();
-      }
-      return false;
-    })
     .on('keyup', ".search-query", function(event){
         if($(this).val() != ""){
           $("#search_clear").show();
@@ -99,6 +83,7 @@ $(function() {
       $('#index_area').animate({ scrollTop: 0 }, 'fast');
       return false;
     });
+    */
 
   $.templates("#tagListTmpl").link("#tag_list", blogViewModel.tags)
     .on("click", ".tag-name", function(){
