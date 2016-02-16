@@ -32,8 +32,6 @@ function EditState(parent){
     if( parent.getName() != new_text.name ){
       var $target = $('#share_memo_' + parent.no);
       parent.switchFixShareMemo($target.children('.code').caretLine());
-    }else{
-      parent.setEditText();
     }
   }
 
