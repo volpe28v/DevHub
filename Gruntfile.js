@@ -15,7 +15,6 @@ module.exports = function(grunt){
         },
         files: {
           "static/javascripts/devhub.min.js" : [
-            "static/javascripts/libs/jsviews.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/jquery.cookie.js",
             "static/javascripts/libs/jquery.inview.min.js",
@@ -59,6 +58,7 @@ module.exports = function(grunt){
           ],
           "static/javascripts/blog.min.js" : [
             "static/javascripts/libs/jsviews.min.js",
+            "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/jquery.autofit.js",
             "static/javascripts/libs/jquery.autosize.js",
             "static/javascripts/libs/jquery.cookie.js",

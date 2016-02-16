@@ -1,6 +1,6 @@
 function BlogViewModel(name, start, end){
   this.name = name;
-  this.input_text = "";
+  this.input_text = ko.observable("");
   this.items = [];
   this.item_count = 0;
   this.remain_count = 0;
@@ -22,6 +22,20 @@ function BlogViewModel(name, start, end){
 }
 
 BlogViewModel.prototype = {
+  keydownBlogForm: function(data, event, element){
+    var that = this;
+    // Ctrl - S or Ctrl - enter
+    if ((event.ctrlKey == true && event.keyCode == 83) ||
+      (event.ctrlKey == true && event.keyCode == 13)) {
+      $(element).blur(); //入力を確定するためにフォーカス外す
+      that.add();
+      $('#blog_form').trigger('autosize.resize');
+      return false;
+    }
+
+    return true;
+  },
+ 
   hasKeyword: function(){
     return this.keyword != "" ? true : false;
   },
@@ -185,18 +199,18 @@ BlogViewModel.prototype = {
   },
 
   add: function(){
-    if (this.input_text == ""){ return; }
+    var that = this;
+    if (that.input_text() == ""){ return; }
 
     var item = {
-      title: this._title_plane(this.input_text),
-      indexes: this._indexes(this.input_text),
+      title: that._title_plane(that.input_text()),
+      indexes: that._indexes(that.input_text()),
       display_indexes: "display: none",
-      text:  this.input_text,
-      name:  this.name,
+      text:  that.input_text(),
+      name:  that.name,
       avatar: window.localStorage.avatarImage
     };
 
-    var that = this;
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
@@ -208,7 +222,8 @@ BlogViewModel.prototype = {
       }
     });
 
-    $.observable(this).setProperty("input_text", "");
+    //$.observable(this).setProperty("input_text", "");
+    that.input_text("");
   },
 
   edit: function(view){

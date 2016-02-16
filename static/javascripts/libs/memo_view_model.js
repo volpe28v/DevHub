@@ -2,7 +2,6 @@ function DisplayState(parent){
   this.parent = parent;
 
   this.enter = function(){
-    console.log("DisplayState Enter " + parent.no);
     parent.showText();
   }
 
@@ -22,7 +21,6 @@ function EditState(parent){
   this.parent = parent;
 
   this.enter = function(){
-    console.log("EditState Enter " + parent.no);
     parent.setEditText();
     parent._updateIndexPos(-1);
   }
@@ -50,7 +48,6 @@ function HideState(parent){
   this.parent = parent;
 
   this.enter = function(){
-    console.log("HideState Enter " + parent.no);
   }
 
   this.updateText = function(new_text){
@@ -65,7 +62,6 @@ function DiffState(parent){
   this.parent = parent;
 
   this.enter = function(){
-    console.log("DiffState Enter " + parent.no);
 
     parent.setDisplayControl();
   }
@@ -84,7 +80,6 @@ function SearchState(parent){
   this.parent = parent;
 
   this.enter = function(){
-    console.log("SearchState Enter " + parent.no);
     parent.showText();
   }
 

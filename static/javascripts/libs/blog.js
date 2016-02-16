@@ -28,19 +28,9 @@ $(function() {
       $('#loading').fadeOut();
     });
 
-  // ViewとViewModelをバインド
-  $.templates("#blogInputTmpl").link("#blog_input_form", blogViewModel)
-   .on('keydown','#blog_form',function(event){
-      // Ctrl - S or Ctrl - enter
-      if ((event.ctrlKey == true && event.keyCode == 83) ||
-        (event.ctrlKey == true && event.keyCode == 13)) {
-        $(this).blur(); //入力を確定するためにフォーカス外す
-        blogViewModel.add();
-        $('#blog_form').trigger('autosize.resize');
-        return false;
-      }
-    });
+  ko.applyBindings(blogViewModel);
 
+  // ViewとViewModelをバインド
   $('#blog_form').autosize();
 
   $("#save_btn").click(function(){

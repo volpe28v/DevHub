@@ -93,6 +93,7 @@ $(function() {
       },500);
   }else{
     chatController.setName($.cookie(COOKIE_NAME));
+    shareMemoController.setName($.cookie(COOKIE_NAME));
     chatController.focus();
   }
 
@@ -191,6 +192,7 @@ function init_websocket(){
 
   socket.on('set_name', function(name) {
     chatController.setName(name);
+    shareMemoController.setName(name);
     $('#login_name').val(name);
   });
 
@@ -200,6 +202,7 @@ function init_websocket(){
       $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
       socket.emit('name', {name: name});
       chatController.setName(name);
+      shareMemoController.setName(name);
       chatController.focus();
     }
     $('#name_in').modal('hide')
