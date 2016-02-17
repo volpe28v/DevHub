@@ -41,18 +41,18 @@
           <div id="blog_navi">
             <ul class="nav pull-right">
               <li><a href="#tags_modal" rel="tooltip" title="Tags" data-toggle="modal" href="#"><i class="icon-white icon-tags"></i></a></li>
-              <li><a id="scroll_top" href="#"><i class="icon-white icon-arrow-up"></i></a></li>
+              <li><a id="scroll_top" href="#" data-bind="click: moveTop"><i class="icon-white icon-arrow-up"></i></a></li>
             </ul>
 
             <form id="search_form" class="navbar-form pull-right" data-bind="submit: submitSearch">
               <input type="text" class="search-query input-middle" placeholder="foo name:hoge tag:fuga" data-bind="textInput: keyword">
-              <i id="search_clear" class="icon-remove"></i>
+                <i id="search_clear" class="icon-remove" data-bind="visible: keyword() != '', click: searchClear"></i>
             </form>
 
             <form id="matched_control" class="navbar-form pull-right">
               <div class="btn-group">
-                <button id="prev_match" class="btn btn-inverse" data-bind="visible: is_visible_navi"><i class="icon-chevron-up icon-white"></i></button>
-                <button id="next_match" class="btn btn-inverse" data-bind="visible: is_visible_navi"><i class="icon-chevron-down icon-white"></i></button>
+                <button id="prev_match" class="btn btn-inverse" data-bind="visible: is_visible_navi, click: movePrevMatch"><i class="icon-chevron-up icon-white"></i></button>
+                <button id="next_match" class="btn btn-inverse" data-bind="visible: is_visible_navi, click: moveNextMatch"><i class="icon-chevron-down icon-white"></i></button>
               </div>
             </form>
 

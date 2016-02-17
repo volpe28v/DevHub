@@ -1,4 +1,5 @@
 function BlogViewModel(name, start, end){
+  var that = this;
   this.name = name;
   this.input_text = ko.observable("");
   this.items = [];
@@ -22,6 +23,11 @@ function BlogViewModel(name, start, end){
 }
 
 BlogViewModel.prototype = {
+  moveTop: function(){
+    $('#blog_area').animate({ scrollTop: 0 }, 'fast');
+    $('#index_area').animate({ scrollTop: 0 }, 'fast');
+  },
+ 
   moveSearchIndex: function(offset_top){
     var target_top = offset_top;
     var base_top = $("#index_list").offset().top;
@@ -34,6 +40,11 @@ BlogViewModel.prototype = {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   },
 
+  searchClear: function(){
+    this.keyword("");
+    this.search();
+  },
+ 
   submitSearch: function(){
     var that = this;
     if(!that.search()){
@@ -43,15 +54,25 @@ BlogViewModel.prototype = {
         that.moveSearchLine(blog_top);
       });
     }
-
-    if (that.hasKeyword()){
-      $("#search_clear").show();
-    }else{
-      $("#search_clear").hide();
-    }
     return false;
   },
  
+  moveNextMatch: function(){
+    var that = this;
+    that.next(function(index_top, blog_top){
+      that.moveSearchIndex(index_top);
+      that.moveSearchLine(blog_top);
+    });
+  },
+
+  movePrevMatch: function(){
+    var that = this;
+    that.prev(function(index_top, blog_top){
+      that.moveSearchIndex(index_top);
+      that.moveSearchLine(blog_top);
+    });
+  },
+
   keydownBlogForm: function(data, event, element){
     var that = this;
     // Ctrl - S or Ctrl - enter
@@ -388,6 +409,7 @@ BlogViewModel.prototype = {
   },
 
   next: function(callback){
+    var that = this;
     $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_strong_line")
       .addClass("matched_line");
@@ -417,6 +439,7 @@ BlogViewModel.prototype = {
   },
 
   prev: function(callback){
+    var that = this;
     $(this.matched_doms[this.matched_index() - 1])
       .removeClass("matched_strong_line")
       .addClass("matched_line");

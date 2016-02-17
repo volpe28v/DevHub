@@ -50,41 +50,6 @@ $(function() {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
-  /*
-  $.templates("#blogNaviTmpl").link("#blog_navi", blogViewModel)
-    .on('keyup', ".search-query", function(event){
-        if($(this).val() != ""){
-          $("#search_clear").show();
-        }else{
-          $("#search_clear").hide();
-        }
-    })
-    .on("click", "#search_clear", function(){
-      $(this).hide();
-      $(".search-query").val("");
-      blogViewModel.search();
-    })
-    .on("click", "#prev_match", function(){
-      blogViewModel.prev(function(index_top, blog_top){
-        moveSearchIndex(index_top);
-        moveSearchLine(blog_top);
-      });
-      return false;
-    })
-    .on("click", "#next_match",function(){
-      blogViewModel.next(function(index_top, blog_top){
-        moveSearchIndex(index_top);
-        moveSearchLine(blog_top);
-      });
-      return false;
-    })
-    .on("click", "#scroll_top", function(){
-      $('#blog_area').animate({ scrollTop: 0 }, 'fast');
-      $('#index_area').animate({ scrollTop: 0 }, 'fast');
-      return false;
-    });
-    */
-
   $.templates("#tagListTmpl").link("#tag_list", blogViewModel.tags)
     .on("click", ".tag-name", function(){
       var tag = $(this).data("tag");
