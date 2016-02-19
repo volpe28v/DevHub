@@ -103,37 +103,15 @@
         <h3 id="myModalLabel">Tags</h3>
       </div>
       <div class="modal-body">
-        <div id="tag_list"></div>
+        <div id="tag_list" data-bind="foreach: tags">
+          <span class="tag-name label" data-bind="attr: {'data-tag': tag_name}, click: $parent.selectTag">
+            <span data-bind="text: tag_name"></span> (<span data-bind="text: count"></span>)
+          </span>
+        </div>
       </div>
     </div>
 
     <!-- JsRender Templates -->
-    <script id="blogNaviTmpl" type="text/x-jsrender">
-      <ul class="nav pull-right">
-        <li><a href="#tags_modal" rel="tooltip" title="Tags" data-toggle="modal" href="#"><i class="icon-white icon-tags"></i></a></li>
-        <li><a id="scroll_top" href="#"><i class="icon-white icon-arrow-up"></i></a></li>
-      </ul>
-
-      <form id="search_form" class="navbar-form pull-right">
-        <input type="text" class="search-query input-middle" placeholder="foo name:hoge tag:fuga" data-link="keyword">
-        <i id="search_clear" class="icon-remove"></i>
-      </form>
-
-      <form id="matched_control" class="navbar-form pull-right">
-        <div class="btn-group">
-          <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
-          <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
-        </div>
-      </form>
-
-      <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
-      </span>
-      <span id="matched_title" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_title"></span>
-      </span>
-    </script>
-
     <script id="tagListTmpl" type="text/x-jsrender">
       <span class="tag-name label" data-tag="{{>tag_name}}">
         <span data-link="tag_name"></span> (<span data-link="count"></span>)

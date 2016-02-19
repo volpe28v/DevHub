@@ -8,7 +8,7 @@ function BlogViewModel(name, start, end){
   this.keyword = ko.observable("");
   this.before_keyword = "";
 
-  this.tags = [];
+  this.tags = ko.observableArray([]);
 
   this.matched_doms = [];
   this.matched_index = ko.observable(0);
@@ -20,6 +20,11 @@ function BlogViewModel(name, start, end){
   this.load_end = end;
   this.loading_more = false;
   this.load_more_style = "display: none;";
+
+  this.selectTag = function(){
+    that.search_by_tag(this.tag_name);
+    $('#tags_modal').modal('hide');
+  }
 }
 
 BlogViewModel.prototype = {
@@ -92,8 +97,7 @@ BlogViewModel.prototype = {
   },
 
   search_by_tag: function(tag){
-    $('.search-query').val("tag:" + tag);
-    $('.search-query').trigger("keyup");
+    this.keyword("tag:" + tag);
     this.search();
   },
 
@@ -166,6 +170,7 @@ BlogViewModel.prototype = {
     });
   },
 
+
   _update_tags: function(){
     var that = this;
     // 全タグ数を更新
@@ -184,7 +189,7 @@ BlogViewModel.prototype = {
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
-        $.observable(that.tags).refresh(data.tags);
+        that.tags(data.tags);
 
         var blogs = data.blogs;
         $.observable(that.items).remove(0,that.items.length);
@@ -210,7 +215,8 @@ BlogViewModel.prototype = {
       cache: false,
       data: {_id: id},
       success: function(data){
-        $.observable(that.tags).refresh(data.tags);
+        //$.observable(that.tags).refresh(data.tags);
+        that.tags(data.tags);
         var blogs = data.blogs;
         blogs.body.forEach(function(blog){
           that._addItem(blog);
@@ -268,7 +274,8 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: item},
       success: function(data){
-        $.observable(that.tags).refresh(data.tags);
+        //$.observable(that.tags).refresh(data.tags);
+        that.tags(data.tags);
         that._pushItem(data.blog);
         that._update_tags();
       }
@@ -311,7 +318,8 @@ BlogViewModel.prototype = {
         is_notify: is_notify
       }},
       success: function(data){
-        $.observable(that.tags).refresh(data.tags);
+//        $.observable(that.tags).refresh(data.tags);
+        that.tags(data.tags);
         $.observable(blog).setProperty("name", data.blog.name);
         $.observable(blog).setProperty("indexes", that._indexes(data.blog.text));
         $.observable(blog).setProperty("avatar", data.blog.avatar);
@@ -348,9 +356,10 @@ BlogViewModel.prototype = {
       function(){
         var tag = arguments[1];
         var tag_count = 0;
-        for (var i = 0; i < that.tags.length; i++){
-          if (that.tags[i].tag_name == tag){
-            tag_count = that.tags[i].count;
+        for (var i = 0; i < that.tags().length; i++){
+          if (that.tags()[i].tag_name == tag){
+            tag_count = that.tags()[i].count;
+            break;
           }
         }
 
@@ -400,7 +409,8 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: remove_blog},
       success: function(data){
-        $.observable(that.tags).refresh(data.tags);
+//        $.observable(that.tags).refresh(data.tags);
+        that.tags(data.tags);
         that._update_tags();
       }
     });

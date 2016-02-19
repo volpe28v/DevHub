@@ -50,13 +50,6 @@ $(function() {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
-  $.templates("#tagListTmpl").link("#tag_list", blogViewModel.tags)
-    .on("click", ".tag-name", function(){
-      var tag = $(this).data("tag");
-      blogViewModel.search_by_tag(tag);
-      $('#tags_modal').modal('hide');
-    });
-
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){
       blogViewModel.edit($.view(this));
