@@ -50,6 +50,7 @@ $(function() {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
+  /*
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
     .on("click",".edit-blog", function(){
       blogViewModel.edit($.view(this));
@@ -86,7 +87,9 @@ $(function() {
     .on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();
     });
+    */
 
+  /*
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
     .on("click",".index-body-link", function(){
       $target = $("#" + $(this).data('id'));
@@ -110,6 +113,7 @@ $(function() {
     .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
       blogViewModel.load_more();
     });
+    */
 
   // 初期リスト読み込み
   blogViewModel.refresh();

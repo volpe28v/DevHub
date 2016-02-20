@@ -2,7 +2,7 @@ function BlogViewModel(name, start, end){
   var that = this;
   this.name = name;
   this.input_text = ko.observable("");
-  this.items = [];
+  this.items = ko.observableArray([]);
   this.item_count = ko.observable(0);
   this.remain_count = 0;
   this.keyword = ko.observable("");
@@ -19,7 +19,7 @@ function BlogViewModel(name, start, end){
   this.load_start = start;
   this.load_end = end;
   this.loading_more = false;
-  this.load_more_style = "display: none;";
+  this.load_more_style = "none";
 
   this.selectTag = function(){
     that.search_by_tag(this.tag_name);
@@ -131,7 +131,7 @@ BlogViewModel.prototype = {
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
-        $.observable(that.items).remove(0,that.items.length);
+        that.items([]);
         that.item_count(data.count);
         var blogs = data.body;
 
@@ -143,13 +143,14 @@ BlogViewModel.prototype = {
             for (var i = 0; i < reg_keywords.length; i++){
               if ($(this).text().match(reg_keywords[i])){
                 $(this).addClass("matched_line");
-                return this;
+                //TODO
+                return {dom: this, blog: blog};
               }
             }
             return null;
           });
-          var binded_blog = that.items[that.items.length - 1];
-          $.observable(binded_blog).setProperty("matched", matched_doms.length);
+          var binded_blog = that.items()[that.items().length - 1];
+          binded_blog.matched = matched_doms.length;
 
           Array.prototype.push.apply(that.matched_doms, matched_doms);
         });
@@ -174,8 +175,8 @@ BlogViewModel.prototype = {
   _update_tags: function(){
     var that = this;
     // 全タグ数を更新
-    this.items.forEach(function(blog){
-      $.observable(blog).setProperty("title", that._title(blog.text));
+    this.items().forEach(function(blog){
+      blog.title = that._title(blog.text);
     });
   },
 
@@ -192,7 +193,7 @@ BlogViewModel.prototype = {
         that.tags(data.tags);
 
         var blogs = data.blogs;
-        $.observable(that.items).remove(0,that.items.length);
+        that.items([]);
         that.item_count(blogs.count);
         blogs.body.forEach(function(blog){
           that._addItem(blog);
@@ -230,7 +231,7 @@ BlogViewModel.prototype = {
     if (that.keyword() != ""){ return; }
     if (that.loading_more){ return; }
 
-    var last_id = that.items[that.items.length - 1]._id;
+    var last_id = that.items()[that.items().length - 1]._id;
     that.loading_more = true;
     $.ajax('blog/body_older' , {
       type: 'GET',
@@ -248,11 +249,11 @@ BlogViewModel.prototype = {
   },
 
   _change_state_load_more: function(){
-    this.remain_count =  this.item_count() - this.items.length;
+    this.remain_count =  this.item_count() - this.items().length;
     if (this.remain_count > 0){
-      $.observable(this).setProperty("load_more_style", "display: inline;");
+      this.load_more_style = "inline";
     }else{
-      $.observable(this).setProperty("load_more_style", "display: none;");
+      this.load_more_style = "none";
     }
   },
 
@@ -263,7 +264,7 @@ BlogViewModel.prototype = {
     var item = {
       title: that._title_plane(that.input_text()),
       indexes: that._indexes(that.input_text()),
-      display_indexes: "display: none",
+      display_indexes: "none",
       text:  that.input_text(),
       name:  that.name,
       avatar: window.localStorage.avatarImage
@@ -274,20 +275,18 @@ BlogViewModel.prototype = {
       cache: false,
       data: {blog: item},
       success: function(data){
-        //$.observable(that.tags).refresh(data.tags);
         that.tags(data.tags);
         that._pushItem(data.blog);
         that._update_tags();
       }
     });
 
-    //$.observable(this).setProperty("input_text", "");
     that.input_text("");
   },
 
   edit: function(view){
     var index = view.index;
-    var blog = this.items[index];
+    var blog = this.items()[index];
     blog.pre_text = blog.text;
 
     var $target = $(view.contents()).closest('.blog-body');
@@ -300,7 +299,7 @@ BlogViewModel.prototype = {
   update: function(view, is_notify){
     var that = this;
     var index = view.index;
-    var blog = this.items[index];
+    var blog = this.items()[index];
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
@@ -318,13 +317,12 @@ BlogViewModel.prototype = {
         is_notify: is_notify
       }},
       success: function(data){
-//        $.observable(that.tags).refresh(data.tags);
         that.tags(data.tags);
-        $.observable(blog).setProperty("name", data.blog.name);
-        $.observable(blog).setProperty("indexes", that._indexes(data.blog.text));
-        $.observable(blog).setProperty("avatar", data.blog.avatar);
-        $.observable(blog).setProperty("title", that._title(data.blog.title));
-        $.observable(blog).setProperty("date", data.blog.date);
+        blog.name = data.blog.name;
+        blog.indexe = that._indexes(data.blog.text);
+        blog.avatar = data.blog.avatar;
+        blog.title = that._title(data.blog.title);
+        blog.date = data.blog.date;
         that._decorate(blog);
         that._update_tags();
       }
@@ -390,8 +388,8 @@ BlogViewModel.prototype = {
 
   cancel: function(view){
     var index = view.index;
-    var blog = this.items[index];
-    $.observable(blog).setProperty("text", blog.pre_text);
+    var blog = this.items()[index];
+    blog.text = blog.pre_text;
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
@@ -402,45 +400,45 @@ BlogViewModel.prototype = {
     var that = this;
     var index = view.index;
     var remove_blog = {};
-    remove_blog._id = this.items[index]._id;
+    remove_blog._id = this.items()[index]._id;
 
     $.ajax('blog' , {
       type: 'DELETE',
       cache: false,
       data: {blog: remove_blog},
       success: function(data){
-//        $.observable(that.tags).refresh(data.tags);
         that.tags(data.tags);
         that._update_tags();
       }
     });
 
-    $.observable(this.items).remove(index);
+    that.items.remove(remove_blog);
   },
 
   next: function(callback){
     var that = this;
-    $(this.matched_doms[this.matched_index() - 1])
-      .removeClass("matched_strong_line")
-      .addClass("matched_line");
+    if (this.matched_index() > 0){
+      $(this.matched_doms[this.matched_index() - 1].dom)
+        .removeClass("matched_strong_line")
+        .addClass("matched_line");
+    }
 
     var index = this.matched_index() + 1;
     if (index > this.matched_num()){ index = 1; }
 
     // タイトルを取得
-    var view_index = $.view($(this.matched_doms[index - 1])).index;
-    var blog = this.items[view_index];
-    var title = this._title(blog.text);
+    var blog = this.matched_doms[index - 1].blog;
+    var title = $('<div/>').html(blog.title).text();
 
     that.matched_index(index);
     that.matched_title(title);
 
     callback(
       $(".index-body [data-id=" + blog._id + "]").offset().top,
-      $(this.matched_doms[this.matched_index() - 1]).offset().top
+      $(this.matched_doms[this.matched_index() - 1].dom).offset().top
     );
 
-    $(this.matched_doms[this.matched_index() - 1])
+    $(this.matched_doms[this.matched_index() - 1].dom)
       .removeClass("matched_line")
       .addClass("matched_strong_line");
 
@@ -450,27 +448,28 @@ BlogViewModel.prototype = {
 
   prev: function(callback){
     var that = this;
-    $(this.matched_doms[this.matched_index() - 1])
-      .removeClass("matched_strong_line")
-      .addClass("matched_line");
+    if (this.matched_index() > 0){
+      $(this.matched_doms[this.matched_index() - 1].dom)
+        .removeClass("matched_strong_line")
+        .addClass("matched_line");
+    }
 
     var index = this.matched_index() - 1;
     if (index < 1){ index = this.matched_num(); }
 
     // タイトルを取得
-    var view_index = $.view($(this.matched_doms[index - 1])).index;
-    var blog = this.items[view_index];
-    var title = this._title(blog.text);
+    var blog = this.matched_doms[index - 1].blog;
+    var title = $('<div/>').html(blog.title).text();
 
     that.matched_index(index);
     that.matched_title(title);
  
     callback(
       $(".index-body [data-id=" + blog._id + "]").offset().top,
-      $(this.matched_doms[this.matched_index() - 1]).offset().top
+      $(this.matched_doms[this.matched_index() - 1].dom).offset().top
     );
 
-    $(this.matched_doms[this.matched_index() - 1])
+    $(this.matched_doms[this.matched_index() - 1].dom)
       .removeClass("matched_line")
       .addClass("matched_strong_line");
 
@@ -480,40 +479,42 @@ BlogViewModel.prototype = {
 
   toggleIndexes: function(view){
     var index = view.index;
-    var blog = this.items[index];
-    for (var i = 0; i < this.items.length ; i++){
-      if (this.items[i] != blog){
-        $.observable(this.items[i]).setProperty("display_indexes", "display: none");
+    var blog = this.items()[index];
+    for (var i = 0; i < this.items().length ; i++){
+      if (this.items()[i] != blog){
+        that.items()[i].display_indexes = "none";
       }
     }
 
     if (blog.indexes.length <= 0){ return; }
 
-    if (blog.display_indexes == "display: none"){
-      $.observable(blog).setProperty("display_indexes", "display: block");
+    if (blog.display_indexes == "none"){
+      blog.display_indexes = "block";
     }else{
-      $.observable(blog).setProperty("display_indexes", "display: none");
+      blog.display_indexes = "none";
     }
   },
 
   insertText: function(item, row, text){
     var text_array = item.text.split("\n");
     text_array.splice(row,0,text);
-    $.observable(item).setProperty("text", text_array.join("\n"));
+    item.text = text_array.join("\n");
   },
 
   _addItem: function(item){
     var that = this;
     var id = item._id;
-    for (var i = 0; i < this.items.length; i++){
-      if (this.items[i]._id == id){ return; }
+    for (var i = 0; i < this.items().length; i++){
+      if (this.items()[i]._id == id){ return; }
     }
 
     item.title = this._title(item.text);
     item.indexes = this._indexes(item.text);
-    item.display_indexes = "display: none";
+    item.display_indexes = "none";
+    item.has_avatar = (item.avatar != null && item.avatar != "");
+    item.matched = 0;
 
-    $.observable(this.items).insert(item);
+    that.items.push(item);
 
     var $target = $('#' + id);
     this._setDropZone(item, $target.find('.edit-area'));
@@ -542,7 +543,7 @@ BlogViewModel.prototype = {
     var id = item._id;
     item.title = this._title(item.text);
 
-    $.observable(this.items).insert(0, item);
+    that.items.unshift(item);
 
     var $target = $('#' + id);
     this._setDropZone(item, $target.find('.edit-area'));
