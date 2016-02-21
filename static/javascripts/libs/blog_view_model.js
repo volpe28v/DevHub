@@ -25,6 +25,35 @@ function BlogViewModel(name, start, end){
     that.search_by_tag(this.tag_name);
     $('#tags_modal').modal('hide');
   }
+
+  this.update = function(){
+    var blog = this;
+    blog.editing(false);
+
+    var update_blog = ko.toJS(blog);
+
+    update_blog.name = that.name;
+    update_blog.title = that._title_plane(update_blog.text);
+    update_blog.avatar = window.localStorage.avatarImage; 
+    update_blog.is_notify = false;
+    delete update_blog.pre_text;
+
+    $.ajax('blog' , {
+      type: 'POST',
+      cache: false,
+      data: {blog: update_blog},
+      success: function(data){
+        that.tags(data.tags);
+        blog.name(data.blog.name);
+        blog.indexes(that._indexes(data.blog.text));
+        blog.avatar(data.blog.avatar);
+        blog.title(data.blog.title);
+        blog.date(data.blog.date);
+
+        that._update_tags();
+      }
+    });
+  }
 }
 
 BlogViewModel.prototype = {
@@ -176,7 +205,7 @@ BlogViewModel.prototype = {
     var that = this;
     // 全タグ数を更新
     this.items().forEach(function(blog){
-      blog.title = that._title(blog.text);
+      blog.title(that._title(blog.text()));
     });
   },
 
@@ -284,51 +313,12 @@ BlogViewModel.prototype = {
     that.input_text("");
   },
 
-  edit: function(view){
-    var index = view.index;
-    var blog = this.items()[index];
-    blog.pre_text = blog.text;
-
-    var $target = $(view.contents()).closest('.blog-body');
-    $target.find('pre').hide();
-    $target.find('.edit-form').show();
-    $target.find('textarea').caretLine(0);
-    $target.find('textarea').focus().autofit({min_height: 100});
+  edit: function(){
+    var blog = this;
+    blog.pre_text = blog.text();
+    blog.editing(true);
   },
-
-  update: function(view, is_notify){
-    var that = this;
-    var index = view.index;
-    var blog = this.items()[index];
-
-    var $target = $(view.contents()).closest('.blog-body');
-    $target.find('pre').show();
-    $target.find('.edit-form').hide();
-
-    $.ajax('blog' , {
-      type: 'POST',
-      cache: false,
-      data: {blog: {
-        _id: blog._id,
-        title: this._title_plane(blog.text),
-        text: blog.text,
-        name: that.name,
-        avatar: window.localStorage.avatarImage,
-        is_notify: is_notify
-      }},
-      success: function(data){
-        that.tags(data.tags);
-        blog.name = data.blog.name;
-        blog.indexe = that._indexes(data.blog.text);
-        blog.avatar = data.blog.avatar;
-        blog.title = that._title(data.blog.title);
-        blog.date = data.blog.date;
-        that._decorate(blog);
-        that._update_tags();
-      }
-    });
-  },
-
+  
   _title_plane: function(text){
     var blog_lines = text.split('\n');
     var title = "";
@@ -389,7 +379,7 @@ BlogViewModel.prototype = {
   cancel: function(view){
     var index = view.index;
     var blog = this.items()[index];
-    blog.text = blog.pre_text;
+    blog.text(blog.pre_text);
 
     var $target = $(view.contents()).closest('.blog-body');
     $target.find('pre').show();
@@ -513,12 +503,15 @@ BlogViewModel.prototype = {
     item.display_indexes = "none";
     item.has_avatar = (item.avatar != null && item.avatar != "");
     item.matched = 0;
+    item.editing = false;
 
-    that.items.push(item);
+    var mapped_item = ko.mapping.fromJS(item);
+
+    that.items.push(mapped_item);
 
     var $target = $('#' + id);
-    this._setDropZone(item, $target.find('.edit-area'));
-    return this._decorate(item);
+    this._setDropZone(mapped_item, $target.find('.edit-area'));
+    return $target;
   },
 
   _setDropZone: function(item, $target){
@@ -543,38 +536,10 @@ BlogViewModel.prototype = {
     var id = item._id;
     item.title = this._title(item.text);
 
-    that.items.unshift(item);
+    var mapped_item = ko.mapping.fromJS(item);
+    that.items.unshift(mapped_item);
 
     var $target = $('#' + id);
-    this._setDropZone(item, $target.find('.edit-area'));
-    this._decorate(item);
-  },
-
-  _decorate: function(item){
-    var id = item._id;
-    var $target = $('#' + id);
-    $target.find(".code-out").showDecora(item.text);
-    var $body_tooltip = $target.find("span[rel=tooltip]");
-    if ($body_tooltip != null){
-      $body_tooltip.tooltip({placement: 'bottom'});
-    }
-
-    var $blog_title = $target.find(".blog-title");
-    emojify.run($blog_title.get(0));
-
-    var $index_title = $(".index-body [data-id=" + id + "] .share-memo-title");
-    emojify.run($index_title.get(0));
-
-    var $indexes = $(".index-body [data-id=" + id + "] .index-li");
-    $indexes.each(function(){
-      emojify.run($(this).get(0));
-    });
-
-    var $tooltip = $(".index-body [data-id=" + id + "] span[rel=tooltip]");
-    if ($tooltip != null){
-      $tooltip.tooltip({placement: 'left'});
-    }
-
-    return $target;
+    this._setDropZone(mapped_item, $target.find('.edit-area'));
   }
 }

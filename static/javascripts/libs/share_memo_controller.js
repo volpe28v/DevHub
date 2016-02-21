@@ -366,16 +366,6 @@ function ShareMemoController(param){
 
 
   this.init_sharememo = function(){
-    ko.bindingHandlers.decoHtml = {
-      'init': function() {
-        return { 'controlsDescendantBindings': true };
-      },
-      'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).showDecora(ko.unwrap(valueAccessor()));
-        ko.applyBindingsToDescendants(bindingContext, element);
-      }
-    };
-
     ko.applyBindings(that, $('#search_box').get(0));
     ko.applyBindings(that, $('#scroll_top').get(0));
     ko.applyBindings(that, $('#memo_index').get(0));

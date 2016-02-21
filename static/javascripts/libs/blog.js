@@ -52,14 +52,8 @@ $(function() {
 
   /*
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
-    .on("click",".edit-blog", function(){
-      blogViewModel.edit($.view(this));
-    })
     .on("click",".update-notify-blog", function(){
       blogViewModel.update($.view(this), true);
-    })
-    .on("click",".update-blog", function(){
-      blogViewModel.update($.view(this));
     })
     .on("click",".cancel-edit", function(){
       blogViewModel.cancel($.view(this));

@@ -6,7 +6,7 @@ var util = require('../lib/util');
 
 exports.post = function(req, res, io) {
   var blog = req.body.blog;
-  var is_needed_notify = blog._id ? (blog.is_notify ? true : false) : true;
+  var is_needed_notify = blog._id ? (blog.is_notify == true ? true : false) : true;
   var is_create = blog._id ? false : true;
 
   function notify(blog){

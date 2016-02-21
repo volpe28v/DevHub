@@ -205,16 +205,6 @@ ChatController.prototype = {
   initChat: function(){
     var that = this;
 
-    ko.bindingHandlers.decoHtmlMsg = {
-      'init': function() {
-        return { 'controlsDescendantBindings': true };
-      },
-      'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).html(valueAccessor());
-        ko.applyBindingsToDescendants(bindingContext, element);
-      }
-    };
-
     ko.applyBindings(that, $('#chat_inner').get(0));
 
     $('#message').textcomplete([

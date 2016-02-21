@@ -79,16 +79,16 @@
                     <!-- ko if: matched -->
                     <span class="label label-important" data-bind="text: matched"></span>
                     <!-- /ko -->
-                    <span data-bind="html: title"></span>
+                    <span data-bind="decoBlogTitleHtml: title"></span>
                   </div>
 
-                  <!-- ko if: indexes && indexes.length -->
+                  <!-- ko if: indexes() && indexes().length -->
                   <i class="icon-align-left indexes-link"></i>
                   <!-- /ko -->
 
                   <div class="writer">
                     <!-- ko if: has_avatar -->
-                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'left'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
                     <!-- /ko -->
                     <!-- ko ifnot: has_avatar -->
                       <span data-bind="text: name"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
@@ -96,7 +96,7 @@
                   </div>
                 </a>
                 <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, style: {display: display_indexes}">
-                  <li><a class="index-li" data-bind="html: header" href="#"></a></li>
+                  <li><a class="index-li" data-bind="decoBlogTitleHtml: header" href="#"></a></li>
                 </ul>
               </li>
             </ul>
@@ -120,27 +120,27 @@
           <ul id="blog_list" data-bind="foreach: items">
             <li data-bind="attr: {id: _id}" class="blog-body">
               <div class="alert alert-info">
-                <h1 data-bind="html: title" class="blog-title"></h1>
+                <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
                 <div class="blog-header">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
+                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
                   <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
-                  <span class="edit-blog"><i class="icon-pencil"></i></span>
+                  <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
                   <span class="remove-blog"><i class="icon-trash"></i></span>
                   <a data-bind="attr: {href:'blog?id=' + _id}" target="_blank"> Permalink</a>
                 </div>
               </div>
-              <pre class="text-base-style"><div class="code-out"></div></pre>
-              <div class="edit-form" style="display: none">
+              <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
+              <div class="edit-form" data-bind="visible: editing()" style="display: none">
                 <div>
-                  <textarea class="edit-area" data-bind="textInput: text"></textarea>
+                  <textarea class="edit-area" data-bind="textInput: text, hasFocus: editing(), editStartTextarea: editing()"></textarea>
                 </div>
                 <div class="blog-action">
                   <button class="btn btn-info btn-mini update-notify-blog">Update and notify</button>
-                  <button class="btn btn-info update-blog">Update</button>
+                  <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
                   <button class="btn btn-default cancel-edit">Cancel</button>
                 </div>
               </div>
@@ -165,64 +165,6 @@
         </div>
       </div>
     </div>
-
-    <!-- JsRender Templates -->
-    <script id="blogBodyTmpl" type="text/x-jsrender">
-      <li id="{{:_id}}" class="blog-body">
-        <div class="alert alert-info">
-          <h1 class="blog-title">{^{:title}}</h1>
-          <div class="blog-header">
-          {^{if avatar != null && avatar != ""}}
-            By <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span> updated <span class="timestamp" data-livestamp="{{:date}}"></span>
-          {^{else}}
-            By <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
-          {^{/if}}
-          <span class="edit-blog"><i class="icon-pencil"></i></span>
-          <span class="remove-blog"><i class="icon-trash"></i></span>
-          <a href="blog?id={{:_id}}" target="_blank"> Permalink</a>
-          </div>
-        </div>
-        <pre class="text-base-style"><div class="code-out"></div></pre>
-        <div class="edit-form" style="display: none">
-          <div>
-            <textarea class="edit-area" data-link="text"></textarea>
-          </div>
-          <div class="blog-action">
-            <button class="btn btn-info btn-mini update-notify-blog">Update and notify</button>
-            <button class="btn btn-info update-blog">Update</button>
-            <button class="btn btn-default cancel-edit">Cancel</button>
-          </div>
-        </div>
-      </li>
-    </script>
-
-    <script id="blogIndexTmpl" type="text/x-jsrender">
-      <li class="index-body">
-        <a class="index-body-link" href="#" data-id="{{:_id}}">
-          <div class="share-memo-title">
-            {^{if matched}}<span class="label label-important">{^{:matched}}</span>{{/if}}
-            {^{:title}}
-          </div>
-
-          {^{if indexes && indexes.length}}
-          <i class="icon-align-left indexes-link"></i>
-          {{/if}}
-
-          <div class="writer">
-            {^{if avatar != null && avatar != ""}}
-              <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span> - <span class="timestamp" data-livestamp="{{:date}}"></span>
-            {^{else}}
-              {^{:name}} - <span class="timestamp" data-livestamp="{{:date}}"></span>
-            {^{/if}}
-         </div>
-        </a>
-        <ul class="index-ul" data-id="{{:_id}}" data-link="style{>display_indexes}">
-          {^{for indexes}}
-            <li><a class="index-li" href="#">{^{:header}}</a></li>
-          {{/for}}
-        </ul>
-      </li>
-    </script>
 
     <div id="share_memo_pre_tmp"></div>
   </body>
