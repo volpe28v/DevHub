@@ -52,19 +52,6 @@ $(function() {
 
   /*
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
-    .on("click",".update-notify-blog", function(){
-      blogViewModel.update($.view(this), true);
-    })
-    .on("click",".cancel-edit", function(){
-      blogViewModel.cancel($.view(this));
-    })
-    .on("click",".remove-blog", function(){
-      if (!window.confirm('Are you sure?')){
-        return true;
-      }
-
-      blogViewModel.destory($.view(this));
-    })
     .on("click", ".tag-name", function(){
       var tag = $(this).data("tag");
       blogViewModel.search_by_tag(tag);

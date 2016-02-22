@@ -129,7 +129,7 @@
                   <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
-                  <span class="remove-blog"><i class="icon-trash"></i></span>
+                  <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
                   <a data-bind="attr: {href:'blog?id=' + _id}" target="_blank"> Permalink</a>
                 </div>
               </div>
@@ -139,9 +139,9 @@
                   <textarea class="edit-area" data-bind="textInput: text, hasFocus: editing(), editStartTextarea: editing()"></textarea>
                 </div>
                 <div class="blog-action">
-                  <button class="btn btn-info btn-mini update-notify-blog">Update and notify</button>
+                  <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
                   <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
-                  <button class="btn btn-default cancel-edit">Cancel</button>
+                  <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
                 </div>
               </div>
             </li>

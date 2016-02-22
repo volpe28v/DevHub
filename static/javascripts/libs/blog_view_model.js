@@ -28,6 +28,15 @@ function BlogViewModel(name, start, end){
 
   this.update = function(){
     var blog = this;
+    that._update(blog, false);
+  }
+
+  this.updateWithNotify = function(){
+    var blog = this;
+    that._update(blog, true);
+  }
+
+  this._update = function(blog, is_notify){
     blog.editing(false);
 
     var update_blog = ko.toJS(blog);
@@ -35,7 +44,7 @@ function BlogViewModel(name, start, end){
     update_blog.name = that.name;
     update_blog.title = that._title_plane(update_blog.text);
     update_blog.avatar = window.localStorage.avatarImage; 
-    update_blog.is_notify = false;
+    update_blog.is_notify = is_notify;
     delete update_blog.pre_text;
 
     $.ajax('blog' , {
@@ -54,6 +63,36 @@ function BlogViewModel(name, start, end){
       }
     });
   }
+
+  this.cancel = function(){
+    var blog = this;
+    blog.text(blog.pre_text);
+    blog.editing(false);
+  }
+
+  this.destroy = function(){
+    if (!window.confirm('Are you sure?')){
+      return true;
+    }
+
+    var blog = this;
+    var remove_blog = {
+      _id: blog._id()
+    };
+
+    $.ajax('blog' , {
+      type: 'DELETE',
+      cache: false,
+      data: {blog: remove_blog},
+      success: function(data){
+        that.tags(data.tags);
+        that._update_tags();
+      }
+    });
+
+    that.items.remove(blog);
+  }
+
 }
 
 BlogViewModel.prototype = {
@@ -376,34 +415,6 @@ BlogViewModel.prototype = {
     return indexes;
   },
 
-  cancel: function(view){
-    var index = view.index;
-    var blog = this.items()[index];
-    blog.text(blog.pre_text);
-
-    var $target = $(view.contents()).closest('.blog-body');
-    $target.find('pre').show();
-    $target.find('.edit-form').hide();
-  },
-
-  destory: function(view){
-    var that = this;
-    var index = view.index;
-    var remove_blog = {};
-    remove_blog._id = this.items()[index]._id;
-
-    $.ajax('blog' , {
-      type: 'DELETE',
-      cache: false,
-      data: {blog: remove_blog},
-      success: function(data){
-        that.tags(data.tags);
-        that._update_tags();
-      }
-    });
-
-    that.items.remove(remove_blog);
-  },
 
   next: function(callback){
     var that = this;

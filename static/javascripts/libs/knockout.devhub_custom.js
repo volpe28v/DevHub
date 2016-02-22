@@ -46,7 +46,6 @@ ko.bindingHandlers.tooltip = {
 
 ko.bindingHandlers.editStartTextarea = {
   init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-    $(element).autofit({min_height: 100});
   },
   update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
     var value = valueAccessor();
@@ -54,6 +53,7 @@ ko.bindingHandlers.editStartTextarea = {
 
     if (valueUnwrapped == true){
       $(element).caretLine(0);
+      $(element).autofit({min_height: 100});
     }
   }
 };
