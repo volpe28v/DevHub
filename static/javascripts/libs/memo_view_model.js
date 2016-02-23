@@ -339,6 +339,7 @@ function MemoViewModel(param){
   },
 
   this._setFocusToInputTask = function($target, focus_index){
+    focus_index++;
     if (focus_index >= 0){
       var $focus_dom = $target.find('.code-out').find('tr:eq(' + focus_index + ')').find('.input-task');
       if ($focus_dom){
@@ -354,16 +355,19 @@ function MemoViewModel(param){
     }
     this.is_existed_update = false;
 
-    that.display_text(that.latest_text().text);
 
     var $target = $('#share_memo_' + this.no);
-    var focus_index = this._getFocusFromInputTask();
     var $code_out = $target.find('.code-out');
 
+    var focus_index = this._getFocusFromInputTask();
+
+    that.display_text(that.latest_text().text);
+
+    this._setFocusToInputTask($target, focus_index);
     this._updateIndexes();
 
     // WIPの表示
-    var $wip_jump = $target.find('.wip-jump');
+    var $wip_jump = $target.find('.wip-jump'); //TODO バインドする
     if (this.latest_text().text.match(/\[WIP\]/)){
       $wip_jump.show();
     }else{
@@ -407,6 +411,7 @@ function MemoViewModel(param){
       scroll: true
     });
 
+    //TODO バインドする
     $target.find('.code-out').on('click','.delete-task', function(e){
       var $this_tr = $(this).closest('tr');
       var delete_index = $this_tr.index();
@@ -425,6 +430,7 @@ function MemoViewModel(param){
       });
     });
 
+    //TODO バインドする
     $target.find('.code-out').on('keydown', '.input-task', function(event){
       if ( event.keyCode != 13) { return true; }
 
@@ -434,7 +440,7 @@ function MemoViewModel(param){
       $(this).val("");
 
       var text_array = that.latest_text().text.split("\n");
-      text_array.splice(input_index + 1, 0, "=[ ] " + input_text);
+      text_array.splice(input_index, 0, "=[ ] " + input_text);
       that.latest_text().text = text_array.join("\n");
       that.socket.emit('text',{
         no: that.no,
@@ -449,7 +455,7 @@ function MemoViewModel(param){
     var checked_count = $target.find("input:checked").length;
     var checkbox_count = $target.find("input[type=checkbox]").length;
     if (checkbox_count > 0){
-      $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show();
+      $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show(); //TODO バインドする
       if (checked_count == checkbox_count){
         $target.find('.checkbox-count').addClass('checkbox-count-done');
       }else{
@@ -459,7 +465,6 @@ function MemoViewModel(param){
       $target.find('.checkbox-count').hide();
     }
 
-    this._setFocusToInputTask($target, focus_index);
   }
 
   this.insert = function(row, text){
