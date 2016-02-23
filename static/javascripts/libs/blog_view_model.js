@@ -21,9 +21,14 @@ function BlogViewModel(name, start, end){
   this.loading_more = false;
   this.load_more_style = "none";
 
-  this.selectTag = function(){
+  this.selectTag = function(data, event, element){
     that.search_by_tag(this.tag_name);
     $('#tags_modal').modal('hide');
+  }
+
+  this.selectTagInTitle = function(data, event, element){
+    var tag = $(element).data("tag");
+    that.search_by_tag(tag);
   }
 
   this.update = function(){
@@ -390,7 +395,7 @@ BlogViewModel.prototype = {
           }
         }
 
-        return '<span class="tag-name label" data-tag="' + tag + '">' + tag + ' (' + tag_count + ')' + '</span>';
+        return '<span class="tag-name label" data-tag="' + tag + '" data-bind="click: function(data, event){ return $parent.selectTagInTitle(data, event, $element)}">' + tag + ' (' + tag_count + ')' + '</span>';
       });
     return title;
   },

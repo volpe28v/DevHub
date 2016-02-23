@@ -52,10 +52,6 @@ $(function() {
 
   /*
   $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
-    .on("click", ".tag-name", function(){
-      var tag = $(this).data("tag");
-      blogViewModel.search_by_tag(tag);
-    })
     .on('keydown','.edit-area',function(event){
       // Ctrl - S or Ctrl - enter
       if ((event.ctrlKey == true && event.keyCode == 83) ||

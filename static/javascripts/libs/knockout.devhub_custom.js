@@ -14,6 +14,7 @@ ko.bindingHandlers.decoBlogTitleHtml = {
   update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
     $(element).html(ko.unwrap(valueAccessor()));
     emojify.run(element);
+    ko.applyBindingsToDescendants(bindingContext, element);
   }
 }
 
