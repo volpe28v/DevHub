@@ -136,7 +136,12 @@
               <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
               <div class="edit-form" data-bind="visible: editing()" style="display: none">
                 <div>
-                  <textarea class="edit-area" data-bind="textInput: text, hasFocus: editing(), editStartTextarea: editing()"></textarea>
+                  <textarea class="edit-area" data-bind="
+                    textInput: text,
+                    hasFocus: editing(),
+                    editStartTextarea: editing(),
+                    event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
+                  "></textarea>
                 </div>
                 <div class="blog-action">
                   <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>

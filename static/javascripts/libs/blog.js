@@ -50,21 +50,9 @@ $(function() {
     $('#blog_area').scrollTop(target_top - base_top - $(window).height()/2 + 54 );
   }
 
-  /*
-  $.templates("#blogBodyTmpl").link("#blog_list", blogViewModel.items)
-    .on('keydown','.edit-area',function(event){
-      // Ctrl - S or Ctrl - enter
-      if ((event.ctrlKey == true && event.keyCode == 83) ||
-        (event.ctrlKey == true && event.keyCode == 13)) {
-        $(this).blur(); //入力を確定するためにフォーカス外す
-        blogViewModel.update($.view(this));
-        return false;
-      }
-    })
-    .on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-      blogViewModel.load_more();
-    });
-    */
+  $("#blog_list").on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+    blogViewModel.load_more();
+  });
 
   /*
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)

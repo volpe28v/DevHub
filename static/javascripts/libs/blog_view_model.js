@@ -31,8 +31,8 @@ function BlogViewModel(name, start, end){
     that.search_by_tag(tag);
   }
 
-  this.update = function(){
-    var blog = this;
+  this.update = function(data){
+    var blog = data;
     that._update(blog, false);
   }
 
@@ -63,6 +63,7 @@ function BlogViewModel(name, start, end){
         blog.avatar(data.blog.avatar);
         blog.title(data.blog.title);
         blog.date(data.blog.date);
+        blog.has_avatar(data.blog.avatar != null && data.blog.avatar != "");
 
         that._update_tags();
       }
@@ -98,6 +99,16 @@ function BlogViewModel(name, start, end){
     that.items.remove(blog);
   }
 
+  this.keydownEditing = function(data, event, element){
+    // Ctrl - S or Ctrl - enter
+    if ((event.ctrlKey == true && event.keyCode == 83) ||
+        (event.ctrlKey == true && event.keyCode == 13)) {
+      that.update(data);
+      return false;
+    }else{
+      return true;
+    }
+  }
 }
 
 BlogViewModel.prototype = {
