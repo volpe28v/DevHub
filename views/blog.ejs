@@ -96,7 +96,7 @@
                   </div>
                 </a>
                 <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, visible: display_indexes">
-                  <li><a class="index-li" data-bind="decoBlogTitleHtml: header" href="#"></a></li>
+                  <li><a class="index-li" data-bind="decoBlogTitleHtml: header, click: $root.selectIndexHeader" href="#"></a></li>
                 </ul>
               </li>
             </ul>

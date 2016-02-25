@@ -59,7 +59,7 @@ function BlogViewModel(name, start, end){
       success: function(data){
         that.tags(data.tags);
         blog.name(data.blog.name);
-        blog.indexes(that._indexes(data.blog.text));
+        blog.indexes(that._indexes(data.blog.text, data.blog._id));
         blog.avatar(data.blog.avatar);
         blog.title(data.blog.title);
         blog.date(data.blog.date);
@@ -111,21 +111,20 @@ function BlogViewModel(name, start, end){
   }
 
   this.selectIndex = function(){
-    console.log(this);
     $target = $("#" + this._id());
     var target_top = $target.offset().top;
     var base_top = $("#blog_list").offset().top;
     $('#blog_area').scrollTop(target_top - base_top + 38);
  
     that.toggleIndexes(this);
+  }
 
-    /*
-    $target = $("#" + $(this).data('id'));
-    var target_top = $target.offset().top;
-    var base_top = $("#blog_list").offset().top;
-    $('#blog_area').scrollTop(target_top - base_top + 38);
-    that.toggleIndexes($.view(this));
-    */
+  this.selectIndexHeader = function(){
+    var $code_out = $('#' + this.id());
+    var pos = $code_out.find(":header").eq(this.no()).offset().top - $('#blog_list').offset().top;
+    $('#blog_area').scrollTop(pos + 42);
+
+    return true;
   }
 }
 
@@ -365,7 +364,7 @@ BlogViewModel.prototype = {
 
     var item = {
       title: that._title_plane(that.input_text()),
-      indexes: that._indexes(that.input_text()),
+      indexes: that._indexes(that.input_text(), that._id()),
       display_indexes: false,
       text:  that.input_text(),
       name:  that.name,
@@ -429,17 +428,22 @@ BlogViewModel.prototype = {
     return title;
   },
 
-  _indexes: function(text){
+  _indexes: function(text, id){
     var indexes = [];
 
     $.decora.apply_to_deco_and_raw(text,
       function(deco_text){
+        var no = 1;
         deco_text.split("\n").forEach(function(val){
           var matches = val.match(/^(#+)/);
           if (matches){
             var header_level = matches[1].length;
             var header_text = val.replace(/#/g,"");
-            indexes.push({header: '<div class="header-level-' + header_level + '">' + header_text + '</div>'});
+            indexes.push({
+              header: '<div class="header-level-' + header_level + '">' + header_text + '</div>',
+              no: no++,
+              id: id,
+            });
           }
         });
       },
@@ -536,7 +540,7 @@ BlogViewModel.prototype = {
     }
 
     item.title = this._title(item.text);
-    item.indexes = this._indexes(item.text);
+    item.indexes = this._indexes(item.text, item._id);
     item.display_indexes = false;
     item.has_avatar = (item.avatar != null && item.avatar != "");
     item.matched = 0;

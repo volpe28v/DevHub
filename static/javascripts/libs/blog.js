@@ -53,25 +53,9 @@ $(function() {
   $("#blog_list").on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
     blogViewModel.load_more();
   });
-
-  /*
-  $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
-    .on("click",".index-li", function(){
-      var index = $(this).closest(".index-ul").find(".index-li").index(this);
-      var id = $(this).closest(".index-ul").data("id");
-      var $code_out = $('#' + id);
-      var pos = $code_out.find(":header").eq(index + 1).offset().top - $('#blog_list').offset().top;
-      $('#blog_area').scrollTop(pos + 42);
-      return true;
-    })
-    .on("click", ".tag-name", function(){
-      var tag = $(this).data("tag");
-      blogViewModel.search_by_tag(tag);
-    })
-    .on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-      blogViewModel.load_more();
-    });
-    */
+  $("#index_list").on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+    blogViewModel.load_more();
+  });
 
   // 初期リスト読み込み
   blogViewModel.refresh();
