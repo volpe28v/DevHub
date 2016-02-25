@@ -56,13 +56,6 @@ $(function() {
 
   /*
   $.templates("#blogIndexTmpl").link("#index_list", blogViewModel.items)
-    .on("click",".index-body-link", function(){
-      $target = $("#" + $(this).data('id'));
-      var target_top = $target.offset().top;
-      var base_top = $("#blog_list").offset().top;
-      $('#blog_area').scrollTop(target_top - base_top + 38);
-      blogViewModel.toggleIndexes($.view(this));
-    })
     .on("click",".index-li", function(){
       var index = $(this).closest(".index-ul").find(".index-li").index(this);
       var id = $(this).closest(".index-ul").data("id");

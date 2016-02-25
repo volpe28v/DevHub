@@ -74,7 +74,7 @@
           <div class="row-fluid">
             <ul id="index_list" data-bind="foreach: items" class="nav nav-tabs nav-stacked">
               <li class="index-body">
-                <a class="index-body-link" href="#" data-bind="attr: {'data-id': _id}">
+                <a class="index-body-link" href="#" data-bind="click: $parent.selectIndex, attr: {'data-id': _id}">
                   <div class="share-memo-title">
                     <!-- ko if: matched -->
                     <span class="label label-important" data-bind="text: matched"></span>
@@ -95,7 +95,7 @@
                     <!-- /ko -->
                   </div>
                 </a>
-                <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, style: {display: display_indexes}">
+                <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, visible: display_indexes">
                   <li><a class="index-li" data-bind="decoBlogTitleHtml: header" href="#"></a></li>
                 </ul>
               </li>

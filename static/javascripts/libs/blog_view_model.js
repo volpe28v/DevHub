@@ -31,8 +31,8 @@ function BlogViewModel(name, start, end){
     that.search_by_tag(tag);
   }
 
-  this.update = function(data){
-    var blog = data;
+  this.update = function(){
+    var blog = this;
     that._update(blog, false);
   }
 
@@ -103,11 +103,29 @@ function BlogViewModel(name, start, end){
     // Ctrl - S or Ctrl - enter
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
-      that.update(data);
+      that._update(data, false);
       return false;
     }else{
       return true;
     }
+  }
+
+  this.selectIndex = function(){
+    console.log(this);
+    $target = $("#" + this._id());
+    var target_top = $target.offset().top;
+    var base_top = $("#blog_list").offset().top;
+    $('#blog_area').scrollTop(target_top - base_top + 38);
+ 
+    that.toggleIndexes(this);
+
+    /*
+    $target = $("#" + $(this).data('id'));
+    var target_top = $target.offset().top;
+    var base_top = $("#blog_list").offset().top;
+    $('#blog_area').scrollTop(target_top - base_top + 38);
+    that.toggleIndexes($.view(this));
+    */
   }
 }
 
@@ -348,7 +366,7 @@ BlogViewModel.prototype = {
     var item = {
       title: that._title_plane(that.input_text()),
       indexes: that._indexes(that.input_text()),
-      display_indexes: "none",
+      display_indexes: false,
       text:  that.input_text(),
       name:  that.name,
       avatar: window.localStorage.avatarImage
@@ -494,22 +512,14 @@ BlogViewModel.prototype = {
     $(".index-body [data-id=" + blog._id + "]").addClass("matched_strong_line");
   },
 
-  toggleIndexes: function(view){
-    var index = view.index;
-    var blog = this.items()[index];
-    for (var i = 0; i < this.items().length ; i++){
-      if (this.items()[i] != blog){
-        that.items()[i].display_indexes = "none";
-      }
-    }
+  toggleIndexes: function(blog){
+    this.items().forEach(function(item){
+      if (item != blog){ item.display_indexes(false); }
+    });
 
-    if (blog.indexes.length <= 0){ return; }
+    if (blog.indexes().length <= 0){ return; }
 
-    if (blog.display_indexes == "none"){
-      blog.display_indexes = "block";
-    }else{
-      blog.display_indexes = "none";
-    }
+    blog.display_indexes(!blog.display_indexes());
   },
 
   insertText: function(item, row, text){
@@ -527,7 +537,7 @@ BlogViewModel.prototype = {
 
     item.title = this._title(item.text);
     item.indexes = this._indexes(item.text);
-    item.display_indexes = "none";
+    item.display_indexes = false;
     item.has_avatar = (item.avatar != null && item.avatar != "");
     item.matched = 0;
     item.editing = false;
