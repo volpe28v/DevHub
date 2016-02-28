@@ -46,6 +46,7 @@ function HideState(parent){
   this.parent = parent;
 
   this.enter = function(){
+    parent.is_shown_move_to_blog(false);
   }
 
   this.updateText = function(new_text){
