@@ -282,7 +282,7 @@
                       </button>
                       <span class="text-date"></span>
                       <span class="memo-bytes" data-bind="text: bytes"></span>
-                      <span class="checkbox-count" style="display: none"></span>
+                      <span class="checkbox-count" style="display: none" data-bind="visible: checkbox_count() > 0, css: {'checkbox-count-done': checked_count() == checkbox_count()}"><span data-bind="text: checked_count"></span>/<span data-bind="text: checkbox_count"></span> done</span>
                       <div class="clearfix"></div>
                     </div>
                     <div class="memo-control-dummy" style="display:none;"></div>

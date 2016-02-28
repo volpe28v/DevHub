@@ -172,6 +172,9 @@ function MemoViewModel(param){
   this.is_shown_move_to_blog = false;
   this.is_existed_update = true;
 
+  this.checkbox_count = ko.observable(0);
+  this.checked_count = ko.observable(0);
+
   this.indexes = ko.observableArray([]);
   this.diffTitles = ko.observableArray([]);
   this.diff_mode = false;
@@ -446,19 +449,8 @@ function MemoViewModel(param){
     });
 
     // チェックボックスの進捗表示
-    var checked_count = $target.find("input:checked").length;
-    var checkbox_count = $target.find("input[type=checkbox]").length;
-    if (checkbox_count > 0){
-      $target.find('.checkbox-count').html(checked_count + "/" + checkbox_count + " done").show(); //TODO バインドする
-      if (checked_count == checkbox_count){
-        $target.find('.checkbox-count').addClass('checkbox-count-done');
-      }else{
-        $target.find('.checkbox-count').removeClass('checkbox-count-done');
-      }
-    }else{
-      $target.find('.checkbox-count').hide();
-    }
-
+    that.checked_count($target.find("input:checked").length);
+    that.checkbox_count($target.find("input[type=checkbox]").length);
   }
 
   this.insert = function(row, text){
