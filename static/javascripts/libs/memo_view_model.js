@@ -165,6 +165,7 @@ function MemoViewModel(param){
   this.text_logs = [];
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
+  this.hasWip = ko.observable(false);
   this.update_timer = null;
   this.writing_loop_timer = { id: -1, code_no: 0};
   this.writer = ko.observable("");
@@ -225,6 +226,7 @@ function MemoViewModel(param){
     this.writer(this.latest_text().name);
     this.title(this._title(this.latest_text().text));
     this.bytes(this.latest_text().text.length + "bytes");
+    this.hasWip(this.latest_text().text.match(/\[WIP\]/));
 
     // バインドだけで実現できない画面処理
     var $target_tab = $('#share_memo_tab_' + this.no);
@@ -365,14 +367,6 @@ function MemoViewModel(param){
 
     this._setFocusToInputTask($target, focus_index);
     this._updateIndexes();
-
-    // WIPの表示
-    var $wip_jump = $target.find('.wip-jump'); //TODO バインドする
-    if (this.latest_text().text.match(/\[WIP\]/)){
-      $wip_jump.show();
-    }else{
-      $wip_jump.hide();
-    }
 
     $code_out.off('keydown');
     $code_out.off('click');

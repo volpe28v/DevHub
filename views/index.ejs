@@ -277,7 +277,7 @@
                           </li>
                         </ul>
                       </div>
-                      <button data-bind="click: $parent.wip_jump" class="wip-jump btn btn-danger" style="float: left; display: none">
+                      <button data-bind="click: $parent.wip_jump, visible: hasWip" class="wip-jump btn btn-danger" style="float: left; display: none">
                         <i class="icon-fire icon-white"></i> WIP
                       </button>
                       <span class="text-date"></span>

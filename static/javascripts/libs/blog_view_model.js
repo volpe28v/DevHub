@@ -244,7 +244,6 @@ BlogViewModel.prototype = {
             for (var i = 0; i < reg_keywords.length; i++){
               if ($(this).text().match(reg_keywords[i])){
                 $(this).addClass("matched_line");
-                //TODO
                 return {dom: this, blog: blog};
               }
             }
