@@ -28,6 +28,16 @@ ko.bindingHandlers.decoHtml = {
   }
 };
 
+ko.bindingHandlers.decoMemoTitle= {
+  init: function() {
+    return { 'controlsDescendantBindings': true };
+  },
+  update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+    $(element).html(ko.unwrap(valueAccessor()));
+    emojify.run(element);
+    ko.applyBindingsToDescendants(bindingContext, element);
+  }
+};
 
 ko.bindingHandlers.decoHtmlMsg = {
   init: function() {

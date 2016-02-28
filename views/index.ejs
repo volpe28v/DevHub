@@ -239,10 +239,10 @@
                 <ul id="share_memo_nav" class="nav nav-tabs" data-bind="foreach: memoViewModels">
                   <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}" class="share-memo-tab">
                     <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
-                      <span class="share-memo-title" data-bind="text: title"></span>
-                      <div class="writer silent-name" data-bind="text: writer"></div>
+                      <span class="share-memo-title" data-bind="decoMemoTitle: title"></span>
+                      <div class="writer silent-name" data-bind="visible: !is_memo_empty(), text: writer, css: {'writing-name': update_timer() != null}"></div>
                       <div>
-                        <span class="timestamp"></span>
+                        <span class="timestamp" data-bind="visible: !is_memo_empty(), attr: {'data-livestamp': latest_text().date}"></span>
                       </div>
                     </a>
                   </li>
@@ -280,8 +280,8 @@
                       <button data-bind="click: $parent.wip_jump, visible: hasWip" class="wip-jump btn btn-danger" style="float: left; display: none">
                         <i class="icon-fire icon-white"></i> WIP
                       </button>
-                      <span class="text-date"></span>
-                      <span class="memo-bytes" data-bind="text: bytes"></span>
+                      <span class="text-date" data-bind="text: latest_text().date_name, css: {'writing-name': update_timer() != null}"></span>
+                      <span data-bind="visible: !is_memo_empty(), text: bytes" class="memo-bytes"></span>
                       <span class="checkbox-count" style="display: none" data-bind="visible: checkbox_count() > 0, css: {'checkbox-count-done': checked_count() == checkbox_count()}"><span data-bind="text: checked_count"></span>/<span data-bind="text: checkbox_count"></span> done</span>
                       <div class="clearfix"></div>
                     </div>

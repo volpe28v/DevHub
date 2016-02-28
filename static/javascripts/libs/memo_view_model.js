@@ -157,7 +157,7 @@ function MemoViewModel(param){
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
   this.hasWip = ko.observable(false);
-  this.update_timer = null;
+  this.update_timer = ko.observable(null);
   this.writer = ko.observable("");
   this.is_shown_move_to_blog = ko.observable(false);
   this.is_existed_update = true;
@@ -215,47 +215,19 @@ function MemoViewModel(param){
     if (text_body.hash != undefined && this.latest_text().hash == text_body.hash){ return false; }
 
     this.is_existed_update = true;
+    text_body.date_name = text_body.date + " - " + text_body.name;
     this.latest_text(text_body);
     this.writer(this.latest_text().name);
     this.title(this._title(this.latest_text().text));
     this.bytes(this.latest_text().text.length + "bytes");
     this.hasWip(this.latest_text().text.match(/\[WIP\]/));
 
-    // バインドだけで実現できない画面処理
-    var $target_tab = $('#share_memo_tab_' + this.no);
-    var $tab_title = $target_tab.children('.share-memo-title');
-    emojify.run($tab_title.get(0));
-
-    var $writer = $target_tab.children('.writer');
-    $writer.addClass("writing-name");
-
-    var $timestamp = $target_tab.find('.timestamp');
-    $timestamp.attr("data-livestamp", this.latest_text().date);
-
-    var $target = $('#share_memo_' + this.no);
-    var $text_date = $target.find('.text-date');
-    var date_name = this.latest_text().date + " - " + this.latest_text().name;
-    $text_date.html(date_name);
-    $text_date.addClass("writing-name");
-    $text_date.show();
-
-    var is_blank = this.latest_text().text == "";
-    if (is_blank){
-      $writer.hide();
-      $timestamp.hide();
-    }else{
-      $writer.show();
-      $timestamp.show();
+    if (this.update_timer()){
+      clearTimeout(this.update_timer());
     }
-
-    if (this.update_timer){
-      clearTimeout(this.update_timer);
-    }
-    this.update_timer = setTimeout(function(){
-      $text_date.removeClass("writing-name");
-      $writer.removeClass("writing-name");
-      that.update_timer = null;
-    },3000);
+    this.update_timer(setTimeout(function(){
+      that.update_timer(null);
+    },3000));
 
     return true;
   }
