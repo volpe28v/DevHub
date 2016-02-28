@@ -290,7 +290,9 @@
                       textInput: edit_text,
                       event: {
                         dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
-                        keydown: function(data, event){ return switchDisplayIfEditEndKey(data, event, $element)},
+                        click: function(data, event){ return clickOnCodeArea(data, event, $element) },
+                        keydown: function(data, event){ return keydownOnCodeArea(data, event, $element)},
+                        keyup: function(data, event){ return keyupOnCodeArea(data, event, $element)},
                         select: function(data, event){ selectText(data, event, $element)}
                       }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
                     <div data-bind="visible: is_memo_empty, event: {dblclick: $parent.do_edit}" class="memo-alert alert alert-info">
@@ -304,7 +306,10 @@
                       <div class="diff-view" style="display: none"></div>
                     </pre>
                   </div>
-                </div>
+                  <div class="move-to-blog" data-bind="visible: is_shown_move_to_blog" style="display:none">
+                    <button class="btn btn-success" data-bind="click: moveToBlog"><i class="icon-share-alt icon-white"></i> Move To Blog</button>
+                  </div>
+                </div><!-- end foreach -->
               </div>
             </div>
             <footer>
@@ -419,11 +424,6 @@
       <div class="modal-footer">
         <a href="#" class="btn" aria-hidden="true" data-dismiss="modal" >Close</a>
       </div>
-    </div>
-
-
-    <div id="move_to_blog" style="display:none">
-      <button class="btn btn-success"><i class="icon-share-alt icon-white"></i> Move To Blog</button>
     </div>
 
     <div id ="diff_controller" style="display: none">

@@ -128,15 +128,6 @@ function MemoViewModel(param){
       socket.emit('add_history',{no: that.no});
       that.is_save_history = false;
     }
-
-    // Blogへ移動ボタンの表示状態を制御
-    var $target_code = $('#share_memo_' + this.no).children('.code');
-    if (that.is_shown_move_to_blog){
-      if ($target_code.selection('get') == ""){
-        $("#move_to_blog").fadeOut();
-        that.is_shown_move_to_blog = false;
-      }
-    }
   }, this);
 
   this.is_memo_empty = ko.pureComputed(function(){
@@ -167,9 +158,8 @@ function MemoViewModel(param){
   this.bytes = ko.observable("");
   this.hasWip = ko.observable(false);
   this.update_timer = null;
-  this.writing_loop_timer = { id: -1, code_no: 0};
   this.writer = ko.observable("");
-  this.is_shown_move_to_blog = false;
+  this.is_shown_move_to_blog = ko.observable(false);
   this.is_existed_update = true;
 
   this.checkbox_count = ko.observable(0);
@@ -302,7 +292,7 @@ function MemoViewModel(param){
     $share_memo.find('.sync-text').show();
 
     $('#share_memo_index_' + that.no).show();
-    $("#move_to_blog").fadeOut();
+    that.is_shown_move_to_blog(false);
   }
 
   this.unsetDisplayControl = function(){
@@ -479,7 +469,7 @@ function MemoViewModel(param){
     that.switchFixShareMemo($(element).caretLine(), event.pageY);
   }
 
-  this.switchDisplayIfEditEndKey = function(data, event, element){
+  this.keydownOnCodeArea = function(data, event, element){
     // Ctrl - S or Ctrl - enter
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
@@ -488,7 +478,28 @@ function MemoViewModel(param){
       that.switchFixShareMemo($(element).caretLine(), caret_top);
       return false;
     }else{
+      that._adjustBlogUI();
       return true;
+    }
+  }
+
+  this.keyupOnCodeArea = function(data, event, element){
+    that._adjustBlogUI();
+    return true;
+  }
+
+  this.clickOnCodeArea = function(data, event, element){
+    that._adjustBlogUI();
+    return true;
+  }
+
+  this._adjustBlogUI = function(){
+    if (!that.is_shown_move_to_blog()){ return; }
+
+    var $target_code = $('#share_memo_' + this.no).children('.code');
+    console.log($target_code.selection('get'));
+    if ($target_code.selection('get') == ""){
+      that.is_shown_move_to_blog(false);
     }
   }
 
@@ -742,43 +753,48 @@ function MemoViewModel(param){
   },
 
   this.showMoveToBlogButton = function($selected_target, login_name){
-    this.is_shown_move_to_blog = true;
+    var $target_code = $('#share_memo_' + that.no).children('.code');
+    var selected_text = $target_code.selection('get');
+    if (selected_text == ""){ return; }
+
+    this.is_shown_move_to_blog(true);
+  }
+
+  this.moveToBlog= function(){
+    var $target_code = $('#share_memo_' + that.no).children('.code');
+    var selected_text = $target_code.selection('get');
+    if (selected_text == ""){ return; }
+
+    that.is_shown_move_to_blog(false);
+
     var before_pos = $('#share-memo').offset().top * -1;
     if ($(".navbar").is(':visible')){
       before_pos += 40;
     }
 
-    var selected_text = $selected_target.selection('get');
-    if (selected_text != ""){
-      $("#move_to_blog")
-        .fadeIn()
-        .unbind("click")
-        .bind("click", function(){
-          $(this).fadeOut();
-          var item = {
-            title: that._title(selected_text),
-            text: selected_text,
-            name: login_name,
-            avatar: window.localStorage.avatarImage
-          };
+    var item = {
+      title: that._title(selected_text),
+      text: selected_text,
+      name: that.getName(),
+      avatar: window.localStorage.avatarImage
+    };
 
-          $.ajax('blog' , {
-            type: 'POST',
-            cache: false,
-            data: {blog: item},
-            success: function(data){
-              $selected_target.selection('replace', {
-                text: '',
-                caret: 'start'
-              });
-              $('#memo_area').scrollTop(before_pos);
-
-              that.edit_text($selected_target.val());
-            }
-          });
+    $.ajax('blog' , {
+      type: 'POST',
+      cache: false,
+      data: {blog: item},
+      success: function(data){
+        $target_code.selection('replace', {
+          text: '',
+          caret: 'start'
         });
-    }
+        $('#memo_area').scrollTop(before_pos);
+
+        that.edit_text($target_code.val());
+      }
+    });
   }
+
 
   this.initSocket();
 }
