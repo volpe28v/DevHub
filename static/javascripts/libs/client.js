@@ -40,7 +40,11 @@ $(function() {
     changedLoginName: function(name){
       shareMemoController.setName(name);
       $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-      socket.emit('name', {name: name});
+      socket.emit('name',
+        {
+          name: name,
+          avatar: window.localStorage.avatarImage
+        });
     },
     showRefPoint: function(id){
       shareMemoController.move(id);
