@@ -134,6 +134,22 @@ function BlogViewModel(name, start, end){
 
     return true;
   }
+
+  this._pushItem = function(item){
+    var id = item._id;
+    item.title = that._title(item.text);
+    item.indexes = that._indexes(item.text, item._id);
+    item.display_indexes = false;
+    item.has_avatar = (item.avatar != null && item.avatar != "");
+    item.matched = 0;
+    item.editing = false;
+
+    var mapped_item = ko.mapping.fromJS(item);
+    that.items.unshift(mapped_item);
+
+    var $target = $('#' + id);
+    that._setDropZone(mapped_item, $target.find('.edit-area'));
+  }
 }
 
 BlogViewModel.prototype = {
@@ -371,7 +387,6 @@ BlogViewModel.prototype = {
 
     var item = {
       title: that._title_plane(that.input_text()),
-      indexes: that._indexes(that.input_text(), that._id()),
       display_indexes: false,
       text:  that.input_text(),
       name:  that.name,
@@ -580,14 +595,4 @@ BlogViewModel.prototype = {
     });
   },
 
-  _pushItem: function(item){
-    var id = item._id;
-    item.title = this._title(item.text);
-
-    var mapped_item = ko.mapping.fromJS(item);
-    that.items.unshift(mapped_item);
-
-    var $target = $('#' + id);
-    this._setDropZone(mapped_item, $target.find('.edit-area'));
-  }
 }
