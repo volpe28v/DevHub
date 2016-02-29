@@ -59,7 +59,7 @@ function BlogViewModel(name, start, end){
       success: function(data){
         that.tags(data.tags);
         blog.name(data.blog.name);
-        blog.indexes(that._indexes(data.blog.text, data.blog._id));
+        blog.indexes(ko.mapping.fromJS(that._indexes(data.blog.text, data.blog._id))());
         blog.avatar(data.blog.avatar);
         blog.title(data.blog.title);
         blog.date(data.blog.date);
@@ -123,6 +123,14 @@ function BlogViewModel(name, start, end){
     var $code_out = $('#' + this.id());
     var pos = $code_out.find(":header").eq(this.no()).offset().top - $('#blog_list').offset().top;
     $('#blog_area').scrollTop(pos + 42);
+
+    return true;
+  }
+
+  this.selectPermalinkIndexHeader = function(){
+    var $code_out = $('#' + this.id());
+    var pos = $code_out.find(":header").eq(this.no()).offset().top - $('#blog_list').offset().top;
+    $('#blog_area').scrollTop(pos - 10);
 
     return true;
   }

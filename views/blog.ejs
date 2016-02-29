@@ -130,7 +130,7 @@
                   <!-- /ko -->
                   <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
                   <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
-                  <a data-bind="attr: {href:'blog?id=' + _id}" target="_blank"> Permalink</a>
+                  <a data-bind="attr: {href:'blog?id=' + _id()}" target="_blank"> Permalink</a>
                 </div>
               </div>
               <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
