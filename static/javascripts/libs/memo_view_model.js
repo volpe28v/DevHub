@@ -734,11 +734,11 @@ function MemoViewModel(param){
   }
 
   this.moveToBlog= function(){
+    that.is_shown_move_to_blog(false);
+
     var $target_code = $('#share_memo_' + that.no).children('.code');
     var selected_text = $target_code.selection('get');
     if (selected_text == ""){ return; }
-
-    that.is_shown_move_to_blog(false);
 
     var before_pos = $('#share-memo').offset().top * -1;
     if ($(".navbar").is(':visible')){
