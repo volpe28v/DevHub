@@ -226,6 +226,7 @@ function MemoViewModel(param){
     this.title(this._title(this.latest_text().text));
     this.bytes(this.latest_text().text.length + "bytes");
     this.hasWip(this.latest_text().text.match(/\[WIP\]/));
+    this._updateIndexes();
 
     if (this.update_timer()){
       clearTimeout(this.update_timer());
@@ -336,7 +337,6 @@ function MemoViewModel(param){
     that.display_text(that.latest_text().text);
 
     this._setFocusToInputTask($target, focus_index);
-    this._updateIndexes();
 
     $code_out.off('keydown');
     $code_out.off('click');
@@ -536,11 +536,6 @@ function MemoViewModel(param){
       function(raw_text){
         // 装飾なしは目次対象外
       });
-
-    var $indexes = $index_list.find(".index-li");
-    $indexes.each(function(){
-      emojify.run($(this).get(0));
-    });
   }
 
   this._getLogsForDiff = function(){
