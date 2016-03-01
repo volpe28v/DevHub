@@ -119,7 +119,7 @@
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}" style="display: none" class="index-ul">
                 <li class="index-li" data-bind="click: function(data, event){ return $root.select_index_li(data,event,$element) }">
-                  <a><div data-bind="css: index_class, decoMemoTitle: body"></div></a>
+                  <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
                 </li>
               </ul>
             </div>

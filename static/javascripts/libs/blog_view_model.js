@@ -462,7 +462,8 @@ BlogViewModel.prototype = {
             var header_level = matches[1].length;
             var header_text = val.replace(/#/g,"");
             indexes.push({
-              header: '<div class="header-level-' + header_level + '">' + header_text + '</div>',
+              index_class: "header-level-" + header_level,
+              body: $.decora.to_html(header_text),
               no: no++,
               id: id,
             });
