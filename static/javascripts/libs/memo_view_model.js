@@ -115,8 +115,12 @@ function MemoViewModel(param){
 
   this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
+    that._updateTextAndHistory();
+  }, this);
+
+  this._updateTextAndHistory = function(){
     // 最新メモと差分があれば送信する
-    if (this.edit_text() == this.latest_text().text){ return; }
+    if (that.edit_text() == that.latest_text().text){ return; }
 
     that.socket.emit('text',{
       no: that.no,
@@ -129,7 +133,7 @@ function MemoViewModel(param){
       socket.emit('add_history',{no: that.no});
       that.is_save_history = false;
     }
-  }, this);
+  }
 
   this.is_memo_empty = ko.pureComputed(function(){
     return this.latest_text().text == "";
@@ -238,9 +242,9 @@ function MemoViewModel(param){
   }
 
   this.switchFixShareMemo = function(row, offset){
-    this.set_state(this.states.display);
-    this.setDisplayControl();
-    this.setDisplayPos(row, offset);
+    that.set_state(that.states.display);
+    that.setDisplayControl();
+    that.setDisplayPos(row, offset);
   }
 
   this.setDisplayPos = function(row, offset){
@@ -447,6 +451,7 @@ function MemoViewModel(param){
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
       event.returnvalue = false;
+      that._updateTextAndHistory();
       var caret_top = $(element).textareaHelper('caretPos').top + $(element).offset().top;
       that.switchFixShareMemo($(element).caretLine(), caret_top);
       return false;
@@ -470,7 +475,6 @@ function MemoViewModel(param){
     if (!that.is_shown_move_to_blog()){ return; }
 
     var $target_code = $('#share_memo_' + this.no).children('.code');
-    console.log($target_code.selection('get'));
     if ($target_code.selection('get') == ""){
       that.is_shown_move_to_blog(false);
     }
