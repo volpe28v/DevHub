@@ -2,7 +2,7 @@ var SHARE_MEMO_NUMBER = 30;
 var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
-var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 96;
+var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 
@@ -309,11 +309,6 @@ function ShareMemoController(param){
     }
 
     that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-  }
-
-  this.do_diff_list = function(){
-    that.currentMemo().switchFixShareMemo(1);
-    that.currentMemo().showDiffList();
   }
 
   this.do_fix =  function(element){

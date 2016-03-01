@@ -281,7 +281,7 @@ function MemoViewModel(param){
 
     var $share_memo = $('#share_memo_' + this.no);
 
-    offset = offset == undefined ? $(window).height()/3 : offset - 94;
+    offset = offset == undefined ? $(window).height()/3 : offset - 104;
     var $target_code = $share_memo.children(".code");
 
     $target_code.show();
@@ -772,6 +772,10 @@ function MemoViewModel(param){
     });
   }
 
+  this.do_diff_list = function(){
+    that.switchFixShareMemo(1);
+    that.showDiffList();
+  }
 
   this.initSocket();
 }
