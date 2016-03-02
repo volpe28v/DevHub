@@ -355,7 +355,7 @@ BlogViewModel.prototype = {
     if (that.keyword() != ""){ return; }
     if (that.loading_more){ return; }
 
-    var last_id = that.items()[that.items().length - 1]._id;
+    var last_id = that.items()[that.items().length - 1]._id();
     that.loading_more = true;
     $.ajax('blog/body_older' , {
       type: 'GET',
