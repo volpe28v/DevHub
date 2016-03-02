@@ -424,12 +424,13 @@ function MemoViewModel(param){
     var org_text = this.latest_text();
     var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
+    that.edit_text(text_array.join("\n"));
 
     this.socket.emit('text',{
       no: this.no,
       name: this.getName(),
       avatar: window.localStorage.avatarImage,
-      text: text_array.join("\n")
+      text: that.edit_text()
     });
   }
 
