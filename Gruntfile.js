@@ -59,7 +59,6 @@ module.exports = function(grunt){
             "static/javascripts/libs/upload.js",
           ],
           "static/javascripts/blog.min.js" : [
-            "static/javascripts/libs/jsviews.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/knockout.mapping.js",
             "static/javascripts/libs/jquery.autofit.js",
@@ -83,7 +82,6 @@ module.exports = function(grunt){
             "static/javascripts/libs/blog.js",
           ],
           "static/javascripts/blog_permalink.min.js" : [
-            "static/javascripts/libs/jsviews.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/knockout.mapping.js",
             "static/javascripts/libs/jquery.autofit.js",
