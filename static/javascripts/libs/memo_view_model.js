@@ -137,6 +137,9 @@ function MemoViewModel(param){
     return this.latest_text().text == "";
   }, this);
 
+  this.show_empty_alert = ko.pureComputed(function(){
+    return this.is_memo_empty() && (this.current_state() == this.states.display);
+  },this);
 
   this.states = {
     display: new DisplayState(this),
@@ -147,13 +150,13 @@ function MemoViewModel(param){
   }
 
   // 初期状態
-  this.current_state = this.states.hide;
+  this.current_state = ko.observable(this.states.hide);
 
   this.set_state = function(next){
-    var before = that.current_state;
-    that.current_state.exit(next);
-    that.current_state = next;
-    that.current_state.enter(before);
+    var before = that.current_state();
+    that.current_state().exit(next);
+    that.current_state(next);
+    that.current_state().enter(before);
   }
 
   this.text_logs = [];
@@ -179,7 +182,7 @@ function MemoViewModel(param){
   var that = this;
   this.initSocket = function(){
     socket.on('text' + this.no, function(text_log) {
-      that.current_state.updateText(text_log);
+      that.current_state().updateText(text_log);
     });
 
     socket.on('text_logs' + this.no, function(data){
@@ -497,7 +500,7 @@ function MemoViewModel(param){
   }
 
   this.setCurrentIndex = function(no){
-    this.current_state.setIndex(no);
+    this.current_state().setIndex(no);
   }
 
   this._updateIndexPos = function(no){
