@@ -417,8 +417,8 @@ function MemoViewModel(param){
     });
 
     // チェックボックスの進捗表示
-    that.checked_count($target.find("input:checked").length);
-    that.checkbox_count($target.find("input[type=checkbox]").length);
+    that.checked_count($code_out.find("input:checked").length);
+    that.checkbox_count($code_out.find("input[type=checkbox]").length);
   }
 
   this.insert = function(row, text){
