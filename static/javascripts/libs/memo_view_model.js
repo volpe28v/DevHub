@@ -38,7 +38,7 @@ function EditState(parent){
   this.setIndex = function(no){}
 
   this.exit = function(){
-    parent.is_save_history = true;
+    parent._add_history();
   }
 }
 
@@ -113,7 +113,6 @@ function MemoViewModel(param){
   this.delayed_text = ko.pureComputed(this.edit_text)
     .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
 
-  this.is_save_history = false;
   this.delayed_text.subscribe(function (val) {
     that._updateTextAndHistory();
   }, this);
@@ -128,11 +127,10 @@ function MemoViewModel(param){
       avatar: window.localStorage.avatarImage,
       text: that.edit_text()
     });
+  }
 
-    if (that.is_save_history){
-      socket.emit('add_history',{no: that.no});
-      that.is_save_history = false;
-    }
+  this._add_history = function(){
+    socket.emit('add_history',{no: that.no});
   }
 
   this.is_memo_empty = ko.pureComputed(function(){
@@ -769,7 +767,8 @@ function MemoViewModel(param){
   }
 
   this.do_diff_list = function(){
-    that.switchFixShareMemo(1);
+    that.set_state(that.states.display);
+    that.setDisplayControl();
     that.showDiffList();
   }
 
