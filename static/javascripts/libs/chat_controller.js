@@ -1,23 +1,88 @@
 var LOGIN_COLOR_MAX = 9;
 
 function ChatController(param){
+  var that = this;
+
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
-  this.loginName = "";
-
-  this.isSearching = false;
 
   // Models
-  this.message = "";
-  this.loginElemList = [];
-  this.hidingMessageCount = 0;
-  this.filterName = "";
-  this.filterWord = "";
-  this._filterWord = ""; // 前回の検索キーワード
+  this.loginName = ko.observable("");
+  this.inputMessage = ko.observable("");
+  this.inputMessage.subscribe(function (message){
+    that.doClientCommand(message);
+  }, this);
 
-  this.chatViewModels = [];
+  this.loginElemList = ko.observableArray([]);
+  this.hidingMessageCount = ko.observable(0);
+  this.filterName = ko.observable("");
+
+  this.filterWord = ko.observable("");
+  this.delayedFilterWord = ko.pureComputed(this.filterWord)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterWord.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
+
+  this.chatViewModels = ko.observableArray([]);
+
+  // Member function
+  this.selectChatTab = function(){
+    var thisVm = this;
+    if (thisVm.isActive()){
+      // 部屋名をフォームに設定する
+      that.setMessage("@" + thisVm.room() + " ");
+    }
+
+    that.chatViewModels().forEach(function(vm){
+      if (vm == thisVm){
+        thisVm.set_active(true);
+      }else{
+        vm.set_active(false);
+      }
+    });
+    return true;
+  }
+
+  this.keydownInputMessage = function(data, event, element){
+    if(window.localStorage.sendkey == 'ctrl'){
+      if ( event.ctrlKey && event.keyCode == 13) {
+        return that.sendMessage();
+      }
+    }else if (window.localStorage.sendkey == 'shift'){
+      if ( event.shiftKey && event.keyCode == 13) {
+        return that.sendMessage();
+      }
+    }else{
+      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
+        return true;
+      }else if(event.keyCode == 13){
+        return that.sendMessage();
+      }
+    }
+    return true;
+  }
+
+  this.keydownInputName = function(data, event){
+    if ( event.keyCode == 13) {
+      that.changedLoginName(that.loginName());
+    }
+    return true;
+  }
+
+  this.inputLoginName = function(data, event, element){
+    if (event.shiftKey == true ){
+      that.filterName($(element).data("name"));
+      $('.tooltip').hide();
+      $('#chat_area').scrollTop(0);
+      that.doFilterTimeline();
+    }else{
+      var name = $(element).data("name");
+      that.setMessage("@" + name + "さん");
+    }
+  }
 
   // initialize
   MessageDate.init();
@@ -29,7 +94,8 @@ function ChatController(param){
 
 ChatController.prototype = {
   setMessage: function(message){
-    var exist_msg = $('#message').val();
+    var that = this;
+    var exist_msg = that.inputMessage();
     if ( exist_msg == ""){
       exist_msg += message + " ";
     }else{
@@ -39,38 +105,44 @@ ChatController.prototype = {
         exist_msg += " " + message + " ";
       }
     }
-    $('#message').focus().val(exist_msg).trigger('autosize.resize');
+    that.inputMessage(exist_msg);
+    $('#message').focus().trigger('autosize.resize');
   },
 
   sendMessage: function(){
     var that = this;
 
+    // 検索中は送信しない
+    if (that.filterWord() != ""){ return false; }
+
     // 絵文字サジェストが表示中は送信しない
     if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
-      var name = $('#name').val();
-      var message = $('#message').val();
+      var name = that.loginName();
+      var message = that.inputMessage();
       var avatar = window.localStorage.avatarImage;
 
       if ( message && name ){
-        $('#message').attr('value', '').trigger('autosize.resize');
+        that.inputMessage("");
+        $('#message').trigger('autosize.resize');
         var room_id = $("#chat_nav").find(".active").find("a").data("id");
         that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
-
-        if (that.loginName != name){
-          that.loginName = name;
-          that.changedLoginName(name);
-        }
       }
+
       return false;
     }else{
       return true;
     }
   },
 
+  uploadFile: function(){
+    $('#upload_chat').click();
+    return false;
+  },
+
   doFilterTimeline: function(){
     var that = this;
     MessageDate.init(); // タイムラインを再読み込みしたら未読解除
-    $.observable(this).setProperty("hidingMessageCount", 0);
+    that.hidingMessageCount(0);
 
     if (window.localStorage.timeline == "mention"){
       $('#mention_alert').slideDown();
@@ -82,43 +154,30 @@ ChatController.prototype = {
     }else{
       $('#mention_own_alert').slideUp();
     }
- 
-    if (that.filterWord != ""){
+
+    if (that.filterWord() != ""){
       $('#filter_word_alert').slideDown();
     }else{
       $('#filter_word_alert').slideUp();
     }
- 
-    if (that.filterName != ""){
+
+    if (that.filterName() != ""){
       $('#filter_name_alert').slideDown();
     }else{
       $('#filter_name_alert').slideUp();
     }
- 
-    this.chatViewModels.forEach(function(vm){
+
+    this.chatViewModels().forEach(function(vm){
       vm.reloadTimeline();
     });
   },
- 
+
   doClientCommand: function(message){
     var that = this;
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
-      $.observable(that).setProperty("filterWord", search_word);
+      that.filterWord(search_word);
       $('#message').addClass("client-command");
-
-      // 検索キーワードが変化していたら1秒後に検索開始
-      if (!that.isSearching && that._filterWord != that.filterWord){
-        that.isSearching = true;
-        setTimeout(function(){
-          if (!that.isSearching){ return; }
-          if (that._filterWord == that.filterWord){ that.isSearching = false; return; }
-          that.doFilterTimeline();
-
-          that._filterWord = that.filterWord;
-          that.isSearching = false;
-        },1000);
-      }
     }else if (message.match(/^room_name:/)){
       $('#message').addClass("client-command");
     }else if (message.match(/^m:$/)){
@@ -131,17 +190,11 @@ ChatController.prototype = {
       that.doFilterTimeline();
     }else{
       $('#message').removeClass("client-command");
+      that.filterWord("");
+
       // mention か mention & own の場合はフィルタリングを解除
       if (window.localStorage.timeline != "all"){
         window.localStorage.timeline = "all";
-        that.doFilterTimeline();
-      }
-
-      // 検索中または前回検索済みの場合は検索結果をクリア
-      if (that.isSearching == true || that._filterWord != ""){
-        that.isSearching = false;
-        $.observable(that).setProperty("filterWord", "");
-        that._filterWord = "";
         that.doFilterTimeline();
       }
     }
@@ -151,6 +204,8 @@ ChatController.prototype = {
 
   initChat: function(){
     var that = this;
+
+    ko.applyBindings(that, $('#chat_inner').get(0));
 
     $('#message').textcomplete([
       {
@@ -169,55 +224,7 @@ ChatController.prototype = {
         index: 1,
         maxCount: 8
       }
-    ]).on('keydown',function(event){
-     if(window.localStorage.sendkey == 'ctrl'){
-        if ( event.ctrlKey && event.keyCode == 13) {
-          return that.sendMessage();
-        }
-      }else if (window.localStorage.sendkey == 'shift'){
-        if ( event.shiftKey && event.keyCode == 13) {
-          return that.sendMessage();
-        }
-      }else{
-        if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
-          return true;
-        }else if(event.keyCode == 13){
-          return that.sendMessage();
-        }
-      }
-
-      return true;
-    }).on('keyup',function(event){
-      var message = $('#message').val();
-      if ( event.keyCode == 39 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 40) {
-        //矢印キーは除く
-        return;
-      }
-      that.doClientCommand(message);
-    }).autosize();
-
-    $('#send_button').click(function(){
-      that.sendMessage();
-      var message = $('#message').val();
-      that.doClientCommand(message);
-      return false;
-    });
-
-    // ログインリストのバインディング
-    $.templates("#loginNameTmpl").link("#login_list_body", that.loginElemList);
-    $.templates("#alertTimelineTmpl").link("#alert_timeline", that);
-
-    $('#chat_area').on('click', '.login-symbol', function(event){
-      if (event.shiftKey == true ){
-        $.observable(that).setProperty("filterName", $(this).data("name"));
-        $('.tooltip').hide();
-        $('#chat_area').scrollTop(0);
-        that.doFilterTimeline();
-      }else{
-        var name = $(this).data("name");
-        that.setMessage("@" + name + "さん");
-      }
-    });
+    ]).autosize();
 
     $('#chat_body').exResize(function(){
       $('.chat-control').addClass('chat-fixed');
@@ -229,66 +236,27 @@ ChatController.prototype = {
       $('.chat-control-dummy').height($(this).outerHeight());
     });
 
-    // アップロードボタン
-    $('#upload_chat_button').click(function(){
-      $('#upload_chat').click();
-      return false;
-    });
-
     emojify.setConfig({
       img_dir: 'img/emoji',  // Directory for emoji images
     });
 
     // for chat list
-    $.templates("#chatTabTmpl").link("#chat_nav", this.chatViewModels)
-      .on('click', '.chat-tab-elem', function(){
-        var thisVm = that.chatViewModels[$.view(this).getIndex()];
-        if (thisVm.isActive){
-          // 部屋名をフォームに設定する
-          that.setMessage("@" + thisVm.room + " ");
-        }
+    $('.chat-tab-content').on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+      // ログ追加読み込みイベント
+      if (!isInView){ return false; }
 
-        that.chatViewModels.forEach(function(vm){
-          vm.set_active(false);
-        });
-        thisVm.set_active(true);
-        return true;
-      });
-    $.templates("#chatTmpl").link(".chat-tab-content", this.chatViewModels)
-      .on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-        // ログ追加読み込みイベント
-        if (!isInView){ return false; }
-
-        var last_msg_id = $(this).data("id");
-        that.chatViewModels[$.view(this).index].load_log_more(last_msg_id);
-      })
-      .on('click', '.remove_msg', function(){
-        if (!window.confirm('Are you sure?')){
-          return true;
-        }
-        var data_id = $(this).closest('li').data('id');
-        that.chatViewModels[$.view(this).index].remove_msg(data_id);
-        return true;
-      })
-      .on('click', '.ref-point', function(){
-        var id = $(this).attr("id");
-        that.showRefPoint(id);
-        return true;
-      })
-      .on('click', '.chat-list', function(){
-        that.chatViewModels[$.view(this).index].clear_unread();
-        return true;
-      });
+      var data = ko.dataFor(this);
+      var parent = ko.contextFor(this).$parent;
+      parent.load_log_more(data._id);
+    });
   },
 
   setName: function(name){
-    this.loginName = name;
-    $('#name').val(name);
-    this.changedLoginName(name);
+    this.loginName(name);
   },
 
   getName: function(){
-    return this.loginName;
+    return this.loginName();
   },
 
   focus: function(){
@@ -321,12 +289,12 @@ ChatController.prototype = {
       }
 
       $('#chat_number').val(number.num);
-      that.chatViewModels.forEach(function(vm){
+      that.chatViewModels().forEach(function(vm){
         vm.destroySocket();
       });
-      $.observable(that.chatViewModels).refresh([]);
+      that.chatViewModels([]);
       for (var i = 1; i <= number.num; i++){
-        $.observable(that.chatViewModels).insert(new ChatViewModel({
+        that.chatViewModels.push(new ChatViewModel({
           no: i,
           socket: that.socket,
           getId: function(name) {return that.getId(name); },
@@ -334,7 +302,8 @@ ChatController.prototype = {
           getFilterName: function() {return that.getFilterName(); },
           getFilterWord: function() {return that.getFilterWord(); },
           upHidingCount: function() {return that.upHidingCount(); },
-          faviconNumber: that.faviconNumber
+          faviconNumber: that.faviconNumber,
+          showRefPoint: that.showRefPoint
         }));
       }
 
@@ -362,24 +331,28 @@ ChatController.prototype = {
             pomo_min: login_list[i].pomo_min
           };
         if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
+          login_elem.has_avatar = true;
           avatar_elems.push(login_elem);
         }else{
+          login_elem.has_avatar = false;
           login_elems.push(login_elem);
         }
       }
-      $.observable(that.loginElemList).refresh(avatar_elems.concat(login_elems));
+      that.loginElemList(avatar_elems.concat(login_elems));
       $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
   },
 
   initDropzone: function(){
+    var that = this;
     this.dropZone = new DropZone({
       dropTarget: $('#chat_area'),
       fileTarget: $('#upload_chat'),
       alertTarget: $('#loading'),
       pasteValid: true,
-      uploadedAction: function(that, res){
-        $('#message').val($('#message').val() + ' ' + res.fileName + ' ').trigger('autosize.resize');
+      uploadedAction: function(local_that, res){
+        that.inputMessage(that.inputMessage() + ' ' + res.fileName + ' ');
+        $('#message').trigger('autosize.resize');
       }
     });
   },
@@ -390,24 +363,24 @@ ChatController.prototype = {
   },
 
   getId: function(name){
-    for(var i = 0; i < this.loginElemList.length; ++i ){
-      if ( this.loginElemList[i].name == name ){
-        return this.loginElemList[i].id;
+    for(var i = 0; i < this.loginElemList().length; ++i ){
+      if ( this.loginElemList()[i].name == name ){
+        return this.loginElemList()[i].id;
       }
     }
     return 0;
   },
 
   upHidingCount: function(){
-    $.observable(this).setProperty("hidingMessageCount", this.hidingMessageCount + 1);
+    this.hidingMessageCount(this.hidingMessageCount() + 1);
   },
 
   getFilterName: function(){
-    return this.filterName;
+    return this.filterName();
   },
 
   getFilterWord: function(){
-    return this.filterWord;
+    return this.filterWord();
   },
 
   initSettings: function(){
@@ -450,10 +423,9 @@ ChatController.prototype = {
         window.localStorage.avatarImage = $('#avatar').val();
         $('#avatar_img').attr('src', window.localStorage.avatarImage);
 
-        var name = $('#name').val();
         that.socket.emit('name',
           {
-            name:name,
+            name: that.loginName(),
             avatar: window.localStorage.avatarImage
           });
         return false;
@@ -484,18 +456,17 @@ ChatController.prototype = {
         var data_id = $(this).closest(".alert").attr('id');
         if (data_id == "mention_own_alert"){
           window.localStorage.timeline = "all";
-          $('#message').val("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }else if (data_id == "mention_alert"){
           window.localStorage.timeline = "all";
-          $('#message').val("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }else if (data_id == "filter_name_alert"){
-          $.observable(that).setProperty("filterName", "");
+          that.filterName("");
         }else if (data_id == "filter_word_alert"){
-          $.observable(that).setProperty("filterWord", "");
-          that._filterWord = "";
-          $('#message').val("");
+          that.filterWord("");
+          that.inputMessage("");
           $('#message').removeClass("client-command");
         }
 

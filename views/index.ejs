@@ -68,9 +68,9 @@
 
 
           <ul class="nav pull-right">
-            <li><a id="memo_index" href="#" rel="tooltip" title="Memo Index"><i class="icon-white icon-align-left"></i></a></li>
+            <li><a id="memo_index" data-bind="click: showIndex" href="#" rel="tooltip" title="Memo Index"><i class="icon-white icon-align-left"></i></a></li>
             <li><a id="tab_change" href="#" rel="tooltip" title="Change Tab Layout"><i class="icon-white icon-resize-full"></i></a></li>
-            <li><a id="scroll_top" href="#" rel="tooltip" title="Scroll Top"><i class="icon-white icon-arrow-up"></i></a></li>
+            <li><a id="scroll_top" data-bind="click: top" href="#" rel="tooltip" title="Scroll Top"><i class="icon-white icon-arrow-up"></i></a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen">
                 <i class="icon-white icon-fullscreen"></i>
@@ -87,7 +87,24 @@
             <li><a href="#settings_modal" rel="tooltip" title="Settings" data-toggle="modal"><i class="icon-white icon-cog"></i></a></li>
           </ul>
 
-          <div id="search_box"></div>
+          <div id="search_box">
+            <form id="search_form" class="navbar-form pull-right" data-bind="submit: do_search">
+              <input type="text" class="search-query input-small" placeholder="Search Memo" data-bind="value: keyword, valueUpdate: 'keyup', event: {keyup: do_incremental_search}">
+              <i id="search_clear" class="icon-remove" data-bind="click: do_search_clear"></i>
+            </form>
+
+            <form id="matched_control" class="navbar-form pull-right">
+              <div class="btn-group">
+                <button id="prev_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_prev, visible: matched_navi_visible"><i class="icon-chevron-up icon-white"></i></button>
+                <button id="next_match" class="btn btn-inverse" style="display: none" data-bind="click: matched_next, visible: matched_navi_visible"><i class="icon-chevron-down icon-white"></i></button>
+              </div>
+            </form>
+
+            <span id="matched_count" class="navbar-text pull-right" style="display: none" data-bind="visible: matched_navi_visible">
+              <span data-bind="html: matched_title"></span>
+              <span data-bind="text: matched_index"></span>/<span data-bind="text: matched_num"></span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -99,34 +116,113 @@
           <div id="index_inner" class="area-inner" style="display:none;">
             <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
-            <div id="share_memo_index"></div>
+            <div id="share_memo_index" data-bind="foreach: memoViewModels">
+              <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}" style="display: none" class="index-ul">
+                <li class="index-li" data-bind="click: function(data, event){ return $root.select_index_li(data,event,$element) }">
+                  <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div id="chat_inner" class="area-inner">
             <div class="chat-control">
               <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
               <div id="login_list">
-                <span id="login_list_body" style="display:block"></span>
+                <span id="login_list_body" data-bind="foreach: loginElemList" style="display:block">
+                  <!-- ko if: has_avatar -->
+                  <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <!-- /ko -->
+                  <!-- ko ifnot: has_avatar -->
+                  <span data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <!-- /ko -->
+                </span>
               </div>
               <form id="form" class="form-inline">
                 <table>
                   <tr>
-                    <td style=""><input type="text" name="name" id="name" style="width:50px" placeholder="Name"/></td>
+                    <td style=""><input type="text" data-bind="textInput: loginName, event: {keydown: keydownInputName}" name="name" id="name" style="width:50px" placeholder="Name"/></td>
                     <td style="width: 100%; padding-right: 11px;">
-                      <textarea name="message" id="message" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
+                      <textarea
+                        name="message"
+                        id="message"
+                        data-bind="
+                          textInput: inputMessage,
+                          event: {keydown: function(data, event){ return keydownInputMessage(data, event, $element)}}"
+                        style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;"
+                        rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>
                     </td>
-                    <td><button id="send_button" class="btn btn-small btn-primary">Send</button></td>
-                    <td><input type="file" id="upload_chat" name="file" style="display:none"></input><button id="upload_chat_button" class="btn btn-small btn-inverse visible-phone" style="display:none"><i class="icon-upload icon-white"></i></button></td>
+                    <td><button id="send_button" data-bind="click: sendMessage" class="btn btn-small btn-primary">Send</button></td>
+                    <td>
+                      <input type="file" id="upload_chat" name="file" style="display:none"></input>
+                      <button id="upload_chat_button" data-bind="click: uploadFile", class="btn btn-small btn-inverse visible-phone" style="display:none">
+                        <i class="icon-upload icon-white"></i>
+                      </button>
+                    </td>
                   </tr>
                 </table>
               </form>
             </div>
             <div class="chat-control-dummy" style="display:none;"></div>
             <div id="chat_body" class="text-base-style">
-              <div id="alert_timeline"></div>
+              <div id="alert_timeline">
+                <div id="mention_own_alert" class="alert" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display Mention & Own mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="mention_alert" class="alert alert-error" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display Mention only mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="filter_name_alert" class="alert alert-info" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterName"></span> only mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="filter_word_alert" class="alert alert-success" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterWord"></span> search mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+              </div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul id="chat_nav" class="nav nav-tabs"></ul>
-                <div class="chat-tab-content tab-content"></div>
+                <ul id="chat_nav" data-bind="foreach: chatViewModels" class="nav nav-tabs">
+                  <li data-bind="css{active: isActive}">
+                    <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
+                      <span data-bind="text: room"></span>
+                      <!-- ko if: mentionCount() != 0 -->
+                      <span class="label label-important" data-bind="text: mentionCount"></span>
+                      <!-- /ko -->
+                      <!-- ko if: unreadRoomCount() != 0 -->
+                      <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
+                      <!-- /ko -->
+                      <!-- ko if: unreadCount() != 0 -->
+                      <span class="label label-default" data-bind="text: unreadCount"></span>
+                      <!-- /ko -->
+                    </a>
+                  </li>
+                </ul>
+                <div class="chat-tab-content tab-content" data-bind="foreach: chatViewModels">
+                  <div class="tab-pane" data-bind="attr: {id:'tab_' + no}">
+                    <ul data-bind="foreach: messages, click: clear_unread, attr: {id: 'list_' + no}" class="chat-list">
+                      <li data-bind="css: css, attr: {id: 'msg_' + _id, 'data-id': _id}, decoHtmlMsg: html, visible: is_visible"></li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div id="message_loader">
                 <img src="/img/loader.gif"/> Loading messages...
@@ -140,12 +236,84 @@
             <div class="dummy-top-space hidden-phone"></div>
             <div id="share-memo">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
-                <ul id="share_memo_nav" class="nav nav-tabs"></ul>
-                <div class="share-memo-tab-content tab-content"></div>
+                <ul id="share_memo_nav" class="nav nav-tabs" data-bind="foreach: memoViewModels">
+                  <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}" class="share-memo-tab">
+                    <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
+                      <span class="share-memo-title" data-bind="decoMemoTitle: title"></span>
+                      <div class="writer silent-name" data-bind="visible: !is_memo_empty(), text: writer, css: {'writing-name': update_timer() != null}"></div>
+                      <div>
+                        <span class="timestamp" data-bind="visible: !is_memo_empty(), attr: {'data-livestamp': latest_text().date}"></span>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="share-memo-tab-content tab-content" data-bind="foreach: memoViewModels">
+                  <div data-bind="attr: {id: 'share_memo_' + no, 'data-no': no}" class="share-memo tab-pane">
+                    <div class="memo-control">
+                      <button data-bind="click: $parent.do_edit" class="sync-text btn btn-primary" style="float: left">
+                        <i class="icon-edit icon-white"></i> Edit
+                      </button>
+                      <button data-bind="click: $parent.do_fix.bind($data, $element)" class="fix-text btn btn-info" style="float: left; display: none">
+                        <i class="icon-edit icon-white"></i> Done
+                      </button>
+                      <button data-bind="click: $parent.done_diff" class="diff-done btn btn-info" style="float: left; display: none">
+                        <i class="icon-resize-vertical icon-white"></i> Done
+                      </button>
+                      <div class="btn-group" style="float: left">
+                        <a class="btn dropdown-toggle diff-button hidden-phone" data-toggle="dropdown" href="#" data-bind="click: do_diff_list">
+                          <i class="icon-resize-vertical"></i> Diff
+                          <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu diff-list" data-bind="foreach: diffTitles">
+                          <li>
+                            <a data-bind="
+                              css: diff_class,
+                              html: title,
+                              click: $parent.show_diff.bind($data, $element),
+                              event: {
+                                mouseover: $parent.fill_diff_list.bind($data, $element),
+                                mouseout: $parent.unfill_diff_list.bind($data, $element)
+                              }" href="#"></a>
+                          </li>
+                        </ul>
+                      </div>
+                      <button data-bind="click: $parent.wip_jump, visible: hasWip" class="wip-jump btn btn-danger" style="float: left; display: none">
+                        <i class="icon-fire icon-white"></i> WIP
+                      </button>
+                      <span class="text-date" data-bind="text: latest_text().date_name, css: {'writing-name': update_timer() != null}"></span>
+                      <span data-bind="visible: !is_memo_empty(), text: bytes" class="memo-bytes"></span>
+                      <span class="checkbox-count" style="display: none" data-bind="visible: checkbox_count() > 0, css: {'checkbox-count-done': checked_count() == checkbox_count()}"><span data-bind="text: checked_count"></span>/<span data-bind="text: checkbox_count"></span> done</span>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="memo-control-dummy" style="display:none;"></div>
+                    <textarea data-bind="
+                      textInput: edit_text,
+                      event: {
+                        dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
+                        click: function(data, event){ return clickOnCodeArea(data, event, $element) },
+                        keydown: function(data, event){ return keydownOnCodeArea(data, event, $element)},
+                        keyup: function(data, event){ return keyupOnCodeArea(data, event, $element)},
+                        select: function(data, event){ selectText(data, event, $element)}
+                      }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
+                    <div data-bind="visible: show_empty_alert, event: {dblclick: $parent.do_edit}" class="memo-alert alert alert-info">
+                      This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.
+                    </div>
+                    <pre class="code-out-base">
+                      <div class="code-out" data-bind="
+                        event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
+                        decoHtml: display_text">
+                       </div>
+                      <div class="diff-view" style="display: none"></div>
+                    </pre>
+                  </div>
+                  <div class="move-to-blog" data-bind="visible: is_shown_move_to_blog" style="display:none">
+                    <button class="btn btn-success" data-bind="click: moveToBlog"><i class="icon-share-alt icon-white"></i> Move To Blog</button>
+                  </div>
+                </div><!-- end foreach -->
               </div>
             </div>
             <footer>
-            <span>© 2012 Naoki KODAMA. All rights reserved.</span>
+              <span>© 2012 Naoki KODAMA. All rights reserved.</span>
             </footer>
           </div>
         </div>
@@ -239,7 +407,14 @@
             <div class="control-group">
               <label class="control-label">Enable share memo</label>
               <div class="controls">
-                <select id="memo_number" class="span1"></select>
+                <select id="memo_number" class="span1" data-bind="
+                  value: memo_number,
+                  event: {change: change_memo_number}
+                  ">
+                  <!-- ko foreach: memoViewModels -->
+                  <option data-bind="text: no, attr: {value: no}"></option>
+                  <!-- /ko -->
+                </select>
                 tabs.
               </div>
             </div>
@@ -251,185 +426,18 @@
       </div>
     </div>
 
-
-    <div id="move_to_blog" style="display:none">
-      <button class="btn btn-success"><i class="icon-share-alt icon-white"></i> Move To Blog</button>
-    </div>
-
     <div id ="diff_controller" style="display: none">
       <div id="move_to_diff">
-        <button class="btn btn-success"><i class="icon-arrow-down icon-white"></i> Next Diff</button>
+        <button data-bind="click: move_diff" class="btn btn-success"><i class="icon-arrow-down icon-white"></i> Next Diff</button>
       </div>
       <div id="diff_done">
-        <button class="btn btn-success"><i class="icon-ok icon-white"></i> Done</button>
+        <button data-bind="click: done_diff" class="btn btn-success"><i class="icon-ok icon-white"></i> Done</button>
       </div>
     </div>
 
     <div id="loading">
       <img src="img/blog_loader.gif" >
     </div>
-
-    <!-- JsRender Templates -->
-    <script id="loginNameTmpl" type="text/x-jsrender">
-      {^{if pomo_min == 0}}
-        {^{if avatar != null && avatar != ""}}
-          <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span>
-        {^{else}}
-          <span data-link="class{>color_id}" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}}</span>
-        {^{/if}}
-      {^{else}}
-        {^{if avatar != null && avatar != ""}}
-          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}">{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span>
-        {^{else}}
-          <span class="login-symbol login-elem login-name-pomo" data-name="{{>name}}"><span class="name">{^{>name}}</span>{^{>place}} <span class="pomo-min">{^{>pomo_min}}min</span></span>
-        {^{/if}}
-      {^{/if}}
-    </script>
-
-    <script id="searchBoxTmpl" type="text/x-jsrender">
-      <form id="search_form" class="navbar-form pull-right">
-        <input type="text" class="search-query input-small" placeholder="Search Memo" data-link="keyword">
-        <i id="search_clear" class="icon-remove"></i>
-      </form>
-
-      <form id="matched_control" class="navbar-form pull-right">
-        <div class="btn-group">
-          <button id="prev_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-up icon-white"></i></button>
-          <button id="next_match" class="btn btn-inverse" data-link="style{>matched_navi_style}"><i class="icon-chevron-down icon-white"></i></button>
-        </div>
-      </form>
-
-      <span id="matched_count" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_index"></span>/<span data-link="matched_num"></span>
-      </span>
-
-      <span id="matched_title" class="navbar-text pull-right" data-link="style{>matched_navi_style}">
-        <span data-link="matched_title"></span>
-      </span>
-    </script>
-
-    <script id="alertTimelineTmpl" type="text/x-jsrender">
-      <div id="mention_own_alert" class="alert" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display Mention & Own mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="mention_alert" class="alert alert-error" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display Mention only mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="filter_name_alert" class="alert alert-info" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display <span data-link="filterName"></span> only mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-      <div id="filter_word_alert" class="alert alert-success" style="display:none">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Display <span data-link="filterWord"></span> search mode.
-        {^{if hidingMessageCount != 0}}
-          <span data-link="hidingMessageCount"></span> new messages.
-        {^{/if}}
-        </strong>
-      </div>
-    </script>
-
-    <script id="chatTabTmpl" type="text/x-jsrender">
-      <li data-link="class{:isActive?'active':''}"><a class="chat-tab-elem" id="chat_tab_{{>no}}" href="#tab_{{>no}}" data-id="{{>no}}" data-toggle="tab">{^{:room}}
-      {^{if mentionCount != 0}}
-<span class="label label-important">{^{:mentionCount}}</span>
-      {^{/if}}
-      {^{if unreadRoomCount != 0}}
-<span class="label label-warning">{^{:unreadRoomCount}}</span>
-      {^{/if}}
-      {^{if unreadCount != 0}}
-<span class="label label-default">{^{:unreadCount}}</span>
-      {^{/if}}
-      </a></li>
-    </script>
-
-    <script id="chatTmpl" type="text/x-jsrender">
-      <div class="tab-pane" id="tab_{{>no}}">
-        <ul id="list_{{>no}}" class="chat-list"></ul>
-      </div>
-    </script>
-
-    <script id="chatNumberTmpl" type="text/x-jsrender">
-      <option value="{{>no}}">{{>no}}</option>
-    </script>
-
-    <script id="shareMemoTabTmpl" type="text/x-jsrender">
-      <li id="share_memo_li_{{>no}}" class="share-memo-tab" data-no="{{>no}}">
-        <a class="share-memo-tab-elem" id="share_memo_tab_{{>no}}" href="#share_memo_{{>no}}" data-toggle="tab" data-no="{{>no}}" style="display:none">
-          <span class="share-memo-title">{^{:title}}</span>
-          <div class="writer silent-name">{^{:writer}}</div>
-          <div>
-            <span class="timestamp"></span>
-          </div>
-        </a>
-      </li>
-    </script>
-
-    <script id="shareMemoTmpl" type="text/x-jsrender">
-      <div id="share_memo_{{>no}}" class="share-memo tab-pane" data-no="{{>no}}">
-        <div class="memo-control">
-          <button class="sync-text btn btn-primary" style="float: left">
-            <i class="icon-edit icon-white"></i> Edit
-          </button>
-          <button class="fix-text btn btn-info" style="float: left; display: none">
-            <i class="icon-edit icon-white"></i> Done
-          </button>
-          <button class="diff-done btn btn-info" style="float: left; display: none">
-            <i class="icon-resize-vertical icon-white"></i> Done
-          </button>
-          <div class="btn-group" style="float: left">
-            <a class="btn dropdown-toggle diff-button hidden-phone" data-toggle="dropdown" href="#">
-              <i class="icon-resize-vertical"></i> Diff
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu diff-list">
-            {^{for diffTitles}}
-              <li><a data-link="class{>class}" href="#">{^{:title}}</a></li>
-            {{/for}}
-            </ul>
-          </div>
-          <button class="wip-jump btn btn-danger" style="float: left; display: none">
-            <i class="icon-fire icon-white"></i> WIP
-          </button>
-          <span class="text-date"></span>
-          <span class="memo-bytes">{^{:bytes}}bytes</span>
-          <span class="checkbox-count" style="display: none"></span>
-          <div class="clearfix"></div>
-        </div>
-        <div class="memo-control-dummy" style="display:none;"></div>
-        <textarea class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
-        <pre class="code-out-base">
-          <div class="code-out"></div>
-          <div class="diff-view" style="display: none"></div>
-        </pre>
-      </div>
-    </script>
-
-    <script id="shareMemoIndexTmpl" type="text/x-jsrender">
-      <ul id="share_memo_index_{{>no}}" class="index-ul" data-no="{{>no}}">
-      {^{for indexes}}
-        <li><a class="index-li"><div data-link="class{>class}">{^{:body}}</div></a></li>
-      {{/for}}
-      </ul>
-    </script>
-
-    <script id="shareMemoNumberTmpl" type="text/x-jsrender">
-      <option value="{{>no}}">{{>no}}</option>
-    </script>
 
     <div id="share_memo_pre_tmp"></div>
   </body>

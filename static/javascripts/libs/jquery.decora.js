@@ -173,8 +173,8 @@
 
   // private method
   function _set_to_table(html){
-    var table_html = '<table><tr class="code-out-tr"><td>';
-    table_html += html.replace(/[\n]/g,'</td></tr class="code-out-tr"><tr class="code-out-tr"><td>');
+    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
     return table_html += "</td></tr></table>";
   }
 
@@ -461,7 +461,7 @@
     var refed_text = text.replace(/\[ref:(.+?)\]/g,
         function(){
           var matched_id = arguments[1];
-          return '<span class="btn btn-default btn-mini ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
+          return '<span data-bind="click: $parent.set_ref_point.bind($data, $element)" class="btn btn-default btn-mini ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
         });
     return refed_text;
   }
@@ -502,7 +502,7 @@
 
       return bq_sepa_array.join('');
     },
- 
+
     message_to_html: function(target_text){
       return _decorate_html_tag_for_message(target_text);
     }

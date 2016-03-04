@@ -14,6 +14,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'hello')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out', 'hello')
   },
 
@@ -26,6 +27,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '# header1')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out h1', 'header1')
 
       .click('#share_memo_1 .sync-text')
@@ -35,6 +37,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '## header2')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out h2', 'header2')
 
       .click('#share_memo_1 .sync-text')
@@ -44,6 +47,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '### header3')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out h3', 'header3')
 
       .click('#share_memo_1 .sync-text')
@@ -53,6 +57,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '#### header4\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out h4', 'header4')
   },
 
@@ -65,6 +70,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'this is red color line. #r\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 .code-out font', 'color', '#ba2636')
       .assert.containsText('#share_memo_1 .code-out font', 'this is red color line.')
 
@@ -75,6 +81,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'this is blue color line. #b\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 .code-out font', 'color', '#333399')
       .assert.containsText('#share_memo_1 .code-out font', 'this is blue color line.')
 
@@ -85,6 +92,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'this is green color line. #g\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 .code-out font', 'color', '#387d39')
       .assert.containsText('#share_memo_1 .code-out font', 'this is green color line.')
 
@@ -95,6 +103,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'this is other color line. #112233\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 .code-out font', 'color', '#112233')
       .assert.containsText('#share_memo_1 .code-out font', 'this is other color line.')
   },
@@ -108,6 +117,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '-[] this is a task.\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 .code-out input', 'type', 'checkbox')
       .assert.containsText('#share_memo_1 .code-out', 'this is a task.')
   },
@@ -123,6 +133,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', '```\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out .code-out-pre', 'this is a code.')
   },
 
@@ -135,6 +146,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'https://github.com/volpe28v/DevHub\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.containsText('#share_memo_1 .code-out a', 'https://github.com/volpe28v/DevHub')
   },
 
@@ -147,6 +159,7 @@ module.exports = {
       .setValue('#share_memo_1 .code', 'http://nightwatchjs.org/img/logo-nightwatch.png\n')
       .click('#share_memo_1 .fix-text')
       .waitForElementVisible('#share_memo_1 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_1 img', 'src', 'http://nightwatchjs.org/img/logo-nightwatch.png')
   },
 
@@ -160,6 +173,7 @@ module.exports = {
       .setValue('#share_memo_2 .code', 'http://nightwatchjs.org/img/logo-nightwatch.png\n')
       .click('#share_memo_2 .fix-text')
       .waitForElementVisible('#share_memo_2 .code-out', 1000)
+      .pause(500)
       .assert.attributeEquals('#share_memo_2 img', 'src', 'http://nightwatchjs.org/img/logo-nightwatch.png')
   },
 

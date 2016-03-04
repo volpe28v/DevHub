@@ -46,53 +46,54 @@
       <div class="row-fluid">
         <div id="index_header_area" class="span4">
           <div class="dummy-space"></div>
-          <ul id="index_header"></ul>
+          <ul id="index_header" data-bind="foreach: items">
+            <li>
+              <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">
+                <li>
+                  <a class="index-li"><div data-bind="css: index_class, decoMemoIndex: body, click: $root.selectIndexHeader"></div></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
-        <div id="blog_permalink_area" class="span8">
+        <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
-          <ul id="blog_list"></ul>
+          <ul id="blog_list" data-bind="foreach: items">
+            <li data-bind="attr: {id: _id}" class="blog-body">
+              <div class="alert alert-info">
+                <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
+                <div class="blog-header">
+                  <!-- ko if: has_avatar -->
+                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
+                  <!-- /ko -->
+                  <!-- ko ifnot: has_avatar -->
+                  <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
+                  <!-- /ko -->
+                  <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
+                  <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
+                </div>
+              </div>
+              <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
+              <div class="edit-form" data-bind="visible: editing()" style="display: none">
+                <div>
+                  <textarea class="edit-area" data-bind="
+                    textInput: text,
+                    hasFocus: editing(),
+                    editStartTextarea: editing(),
+                    event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
+                  "></textarea>
+                </div>
+                <div class="blog-action">
+                  <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
+                  <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
+                  <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-
-    <!-- JsRender Templates -->
-    <script id="blogBodyTmpl" type="text/x-jsrender">
-      <li id="{{:_id}}" class="blog-body">
-        <div class="alert alert-info">
-          <h1 class="blog-title">{^{:title}}</h1>
-          <div class="blog-header">
-            {^{if avatar != null && avatar != ""}}
-              By <span class="login-symbol" data-name="{{>name}}" title="{{>name}}" rel="tooltip"><img class="avatar" src="{{>avatar}}"></span> updated <span class="timestamp" data-livestamp="{{:date}}"></span>
-            {^{else}}
-              By <strong data-link="name"></strong> updated <span data-livestamp="{{:date}}"></span>
-            {^{/if}}
-            <span class="edit-blog"><i class="icon-pencil"></i></span>
-            <span class="remove-blog"><i class="icon-trash"></i></span>
-          </div>
-        </div>
-        <pre class="text-base-style"><div class="code-out"></div></pre>
-        <div class="edit-form" style="display: none">
-          <div>
-            <textarea class="edit-area" data-link="text"></textarea>
-          </div>
-          <div class="blog-action">
-            <button class="btn btn-info btn-mini update-notify-blog">Update and notify</button>
-            <button class="btn btn-info update-blog">Update</button>
-            <button class="btn btn-default cancel-edit">Cancel</button>
-          </div>
-        </div>
-      </li>
-    </script>
-
-    <script id="blogIndexTmpl" type="text/x-jsrender">
-      <li>
-        <ul class="index-ul">
-          {^{for indexes}}
-            <li><a class="index-li" href="#">{^{:header}}</a></li>
-          {{/for}}
-        </ul>
-      </li>
-    </script>
 
     <div id="share_memo_pre_tmp"></div>
   </body>

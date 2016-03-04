@@ -7,100 +7,123 @@ var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 
 function ShareMemoController(param){
+  var that = this;
+
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.zenMode = param.zenMode;
-  this.memo_number = 1;
+
+  this.memo_number = ko.observable(1);
 
   this.doing_up = false;
   this.doing_down = false;
 
-  this.memoViewModels = [];
+  this.memoViewModels = ko.observableArray([]);
   this.currentMemoNo = 0;
 
   this.isMovingTab = false;
 
+  this.control_offset_base = 0;
+
   // searchBox
   this.isSearching = false;
-  this.keyword = "";
+  this.keyword = ko.observable('');
   this.before_keyword = "";
-  this.matched_navi_style = "display:none";
-  this.matched_index = 0;
-  this.matched_num = 0;
   this.matched_doms = [];
-  this.matched_title = "";
 
-  this.init_sharememo();
-  this.init_dropzone();
-}
+  this.matched_navi_visible = ko.observable(false);
+  this.matched_index = ko.observable(0);
+  this.matched_num = ko.observable(0);
+  this.matched_title = ko.observable("");
 
-ShareMemoController.prototype = {
-  currentMemo: function(){
-    return this.memoViewModels[this.currentMemoNo-1];
-  },
+  this.currentMemo = function(){
+    return that.memoViewModels()[that.currentMemoNo-1];
+  }
 
-  setName: function(name){
+  this.select_memo_tab = function(data){
+    if (that.isMovingTab){ return true; }
+
+    // タブ選択のIDを記憶する
+    var memoViewModel = this;
+
+    window.localStorage.tabSelectedID = "#share_memo_tab_" + memoViewModel.no;
+
+    that.currentMemo().unselect();
+    that.currentMemoNo = memoViewModel.no;
+    if (that.keyword() == ""){
+      that.currentMemo().select();
+    }else{
+      // 検索中
+      that.currentMemo().beginSearch();
+    }
+
+    $('#memo_area').scrollTop(0);
+    that.adjustMemoControllbox();
+
+    return true;
+  }
+
+  this.setName = function(name){
     this.login_name = name;
-  },
+  }
 
-  getName: function(){
+  this.getName = function(){
     return this.login_name;
-  },
+  }
 
-  setWidth: function(width){
+  this.setWidth = function(width){
     $('#memo_area').css('width',width + 'px').css('margin',0);
-  },
+  }
 
-  setFocus: function(){
+  this.setFocus = function(){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
-    var targetMemo = this.memoViewModels[data_no-1];
+    var targetMemo = this.memoViewModels()[data_no-1];
     if (targetMemo.edit_mode){
       $('#share_memo_' + data_no).find(".code").focus();
     }else{
       var $share_memo = $('#share_memo_' + data_no);
       targetMemo.switchEditShareMemo(-1);
     }
-  },
+  }
 
-  top: function(){
+  this.top = function(){
     $('#memo_area').scrollTop(0);
-  },
+    that.adjustMemoControllbox();
+  }
 
-  down: function(){
-    var that = this;
+  this.down = function(){
     if (!this.doing_down){
       $('#memo_area').scrollTop($('#memo_area').scrollTop() + 400);
       that.doing_down = false;
     }
-  },
+  }
 
-  up: function(){
-    var that = this;
+  this.up = function(){
     if (!this.doing_up){
       $('#memo_area').scrollTop($('#memo_area').scrollTop() - 400);
       that.doing_up = false;
     }
-  },
+  }
 
-  prev: function(){
+  this.prev = function(){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     data_no -= 1;
     if (data_no <= 0){
-      data_no = this.memo_number;
+      data_no = this.memo_number();
     }
     $("#share_memo_tab_" + data_no).click();
-  },
+  }
 
-  next: function(){
+  this.next = function(){
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     data_no += 1;
-    if (data_no > this.memo_number){
+    if (data_no > this.memo_number()){
       data_no = 1;
     }
     $("#share_memo_tab_" + data_no).click();
-  },
+  }
 
-  move: function(id){
+  this.move = function(id){
     var no = id.split("-")[0];
     $("#share_memo_tab_" + no).click();
 
@@ -109,30 +132,30 @@ ShareMemoController.prototype = {
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
       $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 16);
     },700);
-  },
+  }
 
-  search: function(){
-    var that = this;
-    if (that.keyword == ""){
-      that.before_keyword = that.keyword;
+  this.search = function(){
+    var keyword = that.keyword();
+    if (keyword == ""){
+      that.before_keyword = keyword;
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
 
-      $.observable(that).setProperty("matched_num", 0);
-      $.observable(that).setProperty("matched_index", 0);
-      $.observable(that).setProperty("matched_navi_style", "display: none;");
-    }else if(that.before_keyword != that.keyword){
+      that.matched_num(0);
+      that.matched_index(0);
+      that.matched_navi_visible(false);
+    }else if(that.before_keyword != keyword){
       $(".matched_strong_line").removeClass("matched_strong_line");
       $(".matched_line").removeClass("matched_line");
 
       // 検索前に一旦最新の表示に更新する
-      for (var i = 0; i < that.memoViewModels.length; i++){
-        that.memoViewModels[i].showText();
-      }
- 
-      that.before_keyword = that.keyword;
+      that.memoViewModels().forEach(function(vm){
+        that.currentMemo() == vm ? vm.beginSearch() : vm.showText();
+      });
+
+      that.before_keyword = keyword;
       that.matched_doms = [];
-      var reg_keyword = new RegExp(that.keyword,"i");
+      var reg_keyword = new RegExp(keyword,"i");
       $(".code-out").each(function(){
         var matched_doms = $(this).find("td").map(function(){
           if ($(this).text().match(reg_keyword)){
@@ -145,36 +168,36 @@ ShareMemoController.prototype = {
         Array.prototype.push.apply(that.matched_doms, matched_doms);
       });
 
-      $.observable(that).setProperty("matched_num", that.matched_doms.length);
-      $.observable(that).setProperty("matched_index", 0);
-      $.observable(that).setProperty("matched_navi_style", "display: inline;");
-      $.observable(that).setProperty("matched_title", "");
-      if (that.matched_num > 0){
+      that.matched_num(that.matched_doms.length);
+      that.matched_index(0);
+      that.matched_navi_visible(true);
+      that.matched_title("");
+      if (that.matched_num() > 0){
         that.matched_next();
       }
     }else{
-      if (that.matched_num > 0){
+      if (that.matched_num() > 0){
         that.matched_next();
       }
     }
-  },
+  }
 
-  matched_next: function(){
-    var index = this.matched_index + 1;
-    if (index > this.matched_num){ index = 1; }
+  this.matched_next = function(){
+    var index = this.matched_index() + 1;
+    if (index > this.matched_num()){ index = 1; }
     this._matched_move(index);
-  },
+  }
 
-  matched_prev: function(){
-    var index = this.matched_index - 1;
-    if (index < 1){ index = this.matched_num; }
+  this.matched_prev = function(){
+    var index = this.matched_index() - 1;
+    if (index < 1){ index = this.matched_num(); }
     this._matched_move(index);
-  },
+  }
 
-  _matched_move: function(next_index){
-    var $prev_target = $(this.matched_doms[this.matched_index - 1]);
-    $.observable(this).setProperty("matched_index", next_index);
-    var $next_target = $(this.matched_doms[this.matched_index - 1]);
+  this._matched_move = function(next_index){
+    var $prev_target = $(this.matched_doms[this.matched_index() - 1]);
+    this.matched_index(next_index);
+    var $next_target = $(this.matched_doms[this.matched_index() - 1]);
 
     $prev_target.removeClass("matched_strong_line").addClass("matched_line");
     $next_target.removeClass("matched_line").addClass("matched_strong_line");
@@ -183,7 +206,7 @@ ShareMemoController.prototype = {
     var data_no = $(window.localStorage.tabSelectedID).data('no');
     var $target_tab = $("#share_memo_tab_" + no);
     var title = $target_tab.find(".share-memo-title").text();
-    $.observable(this).setProperty("matched_title", title);
+    that.matched_title(title);
 
     if (data_no != no){
       var no = $next_target.closest(".share-memo").data("no");
@@ -191,178 +214,162 @@ ShareMemoController.prototype = {
     }
     var pos = $next_target.offset().top;
     $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
-  },
+  }
 
-  init_sharememo: function(){
-    var that = this;
+  this.do_search = function(){
+    that.search();
+    that.isSearching = false;
+    return false;
+  }
 
-    $.templates("#searchBoxTmpl").link("#search_box", this)
-      .on("submit", "#search_form", function(){
-        that.search();
-        that.isSearching = false;
-        return false;
-      })
-      .on('keyup', ".search-query", function(event){
-        that.keyword = $(this).val();
-        if (!that.isSearching && event.keyCode != 13){
-          that.isSearching = true;
-          setTimeout(function(){
-            if (that.isSearching){
-              that.search();
-              that.isSearching = false;
-            }
-          },1000);
+  this.do_incremental_search = function(data, event){
+    if (!that.isSearching && event.keyCode != 13){
+      that.isSearching = true;
+      setTimeout(function(){
+        if (that.isSearching){
+          that.search();
+          that.isSearching = false;
         }
-        if (that.keyword != ""){
-          $("#search_clear").show();
-        }else{
-          $("#search_clear").hide();
+      },1000);
+    }
+    if (that.keyword() != ""){
+      $("#search_clear").show();
+    }else{
+      $("#search_clear").hide();
+    }
+  }
+
+  this.do_search_clear = function(){
+    that.currentMemo().endSearch();
+  }
+
+  this.end_search_controll = function(){
+    that.keyword("");
+    that.search();
+    that.isSearching = false;
+    $("#search_clear").hide();
+  }
+
+  this.adjustMemoControllbox = function(){
+    var pos = $("#memo_area").scrollTop();
+    var offset = $('#share-memo').offset().top;
+
+    // for control
+    var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
+    var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
+    var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+
+    if (!$control.hasClass('fixed')){
+      var control_offset = $control.offset();
+      if (control_offset == null){ return; } // 初回表示時は調整しない
+      var control_offset_base_tmp = control_offset.top - offset;
+      if (control_offset_base_tmp < 0){ return; } // 初回表示時は調整しない
+      that.control_offset_base = control_offset_base_tmp;
+    }
+
+    if ( that.control_offset_base < pos){
+      $control.addClass('fixed');
+      $control.css("top", fixed_top);
+      $dummy.height($control.outerHeight()).show();
+    }else{
+      $control.removeClass('fixed');
+      $dummy.hide();
+    }
+
+    // for index cursor
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var headers = $code_out.find(":header");
+    for (var i = headers.length - 1; i >= 0; i--){
+      if (i == 0){
+        if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 >= pos){
+          that.currentMemo().setCurrentIndex(-1);
+          break;
         }
-      })
-      .on("focus", ".search-query", function(){
-        $(this).switchClass("input-small", "input-large","fast");
-      })
-      .on("blur", ".search-query", function(){
-        if (that.keyword == ""){
-          $(this).switchClass("input-large", "input-small","fast");
-        }
-      })
-      .on("click", "#search_clear", function(){
-        $(".search-query").val("");
-        $(".search-query").switchClass("input-large", "input-small","fast");
-        that.keyword = "";
-        that.search();
-        that.isSearching = false;
-        $('#memo_area').scrollTop(0);
-        $(this).hide();
-      })
-      .on("click", "#prev_match", function(){
-        that.matched_prev();
-        return false;
-      })
-      .on("click", "#next_match",function(){
-        that.matched_next();
-        return false;
-      });
+      }
 
-    $.templates("#shareMemoTabTmpl").link("#share_memo_nav", this.memoViewModels)
-      .on('click','.share-memo-tab-elem', function(){
-        if (that.isMovingTab){ return true; }
+      if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
+        that.currentMemo().setCurrentIndex(i);
+        break;
+      }
+    }
+  }
 
-        // 遷移前のメモを表示モードに戻す
-        that.currentMemo().switchFixMode();
+  this.do_edit = function(){
+    // 表示しているメモの先頭にカーソルを当てて編集状態へ
+    var pos = $("#memo_area").scrollTop();
+    var offset = $('#share-memo').offset().top;
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var $code_out_lines = $code_out.find(".code-out-tr");
+    var row = 0;
+    for (var i = $code_out_lines.length - 1; i >= 0; i--){
+      if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
+        row = i;
+        break;
+      }
+    }
 
-        // タブ選択のIDを記憶する
-        var memoViewModel = that.memoViewModels[$.view(this).index];
+    that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
 
-        window.localStorage.tabSelectedID = "#" + $(this).attr("id");
+  this.do_fix =  function(element){
+    var $code = $(element).closest('.share-memo').find('.code');
+    that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
 
-        for (var i = 0; i < that.memoViewModels.length; i++){
-          that.memoViewModels[i].unselect();
-        }
-        that.currentMemoNo = memoViewModel.no;
-        that.currentMemo().select();
+  this.wip_jump = function(){
+    that.currentMemo().switchFixShareMemo(1);
 
-        $('#memo_area').scrollTop(0);
-        adjustMemoControllbox();
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
+    return true;
+  }
 
-        return true;
-      });
+  this.set_ref_point = function(element){
+    var id = $(element).attr("id");
+    that.setMessage("[ref:" + id + "]");
+  }
 
-    $.templates("#shareMemoTmpl").link(".share-memo-tab-content", this.memoViewModels)
-      .on('click','.sync-text', function(){
-        // 表示しているメモの先頭にカーソルを当てて編集状態へ
-        var pos = $("#memo_area").scrollTop();
-        var offset = $('#share-memo').offset().top;
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var $code_out_lines = $code_out.find(".code-out-tr");
-        var row = 0;
-        for (var i = $code_out_lines.length - 1; i >= 0; i--){
-          if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
-            row = i;
-            break;
-          }
-        }
- 
-        that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-      })
-      .on("click", ".ref-point", function(){
-        var id = $(this).attr("id");
-        that.setMessage("[ref:" + id + "]");
-      })
-      .on('dblclick','.code-out tr', function(e){
-        // クリック時の行数を取得してキャレットに設定する
-        var row = $(this).closest("table").find("tr").index(this);
-        that.currentMemo().switchEditShareMemo(row, e.pageY);
+  this.select_index_li = function(data, event, element){
+    that.currentMemo().switchFixShareMemo(1);
 
-        return false;
-      })
-      .on('dblclick','.code-out', function(e){
-        // 文字列が無い場合は最下部にキャレットを設定する
-        var row = $(this).find("table tr").length - 1;
-        that.currentMemo().switchEditShareMemo(row, e.pageY);
-      })
-      .on('click','.diff-button', function(){
-        that.currentMemo().switchFixShareMemo(1);
-        that.currentMemo().showDiffList();
-      })
-      .on('mouseover','.diff-li', function(){
-        var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-        var index = diff_li_array.index(this);
-        diff_li_array.each(function(i, li){
-          if (i < index){
-            $(li).addClass("in_diff_range");
-          }else if(i > index){
-            $(li).removeClass("in_diff_range");
-          }
-        });
-      })
-      .on('mouseout','.diff-li', function(){
-        var diff_li_array = $(this).closest(".diff-list").find(".diff-li");
-        diff_li_array.each(function(i, li){
-          $(li).removeClass("in_diff_range");
-        });
-      })
-      .on('click','.diff-li', function(){
-        var $share_memo = $(this).closest('.share-memo');
-        var $code_out = $share_memo.find('.code-out');
-        var share_memo_no = $share_memo.data('no');
-        var index = $(this).closest(".diff-list").find(".diff-li").index(this);
+    var index = $(element).closest(".index-ul").find(".index-li").index(element);
+    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
+    var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+    return false;
+  }
 
-        // diff 生成
-        var $diff_out = $share_memo.find('.diff-view');
-        $diff_out.empty();
-        $diff_out.append(that.currentMemo().createDiff(index));
-        $diff_out.showDecora();
+  this.move_diff = function(){
+    var pos = that.currentMemo().getNextDiffPos();
+    $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
+  }
 
-        // diff 画面を有効化
-        $diff_out.show();
-        $code_out.hide();
+  this.done_diff = function(){
+    that.currentMemo().switchFixShareMemo(1);
+    $('#memo_area').scrollTop(0);
+  }
 
-        $share_memo.find('.diff-done').show();
-        $share_memo.find('.sync-text').hide();
+  this.change_memo_number = function(){
+    socket.emit('memo_number', {num: that.memo_number()});
+  }
 
-        if (that.currentMemo().diff_block_list.length > 0){
-          $('#diff_controller').fadeIn();
-        }
+  this.showIndex = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showIndexList();
+  }
 
-        // 一つ目のDiffに移動
-        var pos = that.currentMemo().getNextDiffPos();
-        $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
 
-        return true;
-      })
-      .on('click','.diff-done', function(){
-        that.currentMemo().endDiff();
-      })
-      .on('click','.wip-jump', function(){
-        that.currentMemo().switchFixMode();
+  this.init_sharememo = function(){
+    ko.applyBindings(that, $('#search_box').get(0));
+    ko.applyBindings(that, $('#scroll_top').get(0));
+    ko.applyBindings(that, $('#memo_index').get(0));
+    ko.applyBindings(that, $('#share-memo').get(0));
+    ko.applyBindings(that, $('#index_inner').get(0));
+    ko.applyBindings(that, $('#diff_controller').get(0));
+    ko.applyBindings(that, $('#memo_number').get(0));
 
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
-        return true;
-      })
+    $(".share-memo-tab-content")
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
           // チェック対象のテキストを更新する
@@ -372,56 +379,14 @@ ShareMemoController.prototype = {
           // チェック対象のテキストを更新する
           that.currentMemo().applyToWritingText(applyImgSize);
         }
-      })
-      .on('dblclick','.code', function(e){
-        that.currentMemo().switchFixShareMemo($(this).caretLine(), e.pageY);
-      })
-      .on('click','.fix-text', function(){
-        var $code = $(this).closest('.share-memo').find('.code');
-        that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-      })
-      .on('keydown','.code',function(event){
-        // Ctrl - S or Ctrl - enter
-        if ((event.ctrlKey == true && event.keyCode == 83) ||
-          (event.ctrlKey == true && event.keyCode == 13)) {
-          event.returnvalue = false;
-          var caret_top = $(this).textareaHelper('caretPos').top + $(this).offset().top;
-          that.currentMemo().switchFixShareMemo($(this).caretLine(), caret_top);
-          return false;
-        }
-      })
-      .on('select','.code',function(event){
-        that.currentMemo().showMoveToBlogButton($(this), that.login_name);
       });
-
-    $.templates("#shareMemoIndexTmpl").link("#share_memo_index", this.memoViewModels)
-      .on('click','.index-li', function(){
-        that.currentMemo().switchFixMode();
-
-        var index = $(this).closest(".index-ul").find(".index-li").index(this);
-        var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-        var pos = $code_out.find(":header").eq(index).offset().top - $('#share-memo').offset().top;
-        $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
-        return true;
-      });
-
-    $('#move_to_diff').click(function(){
-      var pos = that.currentMemo().getNextDiffPos();
-      $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
-    });
-
-    $('#diff_done').click(function(){
-      that.currentMemo().endDiff();
-      $('#memo_area').scrollTop(0);
-    });
-
-    $.templates("#shareMemoNumberTmpl").link("#memo_number", this.memoViewModels);
 
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
-      $.observable(this.memoViewModels).insert(new MemoViewModel({
+      this.memoViewModels.push(new MemoViewModel({
         no: i,
         socket: this.socket,
-        getName: function() { return that.getName(); }
+        getName: function() { return that.getName(); },
+        endSearch: that.end_search_controll
       }));
     }
 
@@ -444,11 +409,6 @@ ShareMemoController.prototype = {
 
         socket.emit('memo_tab_numbers', {numbers: tab_numbers});
       }
-    });
-
-    $("#memo_index").click(function(){
-      $('#chat_area').scrollTop(0);
-      that.currentMemo().showIndexList();
     });
 
     $("#hide_index").click(function(){
@@ -475,48 +435,8 @@ ShareMemoController.prototype = {
       }
     });
 
-    $("#scroll_top").click(function(){
-      $('#memo_area').scrollTop(0);
-    });
-
-    var control_offset_base = 0;
-    function adjustMemoControllbox(){
-      var pos = $("#memo_area").scrollTop();
-      var offset = $('#share-memo').offset().top;
-
-      // for control
-      var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
-      var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
-      var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
-
-      if (!$control.hasClass('fixed')){
-        var control_offset_base_tmp = $control.offset().top - offset;
-        if (control_offset_base_tmp < 0){ return; } // 初回表示時は調整しない
-        control_offset_base = control_offset_base_tmp;
-      }
-
-      if ( control_offset_base < pos){
-        $control.addClass('fixed');
-        $control.css("top", fixed_top);
-        $dummy.height($control.outerHeight()).show();
-      }else{
-        $control.removeClass('fixed');
-        $dummy.hide();
-      }
-
-      // for index cursor
-      var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-      var headers = $code_out.find(":header");
-      for (var i = headers.length - 1; i >= 0; i--){
-        if (headers.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT - 10 < pos){
-          that.currentMemo().setCurrentIndex(i);
-          break;
-        }
-      }
-    }
-
     $('#memo_area').scroll(function(){
-      adjustMemoControllbox();
+      that.adjustMemoControllbox();
     });
 
     // 前回の状態を復元する
@@ -549,15 +469,13 @@ ShareMemoController.prototype = {
       }
     });
 
-    $('#memo_number').bind('change',function(){
-      var num = $(this).val();
-      socket.emit('memo_number', {num: num});
-    });
-
     function apply_memo_number(num){
-      that.memo_number = num;
+      if (that.memo_number() != num){
+        that.memo_number(num);
+      }
+
       $('.share-memo-tab-elem').each(function(i){
-        if (i< that.memo_number){
+        if ( i < that.memo_number()){
           $(this).fadeIn("fast");
           $(this).css("display", "block");
         }else{
@@ -568,7 +486,6 @@ ShareMemoController.prototype = {
 
     socket.on('memo_number', function(data){
       apply_memo_number(data.num);
-      $('#memo_number').val(data.num);
     });
 
     socket.on('memo_tab_numbers', function(data){
@@ -578,13 +495,11 @@ ShareMemoController.prototype = {
         $('#share_memo_nav').append($('#share_memo_li_' + num));
       });
 
-      apply_memo_number(that.memo_number);
+      apply_memo_number(that.memo_number());
     });
-  },
+  }
 
-  init_dropzone: function(){
-    var that = this;
-
+  this.init_dropzone = function(){
     // 閲覧モードの行指定でドロップ
     new DropZone({
       dropTarget: $('.code-out'),
@@ -640,5 +555,8 @@ ShareMemoController.prototype = {
       return false;
     });
   }
+
+  this.init_sharememo();
+  this.init_dropzone();
 }
 

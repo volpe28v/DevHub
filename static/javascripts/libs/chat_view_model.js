@@ -1,6 +1,8 @@
 var LOGIN_COLOR_MAX = 9;
 
 function ChatViewModel(param){
+  var that = this;
+
   this.no = param.no;
   this.socket = param.socket;
   this.getId = param.getId; // function
@@ -9,12 +11,15 @@ function ChatViewModel(param){
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.faviconNumber = param.faviconNumber;
-  this.room = "Room" + this.no;
+  this.showRefPoint = param.showRefPoint; // function
 
-  this.mentionCount = 0;
-  this.unreadRoomCount = 0;
-  this.unreadCount = 0;
-  this.isActive = false;
+  // Models
+  this.room = ko.observable("Room" + this.no);
+  this.messages = ko.observableArray([]);
+  this.mentionCount = ko.observable(0);
+  this.unreadRoomCount = ko.observable(0);
+  this.unreadCount = ko.observable(0);
+  this.isActive = ko.observable(false);
 
   this.isLoadingLog = false;
   this.loadingAfterEvent = null;
@@ -26,11 +31,33 @@ function ChatViewModel(param){
   this.on_room_name = this._room_name_handler();
 
   this.listId = "#list_" + this.no;
-  this.initSocket();
+  this.init();
+
+  this.set_ref_point = function(element){
+    var id = $(element).attr("id");
+    that.showRefPoint(id);
+    return true;
+  }
+
+  this.remove_msg = function(element){
+    var this_msg = this;
+    if (!window.confirm('Are you sure?')){
+      return true;
+    }
+    var data_id = $(element).closest('li').data('id');
+
+    that.socket.emit('remove_message', {id: data_id});
+    $("#msg_" + data_id).fadeOut('normal', function(){
+      $(this).remove();
+      that.messages.remove(this_msg);
+    });
+ 
+    return true;
+  }
 }
 
 ChatViewModel.prototype = {
-  initSocket: function(){
+  init: function(){
     this.socket.on('message_own' + this.no, this.on_message_own);
     this.socket.on('message' + this.no, this.on_message);
     this.socket.on('latest_log' + this.no, this.on_latest_log);
@@ -69,6 +96,7 @@ ChatViewModel.prototype = {
     var that = this;
     return function(data) {
       MessageDate.save(data.date);
+
       that.prepend_msg(data,function($msg){
         that._msg_post_processing(data, $msg);
         that.do_notification(data);
@@ -76,11 +104,11 @@ ChatViewModel.prototype = {
           $msg.addClass("unread-msg");
 
           if (that.include_target_name(data.msg,that.getName())){
-            $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+            that.mentionCount(that.mentionCount() + 1);
           }else if (that.include_room_name(data.msg)){
-            $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
+            that.unreadRoomCount(that.unreadRoomCount() + 1);
           }else{
-            $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+            that.unreadCount(that.unreadCount() + 1);
           }
         }
       });
@@ -137,7 +165,7 @@ ChatViewModel.prototype = {
   _room_name_handler: function() {
     var that = this;
     return function(room_name){
-      $.observable(that).setProperty("room", room_name);
+      that.room(room_name);
     }
   },
 
@@ -172,11 +200,7 @@ ChatViewModel.prototype = {
   },
 
   set_active: function(is_active){
-    if (is_active){
-      this.isActive = true;
-    }else{
-      this.isActive = false;
-    }
+    this.isActive(is_active);
   },
 
   load_log_more: function(id){
@@ -189,11 +213,13 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
-    this.faviconNumber.minus(this.mentionCount + this.unreadCount + this.unreadRoomCount);
+    this.faviconNumber.minus(this.mentionCount() + this.unreadCount() + this.unreadRoomCount());
     $(this.listId).find('li').removeClass("unread-msg");
-    $.observable(this).setProperty("mentionCount", 0);
-    $.observable(this).setProperty("unreadRoomCount", 0);
-    $.observable(this).setProperty("unreadCount", 0);
+    this.mentionCount(0);
+    this.unreadRoomCount(0);
+    this.unreadCount(0);
+
+    return true;
   },
 
   append_msg: function(data){
@@ -206,28 +232,32 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.listId).append(msg.li.addClass(msg.css));
+
       // 前回の最終メッセージよりも新しければ未読にする
       MessageDate.save(data.date);
       if (MessageDate.isNew(data.date)){
         that.faviconNumber.up_force()
-        msg.li.addClass("unread-msg");
+        msg.css += " unread-msg";
 
         if (that.include_target_name(data.msg,that.getName())){
-          $.observable(that).setProperty("mentionCount", that.mentionCount + 1);
+          that.mentionCount(that.mentionCount() + 1);
         }else if (that.include_room_name(data.msg)){
-          $.observable(that).setProperty("unreadRoomCount", that.unreadRoomCount + 1);
+          that.unreadRoomCount(that.unreadRoomCount() + 1);
         }else{
-          $.observable(that).setProperty("unreadCount", that.unreadCount + 1);
+          that.unreadCount(that.unreadCount() + 1);
         }
       }
-      msg.li.fadeIn();
+
+      msg.is_visible = true;
+      that.messages.push(msg);
       return true;
     }
     return false;
   },
 
   prepend_msg: function(data, callback){
+    var that = this;
+
     //TODO: System メッセージを非表示にする。
     //      切り替え可能にするかは検討する。
     if (data.name == "System"){ return false; }
@@ -236,12 +266,18 @@ ChatViewModel.prototype = {
     var msg = this.get_msg_html(data);
 
     if (this.display_message(msg)){
-      $(this.listId).prepend(msg.li);
-      msg.li.addClass("text-highlight",0);
-      msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500);
+      var msg_css = msg.css;
+      msg.css = "";
+      msg.is_visible = false;
+      that.messages.unshift(msg);
+
+      var $msg = $('#msg_' + msg._id);
+      $msg.addClass("text-highlight",0);
+      $msg.slideDown('fast',function(){
+        $msg.switchClass("text-highlight", msg_css, 700);
       });
-      callback(msg.li);
+
+      callback($msg);
       return true;
     }else{
       this.upHidingCount();
@@ -250,16 +286,23 @@ ChatViewModel.prototype = {
   },
 
   prepend_own_msg: function(data, callback){
+    var that = this;
     if (this.exist_msg(data)){ return false; }
     var msg = this.get_msg_html(data);
 
-    $(this.listId).prepend(msg.li);
     if (this.display_message(msg)){
-      msg.li.addClass("text-highlight",0);
-      msg.li.slideDown('fast',function(){
-        msg.li.switchClass("text-highlight", msg.css, 500);
+      var msg_css = msg.css;
+      msg.css = "";
+      msg.is_visible = false;
+      that.messages.unshift(msg);
+
+      var $msg = $('#msg_' + msg._id);
+      $msg.addClass("text-highlight",0);
+      $msg.slideDown('fast',function(){
+        $msg.switchClass("text-highlight", msg_css, 700);
       });
-      callback(msg.li);
+
+      callback($msg);
       return true;
     }else{
       this.upHidingCount();
@@ -277,34 +320,28 @@ ChatViewModel.prototype = {
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
     if ( data.name == this.getName()){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + '<a class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "own_msg"
+        html: this.get_msg_body(data) + '<a data-bind="click: $parent.remove_msg.bind($data, $element)" class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "own_msg",
+        _id: data._id.toString()
       };
     } else if (this.include_target_name(data.msg,this.getName())){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "target_msg"
+        html: this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "target_msg",
+        _id: data._id.toString()
       };
     } else if (this.include_room_name(data.msg)){
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="room_msg_date">' + disp_date + '</span></td></tr></table>'),
-        css: "room_msg"
+        html: this.get_msg_body(data) + ' <span class="room_msg_date">' + disp_date + '</span></td></tr></table>',
+        css: "room_msg",
+        _id: data._id.toString()
       };
     }else{
       return {
-        li: this.get_msg_li_html(data).html(this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>'),
-        css: "normal_msg"
+        html: this.get_msg_body(data) + ' <span class="date">' + disp_date + '</span></td></tr></table>',
+        css: "normal_msg",
+        _id: data._id.toString()
       };
-    }
-  },
-
-  get_msg_li_html: function(data){
-    if ( data._id != undefined ){
-      return $('<li/>').attr('style','display:none')
-                       .attr('id','msg_' + data._id.toString())
-                       .attr('data-id', data._id.toString());
-    }else{
-      return $('<li/>').attr('style','display:none');
     }
   },
 
@@ -332,9 +369,9 @@ ChatViewModel.prototype = {
 
     // avatar の undefined ガード処理が入る前のデータを弾くために文字列でも判定しておく
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
-      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }else{
-      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }
   },
 
@@ -356,13 +393,13 @@ ChatViewModel.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room, "g");
+    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room(), "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.getName()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
-      }else if (arguments[0] == "@" + that.room){
+      }else if (arguments[0] == "@" + that.room()){
         return '<span class="target-room">' + arguments[0] + '</span>'
       }else{
         return '<span class="target-other">' + arguments[0] + '</span>'
@@ -386,18 +423,11 @@ ChatViewModel.prototype = {
   },
 
   include_room_name: function(msg){
-    var room_reg = RegExp("@" + this.escape_reg(this.room) + "( |　|さん|$)");
+    var room_reg = RegExp("@" + this.escape_reg(this.room()) + "( |　|さん|$)");
     if (msg.match(room_reg)){
       return true;
     }
     return false;
-  },
-
-  remove_msg: function(id){
-    this.socket.emit('remove_message', {id:id});
-    $("#msg_" + id).fadeOut('normal', function(){
-      $(this).remove();
-    });
   },
 
   setColorbox: function($dom){
@@ -436,14 +466,14 @@ ChatViewModel.prototype = {
         return false;
       }
     }else if (this.getFilterName() != ""){
-      if (msg.li.find(".login-symbol").data("name") != this.getFilterName()){
+      if ($(msg.html).find(".login-symbol").data("name") != this.getFilterName()){
         return false;
       }
     }
 
     if (this.getFilterWord() != ""){
       var reg = RegExp(this.getFilterWord(),"im");
-      if (!msg.li.find(".msg").text().match(reg)){
+      if (!$(msg.html).find(".msg").text().match(reg)){
         return false;
       }
     }

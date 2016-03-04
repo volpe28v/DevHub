@@ -336,7 +336,7 @@ a:hover {
   background-color: yellow;
 }
 
-#move_to_blog {
+.move-to-blog {
   opacity: 0.8;
   position: fixed;
   bottom: 50%;
@@ -524,7 +524,7 @@ a:hover {
   margin-bottom: -0.3em;
 }
 
-#name, #message {
+#name, #message, .input-task {
   background-color: aliceblue;
 }
 
@@ -565,7 +565,7 @@ a:hover {
 }
 
 .chat-list li{
-  line-height: 21px;
+  line-height: 20px;
   margin: 0px;
   padding: 3px 2px;
   border-bottom: 1px solid #eee;
@@ -606,8 +606,7 @@ a:hover {
 .login-elem{
   font-weight: bold;
   font-size: 12px;
-  padding: 2px 4px;
-  margin: 1px 0px;
+  padding: 4px 4px;
   border-radius: 4px;        /* CSS3草案 */
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */
   -moz-border-radius: 4px;   /* Firefox用 */
@@ -620,6 +619,7 @@ a:hover {
 .login-symbol {
   cursor: pointer;
   display: inline-block;
+  vertical-align: middle;
 }
 
 .login-symbol:hover {
