@@ -141,6 +141,17 @@ function MemoViewModel(param){
     return this.is_memo_empty() && (this.current_state() == this.states.display);
   },this);
 
+  this.show_title = ko.pureComputed(function(){
+    if (this.current_state() == this.states.display ||
+        this.current_state() == this.states.edit    ||
+        this.current_state() == this.states.diff){
+      return true;
+    }else{
+      return false;
+    }
+  },this);
+
+
   this.states = {
     display: new DisplayState(this),
     edit: new EditState(this),

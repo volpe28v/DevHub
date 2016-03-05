@@ -26,8 +26,23 @@ function ShareMemoController(param){
   this.control_offset_base = 0;
 
   // searchBox
-  this.isSearching = false;
   this.keyword = ko.observable('');
+  // 検索キーワードのインクリメンタルサーチ
+  this.delayed_keyword = ko.pureComputed(this.keyword)
+    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+  this.delayed_keyword.subscribe(function(value){
+    that.search();
+  }, this);
+
+  this.keyword.subscribe(function(value){
+    if (value != ''){
+      $("#search_clear").show();
+    }else{
+      $("#search_clear").hide();
+      that.do_search_clear();
+    }
+  },this);
+
   this.before_keyword = "";
   this.matched_doms = [];
 
@@ -204,50 +219,28 @@ function ShareMemoController(param){
 
     var no = $next_target.closest(".share-memo").data("no");
     var data_no = $(window.localStorage.tabSelectedID).data('no');
-    var $target_tab = $("#share_memo_tab_" + no);
-    var title = $target_tab.find(".share-memo-title").text();
-    that.matched_title(title);
 
-    if (data_no != no){
-      var no = $next_target.closest(".share-memo").data("no");
-      $("#share_memo_tab_" + no).click();
-    }
+    $("#share_memo_tab_" + no).click();
+
+    that.matched_title(that.currentMemo().title());
+
     var pos = $next_target.offset().top;
     $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);
   }
 
   this.do_search = function(){
     that.search();
-    that.isSearching = false;
     return false;
-  }
-
-  this.do_incremental_search = function(data, event){
-    if (!that.isSearching && event.keyCode != 13){
-      that.isSearching = true;
-      setTimeout(function(){
-        if (that.isSearching){
-          that.search();
-          that.isSearching = false;
-        }
-      },1000);
-    }
-    if (that.keyword() != ""){
-      $("#search_clear").show();
-    }else{
-      $("#search_clear").hide();
-    }
   }
 
   this.do_search_clear = function(){
     that.currentMemo().endSearch();
+    $('#memo_area').scrollTop(0);
   }
 
-  this.end_search_controll = function(){
+  this.end_search_control = function(){
     that.keyword("");
     that.search();
-    that.isSearching = false;
-    $("#search_clear").hide();
   }
 
   this.adjustMemoControllbox = function(){
@@ -386,7 +379,7 @@ function ShareMemoController(param){
         no: i,
         socket: this.socket,
         getName: function() { return that.getName(); },
-        endSearch: that.end_search_controll
+        endSearch: that.end_search_control
       }));
     }
 

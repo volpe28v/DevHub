@@ -89,7 +89,7 @@
 
           <div id="search_box">
             <form id="search_form" class="navbar-form pull-right" data-bind="submit: do_search">
-              <input type="text" class="search-query input-small" placeholder="Search Memo" data-bind="value: keyword, valueUpdate: 'keyup', event: {keyup: do_incremental_search}">
+              <input type="text" class="search-query input-small" placeholder="Search Memo" data-bind="textInput: keyword">
               <i id="search_clear" class="icon-remove" data-bind="click: do_search_clear"></i>
             </form>
 
@@ -100,8 +100,11 @@
               </div>
             </form>
 
+            <span id="matched_title" class="navbar-text pull-right" style="display: none" data-bind="foreach: memoViewModels, visible: !matched_navi_visible()">
+              <span data-bind="decoMemoTitle: title, visible: show_title"></span>
+            </span>
             <span id="matched_count" class="navbar-text pull-right" style="display: none" data-bind="visible: matched_navi_visible">
-              <span data-bind="html: matched_title"></span>
+              <span data-bind="decoMemoTitle: matched_title"></span>
               <span data-bind="text: matched_index"></span>/<span data-bind="text: matched_num"></span>
             </span>
           </div>
