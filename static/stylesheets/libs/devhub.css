@@ -23,9 +23,8 @@ body{
 }
 
 #chat_nav{
-  background-color: white;
+  background-color: #fafafa;
 }
-
 
 .perfect-scrollbar-body-style {
   overflow : hidden;
@@ -214,8 +213,8 @@ a:hover {
 .share-memo-tab-elem {
   width: 72px;
   height: 50px;
-  border: 1px solid #ccc;
-  background-color: #fefefe;
+  border: 1px solid #ddd;
+  background-color: #fafafa;
 }
 
 .share-memo-title ,
@@ -516,7 +515,11 @@ a:hover {
 }
 
 #name, #message, .input-task {
-  background-color: aliceblue;
+  background-color: #fafafa;
+}
+
+#name:focus, #message:focus, .input-task:focus {
+  background-color: white;
 }
 
 .client-command {
@@ -544,7 +547,7 @@ a:hover {
 
 #chat_body{
   min-height: 620px;
-  padding: 4px 2px;
+  padding: 0px;
   overflow-y: auto;
   margin-bottom: 70px;
 }
@@ -564,6 +567,8 @@ a:hover {
 
 .chat-tab-elem {
   cursor: pointer !important;
+  padding-right: 8px !important;
+  padding-left: 8px !important;
 }
 
 .msg_text{
@@ -823,28 +828,6 @@ footer span {
   font-size: 12px;
 }
 
-/* for bootstrap */
-.btn-block {
-  display: block;
-  width: 100%;
-  padding-right: 0;
-  padding-left: 0;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-}
-
-button.close {
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  -webkit-appearance: none;
-}
-
-.modal {
-  max-height: 800px;
-}
 
 #chat_nav,
 #share_memo_nav{
@@ -868,3 +851,44 @@ button.close {
   margin: 3px 0px 0px 0px;
   display: inline-block;
 }
+
+/* for bootstrap */
+.btn-block {
+  display: block;
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+button.close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}
+
+.modal {
+  max-height: 800px;
+}
+
+.nav-tabs>li {
+  margin: 3px 0px -1px 3px;
+}
+.nav-tabs>.active>a, .nav-tabs>.active>a:hover {
+  color: #333;
+}
+
+.nav-tabs>li>a, .nav-pills>li>a {
+  color: #555;
+}
+
+.nav-pills .active>a, .nav-pills .active>a:hover {
+  color: #333;
+  background-color: white;
+}
+
+
