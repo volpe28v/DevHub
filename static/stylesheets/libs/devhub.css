@@ -880,15 +880,34 @@ button.close {
 }
 .nav-tabs>.active>a, .nav-tabs>.active>a:hover {
   color: #333;
+  border-color: #D2690C #e5e5e5 transparent;
+  border-width: 3px 1px 1px 1px;
 }
 
-.nav-tabs>li>a, .nav-pills>li>a {
+.nav-tabs>li>a {
   color: #555;
+  border-width: 3px 1px 1px 1px;
+}
+
+.nav-pills>li>a {
+  color: #555;
+  padding-top: 10px;
+  border-width: 1px 1px 1px 1px;
 }
 
 .nav-pills .active>a, .nav-pills .active>a:hover {
   color: #333;
   background-color: white;
+  padding-top: 8px;
+  border-width: 3px 1px 1px 1px;
+  border-color: #D2690C #e5e5e5 #e5e5e5 #e5e5e5;
 }
 
+.tabs-left .nav-tabs .active>a, .tabs-left .nav-tabs .active>a:hover {
+  border-color: #e5e5e5 transparent #e5e5e5  #D2690C;
+  border-width: 1px 1px 1px 3px;
+}
 
+.tabs-left .nav-tabs {
+  background-color: #fafafa;
+}
