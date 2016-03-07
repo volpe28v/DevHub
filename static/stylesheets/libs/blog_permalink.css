@@ -38,12 +38,8 @@ body{
   height: 40px;
 }
 
-a {
-  color: dodgerblue;
-}
-
-a:hover {
-  color: deeppink;
+a, a:hover {
+  color: #4078c0;
 }
 
 #blog_list {
