@@ -44,6 +44,10 @@ body{
   display: none;
 }
 
+#login_list_loader, #message_loader {
+  margin: 4px 0px 0px 4px;
+}
+
 #search_form {
   position: relative;
 }
@@ -589,6 +593,10 @@ a, a:hover {
   color: #336699;
 }
 
+#login_own {
+  margin-right: 4px;
+}
+
 #login_list {
   width: 100%;
   font-size: 11px;
@@ -600,7 +608,7 @@ a, a:hover {
 .login-elem{
   font-weight: bold;
   font-size: 12px;
-  padding: 4px 4px;
+  padding: 4px 5px;
   border-radius: 4px;        /* CSS3草案 */
   -webkit-border-radius: 4px;    /* Safari,Google Chrome用 */
   -moz-border-radius: 4px;   /* Firefox用 */

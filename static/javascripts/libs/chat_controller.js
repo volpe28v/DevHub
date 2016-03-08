@@ -15,6 +15,7 @@ function ChatController(param){
     that.doClientCommand(message);
   }, this);
 
+  this.ownName = ko.observable();
   this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = ko.observable(0);
   this.filterName = ko.observable("");
@@ -332,10 +333,18 @@ ChatController.prototype = {
           };
         if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
           login_elem.has_avatar = true;
-          avatar_elems.push(login_elem);
+          if (login_elem.name == that.loginName()){
+            that.ownName(login_elem);
+          }else{
+            avatar_elems.push(login_elem);
+          }
         }else{
           login_elem.has_avatar = false;
-          login_elems.push(login_elem);
+          if (login_elem.name == that.loginName()){
+            that.ownName(login_elem);
+          }else{
+            login_elems.push(login_elem);
+          }
         }
       }
       that.loginElemList(avatar_elems.concat(login_elems));
@@ -367,6 +376,9 @@ ChatController.prototype = {
       if ( this.loginElemList()[i].name == name ){
         return this.loginElemList()[i].id;
       }
+    }
+    if (this.ownName().name == name){
+      return this.ownName().id;
     }
     return 0;
   },

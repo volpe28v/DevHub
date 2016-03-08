@@ -130,9 +130,17 @@
 
           <div id="chat_inner" class="area-inner">
             <div class="chat-control">
-              <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
               <div id="login_list">
-                <span id="login_list_body" data-bind="foreach: loginElemList" style="display:block">
+                <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
+                <span id="login_own" data-bind="with: ownName">
+                  <!-- ko if: has_avatar -->
+                  <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <!-- /ko -->
+                  <!-- ko ifnot: has_avatar -->
+                  <span data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <!-- /ko -->
+                </span>
+                <span id="login_list_body" data-bind="foreach: loginElemList" style="display:inline">
                   <!-- ko if: has_avatar -->
                   <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
                   <!-- /ko -->
