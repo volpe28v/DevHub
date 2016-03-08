@@ -565,6 +565,8 @@ a, a:hover {
   cursor: pointer !important;
   padding-right: 8px !important;
   padding-left: 8px !important;
+  min-width: 30px;
+  text-align: center;
 }
 
 .msg_text{
@@ -883,6 +885,8 @@ button.close {
 .nav-tabs>li>a {
   color: #555;
   border-width: 3px 1px 1px 1px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .nav-pills>li>a {
