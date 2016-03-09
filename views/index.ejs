@@ -34,10 +34,24 @@
         <h3>DevHub</h3>
       </div>
       <div class="modal-body">
-        <p>Please type your name.</p>
-        <form id="login_form" data-bind="submit: login_action">
-          <input type="text" id="login_name" data-bind="textInput: loginName" class="span2" placeholder="Name"/>
-        </form>
+        <div class="control-group">
+          <label class="control-label">Name</label>
+          <div class="controls">
+            <form id="login_form" data-bind="submit: login_action">
+              <input type="text" id="login_name" data-bind="textInput: loginName" class="span2" placeholder="Name"/>
+            </form>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Avatar</label>
+          <div class="controls">
+            <div class="input-append">
+              <input type="text" id="avatar_login" data-bind="textInput: avatar" placeholder="xxxx.jpg">
+              <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
+              <img data-bind="attr: {src: avatar}" class="avatar">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button id="login" class="btn btn-primary" data-bind="click: login_action">OK</button>
@@ -373,14 +387,14 @@
                 seconds.
               </div>
             </div>
-            <div class="control-group">
+            <div class="control-group" id="avatar_setting">
               <label class="control-label">Avatar</label>
               <div class="controls">
                 <div class="input-append">
-                  <input type="text" id="avatar" placeholder="xxxx.jpg">
-                  <button id="avatar_set" class="btn">Set</button>
-                  <button id="upload_avatar_button" class="btn btn-small"><i class="icon-file"></i></button>
-                  <img id="avatar_img" class="avatar">
+                  <input type="text" id="avatar" data-bind="textInput: avatar" placeholder="xxxx.jpg">
+                  <button data-bind="click: set_avatar" class="btn">Set</button>
+                  <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
+                  <img data-bind="attr: {src: avatar}" class="avatar">
                 </div>
                 <input type="file" id="upload_avatar" name="file" style="display:none"></input>
               </div>

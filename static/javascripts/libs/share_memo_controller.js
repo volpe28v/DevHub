@@ -529,24 +529,6 @@ function ShareMemoController(param){
         $(context).caretLine(row);
       }
     });
-
-    // アバターフォームへのドロップ
-    new DropZone({
-      dropTarget: $('#avatar'),
-      alertTarget: $('#loading'),
-      fileTarget: $('#upload_avatar'),
-      pasteValid: true,
-      uploadedAction: function(that, res){
-        $('#avatar').val(res.fileName);
-        $('#avatar_img').attr('src',res.fileName);
-      }
-    });
-
-    // アバターアップロードボタン
-    $('#upload_avatar_button').click(function(){
-      $('#upload_avatar').click();
-      return false;
-    });
   }
 
   this.init_sharememo();

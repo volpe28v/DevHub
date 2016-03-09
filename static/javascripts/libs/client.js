@@ -11,7 +11,7 @@ function ClientViewModel(){
     that.chatController.setName(value);
     that.shareMemoController.setName(value);
   });
- 
+  this.avatar = ko.observable(window.localStorage.avatarImage);
 
   this.chatController = null;
   this.shareMemoController = null;
@@ -21,6 +21,7 @@ function ClientViewModel(){
 
   this.init = function(){
     that.init_websocket();
+    that.initSettings();
 
     if ($(window).width() < 768){
       that.is_mobile = true;
@@ -45,12 +46,7 @@ function ClientViewModel(){
       faviconNumber: that.faviconNumber,
       changedLoginName: function(name){
         that.shareMemoController.setName(name);
-        $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-        that.socket.emit('name',
-        {
-          name: name,
-          avatar: window.localStorage.avatarImage
-        });
+        that.set_avatar();
       },
       showRefPoint: function(id){
         that.shareMemoController.move(id);
@@ -94,7 +90,6 @@ function ClientViewModel(){
       $('#share_memo_nav').show();
     }
 
-    //if ( $.cookie(COOKIE_NAME) == null && !that.is_mobile){
     if ( $.cookie(COOKIE_NAME) == null){
       setTimeout(function(){
         $('#name_in').modal("show");
@@ -174,16 +169,11 @@ function ClientViewModel(){
     $('a[rel=tooltip]').tooltip({
       placement : 'bottom'
     });
-
   }
 
   this.init_websocket = function(){
     that.socket.on('connect', function() {
-      that.socket.emit('name',
-        {
-          name: $.cookie(COOKIE_NAME),
-          avatar: window.localStorage.avatarImage
-        });
+      that.set_avatar();
     });
 
     that.socket.on('disconnect', function(){
@@ -199,11 +189,123 @@ function ClientViewModel(){
     var name = that.loginName();
 
     if ( name != "" ){
-      $.cookie(COOKIE_NAME,name,{ expires: COOKIE_EXPIRES });
-      that.socket.emit('name', {name: name});
+      that.set_avatar();
       that.chatController.focus();
     }
     $('#name_in').modal('hide')
+  }
+
+  this.initSettings = function(){
+    var that = this;
+
+    if(window.localStorage.popupNotification == 'true'){
+      $('#notify_all').attr('checked', 'checked');
+    }else if (window.localStorage.popupNotification == 'mention'){
+      $('#notify_mention').attr('checked', 'checked');
+    }
+
+    $('.notify-radio').on('change', "input", function(){
+      var mode = $(this).val();
+      window.localStorage.popupNotification = mode;
+      if (mode != "disable"){
+        if(Notification){
+          Notification.requestPermission();
+        }
+      }
+    });
+
+    if (window.localStorage.notificationSeconds){
+      $('#notification_seconds').val(window.localStorage.notificationSeconds);
+    }else{
+      $('#notification_seconds').val(5);
+      window.localStorage.notificationSeconds = 5;
+    }
+
+    $('#notification_seconds').on('change',function(){
+      window.localStorage.notificationSeconds = $(this).val();
+    });
+
+    // for avatar
+    /*
+    if (window.localStorage.avatarImage){
+      $('#avatar').val(window.localStorage.avatarImage);
+      $('#avatar_img').attr('src', window.localStorage.avatarImage);
+    }
+    */
+
+    /*
+    $('#avatar_set').on('click',function(){
+      window.localStorage.avatarImage = $('#avatar').val();
+      $('#avatar_img').attr('src', window.localStorage.avatarImage);
+
+      that.socket.emit('name',
+        {
+          name: that.loginName(),
+        avatar: window.localStorage.avatarImage
+        });
+      return false;
+    });
+    */
+
+    // for Timeline
+    if(window.localStorage.timeline == 'own'){
+      $('#mention_own_alert').show();
+    }else if (window.localStorage.timeline == 'mention'){
+      $('#mention_alert').show();
+    }
+
+    // for Send Message Key
+    if(window.localStorage.sendkey == 'ctrl'){
+      $('#send_ctrl').attr('checked', 'checked');
+    }else if (window.localStorage.sendkey == 'shift'){
+      $('#send_shift').attr('checked', 'checked');
+    }else{
+      $('#send_enter').attr('checked', 'checked');
+    }
+
+    $('.send-message-key-radio').on('change', "input", function(){
+      var key = $(this).val();
+      window.localStorage.sendkey = key;
+    });
+
+    // アバターフォームへのドロップ
+    new DropZone({
+      dropTarget: $('#avatar'),
+      alertTarget: $('#loading'),
+      fileTarget: $('#upload_avatar'),
+      pasteValid: true,
+      uploadedAction: function(self, res){
+        that.avatar(res.fileName);
+      }
+    });
+
+    new DropZone({
+      dropTarget: $('#avatar_login'),
+      alertTarget: $('#loading'),
+      fileTarget: $('#upload_avatar'),
+      pasteValid: true,
+      uploadedAction: function(self, res){
+        that.avatar(res.fileName);
+      }
+    });
+ 
+  }
+
+  this.upload_avatar = function(){
+    $('#upload_avatar').click();
+    return false;
+  }
+
+  this.set_avatar = function(){
+    $.cookie(COOKIE_NAME, that.loginName(),{ expires: COOKIE_EXPIRES });
+    window.localStorage.avatarImage = that.avatar(); 
+
+    that.socket.emit('name',
+      {
+        name: that.loginName(),
+        avatar: that.avatar()
+      });
+    return false;
   }
 
   this.adjust_display_size_for_mobile = function(){
@@ -221,5 +323,6 @@ function ClientViewModel(){
 $(function() {
   var clientViewModel = new ClientViewModel();
   ko.applyBindings(clientViewModel, $('#name_in').get(0));
+  ko.applyBindings(clientViewModel, $('#avatar_setting').get(0));
   clientViewModel.init();
 });

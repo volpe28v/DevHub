@@ -92,7 +92,6 @@ function ChatController(param){
   // initialize
   MessageDate.init();
   this.initChat();
-  this.initSettings();
   this.initSocket();
   this.initDropzone();
 }
@@ -254,6 +253,30 @@ ChatController.prototype = {
       var parent = ko.contextFor(this).$parent;
       parent.load_log_more(data._id);
     });
+
+    $('#chat_body').on('click', '.close', function(){
+      var data_id = $(this).closest(".alert").attr('id');
+      if (data_id == "mention_own_alert"){
+        window.localStorage.timeline = "all";
+        that.inputMessage("");
+        $('#message').removeClass("client-command");
+      }else if (data_id == "mention_alert"){
+        window.localStorage.timeline = "all";
+        that.inputMessage("");
+        $('#message').removeClass("client-command");
+      }else if (data_id == "filter_name_alert"){
+        that.filterName("");
+      }else if (data_id == "filter_word_alert"){
+        that.filterWord("");
+        that.inputMessage("");
+        $('#message').removeClass("client-command");
+      }
+
+      that.doFilterTimeline();
+
+      return false;
+    });
+
   },
 
   setName: function(name){
@@ -397,101 +420,5 @@ ChatController.prototype = {
 
   getFilterWord: function(){
     return this.filterWord();
-  },
-
-  initSettings: function(){
-    var that = this;
-    if(window.localStorage){
-      if(window.localStorage.popupNotification == 'true'){
-        $('#notify_all').attr('checked', 'checked');
-      }else if (window.localStorage.popupNotification == 'mention'){
-        $('#notify_mention').attr('checked', 'checked');
-      }
-
-      $('.notify-radio').on('change', "input", function(){
-        var mode = $(this).val();
-        window.localStorage.popupNotification = mode;
-        if (mode != "disable"){
-          if(Notification){
-            Notification.requestPermission();
-          }
-        }
-      });
-
-      if (window.localStorage.notificationSeconds){
-        $('#notification_seconds').val(window.localStorage.notificationSeconds);
-      }else{
-        $('#notification_seconds').val(5);
-        window.localStorage.notificationSeconds = 5;
-      }
-
-      $('#notification_seconds').on('change',function(){
-        window.localStorage.notificationSeconds = $(this).val();
-      });
-
-      // for avatar
-      if (window.localStorage.avatarImage){
-        $('#avatar').val(window.localStorage.avatarImage);
-        $('#avatar_img').attr('src', window.localStorage.avatarImage);
-      }
-
-      $('#avatar_set').on('click',function(){
-        window.localStorage.avatarImage = $('#avatar').val();
-        $('#avatar_img').attr('src', window.localStorage.avatarImage);
-
-        that.socket.emit('name',
-          {
-            name: that.loginName(),
-            avatar: window.localStorage.avatarImage
-          });
-        return false;
-      });
-
-      // for Timeline
-      if(window.localStorage.timeline == 'own'){
-        $('#mention_own_alert').show();
-      }else if (window.localStorage.timeline == 'mention'){
-        $('#mention_alert').show();
-      }
-
-      // for Send Message Key
-      if(window.localStorage.sendkey == 'ctrl'){
-        $('#send_ctrl').attr('checked', 'checked');
-      }else if (window.localStorage.sendkey == 'shift'){
-        $('#send_shift').attr('checked', 'checked');
-      }else{
-        $('#send_enter').attr('checked', 'checked');
-      }
-
-      $('.send-message-key-radio').on('change', "input", function(){
-        var key = $(this).val();
-        window.localStorage.sendkey = key;
-      });
-
-      $('#chat_body').on('click', '.close', function(){
-        var data_id = $(this).closest(".alert").attr('id');
-        if (data_id == "mention_own_alert"){
-          window.localStorage.timeline = "all";
-          that.inputMessage("");
-          $('#message').removeClass("client-command");
-        }else if (data_id == "mention_alert"){
-          window.localStorage.timeline = "all";
-          that.inputMessage("");
-          $('#message').removeClass("client-command");
-        }else if (data_id == "filter_name_alert"){
-          that.filterName("");
-        }else if (data_id == "filter_word_alert"){
-          that.filterWord("");
-          that.inputMessage("");
-          $('#message').removeClass("client-command");
-        }
-
-        that.doFilterTimeline();
-
-        return false;
-      });
-    }else{
-      $('#notification').attr('disabled', 'disabled');
-    }
   }
 }
