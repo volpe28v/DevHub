@@ -344,7 +344,7 @@ function ShareMemoController(param){
   }
 
   this.change_memo_number = function(){
-    socket.emit('memo_number', {num: that.memo_number()});
+    that.socket.emit('memo_number', {num: that.memo_number()});
   }
 
   this.showIndex = function(){
@@ -377,7 +377,7 @@ function ShareMemoController(param){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
         no: i,
-        socket: this.socket,
+        socket: that.socket,
         getName: function() { return that.getName(); },
         endSearch: that.end_search_control
       }));
@@ -400,7 +400,7 @@ function ShareMemoController(param){
         var memo_tabs = $(this).sortable('toArray');
         var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); });
 
-        socket.emit('memo_tab_numbers', {numbers: tab_numbers});
+        that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
       }
     });
 
@@ -477,11 +477,11 @@ function ShareMemoController(param){
       });
     }
 
-    socket.on('memo_number', function(data){
+    that.socket.on('memo_number', function(data){
       apply_memo_number(data.num);
     });
 
-    socket.on('memo_tab_numbers', function(data){
+    that.socket.on('memo_tab_numbers', function(data){
       if (data == null){ return; }
 
       data.numbers.forEach(function(num){

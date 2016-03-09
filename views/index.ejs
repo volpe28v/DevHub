@@ -29,18 +29,18 @@
   </head>
 
   <body id="body-main" style="padding-top: 0px">
-   <div class="modal hide" id="name_in">
+    <div class="modal hide" id="name_in">
       <div class="modal-header">
         <h3>DevHub</h3>
       </div>
       <div class="modal-body">
         <p>Please type your name.</p>
-        <form id="login_form">
-          <input type="text" id="login_name" class="span2" placeholder="Name"/>
+        <form id="login_form" data-bind="submit: login_action">
+          <input type="text" id="login_name" data-bind="textInput: loginName" class="span2" placeholder="Name"/>
         </form>
       </div>
       <div class="modal-footer">
-        <button id="login" class="btn btn-primary">Login</button>
+        <button id="login" class="btn btn-primary" data-bind="click: login_action">OK</button>
       </div>
     </div>
 
@@ -134,10 +134,10 @@
                 <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
                 <span id="login_own" data-bind="with: ownName">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <span class="login-symbol" data-bind="click: $root.changeLoginName, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
-                  <span data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <span data-bind="click: $root.changeLoginName, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
                   <!-- /ko -->
                 </span>
                 <span id="login_list_body" data-bind="foreach: loginElemList" style="display:inline">
@@ -152,7 +152,6 @@
               <form id="form" class="form-inline">
                 <table>
                   <tr>
-                    <td style=""><input type="text" data-bind="textInput: loginName, event: {keydown: keydownInputName}" name="name" id="name" style="width:50px" placeholder="Name"/></td>
                     <td style="width: 100%; padding-right: 11px;">
                       <textarea
                         name="message"

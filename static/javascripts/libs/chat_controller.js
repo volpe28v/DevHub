@@ -85,6 +85,10 @@ function ChatController(param){
     }
   }
 
+  this.changeLoginName = function(){
+    $('#name_in').modal("show");
+  }
+
   // initialize
   MessageDate.init();
   this.initChat();

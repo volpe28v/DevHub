@@ -130,7 +130,7 @@ function MemoViewModel(param){
   }
 
   this._add_history = function(){
-    socket.emit('add_history',{no: that.no});
+    that.socket.emit('add_history',{no: that.no});
   }
 
   this.is_memo_empty = ko.pureComputed(function(){
@@ -192,11 +192,11 @@ function MemoViewModel(param){
 
   var that = this;
   this.initSocket = function(){
-    socket.on('text' + this.no, function(text_log) {
+    that.socket.on('text' + this.no, function(text_log) {
       that.current_state().updateText(text_log);
     });
 
-    socket.on('text_logs' + this.no, function(data){
+    that.socket.on('text_logs' + this.no, function(data){
       if (Array.isArray(data)){
         that.text_logs = data;
       }else{
@@ -438,7 +438,7 @@ function MemoViewModel(param){
     text_array.splice(row,0,text);
     that.edit_text(text_array.join("\n"));
 
-    this.socket.emit('text',{
+    that.socket.emit('text',{
       no: this.no,
       name: this.getName(),
       avatar: window.localStorage.avatarImage,
@@ -730,7 +730,7 @@ function MemoViewModel(param){
 
   this.applyToWritingText = function(func){
     this.latest_text().text = func(this.latest_text().text);
-    this.socket.emit('text',{
+    that.socket.emit('text',{
       no: this.no,
       name: this.getName(),
       avatar: window.localStorage.avatarImage,
