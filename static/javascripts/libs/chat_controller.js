@@ -340,7 +340,7 @@ ChatController.prototype = {
 
     this.socket.on('list', function(login_list) {
       $('#login_list_loader').hide();
-      $('#login_list_body span[rel=tooltip]').tooltip('hide');
+      $('#login_list span[rel=tooltip]').tooltip('hide');
 
       var login_elems = [];
       var avatar_elems = [];
@@ -375,7 +375,7 @@ ChatController.prototype = {
         }
       }
       that.loginElemList(avatar_elems.concat(login_elems));
-      $('#login_list_body span[rel=tooltip]').tooltip({placement: 'bottom'});
+      $('#login_list span[rel=tooltip]').tooltip({placement: 'bottom'});
     });
   },
 
