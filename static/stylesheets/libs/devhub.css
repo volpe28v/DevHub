@@ -919,3 +919,19 @@ button.close {
 .tabs-left .nav-tabs {
   background-color: #fafafa;
 }
+
+@media (max-width: 767px) {
+  .modal.fade.in {
+    top: 20px;
+  }
+
+  .modal {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    left: 20px;
+    width: auto;
+    margin: 0;
+  }
+}
+

@@ -11,7 +11,7 @@ function ClientViewModel(){
     that.chatController.setName(value);
     that.shareMemoController.setName(value);
   });
-  this.avatar = ko.observable(window.localStorage.avatarImage);
+  this.avatar = ko.observable(window.localStorage.avatarImage != null ? window.localStorage.avatarImage : "");
 
   this.chatController = null;
   this.shareMemoController = null;
