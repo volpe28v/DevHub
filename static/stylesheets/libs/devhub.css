@@ -3,10 +3,6 @@ body{
   margin : 0px;
 }
 
-.navbar {
-  z-index: 2000;
-}
-
 .fixed {
   position: fixed;
   width: 100%;

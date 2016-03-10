@@ -29,29 +29,29 @@
   </head>
 
   <body id="body-main" style="padding-top: 0px">
-    <div class="modal hide" id="name_in">
+    <div class="modal hide fade" id="name_in">
       <div class="modal-header">
         <h3>DevHub</h3>
       </div>
       <div class="modal-body">
-        <div class="control-group">
-          <label class="control-label">Name</label>
-          <div class="controls">
-            <form id="login_form" data-bind="submit: login_action">
-              <input type="text" id="login_name" data-bind="textInput: loginName" class="span2" placeholder="Name"/>
-            </form>
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label">Avatar</label>
-          <div class="controls">
-            <div class="input-append">
-              <input type="text" id="avatar_login" data-bind="textInput: avatar" placeholder="xxxx.jpg">
-              <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
-              <img data-bind="attr: {src: avatar}" class="avatar">
+        <form class="form-horizontal" data-bind="submit: login_action">
+          <div class="control-group">
+            <label class="control-label">Name</label>
+            <div class="controls">
+              <input type="text" id="login_name" data-bind="textInput: loginName" class="span2" placeholder="Name">
             </div>
           </div>
-        </div>
+          <div class="control-group">
+            <label class="control-label">Avatar</label>
+            <div class="controls">
+              <div class="input-append">
+                <input type="text" id="avatar_login" data-bind="textInput: avatar" placeholder="xxxx.jpg (option)">
+                <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
+                <img data-bind="attr: {src: avatar}" class="avatar">
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button id="login" class="btn btn-primary" data-bind="click: login_action">OK</button>
