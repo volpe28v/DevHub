@@ -51,7 +51,7 @@ function ChatViewModel(param){
       $(this).remove();
       that.messages.remove(this_msg);
     });
- 
+
     return true;
   }
 }
@@ -86,7 +86,8 @@ ChatViewModel.prototype = {
     var that = this;
     return function(data) {
       that.prepend_own_msg(data, function($msg){
-        MessageDate.save(data.date);
+        MessageDate.save(that.no, data.date);
+        MessageDate.update(that.no);
         that._msg_post_processing(data, $msg);
       });
     }
@@ -95,21 +96,20 @@ ChatViewModel.prototype = {
   _message_handler: function(){
     var that = this;
     return function(data) {
-      MessageDate.save(data.date);
+      MessageDate.save(that.no, data.date);
 
       that.prepend_msg(data,function($msg){
         that._msg_post_processing(data, $msg);
         that.do_notification(data);
-        if (that.faviconNumber.up()){
-          $msg.addClass("unread-msg");
+        that.faviconNumber.up();
 
-          if (that.include_target_name(data.msg,that.getName())){
-            that.mentionCount(that.mentionCount() + 1);
-          }else if (that.include_room_name(data.msg)){
-            that.unreadRoomCount(that.unreadRoomCount() + 1);
-          }else{
-            that.unreadCount(that.unreadCount() + 1);
-          }
+        $msg.addClass("unread-msg");
+        if (that.include_target_name(data.msg,that.getName())){
+          that.mentionCount(that.mentionCount() + 1);
+        }else if (that.include_room_name(data.msg)){
+          that.unreadRoomCount(that.unreadRoomCount() + 1);
+        }else{
+          that.unreadCount(that.unreadCount() + 1);
         }
       });
     }
@@ -213,6 +213,8 @@ ChatViewModel.prototype = {
   },
 
   clear_unread: function(){
+    var that = this;
+    MessageDate.update(that.no);
     this.faviconNumber.minus(this.mentionCount() + this.unreadCount() + this.unreadRoomCount());
     $(this.listId).find('li').removeClass("unread-msg");
     this.mentionCount(0);
@@ -234,8 +236,8 @@ ChatViewModel.prototype = {
     if (this.display_message(msg)){
 
       // 前回の最終メッセージよりも新しければ未読にする
-      MessageDate.save(data.date);
-      if (MessageDate.isNew(data.date)){
+      MessageDate.save(that.no, data.date);
+      if (MessageDate.isNew(that.no, data.date)){
         that.faviconNumber.up_force()
         msg.css += " unread-msg";
 

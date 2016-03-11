@@ -19,8 +19,6 @@ function FaviconNumber(data) {
 
 FaviconNumber.prototype = {
   up: function(){
-    if (this.focus_id == $(':focus').attr('id')){ this.off(); return false; }
-
     this.up_force();
     return true;
   },
@@ -34,7 +32,6 @@ FaviconNumber.prototype = {
     }
   },
   minus: function(count){
-    if (this.focus_id == $(':focus').attr('id')){ this.off(); return false; }
     this.newest_count -= count;
     if (this.newest_count < 0){ this.newest_count = 0; }
 
