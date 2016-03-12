@@ -10,7 +10,7 @@ function ChatViewModel(param){
   this.getFilterName = param.getFilterName; // function
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
-  this.faviconNumber = param.faviconNumber;
+  this.notifyChangeUnreadCount = param.notifyChangeUnreadCount; // function
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
@@ -19,6 +19,12 @@ function ChatViewModel(param){
   this.mentionCount = ko.observable(0);
   this.unreadRoomCount = ko.observable(0);
   this.unreadCount = ko.observable(0);
+  this.allUnreadCount = ko.pureComputed(function(){
+    return that.mentionCount() + that.unreadCount() + that.unreadRoomCount();
+  }).extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 200 }});
+  this.allUnreadCount.subscribe(function(value){
+    that.notifyChangeUnreadCount();
+  });
   this.isActive = ko.observable(false);
 
   this.isLoadingLog = false;
@@ -101,7 +107,6 @@ ChatViewModel.prototype = {
       that.prepend_msg(data,function($msg){
         that._msg_post_processing(data, $msg);
         that.do_notification(data);
-        that.faviconNumber.up();
 
         $msg.addClass("unread-msg");
         if (that.include_target_name(data.msg,that.getName())){
@@ -215,7 +220,6 @@ ChatViewModel.prototype = {
   clear_unread: function(){
     var that = this;
     MessageDate.update(that.no);
-    this.faviconNumber.minus(this.mentionCount() + this.unreadCount() + this.unreadRoomCount());
     $(this.listId).find('li').removeClass("unread-msg");
     this.mentionCount(0);
     this.unreadRoomCount(0);
@@ -238,7 +242,6 @@ ChatViewModel.prototype = {
       // 前回の最終メッセージよりも新しければ未読にする
       MessageDate.save(that.no, data.date);
       if (MessageDate.isNew(that.no, data.date)){
-        that.faviconNumber.up_force()
         msg.css += " unread-msg";
 
         if (that.include_target_name(data.msg,that.getName())){

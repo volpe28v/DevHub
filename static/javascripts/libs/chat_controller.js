@@ -306,7 +306,7 @@ ChatController.prototype = {
 
     $('#chat_number').bind('change',function(){
       var num = $(this).val();
-      socket.emit('chat_number', {num: num});
+      that.socket.emit('chat_number', {num: num});
     });
 
     this.socket.on('chat_number', function(number) {
@@ -330,7 +330,7 @@ ChatController.prototype = {
           getFilterName: function() {return that.getFilterName(); },
           getFilterWord: function() {return that.getFilterWord(); },
           upHidingCount: function() {return that.upHidingCount(); },
-          faviconNumber: that.faviconNumber,
+          notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
           showRefPoint: that.showRefPoint
         }));
       }
@@ -420,5 +420,13 @@ ChatController.prototype = {
 
   getFilterWord: function(){
     return this.filterWord();
-  }
+  },
+
+  updateFaviconNumber: function(){
+    var sumUnreadCount = 0;
+    this.chatViewModels().forEach(function(vm){
+      sumUnreadCount += vm.allUnreadCount();
+    });
+    this.faviconNumber.update(sumUnreadCount);
+  },
 }

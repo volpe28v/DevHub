@@ -15,7 +15,7 @@ window.MessageDate = {
 
     var lastDate = localStorage.getItem('lastMessageDate' + no);
     if (!lastDate){
-      localStorage.setItem('lastMessageDate' + no, moment(new Date()).format('YYYY/MM/DD hh:mm:ss'));
+      localStorage.setItem('lastMessageDate' + no, moment(new Date()).format('YYYY/MM/DD HH:mm:ss'));
     }
   },
   update: function(no){
@@ -24,7 +24,6 @@ window.MessageDate = {
 
   isNew: function(no, date){
     var lastDate = localStorage.getItem('lastMessageDate' + no);
-    console.log(no + " : " + lastDate);
     if (lastDate && date > lastDate){
       return true;
     }else{

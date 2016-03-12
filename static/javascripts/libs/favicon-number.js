@@ -18,38 +18,13 @@ function FaviconNumber(data) {
 }
 
 FaviconNumber.prototype = {
-  up: function(){
-    this.up_force();
-    return true;
-  },
-  up_force: function(){
-    this.newest_count++;
-
+  update: function(count){
+    this.newest_count = count;
     if (this.canUseFavico){
       this.favicon.badge(this.newest_count);
     }else{
       document.title = "(" + this.newest_count + ") " + this.title;
     }
   },
-  minus: function(count){
-    this.newest_count -= count;
-    if (this.newest_count < 0){ this.newest_count = 0; }
-
-    if (this.canUseFavico){
-      this.favicon.badge(this.newest_count);
-    }else{
-      document.title = "(" + this.newest_count + ") " + this.title;
-    }
-    return true;
-  },
-  off: function(){
-    this.newest_count = 0;
-
-    if (this.canUseFavico){
-      this.favicon.badge(this.newest_count);
-    }else{
-      document.title = this.title;
-    }
-  }
 }
 
