@@ -211,7 +211,6 @@
       // 装飾有り
       deco_text = sanitize(deco_text);
       deco_text = _decorate_wip( deco_text );
-      deco_text = _decorate_link_tag( deco_text );
       deco_text = _decorate_download_tag( deco_text );
 
       var img_result = _decorate_img_tag( deco_text, 200, img_no );
@@ -223,6 +222,8 @@
       var check_result = _decorate_checkbox( deco_text, checkbox_no );
       checkbox_no = check_result.no;
       deco_text = check_result.text;
+
+      deco_text = _decorate_link_tag( deco_text );
 
       deco_text = _decorate_draggable( deco_text );
       deco_text = _decorate_header( deco_text );
