@@ -172,6 +172,7 @@
                         id="message"
                         data-bind="
                           textInput: inputMessage,
+                          css: {'client-command': isCommand},
                           event: {keydown: function(data, event){ return keydownInputMessage(data, event, $element)}}"
                         style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;"
                         rows="1" autocomplete="off" placeholder="Message or Search ('/')"></textarea>

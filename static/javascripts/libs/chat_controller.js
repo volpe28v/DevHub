@@ -26,6 +26,7 @@ function ChatController(param){
   this.delayedFilterWord.subscribe(function (val){
     that.doFilterTimeline();
   }, this);
+  this.isCommand = ko.observable(false);
 
   this.chatViewModels = ko.observableArray([]);
 
@@ -90,7 +91,6 @@ function ChatController(param){
   }
 
   // initialize
-  MessageDate.init();
   this.initChat();
   this.initSocket();
   this.initDropzone();
@@ -145,7 +145,6 @@ ChatController.prototype = {
 
   doFilterTimeline: function(){
     var that = this;
-    MessageDate.init(); // タイムラインを再読み込みしたら未読解除
     that.hidingMessageCount(0);
 
     if (window.localStorage.timeline == "mention"){
@@ -181,19 +180,19 @@ ChatController.prototype = {
     if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
       that.filterWord(search_word);
-      $('#message').addClass("client-command");
+      that.isCommand(true);
     }else if (message.match(/^room_name:/)){
-      $('#message').addClass("client-command");
+      that.isCommand(true);
     }else if (message.match(/^m:$/)){
-      $('#message').addClass("client-command");
+      that.isCommand(true);
       window.localStorage.timeline = "mention";
       that.doFilterTimeline();
     }else if (message.match(/^mo:$/)){
-      $('#message').addClass("client-command");
+      that.isCommand(true);
       window.localStorage.timeline = "own";
       that.doFilterTimeline();
     }else{
-      $('#message').removeClass("client-command");
+      that.isCommand(false);
       that.filterWord("");
 
       // mention か mention & own の場合はフィルタリングを解除
@@ -259,17 +258,17 @@ ChatController.prototype = {
       if (data_id == "mention_own_alert"){
         window.localStorage.timeline = "all";
         that.inputMessage("");
-        $('#message').removeClass("client-command");
+        that.isCommand(false);
       }else if (data_id == "mention_alert"){
         window.localStorage.timeline = "all";
         that.inputMessage("");
-        $('#message').removeClass("client-command");
+        that.isCommand(false);
       }else if (data_id == "filter_name_alert"){
         that.filterName("");
       }else if (data_id == "filter_word_alert"){
         that.filterWord("");
         that.inputMessage("");
-        $('#message').removeClass("client-command");
+        that.isCommand(false);
       }
 
       that.doFilterTimeline();
