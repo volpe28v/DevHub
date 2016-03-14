@@ -82,18 +82,18 @@
 
 
           <ul class="nav pull-right">
-            <li><a id="memo_index" data-bind="click: showIndex" href="#" rel="tooltip" title="Memo Index"><i class="icon-white icon-align-left"></i></a></li>
+            <li><a id="memo_index" data-bind="click: memoController.showIndex" href="#" rel="tooltip" title="Memo Index"><i class="icon-white icon-align-left"></i></a></li>
             <li><a id="tab_change" href="#" rel="tooltip" title="Change Tab Layout"><i class="icon-white icon-resize-full"></i></a></li>
-            <li><a id="scroll_top" data-bind="click: top" href="#" rel="tooltip" title="Scroll Top"><i class="icon-white icon-arrow-up"></i></a></li>
+            <li><a id="scroll_top" data-bind="click: memoController.top" href="#" rel="tooltip" title="Scroll Top"><i class="icon-white icon-arrow-up"></i></a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen">
                 <i class="icon-white icon-fullscreen"></i>
                 <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
-                <li><a id="both_zen" href="#">Chat and Memo</a></li>
-                <li><a id="memo_zen" href="#">Memo only</a></li>
-                <li><a id="chat_zen" href="#">Chat only</a></li>
+                <li><a data-bind="click: fullscreen_both" href="#">Chat and Memo</a></li>
+                <li><a data-bind="click: fullscreen_memo" href="#">Memo only</a></li>
+                <li><a data-bind="click: fullscreen_chat" href="#">Chat only</a></li>
               </ul>
             </a></li>
             <li><a href="/blog" target="_blank"   rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
@@ -101,7 +101,7 @@
             <li><a href="#settings_modal" rel="tooltip" title="Settings" data-toggle="modal"><i class="icon-white icon-cog"></i></a></li>
           </ul>
 
-          <div id="search_box">
+          <div id="search_box" data-bind="with: memoController">
             <form id="search_form" class="navbar-form pull-right" data-bind="submit: do_search">
               <input type="text" class="search-query input-small" placeholder="Search Memo" data-bind="textInput: keyword">
               <i id="search_clear" class="icon-remove" data-bind="click: do_search_clear"></i>
@@ -130,7 +130,7 @@
       <div class="row-fluid flipsnap">
         <div id="chat_area" class="span5">
           <div class="dummy-top-space hidden-phone"></div>
-          <div id="index_inner" class="area-inner" style="display:none;">
+          <div id="index_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
             <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
@@ -142,7 +142,7 @@
             </div>
           </div>
 
-          <div id="chat_inner" class="area-inner">
+          <div id="chat_inner" data-bind="with: chatController" class="area-inner">
             <div class="chat-control">
               <div id="login_list">
                 <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
@@ -259,10 +259,10 @@
         <div id="memo_area" class="span7 memo-area">
           <div class="area-inner">
             <div class="dummy-top-space hidden-phone"></div>
-            <div id="share-memo">
+            <div id="share-memo" data-bind="with: memoController">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
                 <ul id="share_memo_nav" class="nav nav-tabs" data-bind="foreach: memoViewModels">
-                  <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}" class="share-memo-tab">
+                  <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}, css: {active: active}" class="share-memo-tab">
                     <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
                       <span class="share-memo-title" data-bind="decoMemoTitle: title"></span>
                       <div class="writer silent-name" data-bind="visible: !is_memo_empty(), text: writer, css: {'writing-name': update_timer() != null}"></div>
@@ -273,7 +273,7 @@
                   </li>
                 </ul>
                 <div class="share-memo-tab-content tab-content" data-bind="foreach: memoViewModels">
-                  <div data-bind="attr: {id: 'share_memo_' + no, 'data-no': no}" class="share-memo tab-pane">
+                  <div data-bind="attr: {id: 'share_memo_' + no, 'data-no': no}, css: {active: active}" class="share-memo tab-pane">
                     <div class="memo-control">
                       <button data-bind="click: $parent.do_edit" class="sync-text btn btn-primary" style="float: left">
                         <i class="icon-edit icon-white"></i> Edit
@@ -432,6 +432,7 @@
             <div class="control-group">
               <label class="control-label">Enable share memo</label>
               <div class="controls">
+                <!-- ko with: memoController -->
                 <select id="memo_number" class="span1" data-bind="
                   value: memo_number,
                   event: {change: change_memo_number}
@@ -440,6 +441,7 @@
                   <option data-bind="text: no, attr: {value: no}"></option>
                   <!-- /ko -->
                 </select>
+                <!-- /ko -->
                 tabs.
               </div>
             </div>
@@ -451,7 +453,7 @@
       </div>
     </div>
 
-    <div id ="diff_controller" style="display: none">
+    <div id ="diff_controller" data-bind="with: memoController" style="display: none">
       <div id="move_to_diff">
         <button data-bind="click: move_diff" class="btn btn-success"><i class="icon-arrow-down icon-white"></i> Next Diff</button>
       </div>

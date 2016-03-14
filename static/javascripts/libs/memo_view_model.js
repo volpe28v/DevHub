@@ -106,6 +106,7 @@ function MemoViewModel(param){
   this.socket = param.socket;
   this.getName = param.getName; //function
   this.notifyEndSearch = param.endSearch; //function
+  this.active = param.active;
 
   this.latest_text = ko.observable({text: "", name: "" , date: undefined});
   this.display_text = ko.observable("");
@@ -161,7 +162,11 @@ function MemoViewModel(param){
   }
 
   // 初期状態
-  this.current_state = ko.observable(this.states.hide);
+  if (this.active){
+    this.current_state = ko.observable(this.states.display);
+  }else{
+    this.current_state = ko.observable(this.states.hide);
+  }
 
   this.set_state = function(next){
     var before = that.current_state();

@@ -9,7 +9,6 @@ function FaviconNumber(data) {
   }
 
   this.newest_count = 0;
-  this.focus_id = data.focus_id;
   this.title = document.title;
 
   this.favicon = new Favico({

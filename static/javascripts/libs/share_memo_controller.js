@@ -19,10 +19,8 @@ function ShareMemoController(param){
   this.doing_down = false;
 
   this.memoViewModels = ko.observableArray([]);
-  this.currentMemoNo = 0;
-
+  this.currentMemoNo = window.localStorage.tabSelectedNo ? window.localStorage.tabSelectedNo : 1;
   this.isMovingTab = false;
-
   this.control_offset_base = 0;
 
   // searchBox
@@ -61,7 +59,7 @@ function ShareMemoController(param){
     // タブ選択のIDを記憶する
     var memoViewModel = this;
 
-    window.localStorage.tabSelectedID = "#share_memo_tab_" + memoViewModel.no;
+    window.localStorage.tabSelectedNo = memoViewModel.no;
 
     that.currentMemo().unselect();
     that.currentMemoNo = memoViewModel.no;
@@ -91,7 +89,7 @@ function ShareMemoController(param){
   }
 
   this.setFocus = function(){
-    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    var data_no = that.currentMemo().no;
     var targetMemo = this.memoViewModels()[data_no-1];
     if (targetMemo.edit_mode){
       $('#share_memo_' + data_no).find(".code").focus();
@@ -121,7 +119,7 @@ function ShareMemoController(param){
   }
 
   this.prev = function(){
-    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    var data_no = that.currentMemo().no;
     data_no -= 1;
     if (data_no <= 0){
       data_no = this.memo_number();
@@ -130,7 +128,7 @@ function ShareMemoController(param){
   }
 
   this.next = function(){
-    var data_no = $(window.localStorage.tabSelectedID).data('no');
+    var data_no = that.currentMemo().no;
     data_no += 1;
     if (data_no > this.memo_number()){
       data_no = 1;
@@ -218,7 +216,6 @@ function ShareMemoController(param){
     $next_target.removeClass("matched_line").addClass("matched_strong_line");
 
     var no = $next_target.closest(".share-memo").data("no");
-    var data_no = $(window.localStorage.tabSelectedID).data('no');
 
     $("#share_memo_tab_" + no).click();
 
@@ -354,14 +351,6 @@ function ShareMemoController(param){
 
 
   this.init_sharememo = function(){
-    ko.applyBindings(that, $('#search_box').get(0));
-    ko.applyBindings(that, $('#scroll_top').get(0));
-    ko.applyBindings(that, $('#memo_index').get(0));
-    ko.applyBindings(that, $('#share-memo').get(0));
-    ko.applyBindings(that, $('#index_inner').get(0));
-    ko.applyBindings(that, $('#diff_controller').get(0));
-    ko.applyBindings(that, $('#memo_number').get(0));
-
     $(".share-memo-tab-content")
       .decora({
         checkbox_callback: function(context, applyCheckStatus){
@@ -377,6 +366,7 @@ function ShareMemoController(param){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
         no: i,
+        active: i == that.currentMemoNo,
         socket: that.socket,
         getName: function() { return that.getName(); },
         endSearch: that.end_search_control
@@ -433,23 +423,13 @@ function ShareMemoController(param){
     });
 
     // 前回の状態を復元する
-    if ( window.localStorage ){
-      // タブスタイル
-      if ( window.localStorage.tabChanged != 'false' ){
-        $('#share_memo_nav').hide();
-        $('#share_memo_tabbable').removeClass("tabs-left");
-        $('#share_memo_nav').removeClass("nav-tabs");
-        $('#share_memo_nav').addClass("nav-pills");
-        $('#share_memo_nav').show();
-      }
-      // タブ選択状態
-      if ( window.localStorage.tabSelectedID ){
-        this.currentMemoNo = $(window.localStorage.tabSelectedID).data('no');
-        $(window.localStorage.tabSelectedID).click();
-      }else{
-        this.currentMemoNo = 1;
-        $('#share_memo_tab_1').click();
-      }
+    // タブスタイル
+    if ( window.localStorage.tabChanged != 'false' ){
+      $('#share_memo_nav').hide();
+      $('#share_memo_tabbable').removeClass("tabs-left");
+      $('#share_memo_nav').removeClass("nav-tabs");
+      $('#share_memo_nav').addClass("nav-pills");
+      $('#share_memo_nav').show();
     }
 
     $(".code").autofit({min_height: CODE_MIN_HEIGHT});

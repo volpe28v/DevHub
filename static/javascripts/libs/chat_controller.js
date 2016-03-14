@@ -208,8 +208,6 @@ ChatController.prototype = {
   initChat: function(){
     var that = this;
 
-    ko.applyBindings(that, $('#chat_inner').get(0));
-
     $('#message').textcomplete([
       {
         match: /\B:([\-+\w]*)$/,

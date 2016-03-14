@@ -9,14 +9,34 @@ function ClientViewModel(){
   this.loginName = ko.observable($.cookie(COOKIE_NAME));
   this.loginName.subscribe(function(value){
     that.chatController.setName(value);
-    that.shareMemoController.setName(value);
+    that.memoController.setName(value);
   });
   this.avatar = ko.observable(window.localStorage.avatarImage != null ? window.localStorage.avatarImage : "");
 
-  this.chatController = null;
-  this.shareMemoController = null;
+  this.faviconNumber = new FaviconNumber();
 
-  this.faviconNumber = null;
+  this.memoController = new ShareMemoController({
+    socket: that.socket,
+    setMessage: function(message){
+      that.chatController.setMessage(message);
+    },
+    zenMode: function(){
+      return that.zenMode;
+    }
+  });
+
+  this.chatController = new ChatController({
+    socket: that.socket,
+    faviconNumber: that.faviconNumber,
+    changedLoginName: function(name){
+      that.memoController.setName(name);
+      that.set_avatar();
+    },
+    showRefPoint: function(id){
+      that.memoController.move(id);
+    }
+  });
+
   this.zenMode = false;
 
   this.init = function(){
@@ -26,32 +46,6 @@ function ClientViewModel(){
     if ($(window).width() < 768){
       that.is_mobile = true;
     }
-
-    that.faviconNumber = new FaviconNumber({
-      focus_id: "message"
-    });
-
-    that.shareMemoController = new ShareMemoController({
-      socket: that.socket,
-      setMessage: function(message){
-        that.chatController.setMessage(message);
-      },
-      zenMode: function(){
-        return that.zenMode;
-      }
-    });
-
-    that.chatController = new ChatController({
-      socket: that.socket,
-      faviconNumber: that.faviconNumber,
-      changedLoginName: function(name){
-        that.shareMemoController.setName(name);
-        that.set_avatar();
-      },
-      showRefPoint: function(id){
-        that.shareMemoController.move(id);
-      }
-    });
 
     // for smartphone
     // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
@@ -99,37 +93,9 @@ function ClientViewModel(){
       },500);
     }else{
       that.chatController.setName($.cookie(COOKIE_NAME));
-      that.shareMemoController.setName($.cookie(COOKIE_NAME));
+      that.memoController.setName($.cookie(COOKIE_NAME));
       that.chatController.focus();
     }
-
-    // ナビバー消去
-    $("#both_zen").click(function(){
-      that.zenMode = true;
-      $(".navbar").fadeOut();
-      $(".dummy-top-space").fadeOut();
-      $("#memo_area").trigger("scroll");
-    });
-
-    $("#memo_zen").click(function(){
-      that.zenMode = true;
-      $(".navbar").fadeOut();
-      $(".dummy-top-space").fadeOut();
-      $("#chat_area").hide();
-      $("#memo_area").removeClass("span7 memo-area");
-      $("#memo_area").addClass("span12 memo-area-zen");
-      $("#memo_area").trigger("scroll");
-    });
-
-    $("#chat_zen").click(function(){
-      that.zenMode = true;
-      $(".navbar").fadeOut();
-      $(".dummy-top-space").fadeOut();
-      $("#memo_area").hide();
-      $("#chat_area").removeClass("span5");
-      $("#chat_area").addClass("span12");
-      $("#memo_area").trigger("scroll");
-    });
 
     // ショートカットキー
     $(document).on("keyup", function (e) {
@@ -151,17 +117,17 @@ function ClientViewModel(){
            if (e.keyCode == 73){ // Ctrl - i : focus chat form
            $('#message').focus();
            } else if (e.keyCode == 77){ // Ctrl - m : focus current memo form
-           shareMemoController.setFocus();
+           memoController.setFocus();
            } else if (e.keyCode == 72){ // Ctrl - h: select prev share memo
-           shareMemoController.prev();
+           memoController.prev();
            } else if (e.keyCode == 76){ // Ctrl - l: select next share memo
-           shareMemoController.next();
+           memoController.next();
            } else if (e.keyCode == 48){ // Ctrl - 0: move top share memo
-           shareMemoController.top();
+           memoController.top();
            } else if (e.keyCode == 74){ // Ctrl - j: move down share memo
-           shareMemoController.down();
+           memoController.down();
            } else if (e.keyCode == 75){ // Ctrl - j: move down share memo
-           shareMemoController.up();
+           memoController.up();
            }
            */
       }
@@ -183,6 +149,33 @@ function ClientViewModel(){
     that.socket.on('set_name', function(name) {
       that.loginName(name);
     });
+  }
+
+  this.fullscreen_both = function(){
+    this.zenMode = true;
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
+    $("#memo_area").trigger("scroll");
+  }
+
+  this.fullscreen_memo = function(){
+    this.zenMode = true;
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
+    $("#chat_area").hide();
+    $("#memo_area").removeClass("span7 memo-area");
+    $("#memo_area").addClass("span12 memo-area-zen");
+    $("#memo_area").trigger("scroll");
+  }
+
+  this.fullscreen_chat = function(){
+    this.zenMode = true;
+    $(".navbar").fadeOut();
+    $(".dummy-top-space").fadeOut();
+    $("#memo_area").hide();
+    $("#chat_area").removeClass("span5");
+    $("#chat_area").addClass("span12");
+    $("#memo_area").trigger("scroll");
   }
 
   this.login_action = function(){
@@ -225,28 +218,6 @@ function ClientViewModel(){
       window.localStorage.notificationSeconds = $(this).val();
     });
 
-    // for avatar
-    /*
-    if (window.localStorage.avatarImage){
-      $('#avatar').val(window.localStorage.avatarImage);
-      $('#avatar_img').attr('src', window.localStorage.avatarImage);
-    }
-    */
-
-    /*
-    $('#avatar_set').on('click',function(){
-      window.localStorage.avatarImage = $('#avatar').val();
-      $('#avatar_img').attr('src', window.localStorage.avatarImage);
-
-      that.socket.emit('name',
-        {
-          name: that.loginName(),
-        avatar: window.localStorage.avatarImage
-        });
-      return false;
-    });
-    */
-
     // for Timeline
     if(window.localStorage.timeline == 'own'){
       $('#mention_own_alert').show();
@@ -288,7 +259,6 @@ function ClientViewModel(){
         that.avatar(res.fileName);
       }
     });
- 
   }
 
   this.upload_avatar = function(){
@@ -298,7 +268,7 @@ function ClientViewModel(){
 
   this.set_avatar = function(){
     $.cookie(COOKIE_NAME, that.loginName(),{ expires: COOKIE_EXPIRES });
-    window.localStorage.avatarImage = that.avatar(); 
+    window.localStorage.avatarImage = that.avatar();
 
     that.socket.emit('name',
       {
@@ -315,14 +285,13 @@ function ClientViewModel(){
     $('.flipsnap').css('width',window_width * 2 + 'px');
 
     that.chatController.setWidth(window_width);
-    that.shareMemoController.setWidth(window_width);
+    that.memoController.setWidth(window_width);
     Flipsnap('.flipsnap').refresh();
   }
 }
 
 $(function() {
   var clientViewModel = new ClientViewModel();
-  ko.applyBindings(clientViewModel, $('#name_in').get(0));
-  ko.applyBindings(clientViewModel, $('#avatar_setting').get(0));
+  ko.applyBindings(clientViewModel);
   clientViewModel.init();
 });
