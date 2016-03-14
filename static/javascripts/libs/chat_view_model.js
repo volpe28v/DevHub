@@ -374,9 +374,9 @@ ChatViewModel.prototype = {
 
     // avatar の undefined ガード処理が入る前のデータを弾くために文字列でも判定しておく
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
-      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top" width="32px"><span class="login-symbol" data-name="' + data.name + '" title="' + data.name + '" rel="tooltip" data-bind="click: function(data, event){ $parents[1].inputLoginName(data, event, $element)}"><img class="avatar" src="' + data.avatar + '"></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }else{
-      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
+      return '<table><tr><td nowrap valign="top"><span class="login-symbol login-elem ' + name_class + '" data-name="' + data.name + '" data-bind="click: function(data, event){ $parents[1].inputLoginName(data, event, $element)}"><span class="name">' + data.name + '</span></span></td><td width="100%"><span class="msg_text ' + msg_class + '">' + this.decorate_msg(data.msg) + '</span>';
     }
   },
 

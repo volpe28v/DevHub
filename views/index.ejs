@@ -134,8 +134,8 @@
             <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
-              <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}" style="display: none" class="index-ul">
-                <li class="index-li" data-bind="click: function(data, event){ return $root.select_index_li(data,event,$element) }">
+              <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">
+                <li class="index-li" data-bind="click: function(data, event){ return $parents[1].select_index_li(data,event,$element) }">
                   <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
                 </li>
               </ul>
@@ -148,18 +148,18 @@
                 <div id="login_list_loader"><img src="/img/loader.gif"/> Connecting...</div>
                 <span id="login_own" data-bind="with: ownName">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="click: $root.changeLoginName, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <span class="login-symbol" data-bind="click: $parent.changeLoginName, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
-                  <span data-bind="click: $root.changeLoginName, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <span data-bind="click: $parent.changeLoginName, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
                   <!-- /ko -->
                 </span>
                 <span id="login_list_body" data-bind="foreach: loginElemList" style="display:inline">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
+                  <span class="login-symbol" data-bind="click: function(data, event){ $parent.inputLoginName(data, event, $element)}, attr:{'data-name': name, title: name}" rel="tooltip"><img class="avatar" data-bind="attr:{src: avatar}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
-                  <span data-bind="click: function(data, event){ $root.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
+                  <span data-bind="click: function(data, event){ $parent.inputLoginName(data, event, $element)}, css: color_id, attr:{'data-name': name}"><span class="name" data-bind="text: name"></span></span>
                   <!-- /ko -->
                 </span>
               </div>

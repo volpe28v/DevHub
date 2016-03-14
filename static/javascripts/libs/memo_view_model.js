@@ -61,7 +61,6 @@ function DiffState(parent){
   this.parent = parent;
 
   this.enter = function(){
-
     parent.setDisplayControl();
   }
 
@@ -152,20 +151,12 @@ function MemoViewModel(param){
     }
   },this);
 
-
   this.states = {
     display: new DisplayState(this),
     edit: new EditState(this),
     hide: new HideState(this),
     diff: new DiffState(this),
     search: new SearchState(this),
-  }
-
-  // 初期状態
-  if (this.active){
-    this.current_state = ko.observable(this.states.display);
-  }else{
-    this.current_state = ko.observable(this.states.hide);
   }
 
   this.set_state = function(next){
@@ -196,6 +187,19 @@ function MemoViewModel(param){
   this.currentIndexNo = -1;
 
   var that = this;
+
+  this.init = function(){
+    // 初期状態
+    if (this.active){
+      this.current_state = ko.observable(this.states.display);
+      this.setDisplayControl();
+    }else{
+      this.current_state = ko.observable(this.states.hide);
+    }
+
+    this.initSocket();
+  }
+
   this.initSocket = function(){
     that.socket.on('text' + this.no, function(text_log) {
       that.current_state().updateText(text_log);
@@ -791,5 +795,5 @@ function MemoViewModel(param){
     that.showDiffList();
   }
 
-  this.initSocket();
+  this.init();
 }
