@@ -307,7 +307,8 @@ function MemoViewModel(param){
     var $target_code = $share_memo.children(".code");
 
     $target_code.show();
-    $target_code.keyup(); //call autofit
+    $target_code.keyup(); //for autofit
+
     // 編集モード時に選択した行位置を表示する
     if (row >= 0){
       $target_code.caretLine(row);

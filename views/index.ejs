@@ -313,6 +313,7 @@
                     <div class="memo-control-dummy" style="display:none;"></div>
                     <textarea data-bind="
                       textInput: edit_text,
+                      autofit: true,
                       event: {
                         dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
                         click: function(data, event){ return clickOnCodeArea(data, event, $element) },
@@ -327,7 +328,7 @@
                       <div class="code-out" data-bind="
                         event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
                         decoHtml: display_text">
-                       </div>
+                      </div>
                       <div class="diff-view" style="display: none"></div>
                     </pre>
                   </div>

@@ -1,5 +1,4 @@
 var SHARE_MEMO_NUMBER = 30;
-var CODE_MIN_HEIGHT = 700;
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
 var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
@@ -431,8 +430,6 @@ function ShareMemoController(param){
       $('#share_memo_nav').addClass("nav-pills");
       $('#share_memo_nav').show();
     }
-
-    $(".code").autofit({min_height: CODE_MIN_HEIGHT});
 
     $("body").on('keydown',function(event){
       // F2で共有メモの編集状態へ

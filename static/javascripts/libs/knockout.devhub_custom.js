@@ -77,5 +77,15 @@ ko.bindingHandlers.editStartTextarea = {
       $(element).autofit({min_height: 100});
     }
   }
-};
+}
+
+// autofit カスタムバインディング(true の場合に有効)
+ko.bindingHandlers.autofit = {
+  init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+    if (valueAccessor()){
+      $(element).autofit({min_height: 700});
+    }
+  }
+}
+
 
