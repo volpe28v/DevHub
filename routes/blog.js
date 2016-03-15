@@ -56,7 +56,7 @@ exports.get = function(req, res){
   if (id == undefined){
     res.render('blog');
   }else{
-    res.render('blog_permalink',{locals:{id: id}});
+    res.render('blog_permalink',{id: id});
   }
 };
 

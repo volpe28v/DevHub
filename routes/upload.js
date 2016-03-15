@@ -31,7 +31,7 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res){
   util.getFileListAndSize('./static/uploads/',function(file_info){
-    res.render('upload',{locals:{file_info: file_info}});
+    res.render('upload',{file_info: file_info});
   });
 };
 
