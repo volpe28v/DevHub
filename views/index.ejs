@@ -273,7 +273,10 @@
                   </li>
                 </ul>
                 <div class="share-memo-tab-content tab-content" data-bind="foreach: memoViewModels">
-                  <div data-bind="attr: {id: 'share_memo_' + no, 'data-no': no}, css: {active: active}" class="share-memo tab-pane">
+                  <div data-bind="
+                    attr: {id: 'share_memo_' + no, 'data-no': no},
+                    css: {active: active}"
+                    class="share-memo tab-pane">
                     <div class="memo-control">
                       <button data-bind="click: $parent.do_edit" class="sync-text btn btn-primary" style="float: left">
                         <i class="icon-edit icon-white"></i> Edit
@@ -314,6 +317,7 @@
                     <textarea data-bind="
                       textInput: edit_text,
                       autofit: true,
+                      dropzoneEdit: true,
                       event: {
                         dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
                         click: function(data, event){ return clickOnCodeArea(data, event, $element) },
@@ -324,8 +328,9 @@
                     <div data-bind="visible: show_empty_alert, event: {dblclick: $parent.do_edit}" class="memo-alert alert alert-info">
                       This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.
                     </div>
-                    <pre class="code-out-base">
+                    <pre class="code-out-base" data-bind="decora: true">
                       <div class="code-out" data-bind="
+                        dropzoneDisp: true,
                         event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
                         decoHtml: display_text">
                       </div>

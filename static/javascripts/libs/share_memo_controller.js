@@ -350,18 +350,6 @@ function ShareMemoController(param){
 
 
   this.init_sharememo = function(){
-    $(".share-memo-tab-content")
-      .decora({
-        checkbox_callback: function(context, applyCheckStatus){
-          // チェック対象のテキストを更新する
-          that.currentMemo().applyToWritingText(applyCheckStatus);
-        },
-        img_size_callback: function(context, applyImgSize){
-          // チェック対象のテキストを更新する
-          that.currentMemo().applyToWritingText(applyImgSize);
-        }
-      });
-
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
         no: i,
@@ -469,46 +457,6 @@ function ShareMemoController(param){
     });
   }
 
-  this.init_dropzone = function(){
-    // 閲覧モードの行指定でドロップ
-    new DropZone({
-      dropTarget: $('.code-out'),
-      dropChildSelector: '.code-out-tr',
-      alertTarget: $('#loading'),
-      uploadedAction: function(context, res){
-        var row = $(context).closest("table").find("tr").index(context);
-
-        // ドロップ位置にファイルを差し込む
-        that.currentMemo().insert(row + 1, res.fileName + " ");
-      }
-    });
-
-    // 閲覧モードの行以外の部分にドロップ
-    new DropZone({
-      dropTarget: $('.code-out'),
-      alertTarget: $('#loading'),
-      uploadedAction: function(context, res){
-        // メモの先頭に画像を差し込む
-        that.currentMemo().insert(0, res.fileName + " ");
-      }
-    });
-
-    // 編集モードへのドロップ
-    new DropZone({
-      dropTarget: $('.code'),
-      alertTarget: $('#loading'),
-      pasteValid: true,
-      uploadedAction: function(context, res){
-        var row = $(context).caretLine();
-
-        // メモのキャレット位置にファイルを差し込む
-        that.currentMemo().insert(row - 1, res.fileName + " ");
-        $(context).caretLine(row);
-      }
-    });
-  }
-
   this.init_sharememo();
-  this.init_dropzone();
 }
 
