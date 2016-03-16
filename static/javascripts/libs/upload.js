@@ -4,7 +4,7 @@ $(function() {
       return true;
     }
 
-    $.ajax('upload' , {
+    $.ajax('upload?file=' + $(this).attr('data-name') , {
       type: 'DELETE',
       cache: false,
       data: {file: $(this).attr('data-name')},

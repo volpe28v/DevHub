@@ -6,7 +6,7 @@
     "commander": "2.9.0",
     "ejs": "2.4.1",
     "express": "4.13.4",
-    "grid-fs": "^0.1.2",
+    "gridfs-stream": "^1.1.1",
     "grunt": "~0.4.2",
     "grunt-contrib-cssmin": "~1.0.0",
     "grunt-contrib-uglify": "~1.0.0",

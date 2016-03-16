@@ -1,6 +1,8 @@
+var multiparty = require('multiparty');
 var fs = require('fs');
 var util = require('../lib/util');
-var GridFs = require('grid-fs');
+var Grid = require('gridfs-stream');
+var mongo = require('mongodb');
 var db;
 
 module.exports.set_db = function(current_db){
@@ -17,77 +19,75 @@ function modifyFileName(file_name, type){
 }
 
 exports.post = function(req, res) {
-  var tmp_path = req.files.file.path;
-  var file_name = modifyFileName(req.files.file.name, req.files.file.type);
-  var access_path = '/uploads/' + file_name;
+  var form = new multiparty.Form();
 
-  var gridFs = new GridFs(db);
-  var stream = gridFs.createWriteStream(file_name);
-  var source = fs.createReadStream(tmp_path);
-  source.pipe(stream);
+  form.parse(req, function(err, fields, files) {
+    Object.keys(files).forEach(function(name) {
+      var org_name = files[name][0].originalFilename;
+      var type = files[name][0].headers['content-type'];;
+      var file_name = modifyFileName(org_name, type);
+      var tmp_path = files[name][0].path;
+      var access_path = '/uploads/' + file_name;
 
-  stream.on('close', function(){
-    fs.unlink(tmp_path, function (err) {
-      if (err) {
-        throw err;
-      }
+      var gfs = Grid(db, mongo);
+
+      var writestream = gfs.createWriteStream({
+        filename: file_name
+      });
+      fs.createReadStream(tmp_path).pipe(writestream);
+
+      writestream.on('close', function (file) {
+        fs.unlink(tmp_path, function (err) {
+          if (err) {
+            throw err;
+          }
+        });
+        res.send({fileName: access_path});
+      });
+
+      return;
     });
-    res.send({fileName: access_path});
   });
 };
 
 var q = require("q");
 
-function getFileInfo(file){
-  var deferred = q.defer();
-  var gridFs = new GridFs(db);
-  gridFs.listFile(file, function(err, info){
-    if(err){
-      deferred.reject(err);
-    }else{
-      deferred.resolve({
-        name: info.filename,
-        size: info.length,
-        date: info.uploadDate
-      });
-    }
-  });
-  return deferred.promise;
-}
-
 function getFileListAndSizeGridFs(){
   var deferred = q.defer();
-  var gridFs = new GridFs(db);
-
-  gridFs.list(function(err, files){
-    var promises = files.map(function(file){return getFileInfo(file)});
-    q.all(promises).then(function(infos){
-      var file_info = {
-        all_size: infos
-            .map(function(info){return info.size})
-            .reduce(function(a, b){
-              return a + b;
-            },0),
-        files: infos.sort(function(a,b){ return b['date'] - a['date'] })
-      };
-      deferred.resolve(file_info);
-    });
+  var gfs = Grid(db, mongo);
+  gfs.files.find().toArray(function (err, files) {
+    var file_info = {
+      all_size: files 
+        .map(function(file){return file.length})
+        .reduce(function(a, b){
+          return a + b;
+        },0),
+      files: files
+        .map(function(file){
+          return {
+            name: file.filename,
+            size: file.length,
+            date: file.uploadDate
+          }
+        })
+        .sort(function(a,b){ return b['date'] - a['date'] })
+    };
+    deferred.resolve(file_info);
   });
+ 
   return deferred.promise;
 }
 
 exports.get = function(req, res){
   getFileListAndSizeGridFs().then(function(file_info){
-    res.render('upload',{locals:{file_info: file_info}});
+    res.render('upload',{file_info: file_info});
   })
 };
 
 exports.delete = function(req, res) {
-  var gridFs = new GridFs(db);
-  gridFs.unlink(req.body.file, function (err) {
-    if (err) {
-      throw err;
-    }
+  var gfs = Grid(db, mongo);
+  gfs.remove({ filename: req.query.file}, function (err) {
+    if (err) return handleError(err);
     getFileListAndSizeGridFs().then(function(file_info){
       res.send({all_size: file_info['all_size']});
     });
@@ -95,19 +95,18 @@ exports.delete = function(req, res) {
 };
 
 exports.serve = function(req, res){
-  var file = req.param("file");
-  var gridFs = new GridFs(db);
-  gridFs.list(function(err, files){
-    var _ = require("underscore");
-    var exists = _.find(files, function(item){return item === file});
-    if(exists){
-      var stream = gridFs.createReadStream(file);
-      stream.pipe(res);
-    }else{
-      res.status(404);
-      res.type('txt').send('Not found');
-    }
+  var file = req.params.file;
+  var gfs = Grid(db, mongo);
+
+  var readstream = gfs.createReadStream({
+    filename: file
   });
 
+  readstream.on('error', function (err) {
+    res.status(404);
+    res.type('txt').send('Not found');
+  });
+
+  readstream.pipe(res);
 };
 
