@@ -1,7 +1,6 @@
 var multiparty = require('multiparty');
 var fs = require('fs');
 var util = require('../lib/util');
-var GridFs = require('grid-fs');
 
 module.exports.set_db = function(current_db){
 
