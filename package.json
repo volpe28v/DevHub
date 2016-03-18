@@ -2,6 +2,7 @@
   "name": "DevHub",
   "version": "0.0.1",
   "dependencies": {
+    "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.5.2",
     "commander": "2.9.0",
     "ejs": "2.4.1",
