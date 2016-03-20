@@ -50,7 +50,13 @@
             <li>
               <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">
                 <li>
-                  <a class="index-li"><div data-bind="css: index_class, decoMemoIndex: body, click: $root.selectIndexHeader"></div></a>
+                  <a class="index-li">
+                    <div data-bind="
+                      css: index_class,
+                      decoMemoIndex: body,
+                      click: $root.selectIndexHeader.bind($data,-10)">
+                    </div>
+                  </a>
                 </li>
               </ul>
             </li>
