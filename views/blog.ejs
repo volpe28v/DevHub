@@ -69,52 +69,6 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div id="index_area" class="span4">
-          <div class="dummy-space"></div>
-          <div class="row-fluid">
-            <ul id="index_list" data-bind="foreach: items" class="nav nav-tabs nav-stacked">
-              <li class="index-body">
-                <a class="index-body-link" href="#" data-bind="
-                  click: $parent.selectIndex,
-                  attr: {'data-id': _id}">
-                  <div class="share-memo-title">
-                    <!-- ko if: matched -->
-                    <span class="label label-important" data-bind="text: matched"></span>
-                    <!-- /ko -->
-                    <span data-bind="decoBlogTitleHtml: title"></span>
-                  </div>
-
-                  <!-- ko if: indexes() && indexes().length -->
-                  <i class="icon-align-left indexes-link"></i>
-                  <!-- /ko -->
-
-                  <div class="writer">
-                    <!-- ko if: has_avatar -->
-                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'left'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
-                    <!-- /ko -->
-                    <!-- ko ifnot: has_avatar -->
-                      <span data-bind="text: name"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
-                    <!-- /ko -->
-                  </div>
-                </a>
-                <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, visible: display_indexes">
-                  <li>
-                    <a class="index-li">
-                      <div data-bind="
-                        css: index_class,
-                        decoMemoIndex: body,
-                        click: $root.selectIndexHeader.bind($data,42)">
-                      </div>
-                    </a>
-                  </li>
-
-                </ul>
-              </li>
-            </ul>
-            <div id="load_more_from_index"></div>
-            <div class="dummy-space"></div>
-          </div>
-        </div>
 
         <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
@@ -164,8 +118,57 @@
           </ul>
           <div class="dummy-space"></div>
         </div>
+
+        <div id="index_area" class="span4">
+          <div class="dummy-space"></div>
+          <div class="row-fluid">
+            <ul id="index_list" data-bind="foreach: items" class="nav nav-tabs nav-stacked">
+              <li class="index-body">
+                <a class="index-body-link" href="#" data-bind="
+                  click: $parent.selectIndex,
+                  attr: {'data-id': _id}">
+                  <div class="share-memo-title">
+                    <!-- ko if: matched -->
+                    <span class="label label-important" data-bind="text: matched"></span>
+                    <!-- /ko -->
+                    <span data-bind="decoBlogTitleHtml: title"></span>
+                  </div>
+
+                  <!-- ko if: indexes() && indexes().length -->
+                  <i class="icon-align-left indexes-link"></i>
+                  <!-- /ko -->
+
+                  <div class="writer">
+                    <!-- ko if: has_avatar -->
+                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'left'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                    <!-- /ko -->
+                    <!-- ko ifnot: has_avatar -->
+                      <span data-bind="text: name"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                    <!-- /ko -->
+                  </div>
+                </a>
+                <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}, visible: display_indexes">
+                  <li>
+                    <a class="index-li">
+                      <div data-bind="
+                        css: index_class,
+                        decoMemoIndex: body,
+                        click: $root.selectIndexHeader.bind($data,42)">
+                      </div>
+                    </a>
+                  </li>
+
+                </ul>
+              </li>
+            </ul>
+            <div id="load_more_from_index"></div>
+            <div class="dummy-space"></div>
+          </div>
+        </div>
+
       </div>
     </div>
+
 
     <!-- modal -->
     <div id="tags_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
