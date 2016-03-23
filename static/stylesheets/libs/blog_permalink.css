@@ -90,8 +90,8 @@ pre.text-base-style {
 .code-out {
   width: 100%;
   margin-top: 0px;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 15px;
+  line-height: 160%;
 }
 
 .code-out table{
