@@ -44,25 +44,7 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div id="index_header_area" class="span4">
-          <div class="dummy-space"></div>
-          <ul id="index_header" data-bind="foreach: items">
-            <li>
-              <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">
-                <li>
-                  <a class="index-li">
-                    <div data-bind="
-                      css: index_class,
-                      decoMemoIndex: body,
-                      click: $root.selectIndexHeader.bind($data,-10)">
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-        <div id="blog_area" class="span8">
+       <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
           <ul id="blog_list" data-bind="foreach: items">
             <li data-bind="attr: {id: _id}" class="blog-body">
@@ -95,6 +77,24 @@
                   <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
                 </div>
               </div>
+            </li>
+          </ul>
+        </div>
+        <div id="index_header_area" class="span4">
+          <div class="dummy-space"></div>
+          <ul id="index_header" data-bind="foreach: items">
+            <li>
+              <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">
+                <li>
+                  <a class="index-li">
+                    <div data-bind="
+                      css: index_class,
+                      decoMemoIndex: body,
+                      click: $root.selectIndexHeader.bind($data,-10)">
+                    </div>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
         </div>
