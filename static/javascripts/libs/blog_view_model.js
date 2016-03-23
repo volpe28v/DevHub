@@ -21,6 +21,8 @@ function BlogViewModel(name, start, end){
   this.loading_more = false;
   this.load_more_style = "none";
 
+  this.clipboard = new Clipboard('.clip');
+
   this.selectTag = function(data, event, element){
     that.search_by_tag(this.tag_name);
     $('#tags_modal').modal('hide');
@@ -64,6 +66,7 @@ function BlogViewModel(name, start, end){
         blog.title(data.blog.title);
         blog.date(data.blog.date);
         blog.has_avatar(data.blog.avatar != null && data.blog.avatar != "");
+        blog.copy_title(that._createCopyTitle(data.blog.text, data.blog._id));
 
         that._update_tags();
       }
@@ -145,12 +148,19 @@ function BlogViewModel(name, start, end){
     item.has_avatar = (item.avatar != null && item.avatar != "");
     item.matched = 0;
     item.editing = false;
+    item.copy_title = that._createCopyTitle(item.text, item._id);
 
     var mapped_item = ko.mapping.fromJS(item);
     that.items.unshift(mapped_item);
 
     var $target = $('#' + id);
     that._setDropZone(mapped_item, $target.find('.edit-area'));
+  }
+
+  this._createCopyTitle = function(text, id){
+    var plane_title = that._title_plane(text);
+    var url_base = location.href.split('?')[0];
+    return '[' + plane_title + '](' + url_base + '?id=' + id + ')';
   }
 }
 
@@ -159,7 +169,7 @@ BlogViewModel.prototype = {
     $('#blog_area').animate({ scrollTop: 0 }, 'fast');
     $('#index_area').animate({ scrollTop: 0 }, 'fast');
   },
- 
+
   moveSearchIndex: function(offset_top){
     var target_top = offset_top;
     var base_top = $("#index_list").offset().top;
@@ -564,19 +574,20 @@ BlogViewModel.prototype = {
       if (this.items()[i]._id == id){ return; }
     }
 
-    item.title = this._title(item.text);
-    item.indexes = this._indexes(item.text, item._id);
+    item.title = that._title(item.text);
+    item.indexes = that._indexes(item.text, item._id);
     item.display_indexes = false;
     item.has_avatar = (item.avatar != null && item.avatar != "");
     item.matched = 0;
     item.editing = false;
+    item.copy_title = that._createCopyTitle(item.text, item._id);
 
     var mapped_item = ko.mapping.fromJS(item);
 
     that.items.push(mapped_item);
 
     var $target = $('#' + id);
-    this._setDropZone(mapped_item, $target.find('.edit-area'));
+    that._setDropZone(mapped_item, $target.find('.edit-area'));
     return $target;
   },
 
