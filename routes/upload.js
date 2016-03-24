@@ -19,6 +19,11 @@ exports.post = function(req, res) {
   var form = new multiparty.Form();
 
   form.parse(req, function(err, fields, files) {
+    if (Object.keys(files).length == 0){
+      res.send({fileName: null});
+      return;
+    }
+
     Object.keys(files).forEach(function(name) {
       var org_name = files[name][0].originalFilename;
       var type = files[name][0].headers['content-type'];;

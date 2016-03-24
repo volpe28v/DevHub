@@ -246,6 +246,7 @@ function ClientViewModel(){
       fileTarget: $('#upload_avatar'),
       pasteValid: true,
       uploadedAction: function(self, res){
+        if (res.fileName == null){ return; }
         that.avatar(res.fileName);
       }
     });
@@ -256,6 +257,7 @@ function ClientViewModel(){
       fileTarget: $('#upload_avatar'),
       pasteValid: true,
       uploadedAction: function(self, res){
+        if (res.fileName == null){ return; }
         that.avatar(res.fileName);
       }
     });

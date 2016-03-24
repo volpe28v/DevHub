@@ -600,6 +600,7 @@ BlogViewModel.prototype = {
         alertTarget: $('#loading'),
         pasteValid: true,
         uploadedAction: function(context, res){
+          if (res.fileName == null){ return; }
           var row = $(context).caretLine();
 
           // メモのキャレット位置にファイルを差し込む

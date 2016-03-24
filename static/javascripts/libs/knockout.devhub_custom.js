@@ -101,6 +101,7 @@ ko.bindingHandlers.dropzoneDisp = {
       dropChildSelector: '.code-out-tr',
       alertTarget: $('#loading'),
       uploadedAction: function(context, res){
+        if (res.fileName == null){ return; }
         var row = $(context).closest("table").find("tr").index(context);
 
         // ドロップ位置にファイルを差し込む
@@ -113,6 +114,8 @@ ko.bindingHandlers.dropzoneDisp = {
       dropTarget: $(element),
       alertTarget: $('#loading'),
       uploadedAction: function(context, res){
+        if (res.fileName == null){ return; }
+
         // メモの先頭に画像を差し込む
         viewModel.insert(0, res.fileName + " ");
       }
@@ -132,6 +135,7 @@ ko.bindingHandlers.dropzoneEdit= {
       alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(context, res){
+        if (res.fileName == null){ return; }
         var row = $(context).caretLine();
 
         // メモのキャレット位置にファイルを差し込む

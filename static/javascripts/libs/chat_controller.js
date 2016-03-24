@@ -384,6 +384,7 @@ ChatController.prototype = {
       alertTarget: $('#loading'),
       pasteValid: true,
       uploadedAction: function(local_that, res){
+        if (res.fileName == null){ return; }
         that.inputMessage(that.inputMessage() + ' ' + res.fileName + ' ');
         $('#message').trigger('autosize.resize');
       }
