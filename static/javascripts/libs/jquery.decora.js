@@ -133,6 +133,7 @@
         start: function(e, ui){
           // リサイズ中は colorbox を無効化
           $(that).on('click', function(){ return false; });
+          $(this).find('img').css('max-height','');
         },
         stop: function(e, ui){
           var next_height = $(this).height();
@@ -194,7 +195,7 @@
     target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
     target_text = _decorate_link_tag( target_text );
     target_text = _decorate_download_tag( target_text );
-    img_result = _decorate_img_tag( target_text, 50, 0);
+    img_result = _decorate_img_tag( target_text, 100, 0);
     target_text = img_result.text;
     target_text = _decorate_line_color( target_text );
     target_text = _decorate_ref( target_text );
@@ -355,11 +356,13 @@
           img_index++;
           var matched_link = arguments[3];
           var height = arguments[7];
+          var height_css = "height:";
           if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
             height = default_height;
+            height_css = "max-height:";
           }
           var prefix = arguments[1] ? arguments[1] : "";
-          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="height:' + height+ 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
         });
     return {text: img_text, no: img_index};
   }
