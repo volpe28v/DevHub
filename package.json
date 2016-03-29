@@ -1,6 +1,11 @@
 {
   "name": "DevHub",
   "version": "0.0.1",
+  "scripts": {
+    "start": "node app.js",
+    "watch:js": "grunt",
+    "dev": "parallelshell \"npm run watch:js\" \"node-dev app.js\""
+  },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.5.2",
@@ -21,6 +26,10 @@
     "serve-favicon": "^2.0.1",
     "socket.io": "1.4.5",
     "underscore": "^1.7.0"
+  },
+  "devDependencies": {
+    "node-dev": "^2.7.1",
+    "parallelshell": "^2.0.0"
   },
   "engines": {
     "node": "4.4.0",
