@@ -15,6 +15,7 @@ module.exports = function(grunt){
         },
         files: {
           "static/javascripts/devhub.min.js" : [
+            "static/javascripts/libs/bootstrap.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/knockout.mapping.js",
             "static/javascripts/libs/jquery.cookie.js",
@@ -47,18 +48,20 @@ module.exports = function(grunt){
             "static/javascripts/libs/textarea-helper.js",
             "static/javascripts/libs/message_date.js",
             "static/javascripts/libs/knockout.devhub_custom.js",
-            "static/javascripts/libs/chat_view_model.js",
-            "static/javascripts/libs/chat_controller.js",
-            "static/javascripts/libs/memo_view_model.js",
-            "static/javascripts/libs/share_memo_controller.js",
-            "static/javascripts/libs/client.js",
+            "static/javascripts/app/chat_view_model.js",
+            "static/javascripts/app/chat_controller.js",
+            "static/javascripts/app/memo_view_model.js",
+            "static/javascripts/app/share_memo_controller.js",
+            "static/javascripts/app/client.js",
           ],
           "static/javascripts/upload.min.js" : [
+            "static/javascripts/libs/bootstrap.min.js",
             "static/javascripts/libs/jquery.colorbox-min.js",
             "static/javascripts/libs/jquery.lazyload.min.js",
-            "static/javascripts/libs/upload.js",
+            "static/javascripts/app/upload.js",
           ],
           "static/javascripts/blog.min.js" : [
+            "static/javascripts/libs/bootstrap.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/knockout.mapping.js",
             "static/javascripts/libs/jquery.autofit.js",
@@ -79,10 +82,11 @@ module.exports = function(grunt){
             "static/javascripts/libs/livestamp.js",
             "static/javascripts/libs/clipboard.min.js",
             "static/javascripts/libs/knockout.devhub_custom.js",
-            "static/javascripts/libs/blog_view_model.js",
-            "static/javascripts/libs/blog.js",
+            "static/javascripts/app/blog_view_model.js",
+            "static/javascripts/app/blog.js",
           ],
           "static/javascripts/blog_permalink.min.js" : [
+            "static/javascripts/libs/bootstrap.min.js",
             "static/javascripts/libs/knockout.js",
             "static/javascripts/libs/knockout.mapping.js",
             "static/javascripts/libs/jquery.autofit.js",
@@ -102,8 +106,8 @@ module.exports = function(grunt){
             "static/javascripts/libs/livestamp.js",
             "static/javascripts/libs/clipboard.min.js",
             "static/javascripts/libs/knockout.devhub_custom.js",
-            "static/javascripts/libs/blog_view_model.js",
-            "static/javascripts/libs/blog_permalink.js",
+            "static/javascripts/app/blog_view_model.js",
+            "static/javascripts/app/blog_permalink.js",
           ]
         }
       }
@@ -117,32 +121,34 @@ module.exports = function(grunt){
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
-            "static/stylesheets/libs/devhub.css",
+            "static/stylesheets/app/devhub.css",
           ],
           "static/stylesheets/upload.min.css" : [
             "static/stylesheets/libs/colorbox.css",
-            "static/stylesheets/libs/upload.css",
+            "static/stylesheets/app/upload.css",
           ],
           "static/stylesheets/blog.min.css" : [
             "static/stylesheets/libs/prettify.css",
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
-            "static/stylesheets/libs/blog.css",
+            "static/stylesheets/app/blog.css",
           ],
           "static/stylesheets/blog_permalink.min.css" : [
             "static/stylesheets/libs/prettify.css",
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
-            "static/stylesheets/libs/blog_permalink.css",
+            "static/stylesheets/app/blog_permalink.css",
           ]
         }
       }
     },
     watch: {
       files: [
+        'static/javascripts/app/*.js',
         'static/javascripts/libs/*.js',
+        'static/stylesheets/app/*.css',
         'static/stylesheets/libs/*.css'
         ],
       tasks: ['uglify','cssmin']
