@@ -51,7 +51,7 @@ module.exports = function(grunt){
             "static/javascripts/app/chat_view_model.js",
             "static/javascripts/app/chat_controller.js",
             "static/javascripts/app/memo_view_model.js",
-            "static/javascripts/app/share_memo_controller.js",
+            "static/javascripts/app/memo_controller.js",
             "static/javascripts/app/client.js",
           ],
           "static/javascripts/upload.min.js" : [
