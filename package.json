@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node app.js",
-    "watch:js": "grunt",
+    "build:js": "browserify static/javascripts/app/upload.js --debug > static/javascripts/upload_bundle.js",
+    "watch:js": "watchify static/javascripts/app/upload.js -o static/javascripts/upload_bundle.js -v",
     "dev": "parallelshell \"npm run watch:js\" \"node-dev app.js\""
   },
   "dependencies": {
@@ -25,11 +26,23 @@
     "request": "2.69.0",
     "serve-favicon": "^2.0.1",
     "socket.io": "1.4.5",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "jquery": "2.2.2",
+    "jquery-ui": "1.10.5",
+    "jquery-colorbox": "1.6.3",
+    "lazyload": "1.8.4",
+    "bootstrap": "3.3.6",
+    "favico.js": "0.3.10",
+    "jquery-autosize": "1.18.18"
   },
   "devDependencies": {
     "node-dev": "^2.7.1",
-    "parallelshell": "^2.0.0"
+    "parallelshell": "^2.0.0",
+    "watchify": "^3.4.0"
+
+  },
+  "browser": {
+    "lazyload": "./node_modules/lazyload/jquery.lazyload.js"
   },
   "engines": {
     "node": "4.4.0",

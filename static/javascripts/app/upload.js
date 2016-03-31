@@ -1,3 +1,9 @@
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+require('jquery-colorbox');
+require('lazyload');
+
 $(function() {
   $('.delete-button').click(function(){
     if (!window.confirm('Are you sure?')){
