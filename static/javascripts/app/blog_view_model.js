@@ -562,9 +562,9 @@ BlogViewModel.prototype = {
   },
 
   insertText: function(item, row, text){
-    var text_array = item.text.split("\n");
+    var text_array = item.text().split("\n");
     text_array.splice(row,0,text);
-    item.text = text_array.join("\n");
+    item.text(text_array.join("\n"));
   },
 
   _addItem: function(item){
