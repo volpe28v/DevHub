@@ -1,3 +1,6 @@
+var ko = require('knockout');
+var Clipboard = require('clipboard');
+
 function BlogViewModel(name, start, end){
   var that = this;
   this.name = name;
@@ -609,5 +612,6 @@ BlogViewModel.prototype = {
         }
     });
   },
-
 }
+
+module.exports = BlogViewModel; 

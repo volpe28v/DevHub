@@ -1,3 +1,14 @@
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+require('jquery-colorbox');
+require('jquery.cookie');
+var emojify = require('emojify.js');
+require('perfect-scrollbar/jquery')($);
+var BlogViewModel = require('./blog_view_model');
+var ko = require('knockout');
+require('jquery-autosize');
+
 var COOKIE_NAME = "dev_hub_name";
 
 $(function() {

@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node app.js",
-    "build:js": "browserify static/javascripts/app/upload.js --debug > static/javascripts/upload_bundle.js",
-    "watch:js": "watchify static/javascripts/app/upload.js -o static/javascripts/upload_bundle.js -v",
-    "dev": "parallelshell \"npm run watch:js\" \"node-dev app.js\""
+    "build:upload": "browserify static/javascripts/app/upload.js --debug > static/javascripts/upload_bundle.js",
+    "watch:upload": "watchify static/javascripts/app/upload.js -o static/javascripts/upload_bundle.js -v",
+    "watch:blog": "watchify static/javascripts/app/blog.js -o static/javascripts/blog_bundle.js -v",
+    "dev": "parallelshell \"npm run watch:upload\" \"npm run watch:blog\" \"node-dev app.js\""
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
@@ -33,13 +34,25 @@
     "lazyload": "1.8.4",
     "bootstrap": "3.3.6",
     "favico.js": "0.3.10",
-    "jquery-autosize": "1.18.18"
+    "jquery-autosize": "1.18.18",
+    "knockout": "3.4.0",
+    "knockout.mapping": "2.4.3",
+    "jquery-autosize": "1.18.18",
+    "jquery.cookie": "1.4.1",
+    "jquery-colorbox": "1.6.3",
+    "jquery-inview": "1.1.2",
+    "perfect-scrollbar": "0.6.10",
+    "prettify": "0.1.7",
+    "emojify.js": "1.1.0",
+    "jquery-caret": "1.3.5",
+    "@gigwalk/livestamp": "2.0.0",
+    "clipboard": "1.5.9"
   },
   "devDependencies": {
     "node-dev": "^2.7.1",
     "parallelshell": "^2.0.0",
+    "browserify": "^13.0.0",
     "watchify": "^3.4.0"
-
   },
   "browser": {
     "lazyload": "./node_modules/lazyload/jquery.lazyload.js"
