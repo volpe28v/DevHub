@@ -219,7 +219,7 @@
 
     module.exports = ClipboardAction;
 });
-},{"select":37}],2:[function(require,module,exports){
+},{"select":38}],2:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
         define(['module', './clipboard-action', 'tiny-emitter', 'good-listener'], factory);
@@ -379,7 +379,7 @@
 
     module.exports = Clipboard;
 });
-},{"./clipboard-action":1,"good-listener":7,"tiny-emitter":38}],3:[function(require,module,exports){
+},{"./clipboard-action":1,"good-listener":7,"tiny-emitter":39}],3:[function(require,module,exports){
 var matches = require('matches-selector')
 
 module.exports = function (element, selector, checkYoSelf) {
@@ -391,7 +391,7 @@ module.exports = function (element, selector, checkYoSelf) {
   }
 }
 
-},{"matches-selector":14}],4:[function(require,module,exports){
+},{"matches-selector":15}],4:[function(require,module,exports){
 var closest = require('closest');
 
 /**
@@ -27318,6 +27318,833 @@ return jQuery;
 }));
 
 },{}],13:[function(require,module,exports){
+(function (factory) {
+    // Module systems magic dance.
+
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object") {
+        // CommonJS or Node: hard-coded dependency on "knockout"
+        factory(require("knockout"), exports);
+    } else if (typeof define === "function" && define["amd"]) {
+        // AMD anonymous module with hard-coded dependency on "knockout"
+        define(["knockout", "exports"], factory);
+    } else {
+        // <script> tag: use the global `ko` object, attaching a `mapping` property
+        factory(ko, ko.mapping = {});
+    }
+}(function (ko, exports) {
+    var DEBUG = true;
+    var mappingProperty = "__ko_mapping__";
+    var realKoDependentObservable = ko.dependentObservable;
+    var mappingNesting = 0;
+    var dependentObservables;
+    var visitedObjects;
+    var recognizedRootProperties = ["create", "update", "key", "arrayChanged"];
+    var emptyReturn = {};
+
+    var _defaultOptions = {
+        include: ["_destroy"],
+        ignore: [],
+        copy: [],
+        observe: []
+    };
+    var defaultOptions = _defaultOptions;
+
+    function unionArrays() {
+        var args = arguments,
+        l = args.length,
+        obj = {},
+        res = [],
+        i, j, k;
+
+        while (l--) {
+            k = args[l];
+            i = k.length;
+
+            while (i--) {
+                j = k[i];
+                if (!obj[j]) {
+                    obj[j] = 1;
+                    res.push(j);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    function extendObject(destination, source) {
+        var destType;
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key) && source[key]) {
+                destType = exports.getType(destination[key]);
+                if (key && destination[key] && destType !== "array" && destType !== "string") {
+                    extendObject(destination[key], source[key]);
+                } else {
+                    var bothArrays = exports.getType(destination[key]) === "array" && exports.getType(source[key]) === "array";
+                    if (bothArrays) {
+                        destination[key] = unionArrays(destination[key], source[key]);
+                    } else {
+                        destination[key] = source[key];
+                    }
+                }
+            }
+        }
+    }
+
+    function merge(obj1, obj2) {
+        var merged = {};
+        extendObject(merged, obj1);
+        extendObject(merged, obj2);
+
+        return merged;
+    }
+
+    exports.isMapped = function (viewModel) {
+        var unwrapped = ko.utils.unwrapObservable(viewModel);
+        return unwrapped && unwrapped[mappingProperty];
+    };
+
+    exports.fromJS = function (jsObject /*, inputOptions, target*/ ) {
+        if (!arguments.length) throw new Error("When calling ko.mapping.fromJS, pass the object you want to convert.");
+
+        try {
+            if (!mappingNesting++) {
+                dependentObservables = [];
+                visitedObjects = new objectLookup();
+            }
+
+            var options;
+            var target;
+
+            if (arguments.length == 2) {
+                if (arguments[1][mappingProperty]) {
+                    target = arguments[1];
+                } else {
+                    options = arguments[1];
+                }
+            }
+            if (arguments.length == 3) {
+                options = arguments[1];
+                target = arguments[2];
+            }
+
+            if (target) {
+                options = merge(options, target[mappingProperty]);
+            }
+            options = fillOptions(options);
+
+            var result = updateViewModel(target, jsObject, options);
+            if (target) {
+                result = target;
+            }
+
+            // Evaluate any dependent observables that were proxied.
+            // Do this after the model's observables have been created
+            if (!--mappingNesting) {
+                while (dependentObservables.length) {
+                    var DO = dependentObservables.pop();
+                    if (DO) {
+                        DO();
+
+                        // Move this magic property to the underlying dependent observable
+                        DO.__DO["throttleEvaluation"] = DO["throttleEvaluation"];
+                    }
+                }
+            }
+
+            // Save any new mapping options in the view model, so that updateFromJS can use them later.
+            result[mappingProperty] = merge(result[mappingProperty], options);
+
+            return result;
+        } catch(e) {
+            mappingNesting = 0;
+            throw e;
+        }
+    };
+
+    exports.fromJSON = function (jsonString /*, options, target*/ ) {
+        var parsed = ko.utils.parseJson(jsonString);
+        var argArray = Array.prototype.slice.call(arguments);
+        argArray[0] = parsed;
+        return exports.fromJS.apply(this, argArray);
+    };
+
+    exports.updateFromJS = function (viewModel) {
+        throw new Error("ko.mapping.updateFromJS, use ko.mapping.fromJS instead. Please note that the order of parameters is different!");
+    };
+
+    exports.updateFromJSON = function (viewModel) {
+        throw new Error("ko.mapping.updateFromJSON, use ko.mapping.fromJSON instead. Please note that the order of parameters is different!");
+    };
+
+    exports.toJS = function (rootObject, options) {
+        if (!defaultOptions) exports.resetDefaultOptions();
+
+        if (!arguments.length) throw new Error("When calling ko.mapping.toJS, pass the object you want to convert.");
+        if (exports.getType(defaultOptions.ignore) !== "array") throw new Error("ko.mapping.defaultOptions().ignore should be an array.");
+        if (exports.getType(defaultOptions.include) !== "array") throw new Error("ko.mapping.defaultOptions().include should be an array.");
+        if (exports.getType(defaultOptions.copy) !== "array") throw new Error("ko.mapping.defaultOptions().copy should be an array.");
+
+        // Merge in the options used in fromJS
+        options = fillOptions(options, rootObject[mappingProperty]);
+
+        // We just unwrap everything at every level in the object graph
+        return exports.visitModel(rootObject, function (x) {
+            return ko.utils.unwrapObservable(x);
+        }, options);
+    };
+
+    exports.toJSON = function (rootObject, options) {
+        var plainJavaScriptObject = exports.toJS(rootObject, options);
+        return ko.utils.stringifyJson(plainJavaScriptObject);
+    };
+
+    exports.defaultOptions = function () {
+        if (arguments.length > 0) {
+            defaultOptions = arguments[0];
+        } else {
+            return defaultOptions;
+        }
+    };
+
+    exports.resetDefaultOptions = function () {
+        defaultOptions = {
+            include: _defaultOptions.include.slice(0),
+            ignore: _defaultOptions.ignore.slice(0),
+            copy: _defaultOptions.copy.slice(0),
+            observe: _defaultOptions.observe.slice(0)
+        };
+    };
+
+    exports.getType = function(x) {
+        if ((x) && (typeof (x) === "object")) {
+            if (x.constructor === Date) return "date";
+            if (x.constructor === Array) return "array";
+        }
+        return typeof x;
+    };
+
+    function fillOptions(rawOptions, otherOptions) {
+        var options = merge({}, rawOptions);
+
+        // Move recognized root-level properties into a root namespace
+        for (var i = recognizedRootProperties.length - 1; i >= 0; i--) {
+            var property = recognizedRootProperties[i];
+
+            // Carry on, unless this property is present
+            if (!options[property]) continue;
+
+            // Move the property into the root namespace
+            if (!(options[""] instanceof Object)) options[""] = {};
+            options[""][property] = options[property];
+            delete options[property];
+        }
+
+        if (otherOptions) {
+            options.ignore = mergeArrays(otherOptions.ignore, options.ignore);
+            options.include = mergeArrays(otherOptions.include, options.include);
+            options.copy = mergeArrays(otherOptions.copy, options.copy);
+            options.observe = mergeArrays(otherOptions.observe, options.observe);
+        }
+        options.ignore = mergeArrays(options.ignore, defaultOptions.ignore);
+        options.include = mergeArrays(options.include, defaultOptions.include);
+        options.copy = mergeArrays(options.copy, defaultOptions.copy);
+        options.observe = mergeArrays(options.observe, defaultOptions.observe);
+
+        options.mappedProperties = options.mappedProperties || {};
+        options.copiedProperties = options.copiedProperties || {};
+        return options;
+    }
+
+    function mergeArrays(a, b) {
+        if (exports.getType(a) !== "array") {
+            if (exports.getType(a) === "undefined") a = [];
+            else a = [a];
+        }
+        if (exports.getType(b) !== "array") {
+            if (exports.getType(b) === "undefined") b = [];
+            else b = [b];
+        }
+
+        return ko.utils.arrayGetDistinctValues(a.concat(b));
+    }
+
+    // When using a 'create' callback, we proxy the dependent observable so that it doesn't immediately evaluate on creation.
+    // The reason is that the dependent observables in the user-specified callback may contain references to properties that have not been mapped yet.
+    function withProxyDependentObservable(dependentObservables, callback) {
+        var localDO = ko.dependentObservable;
+        ko.dependentObservable = function (read, owner, options) {
+            options = options || {};
+
+            if (read && typeof read == "object") { // mirrors condition in knockout implementation of DO's
+                options = read;
+            }
+
+            var realDeferEvaluation = options.deferEvaluation;
+
+            var isRemoved = false;
+
+            // We wrap the original dependent observable so that we can remove it from the 'dependentObservables' list we need to evaluate after mapping has
+            // completed if the user already evaluated the DO themselves in the meantime.
+            var wrap = function (DO) {
+                // Temporarily revert ko.dependentObservable, since it is used in ko.isWriteableObservable
+                var tmp = ko.dependentObservable;
+                ko.dependentObservable = realKoDependentObservable;
+                var isWriteable = ko.isWriteableObservable(DO);
+                ko.dependentObservable = tmp;
+
+                var wrapped = realKoDependentObservable({
+                    read: function () {
+                        if (!isRemoved) {
+                            ko.utils.arrayRemoveItem(dependentObservables, DO);
+                            isRemoved = true;
+                        }
+                        return DO.apply(DO, arguments);
+                    },
+                    write: isWriteable && function (val) {
+                        return DO(val);
+                    },
+                    deferEvaluation: true
+                });
+                if (DEBUG) wrapped._wrapper = true;
+                wrapped.__DO = DO;
+                return wrapped;
+            };
+
+            options.deferEvaluation = true; // will either set for just options, or both read/options.
+            var realDependentObservable = new realKoDependentObservable(read, owner, options);
+
+            if (!realDeferEvaluation) {
+                realDependentObservable = wrap(realDependentObservable);
+                dependentObservables.push(realDependentObservable);
+            }
+
+            return realDependentObservable;
+        };
+        ko.dependentObservable.fn = realKoDependentObservable.fn;
+        ko.computed = ko.dependentObservable;
+        var result = callback();
+        ko.dependentObservable = localDO;
+        ko.computed = ko.dependentObservable;
+        return result;
+    }
+
+    function updateViewModel(mappedRootObject, rootObject, options, parentName, parent, parentPropertyName, mappedParent) {
+        var isArray = exports.getType(ko.utils.unwrapObservable(rootObject)) === "array";
+
+        parentPropertyName = parentPropertyName || "";
+
+        // If this object was already mapped previously, take the options from there and merge them with our existing ones.
+        if (exports.isMapped(mappedRootObject)) {
+            var previousMapping = ko.utils.unwrapObservable(mappedRootObject)[mappingProperty];
+            options = merge(previousMapping, options);
+        }
+
+        var callbackParams = {
+            data: rootObject,
+            parent: mappedParent || parent
+        };
+
+        var hasCreateCallback = function () {
+            return options[parentName] && options[parentName].create instanceof Function;
+        };
+
+        var createCallback = function (data) {
+            return withProxyDependentObservable(dependentObservables, function () {
+
+                if (ko.utils.unwrapObservable(parent) instanceof Array) {
+                    return options[parentName].create({
+                        data: data || callbackParams.data,
+                        parent: callbackParams.parent,
+                        skip: emptyReturn
+                    });
+                } else {
+                    return options[parentName].create({
+                        data: data || callbackParams.data,
+                        parent: callbackParams.parent
+                    });
+                }
+            });
+        };
+
+        var hasUpdateCallback = function () {
+            return options[parentName] && options[parentName].update instanceof Function;
+        };
+
+        var updateCallback = function (obj, data) {
+            var params = {
+                data: data || callbackParams.data,
+                parent: callbackParams.parent,
+                target: ko.utils.unwrapObservable(obj)
+            };
+
+            if (ko.isWriteableObservable(obj)) {
+                params.observable = obj;
+            }
+
+            return options[parentName].update(params);
+        };
+
+        var alreadyMapped = visitedObjects.get(rootObject);
+        if (alreadyMapped) {
+            return alreadyMapped;
+        }
+
+        parentName = parentName || "";
+
+        if (!isArray) {
+            // For atomic types, do a direct update on the observable
+            if (!canHaveProperties(rootObject)) {
+                switch (exports.getType(rootObject)) {
+                case "function":
+                    if (hasUpdateCallback()) {
+                        if (ko.isWriteableObservable(rootObject)) {
+                            rootObject(updateCallback(rootObject));
+                            mappedRootObject = rootObject;
+                        } else {
+                            mappedRootObject = updateCallback(rootObject);
+                        }
+                    } else {
+                        mappedRootObject = rootObject;
+                    }
+                    break;
+                default:
+                    var valueToWrite;
+                    if (ko.isWriteableObservable(mappedRootObject)) {
+                        if (hasUpdateCallback()) {
+                            valueToWrite = updateCallback(mappedRootObject);
+                            mappedRootObject(valueToWrite);
+                            return valueToWrite;
+                        } else {
+                            valueToWrite = ko.utils.unwrapObservable(rootObject);
+                            mappedRootObject(valueToWrite);
+                            return valueToWrite;
+                        }
+                    } else {
+                        var hasCreateOrUpdateCallback = hasCreateCallback() || hasUpdateCallback();
+
+                        if (hasCreateCallback()) {
+                            mappedRootObject = createCallback();
+                        } else {
+                            mappedRootObject = ko.observable(ko.utils.unwrapObservable(rootObject));
+                        }
+
+                        if (hasUpdateCallback()) {
+                            mappedRootObject(updateCallback(mappedRootObject));
+                        }
+
+                        if (hasCreateOrUpdateCallback) return mappedRootObject;
+                    }
+                }
+
+            } else {
+                mappedRootObject = ko.utils.unwrapObservable(mappedRootObject);
+                if (!mappedRootObject) {
+                    if (hasCreateCallback()) {
+                        var result = createCallback();
+
+                        if (hasUpdateCallback()) {
+                            result = updateCallback(result);
+                        }
+
+                        return result;
+                    } else {
+                        if (hasUpdateCallback()) {
+                            return updateCallback(result);
+                        }
+
+                        mappedRootObject = {};
+                    }
+                }
+
+                if (hasUpdateCallback()) {
+                    mappedRootObject = updateCallback(mappedRootObject);
+                }
+
+                visitedObjects.save(rootObject, mappedRootObject);
+                if (hasUpdateCallback()) return mappedRootObject;
+
+                // For non-atomic types, visit all properties and update recursively
+                visitPropertiesOrArrayEntries(rootObject, function (indexer) {
+                    var fullPropertyName = parentPropertyName.length ? parentPropertyName + "." + indexer : indexer;
+
+                    if (ko.utils.arrayIndexOf(options.ignore, fullPropertyName) != -1) {
+                        return;
+                    }
+
+                    if (ko.utils.arrayIndexOf(options.copy, fullPropertyName) != -1) {
+                        mappedRootObject[indexer] = rootObject[indexer];
+                        return;
+                    }
+
+                    if(typeof rootObject[indexer] != "object" && typeof rootObject[indexer] != "array" && options.observe.length > 0 && ko.utils.arrayIndexOf(options.observe, fullPropertyName) == -1)
+                    {
+                        mappedRootObject[indexer] = rootObject[indexer];
+                        options.copiedProperties[fullPropertyName] = true;
+                        return;
+                    }
+
+                    // In case we are adding an already mapped property, fill it with the previously mapped property value to prevent recursion.
+                    // If this is a property that was generated by fromJS, we should use the options specified there
+                    var prevMappedProperty = visitedObjects.get(rootObject[indexer]);
+                    var retval = updateViewModel(mappedRootObject[indexer], rootObject[indexer], options, indexer, mappedRootObject, fullPropertyName, mappedRootObject);
+                    var value = prevMappedProperty || retval;
+
+                    if(options.observe.length > 0 && ko.utils.arrayIndexOf(options.observe, fullPropertyName) == -1)
+                    {
+                        mappedRootObject[indexer] = ko.utils.unwrapObservable(value);
+                        options.copiedProperties[fullPropertyName] = true;
+                        return;
+                    }
+
+                    if (ko.isWriteableObservable(mappedRootObject[indexer])) {
+                        value = ko.utils.unwrapObservable(value);
+                        if (mappedRootObject[indexer]() !== value) {
+                            mappedRootObject[indexer](value);
+                        }
+                    } else {
+                        value = mappedRootObject[indexer] === undefined ? value : ko.utils.unwrapObservable(value);
+                        mappedRootObject[indexer] = value;
+                    }
+
+                    options.mappedProperties[fullPropertyName] = true;
+                });
+            }
+        } else { //mappedRootObject is an array
+            var changes = [];
+
+            var hasKeyCallback = false;
+            var keyCallback = function (x) {
+                return x;
+            };
+            if (options[parentName] && options[parentName].key) {
+                keyCallback = options[parentName].key;
+                hasKeyCallback = true;
+            }
+
+            if (!ko.isObservable(mappedRootObject)) {
+                // When creating the new observable array, also add a bunch of utility functions that take the 'key' of the array items into account.
+                mappedRootObject = ko.observableArray([]);
+
+                mappedRootObject.mappedRemove = function (valueOrPredicate) {
+                    var predicate = typeof valueOrPredicate == "function" ? valueOrPredicate : function (value) {
+                            return value === keyCallback(valueOrPredicate);
+                        };
+                    return mappedRootObject.remove(function (item) {
+                        return predicate(keyCallback(item));
+                    });
+                };
+
+                mappedRootObject.mappedRemoveAll = function (arrayOfValues) {
+                    var arrayOfKeys = filterArrayByKey(arrayOfValues, keyCallback);
+                    return mappedRootObject.remove(function (item) {
+                        return ko.utils.arrayIndexOf(arrayOfKeys, keyCallback(item)) != -1;
+                    });
+                };
+
+                mappedRootObject.mappedDestroy = function (valueOrPredicate) {
+                    var predicate = typeof valueOrPredicate == "function" ? valueOrPredicate : function (value) {
+                            return value === keyCallback(valueOrPredicate);
+                        };
+                    return mappedRootObject.destroy(function (item) {
+                        return predicate(keyCallback(item));
+                    });
+                };
+
+                mappedRootObject.mappedDestroyAll = function (arrayOfValues) {
+                    var arrayOfKeys = filterArrayByKey(arrayOfValues, keyCallback);
+                    return mappedRootObject.destroy(function (item) {
+                        return ko.utils.arrayIndexOf(arrayOfKeys, keyCallback(item)) != -1;
+                    });
+                };
+
+                mappedRootObject.mappedIndexOf = function (item) {
+                    var keys = filterArrayByKey(mappedRootObject(), keyCallback);
+                    var key = keyCallback(item);
+                    return ko.utils.arrayIndexOf(keys, key);
+                };
+
+                mappedRootObject.mappedGet = function (item) {
+                    return mappedRootObject()[mappedRootObject.mappedIndexOf(item)];
+                };
+
+                mappedRootObject.mappedCreate = function (value) {
+                    if (mappedRootObject.mappedIndexOf(value) !== -1) {
+                        throw new Error("There already is an object with the key that you specified.");
+                    }
+
+                    var item = hasCreateCallback() ? createCallback(value) : value;
+                    if (hasUpdateCallback()) {
+                        var newValue = updateCallback(item, value);
+                        if (ko.isWriteableObservable(item)) {
+                            item(newValue);
+                        } else {
+                            item = newValue;
+                        }
+                    }
+                    mappedRootObject.push(item);
+                    return item;
+                };
+            }
+
+            var currentArrayKeys = filterArrayByKey(ko.utils.unwrapObservable(mappedRootObject), keyCallback).sort();
+            var newArrayKeys = filterArrayByKey(rootObject, keyCallback);
+            if (hasKeyCallback) newArrayKeys.sort();
+            var editScript = ko.utils.compareArrays(currentArrayKeys, newArrayKeys);
+
+            var ignoreIndexOf = {};
+
+            var i;
+            var j;
+
+            var key;
+            var unwrappedRootObject = ko.utils.unwrapObservable(rootObject);
+            var itemsByKey = {};
+            var optimizedKeys = true;
+            for (i = 0, j = unwrappedRootObject.length; i < j; i++) {
+                key = keyCallback(unwrappedRootObject[i]);
+                if (key === undefined || key instanceof Object) {
+                    optimizedKeys = false;
+                    break;
+                }
+                itemsByKey[key] = unwrappedRootObject[i];
+            }
+
+            var newContents = [];
+            var passedOver = 0;
+            for (i = 0, j = editScript.length; i < j; i++) {
+                key = editScript[i];
+                var mappedItem;
+                var fullPropertyName = parentPropertyName + "[" + i + "]";
+                var item;
+                var index;
+                switch (key.status) {
+                case "added":
+                    item = optimizedKeys ? itemsByKey[key.value] : getItemByKey(ko.utils.unwrapObservable(rootObject), key.value, keyCallback);
+                    mappedItem = updateViewModel(undefined, item, options, parentName, mappedRootObject, fullPropertyName, parent);
+                    if(!hasCreateCallback()) {
+                        mappedItem = ko.utils.unwrapObservable(mappedItem);
+                    }
+
+                    index = ignorableIndexOf(ko.utils.unwrapObservable(rootObject), item, ignoreIndexOf);
+
+                    if (mappedItem === emptyReturn) {
+                        passedOver++;
+                    } else {
+                        newContents[index - passedOver] = mappedItem;
+                    }
+
+                    ignoreIndexOf[index] = true;
+                    break;
+                case "retained":
+                    item = optimizedKeys ? itemsByKey[key.value] : getItemByKey(ko.utils.unwrapObservable(rootObject), key.value, keyCallback);
+                    mappedItem = getItemByKey(mappedRootObject, key.value, keyCallback);
+                    updateViewModel(mappedItem, item, options, parentName, mappedRootObject, fullPropertyName, parent);
+
+                    index = ignorableIndexOf(ko.utils.unwrapObservable(rootObject), item, ignoreIndexOf);
+                    newContents[index] = mappedItem;
+                    ignoreIndexOf[index] = true;
+                    break;
+                case "deleted":
+                    mappedItem = getItemByKey(mappedRootObject, key.value, keyCallback);
+                    break;
+                }
+
+                changes.push({
+                    event: key.status,
+                    item: mappedItem
+                });
+            }
+
+            mappedRootObject(newContents);
+
+            if (options[parentName] && options[parentName].arrayChanged) {
+                ko.utils.arrayForEach(changes, function (change) {
+                    options[parentName].arrayChanged(change.event, change.item);
+                });
+            }
+        }
+
+        return mappedRootObject;
+    }
+
+    function ignorableIndexOf(array, item, ignoreIndices) {
+        for (var i = 0, j = array.length; i < j; i++) {
+            if (ignoreIndices[i] === true) continue;
+            if (array[i] === item) return i;
+        }
+        return null;
+    }
+
+    function mapKey(item, callback) {
+        var mappedItem;
+        if (callback) mappedItem = callback(item);
+        if (exports.getType(mappedItem) === "undefined") mappedItem = item;
+
+        return ko.utils.unwrapObservable(mappedItem);
+    }
+
+    function getItemByKey(array, key, callback) {
+        array = ko.utils.unwrapObservable(array);
+        for (var i = 0, j = array.length; i < j; i++) {
+            var item = array[i];
+            if (mapKey(item, callback) === key) return item;
+        }
+
+        throw new Error("When calling ko.update*, the key '" + key + "' was not found!");
+    }
+
+    function filterArrayByKey(array, callback) {
+        return ko.utils.arrayMap(ko.utils.unwrapObservable(array), function (item) {
+            if (callback) {
+                return mapKey(item, callback);
+            } else {
+                return item;
+            }
+        });
+    }
+
+    function visitPropertiesOrArrayEntries(rootObject, visitorCallback) {
+        if (exports.getType(rootObject) === "array") {
+            for (var i = 0; i < rootObject.length; i++)
+            visitorCallback(i);
+        } else {
+            for (var propertyName in rootObject)
+            visitorCallback(propertyName);
+        }
+    }
+
+    function canHaveProperties(object) {
+        var type = exports.getType(object);
+        return ((type === "object") || (type === "array")) && (object !== null);
+    }
+
+    // Based on the parentName, this creates a fully classified name of a property
+
+    function getPropertyName(parentName, parent, indexer) {
+        var propertyName = parentName || "";
+        if (exports.getType(parent) === "array") {
+            if (parentName) {
+                propertyName += "[" + indexer + "]";
+            }
+        } else {
+            if (parentName) {
+                propertyName += ".";
+            }
+            propertyName += indexer;
+        }
+        return propertyName;
+    }
+
+    exports.visitModel = function (rootObject, callback, options) {
+        options = options || {};
+        options.visitedObjects = options.visitedObjects || new objectLookup();
+
+        var mappedRootObject;
+        var unwrappedRootObject = ko.utils.unwrapObservable(rootObject);
+
+        if (!canHaveProperties(unwrappedRootObject)) {
+            return callback(rootObject, options.parentName);
+        } else {
+            options = fillOptions(options, unwrappedRootObject[mappingProperty]);
+
+            // Only do a callback, but ignore the results
+            callback(rootObject, options.parentName);
+            mappedRootObject = exports.getType(unwrappedRootObject) === "array" ? [] : {};
+        }
+
+        options.visitedObjects.save(rootObject, mappedRootObject);
+
+        var parentName = options.parentName;
+        visitPropertiesOrArrayEntries(unwrappedRootObject, function (indexer) {
+            if (options.ignore && ko.utils.arrayIndexOf(options.ignore, indexer) != -1) return;
+
+            var propertyValue = unwrappedRootObject[indexer];
+            options.parentName = getPropertyName(parentName, unwrappedRootObject, indexer);
+
+            // If we don't want to explicitly copy the unmapped property...
+            if (ko.utils.arrayIndexOf(options.copy, indexer) === -1) {
+                // ...find out if it's a property we want to explicitly include
+                if (ko.utils.arrayIndexOf(options.include, indexer) === -1) {
+                    // The mapped properties object contains all the properties that were part of the original object.
+                    // If a property does not exist, and it is not because it is part of an array (e.g. "myProp[3]"), then it should not be unmapped.
+                    if (unwrappedRootObject[mappingProperty] &&
+                        unwrappedRootObject[mappingProperty].mappedProperties &&
+                        !unwrappedRootObject[mappingProperty].mappedProperties[indexer] &&
+                        unwrappedRootObject[mappingProperty].copiedProperties &&
+                        !unwrappedRootObject[mappingProperty].copiedProperties[indexer] &&
+                        exports.getType(unwrappedRootObject) !== "array")
+                    {
+                        return;
+                    }
+                }
+            }
+
+            var outputProperty;
+            switch (exports.getType(ko.utils.unwrapObservable(propertyValue))) {
+            case "object":
+            case "array":
+            case "undefined":
+                var previouslyMappedValue = options.visitedObjects.get(propertyValue);
+                mappedRootObject[indexer] = (exports.getType(previouslyMappedValue) !== "undefined") ? previouslyMappedValue : exports.visitModel(propertyValue, callback, options);
+                break;
+            default:
+                mappedRootObject[indexer] = callback(propertyValue, options.parentName);
+            }
+        });
+
+        return mappedRootObject;
+    };
+
+    function simpleObjectLookup() {
+        var keys = [];
+        var values = [];
+        this.save = function (key, value) {
+            var existingIndex = ko.utils.arrayIndexOf(keys, key);
+            if (existingIndex >= 0) values[existingIndex] = value;
+            else {
+                keys.push(key);
+                values.push(value);
+            }
+        };
+        this.get = function (key) {
+            var existingIndex = ko.utils.arrayIndexOf(keys, key);
+            var value = (existingIndex >= 0) ? values[existingIndex] : undefined;
+            return value;
+        };
+    }
+
+    function objectLookup() {
+        var buckets = {};
+
+        var findBucket = function(key) {
+            var bucketKey;
+            try {
+                bucketKey = key;//JSON.stringify(key);
+            }
+            catch (e) {
+                bucketKey = "$$$";
+            }
+
+            var bucket = buckets[bucketKey];
+            if (bucket === undefined) {
+                bucket = new simpleObjectLookup();
+                buckets[bucketKey] = bucket;
+            }
+            return bucket;
+        };
+
+        this.save = function (key, value) {
+            findBucket(key).save(key, value);
+        };
+        this.get = function (key) {
+            return findBucket(key).get(key);
+        };
+    }
+}));
+
+},{"knockout":14}],14:[function(require,module,exports){
 /*!
  * Knockout JavaScript library v3.4.0
  * (c) Steven Sanderson - http://knockoutjs.com/
@@ -33190,7 +34017,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 }());
 })();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 
 /**
  * Element prototype.
@@ -33231,12 +34058,12 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":16}],16:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":17}],17:[function(require,module,exports){
 'use strict';
 
 var ps = require('../main')
@@ -33281,7 +34108,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":22,"../plugin/instances":33}],17:[function(require,module,exports){
+},{"../main":23,"../plugin/instances":34}],18:[function(require,module,exports){
 'use strict';
 
 function oldAdd(element, className) {
@@ -33325,7 +34152,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var DOM = {};
@@ -33411,7 +34238,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var EventElement = function (element) {
@@ -33484,7 +34311,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 module.exports = (function () {
@@ -33499,7 +34326,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 var cls = require('./class')
@@ -33582,7 +34409,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":17,"./dom":18}],22:[function(require,module,exports){
+},{"./class":18,"./dom":19}],23:[function(require,module,exports){
 'use strict';
 
 var destroy = require('./plugin/destroy')
@@ -33595,7 +34422,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":24,"./plugin/initialize":32,"./plugin/update":36}],23:[function(require,module,exports){
+},{"./plugin/destroy":25,"./plugin/initialize":33,"./plugin/update":37}],24:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -33615,7 +34442,7 @@ module.exports = {
   theme: 'default'
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -33639,7 +34466,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":18,"../lib/helper":21,"./instances":33}],25:[function(require,module,exports){
+},{"../lib/dom":19,"../lib/helper":22,"./instances":34}],26:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -33701,7 +34528,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],26:[function(require,module,exports){
+},{"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],27:[function(require,module,exports){
 'use strict';
 
 var d = require('../../lib/dom')
@@ -33806,7 +34633,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":18,"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],27:[function(require,module,exports){
+},{"../../lib/dom":19,"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],28:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -33934,7 +34761,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/dom":18,"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],28:[function(require,module,exports){
+},{"../../lib/dom":19,"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],29:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -34070,7 +34897,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":33,"../update-geometry":34,"../update-scroll":35}],29:[function(require,module,exports){
+},{"../instances":34,"../update-geometry":35,"../update-scroll":36}],30:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -34087,7 +34914,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":33,"../update-geometry":34}],30:[function(require,module,exports){
+},{"../instances":34,"../update-geometry":35}],31:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -34198,7 +35025,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],31:[function(require,module,exports){
+},{"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],32:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -34368,7 +35195,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":33,"../update-geometry":34,"../update-scroll":35}],32:[function(require,module,exports){
+},{"../instances":34,"../update-geometry":35,"../update-scroll":36}],33:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -34415,7 +35242,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":17,"../lib/helper":21,"./handler/click-rail":25,"./handler/drag-scrollbar":26,"./handler/keyboard":27,"./handler/mouse-wheel":28,"./handler/native-scroll":29,"./handler/selection":30,"./handler/touch":31,"./instances":33,"./update-geometry":34}],33:[function(require,module,exports){
+},{"../lib/class":18,"../lib/helper":22,"./handler/click-rail":26,"./handler/drag-scrollbar":27,"./handler/keyboard":28,"./handler/mouse-wheel":29,"./handler/native-scroll":30,"./handler/selection":31,"./handler/touch":32,"./instances":34,"./update-geometry":35}],34:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -34536,7 +35363,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/class":17,"../lib/dom":18,"../lib/event-manager":19,"../lib/guid":20,"../lib/helper":21,"./default-setting":23}],34:[function(require,module,exports){
+},{"../lib/class":18,"../lib/dom":19,"../lib/event-manager":20,"../lib/guid":21,"../lib/helper":22,"./default-setting":24}],35:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -34664,7 +35491,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":17,"../lib/dom":18,"../lib/helper":21,"./instances":33,"./update-scroll":35}],35:[function(require,module,exports){
+},{"../lib/class":18,"../lib/dom":19,"../lib/helper":22,"./instances":34,"./update-scroll":36}],36:[function(require,module,exports){
 'use strict';
 
 var instances = require('./instances');
@@ -34764,7 +35591,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":33}],36:[function(require,module,exports){
+},{"./instances":34}],37:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -34803,7 +35630,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":18,"../lib/helper":21,"./instances":33,"./update-geometry":34,"./update-scroll":35}],37:[function(require,module,exports){
+},{"../lib/dom":19,"../lib/helper":22,"./instances":34,"./update-geometry":35,"./update-scroll":36}],38:[function(require,module,exports){
 function select(element) {
     var selectedText;
 
@@ -34833,7 +35660,7 @@ function select(element) {
 
 module.exports = select;
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 function E () {
 	// Keep this empty so it's easier to inherit from
   // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -34901,7 +35728,7 @@ E.prototype = {
 
 module.exports = E;
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -34913,6 +35740,8 @@ require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
 require('jquery-autosize');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
 
 var COOKIE_NAME = "dev_hub_name";
 
@@ -34978,9 +35807,15 @@ $(function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./blog_view_model":40,"emojify.js":5,"jquery":12,"jquery-autosize":8,"jquery-colorbox":9,"jquery-ui":10,"jquery.cookie":11,"knockout":13,"perfect-scrollbar/jquery":15}],40:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":44,"./blog_view_model":41,"emojify.js":5,"jquery":12,"jquery-autosize":8,"jquery-colorbox":9,"jquery-ui":10,"jquery.cookie":11,"knockout":14,"knockout.mapping":13,"perfect-scrollbar/jquery":16}],41:[function(require,module,exports){
+(function (global){
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+
 var ko = require('knockout');
 var Clipboard = require('clipboard');
+require('../libs/jquery.decora');
+var DropZone = require('../libs/dropzone');
 
 function BlogViewModel(name, start, end){
   var that = this;
@@ -35546,9 +36381,9 @@ BlogViewModel.prototype = {
   },
 
   insertText: function(item, row, text){
-    var text_array = item.text.split("\n");
+    var text_array = item.text().split("\n");
     text_array.splice(row,0,text);
-    item.text = text_array.join("\n");
+    item.text(text_array.join("\n"));
   },
 
   _addItem: function(item){
@@ -35597,4 +36432,823 @@ BlogViewModel.prototype = {
 
 module.exports = BlogViewModel; 
 
-},{"clipboard":2,"knockout":13}]},{},[39]);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../libs/dropzone":42,"../libs/jquery.decora":43,"clipboard":2,"jquery":12,"knockout":14}],42:[function(require,module,exports){
+function DropZone(param){
+  param.dropTarget.bind("dragenter", this.cancel_event);
+  param.dropTarget.bind("dragover", this.cancel_event);
+
+  if (param.dropChildSelector == undefined){
+    param.dropTarget.on('drop', this.drop_file_action(param.alertTarget, param.uploadedAction));
+  }else{
+    // 子要素指定がある場合は子要素それぞれをバインドする
+    param.dropTarget.on('drop', param.dropChildSelector, this.drop_file_action(param.alertTarget, param.uploadedAction));
+  }
+
+  if (param.fileTarget != undefined){
+    param.fileTarget.on('change', this.select_file_action(param.alertTarget, param.uploadedAction));
+  }
+
+  // 画像貼り付け時
+  if(param.pasteValid){
+    param.dropTarget.on('paste', this.paste_file_action(param.alertTarget, param.uploadedAction));
+  }
+}
+
+DropZone.prototype = {
+  drop_file_action: function($target, call_back){
+    var that = this;
+    return function(event){
+      var context = this;
+      var file = event.originalEvent.dataTransfer.files[0];
+
+      that.upload_file_with_ajax(context, file, $target, call_back);
+      return false;
+    }
+  },
+
+  select_file_action: function($target, call_back){
+    var that = this;
+    return function(event){
+      var context = this;
+      var file = $(context).prop('files')[0];
+
+      that.upload_file_with_ajax(context, file, $target, call_back);
+      return false;
+    }
+  },
+
+  paste_file_action: function($target, call_back){
+    var that = this;
+    return function(event){
+      var context = this;
+      var items = event.originalEvent.clipboardData.items;
+      for (var i = 0 ; i < items.length ; i++) {
+        var item = items[i];
+        if (item.type.indexOf("image") != -1) {
+          var file = item.getAsFile();
+          that.upload_file_with_ajax(context, file, $target, call_back);
+        }
+      }
+      return true;
+    }
+  },
+
+  cancel_event: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  },
+
+  upload_file_with_ajax: function(context, file, $target, call_back){
+    var that = this;
+
+    $target.show();
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax('/upload' , {
+      type: 'POST',
+      contentType: false,
+      processData: false,
+      data: formData,
+      error: function() {
+        $target.hide();
+      },
+      success: function(res) {
+        call_back(context, res);
+        $target.hide();
+      }
+    });
+  }
+}
+
+module.exports = DropZone;
+
+},{}],43:[function(require,module,exports){
+/*!
+ * jQuery Decorate Text Plugin
+ *
+ *  - auto link
+ *  - checkbox
+ */
+
+var emojify = require('emojify.js');
+require('./sanitize');
+
+(function($) {
+  var REG_CHECKBOX = /(-|=)[ ]?\[[ ]?\]|(-|=)[ ]?\[x\]/g,
+      SYM_CHECKED = "[x]",
+      SYM_UNCHECKED = "[ ]";
+
+  emojify.setConfig({
+    img_dir: 'img/emoji',  // Directory for emoji images
+  });
+
+  $.fn.decora = function( options ){
+    var defaults = {
+      checkbox_callback: function(that, applyCheckStatus){},
+      img_size_callback: function(that, applyImgSize){}
+    };
+
+    var options = $.extend( defaults, options );
+
+    // private method
+    Function.prototype.method = function(name, func){
+      this.prototype[name] = func;
+      return this;
+    }
+    Function.method('curry', function(){
+      var slice = Array.prototype.slice,
+          args = slice.apply(arguments),
+          that = this;
+      return function(){
+        return that.apply(null, args.concat(slice.apply(arguments)));
+      }
+    });
+
+    function _updateCheckboxStatus(check_no, is_checked, target_text){
+      var check_index = 0;
+      return target_text.replace(REG_CHECKBOX,
+        function(){
+          var matched_check = arguments[0];
+          var current_index = check_index++;
+          var sym_prefix = arguments[1] || arguments[2];
+          if ( check_no == current_index){
+            if (is_checked){
+              return sym_prefix + SYM_CHECKED;
+            }else{
+              return sym_prefix + SYM_UNCHECKED;
+            }
+          }else{
+            return matched_check;
+          }
+        });
+    }
+
+    function _updateImageSize(index, next_height, target_text){
+      var current_index = 0;
+
+      var deco_func = function(target_text){
+        return target_text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
+        function(){
+          var matched_img = arguments[0];
+          current_index++;
+          var matched_link = arguments[3];
+          if (current_index != index){
+            return matched_img;
+          }else{
+            return matched_link + " " + next_height;
+          }
+        });
+      };
+
+      var bq_sepa_array = target_text.split("```");
+      for (var i = 0; i < bq_sepa_array.length; i++){
+        if (bq_sepa_array[i] != undefined){
+          if (i%2 == 0){
+            bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+          }
+        }
+      }
+
+      return bq_sepa_array.join('```');
+    }
+
+    $(this).on('click',':checkbox', function(){
+      var check_no = $(this).data('no');
+      if (check_no == undefined){ return; }
+      var is_checked = $(this).attr("checked") ? true : false;
+      var that = this;
+
+      options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked));
+    })
+    .on('click','.img-plus', function(){
+      var that = this;
+      var $img = $(this).closest('a').find('img');
+      var img_index = $(this).closest('a').data('index');
+      var current_height = Number($img.css('height').replace('px',''));
+      var next_height = current_height + 20;
+      $img.css('height', next_height + "px");
+
+      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+      return false;
+    })
+    .on('click','.img-minus', function(){
+      var that = this;
+      var $img = $(this).closest('a').find('img');
+      var img_index = $(this).closest('a').data('index');
+      var current_height = Number($img.css('height').replace('px',''));
+      var next_height = current_height - 20;
+      if (next_height < 20){ next_height = 20; }
+      $img.css('height', next_height + "px");
+
+      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+      return false;
+    })
+    .on('dblclick','.img-plus', function(){
+      return false;
+    })
+    .on('dblclick','.img-minus', function(){
+      return false;
+    })
+    .on('mouseenter','.thumbnail', function(){
+      $(this).find(".img-plus").show();
+      $(this).find(".img-minus").show();
+
+      var that = this;
+      var img_index = $(this).data('index');
+      $(this).find("img").resizable({
+        aspectRatio: true,
+        autoHide: true,
+        start: function(e, ui){
+          // リサイズ中は colorbox を無効化
+          $(that).on('click', function(){ return false; });
+          $(this).find('img').css('max-height','');
+        },
+        stop: function(e, ui){
+          var next_height = $(this).height();
+          options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
+
+          // リサイズ後は colorbox を有効化
+          $(that).on('click', function(){ return true; });
+        }
+      });
+    })
+    .on('mouseleave','.thumbnail', function(){
+      $(this).find(".img-plus").hide();
+      $(this).find(".img-minus").hide();
+    });
+
+    return this;
+  }
+
+  $.fn.showDecora = function( text ){
+    if (text != undefined){
+      $(this).html(_set_to_table($.decora.to_html(text)));
+    }
+
+    $(this).find('tr:has(:header)').addClass("header-tr");
+    $(this).find('tr:has(.code-out-pre-border)').addClass("code-out-pre-tr");
+    $(this).find('td:has(.code-out-pre)').addClass("code-out-pre-td");
+    $(this).find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
+    $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
+
+    $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr");
+    $(this).find('tr:has(.text-draggable)').addClass("draggable-text-tr");
+
+    _set_colorbox($(this).find('.thumbnail'));
+
+    // 絵文字表示
+    emojify.run($(this).get(0));
+  }
+
+  // private method
+  function _set_to_table(html){
+    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
+    return table_html += "</td></tr></table>";
+  }
+
+  function _set_colorbox($dom){
+    $dom.colorbox({
+      transition: "none",
+      rel: "img",
+      maxWidth: "100%",
+      maxHeight: "100%",
+      initialWidth: "200px",
+      initialHeight: "200px"
+    });
+  }
+
+  function _decorate_html_tag_for_message(target_text){
+    target_text = sanitize(target_text);
+    target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
+    target_text = _decorate_link_tag( target_text );
+    target_text = _decorate_download_tag( target_text );
+    img_result = _decorate_img_tag( target_text, 100, 0);
+    target_text = img_result.text;
+    target_text = _decorate_line_color( target_text );
+    target_text = _decorate_ref( target_text );
+    target_text = _decorate_hr( target_text );
+
+    return target_text;
+  }
+
+  function _create_decorate_html_tag(){
+    var checkbox_no = 0;
+    var img_no = 0;
+
+    return function(deco_text){
+      // 装飾有り
+      deco_text = sanitize(deco_text);
+      deco_text = _decorate_wip( deco_text );
+      deco_text = _decorate_download_tag( deco_text );
+
+      var img_result = _decorate_img_tag( deco_text, 200, img_no );
+      img_no = img_result.no;
+      deco_text = img_result.text;
+
+      deco_text = _decorate_xap_tag( deco_text, 200, 200 );
+
+      var check_result = _decorate_checkbox( deco_text, checkbox_no );
+      checkbox_no = check_result.no;
+      deco_text = check_result.text;
+
+      deco_text = _decorate_link_tag( deco_text );
+
+      deco_text = _decorate_draggable( deco_text );
+      deco_text = _decorate_header( deco_text );
+      deco_text = _decorate_list( deco_text );
+      deco_text = _decorate_line_color( deco_text );
+      deco_text = _decorate_ref( deco_text );
+      deco_text = _decorate_hr( deco_text );
+      return deco_text;
+    }
+  }
+
+  function _decorate_raw_tag( text ){
+    var is_code = text.split("\n")[0].indexOf("code") != -1;
+    if (is_code){
+      // コードに色付け
+      var raw_text = text.replace(/^code/,"");
+      var $pretty_tmp_span = $('<span/>').addClass("prettyprint").text(raw_text);
+      var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_span);
+
+      prettyPrint(null, $pretty_tmp_div.get(0));
+      raw_text = $pretty_tmp_span.html();
+      $pretty_tmp_div.empty();
+      raw_text = raw_text.split("\n");
+
+      var first_raw = raw_text[0].replace(/\r\n/g,"").replace(/\n/g,"");
+      raw_text[1] = first_raw + raw_text[1];
+      raw_text.splice(0,1);
+
+      // 以下のようなクラスを付加する
+      // コード  -> code-out-pre code-out-pre-top
+      // コード  -> code-out-pre
+      // コード  -> code-out-pre code-out-pre-bottom
+      var last_class_name = '';
+      $.each(raw_text, function(i, val){
+        var class_name = "code-out-pre ";
+        if (raw_text.length == 1){
+          class_name += "code-out-pre-top code-out-pre-bottom";
+        }else if (i == 0){
+          class_name += "code-out-pre-top ";
+          val = val + '</span>';
+        }else if (i == raw_text.length - 1){
+          class_name += "code-out-pre-bottom ";
+          val = '<span class ="' + last_class_name + '">' + val ;
+        }else{
+          val = '<span class ="' + last_class_name + '">' + val + '</span>';
+        }
+
+        raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        last_class_name = $("<div/>").html(raw_text[i]).find(":last").get(0).className;
+      });
+
+      // コードの前後に空行を追加する
+      // (空行)  -> code-out-pre-boder
+      raw_text.unshift('<span class="code-out-pre-border"></span>');
+      raw_text.push('<span class="code-out-pre-border"></span>');
+    }else{
+      // 色付けなし
+      var raw_text = text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
+      raw_text = raw_text.split("\n");
+
+      // 以下のようなクラスを付加する
+      // (空行)  -> code-out-pre-boder
+      // コード  -> code-out-pre code-out-pre-top
+      // コード  -> code-out-pre
+      // コード  -> code-out-pre code-out-pre-bottom
+      // (空行)  -> code-out-pre-boder
+      $.each(raw_text, function(i, val){
+        var class_name = "code-out-pre ";
+        if (i == 1){
+          if (raw_text.length == 3){
+            class_name += "code-out-pre-top code-out-pre-bottom";
+          }else{
+            class_name += "code-out-pre-top ";
+          }
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }else if (i == raw_text.length - 2){
+          class_name += "code-out-pre-bottom ";
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }else if (i == 0 || i == raw_text.length - 1){
+          raw_text[i] = '<span class="code-out-pre-border"></span>';
+        }else {
+          raw_text[i] = '<span class="' + class_name + '">' + val + '</span>';
+        }
+      });
+    }
+
+    return raw_text.join("\n");
+  }
+
+  function _decorate_wip( text ){
+    var wiped_text = text.replace(/\[WIP\]/g,
+        function(){
+          return '<span class="label label-important">[WIP]</span>';
+        });
+    return wiped_text;
+  }
+
+  function _decorate_link_tag( text ){
+    var linked_text = text.replace(/(\[(.+?)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+)|blog\?id=[^\)]+)[\)]?/g,
+        function(){
+          var matched_link = arguments[3];
+          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp)[?]?/i)){
+            return matched_link;
+          }else{
+            var title_text = arguments[2] ? arguments[2] : matched_link;
+            return '<a href="' + matched_link + '" target="_blank" >' + title_text + '</a>';
+          }
+        });
+    return linked_text;
+  }
+
+  function _decorate_download_tag( text ){
+    var img_text = text.replace(/(\/uploads\/(\S+))/g,
+        function(){
+          var matched_link = arguments[1];
+          var matched_name = arguments[2];
+          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp|\.xap)[?]?/i)){
+            return matched_link;
+          }else{
+            return '<a href="' + matched_link + '" class="btn btn-default btn-mini" ><i class="icon-download-alt"></i>' + matched_name + '</a>';
+          }
+        });
+    return img_text;
+  }
+
+  function _decorate_img_tag( text, default_height, img_index){
+    var img_text = text.replace(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s([0-9]+)|\s))/gi,
+        function(){
+          img_index++;
+          var matched_link = arguments[3];
+          var height = arguments[7];
+          var height_css = "height:";
+          if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
+            height = default_height;
+            height_css = "max-height:";
+          }
+          var prefix = arguments[1] ? arguments[1] : "";
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
+        });
+    return {text: img_text, no: img_index};
+  }
+
+  // for SilverLight
+  function _decorate_xap_tag( text, default_width, default_height){
+    var img_text = text.replace(/((\S+?(\.xap))($|\s([0-9]+)\s([0-9]+)|\s))/g, // xxx.xap 180 90
+        function(){
+          var matched_link = arguments[2];
+          var width = arguments[5];
+          var height = arguments[6];
+          if (width == "" || !isFinite(width)){ // firefox では空文字になるので判定が必要
+            width = default_width;
+          }
+          if (height == "" || !isFinite(height)){ // firefox では空文字になるので判定が必要
+            height = default_height;
+          }
+          return '<object data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="' + width + '" height="' + height + '">' +
+                 '  <param name="source" value="' + matched_link + '"/>' +
+                 '  <param name="onError" value="onSilverlightError" />' +
+                 '  <param name="background" value="white" />' +
+                 '  <param name="minRuntimeVersion" value="5.0.61118.0" />' +
+                 '  <param name="autoUpgrade" value="true" />' +
+                 '  <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=5.0.61118.0" style="text-decoration:none">' +
+                 '    <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Microsoft Silverlight の取得" style="border-style:none"/>' +
+                 '  </a>' +
+                 '</object>';
+        });
+    return img_text;
+  }
+
+  function _decorate_checkbox( text, no ){
+    var check_text = text.replace(REG_CHECKBOX, function(){
+      var matched_text = arguments[0];
+      var sym_prefix = arguments[1] || arguments[2];
+      var checkbox_class = sym_prefix == "-" ? "checkbox-normal" : "checkbox-draggable";
+      var delete_button = sym_prefix == "-" ? "" : '<a class="delete-task" href="#">x</a>';
+      if ( matched_text.indexOf("x") > 0 ){
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />' + delete_button;
+      }else{
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />' + delete_button;
+      }
+    });
+    return {text: check_text, no: no};
+  }
+
+  function _decorate_draggable( text ){
+    var draggable_text = text.replace(/^=(.*)/mg, function(){
+      var matched_text = arguments[1];
+      if (matched_text == "[input]"){
+        return '<div class="text-draggable" style="padding-right: 10px"><input type="text" class="input-task" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
+      }else{
+        return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
+      }
+    });
+    return draggable_text;
+  }
+
+  function _decorate_header( text ){
+    var header_index = 0;
+    var header_text = text.replace(/^(#+)[ ]*(.*)$/mg, function(){
+      var header_num = arguments[1].length < 4 ? arguments[1].length : 4;
+      var matched_text = arguments[2];
+      return '<h' + header_num + '>' + _decorate_line_color(matched_text) + '</h' + header_num + '>';
+    });
+    return header_text;
+  }
+
+  function _decorate_list( text ){
+    return text.replace(/^(\*)[ ]*(.*)$/mg, function(){
+      var matched_text = arguments[2];
+      return '<ul class="list-ul"><li>' + _decorate_line_color(matched_text) + '</li></ul>';
+    });
+  }
+
+  function _decorate_line_color( text ){
+    // 文字色
+    var color_text = text.replace(/^(.+)[ 　](#([a-z]+)|(#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))$/mg, function(){
+      var matched_text = arguments[1];
+      var color_name = arguments[3] || arguments[4];
+      if (color_name == "r"){ color_name = "#ba2636"; }
+      if (color_name == "g"){ color_name = "#387d39"; }
+      if (color_name == "b"){ color_name = "#333399"; }
+      return '<font color="' + color_name + '">' + matched_text + '</font>';
+    });
+    // 背景色
+    var color_text = color_text.replace(/^(.+)[ 　](%([a-z]+)|(%[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))$/mg, function(){
+      var matched_text = arguments[1];
+      var color_name = arguments[3] || arguments[4];
+      if (color_name == "r"){ color_name = "#FFE4E1"; }
+      if (color_name == "g"){ color_name = "#7FFFD4"; }
+      if (color_name == "b"){ color_name = "#AFEEEE"; }
+      return '<span style="background-color:' + color_name + '">' + matched_text + '</span>';
+    });
+
+    return color_text;
+  }
+
+  function _decorate_ref( text ){
+    var refed_text = text.replace(/\[ref:(.+?)\]/g,
+        function(){
+          var matched_id = arguments[1];
+          return '<span data-bind="click: $parent.set_ref_point.bind($data, $element)" class="btn btn-default btn-mini ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
+        });
+    return refed_text;
+  }
+
+  function _decorate_hr( text ){
+    var hr_text = text.replace(/^---[-]*$/mg,
+        function(){
+          return '<hr></hr>';
+        });
+    return hr_text;
+  }
+
+  $.decora = {
+    to_html: function(target_text){
+      return this.apply_to_deco_and_raw(
+          target_text,
+          _create_decorate_html_tag(),
+          _decorate_raw_tag);
+    },
+
+    apply_to_deco_and_raw: function(target_text, deco_func, raw_func){
+      var bq_sepa_array = target_text.split("```");
+      for (var i = 0; i < bq_sepa_array.length; i++){
+        if (bq_sepa_array[i] != undefined){
+          if (i%2 == 0){
+            // 装飾有り
+            if ( typeof deco_func === "function"){
+              bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+            }
+          }else{
+            // 装飾無し
+            if ( typeof raw_func === "function"){
+              bq_sepa_array[i] = raw_func(bq_sepa_array[i]);
+            }
+          }
+        }
+      }
+
+      return bq_sepa_array.join('');
+    },
+
+    message_to_html: function(target_text){
+      return _decorate_html_tag_for_message(target_text);
+    }
+  };
+})(jQuery);
+
+
+},{"./sanitize":45,"emojify.js":5}],44:[function(require,module,exports){
+var emojify = require('emojify.js');
+
+function addCustomBindingHandlers(ko){
+  ko.bindingHandlers.decoBlogHtml = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).showDecora(ko.unwrap(valueAccessor()));
+            }
+  }
+
+  ko.bindingHandlers.decoBlogTitleHtml = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).html(ko.unwrap(valueAccessor()));
+              emojify.run(element);
+              ko.applyBindingsToDescendants(bindingContext, element);
+            }
+  }
+
+  ko.bindingHandlers.decoHtml = {
+    init: function() {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).showDecora(ko.unwrap(valueAccessor()));
+              ko.applyBindingsToDescendants(bindingContext, element);
+            }
+  };
+
+  ko.bindingHandlers.decoMemoTitle = {
+    init: function() {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).html(ko.unwrap(valueAccessor()));
+              emojify.run(element);
+              ko.applyBindingsToDescendants(bindingContext, element);
+            }
+  };
+
+  ko.bindingHandlers.decoMemoIndex = {
+    init: function() {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).html(ko.unwrap(valueAccessor()));
+              emojify.run(element);
+            }
+  };
+
+  ko.bindingHandlers.decoHtmlMsg = {
+    init: function() {
+            return { 'controlsDescendantBindings': true };
+          },
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+              $(element).html(valueAccessor());
+              ko.applyBindingsToDescendants(bindingContext, element);
+            }
+  }
+
+  ko.bindingHandlers.tooltip = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            $(element).tooltip({placement: valueAccessor()});
+          }
+  }
+
+  ko.bindingHandlers.editStartTextarea = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+          },
+    update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+              var value = valueAccessor();
+              var valueUnwrapped = ko.unwrap(value);
+
+              if (valueUnwrapped == true){
+                $(element).caretLine(0);
+                $(element).autofit({min_height: 100});
+              }
+            }
+  }
+
+  // autofit カスタムバインディング(true の場合に有効)
+  ko.bindingHandlers.autofit = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            if (valueAccessor()){
+              $(element).autofit({min_height: 700});
+            }
+          }
+  }
+
+  // DropZone カスタムバインディング(true の場合に有効)
+  ko.bindingHandlers.dropzoneDisp = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            if (!valueAccessor()){ return }
+
+            var viewModel = bindingContext.$data;
+
+            // 閲覧モードの行指定でドロップ
+            new DropZone({
+              dropTarget: $(element),
+                dropChildSelector: '.code-out-tr',
+                alertTarget: $('#loading'),
+                uploadedAction: function(context, res){
+                  if (res.fileName == null){ return; }
+                  var row = $(context).closest("table").find("tr").index(context);
+
+                  // ドロップ位置にファイルを差し込む
+                  viewModel.insert(row + 1, res.fileName + " ");
+                }
+            });
+
+            // 閲覧モードの行以外の部分にドロップ
+            new DropZone({
+              dropTarget: $(element),
+                alertTarget: $('#loading'),
+                uploadedAction: function(context, res){
+                  if (res.fileName == null){ return; }
+
+                  // メモの先頭に画像を差し込む
+                  viewModel.insert(0, res.fileName + " ");
+                }
+            });
+          }
+  }
+
+  ko.bindingHandlers.dropzoneEdit= {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            if (!valueAccessor()){ return }
+
+            var viewModel = bindingContext.$data;
+
+            // 編集モードへのドロップ
+            new DropZone({
+              dropTarget: $(element),
+                alertTarget: $('#loading'),
+                pasteValid: true,
+                uploadedAction: function(context, res){
+                  if (res.fileName == null){ return; }
+                  var row = $(context).caretLine();
+
+                  // メモのキャレット位置にファイルを差し込む
+                  viewModel.insert(row - 1, res.fileName + " ");
+                  $(context).caretLine(row);
+                }
+            });
+          }
+  }
+
+  ko.bindingHandlers.decora = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            if (!valueAccessor()){ return }
+
+            var viewModel = bindingContext.$data;
+
+            $(element)
+              .decora({
+                checkbox_callback: function(context, applyCheckStatus){
+                                     // チェック対象のテキストを更新する
+                                     viewModel.applyToWritingText(applyCheckStatus);
+                                   },
+                img_size_callback: function(context, applyImgSize){
+                                     // チェック対象のテキストを更新する
+                                     viewModel.applyToWritingText(applyImgSize);
+                                   }
+              });
+          }
+  }
+}
+
+module.exports = addCustomBindingHandlers;
+
+
+
+},{"emojify.js":5}],45:[function(require,module,exports){
+(function($) {
+  function trimAttributes(node, allowedAttrs) {
+    $.each(node.attributes, function() {
+      var attrName = this.name;
+
+      if ($.inArray(attrName, allowedAttrs) == -1) {
+        $(node).removeAttr(attrName)
+      }
+    });
+  }
+
+  function sanitize(html, whitelist) {
+    whitelist = whitelist || {'font': ['color','size'], 'span': ['class'], 'b': [], 'br': [], 'h1':[], 'h2':[], 'h3':[]};
+    var output = $('<div>'+html+'</div>');
+    output.find('*').each(function() {
+      var allowedAttrs = whitelist[this.nodeName.toLowerCase()];
+      if(!allowedAttrs) {
+        $(this).remove();
+      } else {
+        trimAttributes(this, allowedAttrs);
+      }
+    });
+    return output.html();
+  }
+
+  window.sanitize = sanitize;
+})(jQuery);
+
+},{}]},{},[40]);

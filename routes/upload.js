@@ -1,5 +1,6 @@
 var multiparty = require('multiparty');
 var fs = require('fs');
+var mv = require('mv');
 var util = require('../lib/util');
 
 module.exports.set_db = function(current_db){
@@ -32,7 +33,7 @@ exports.post = function(req, res) {
       var target_path = './static/uploads/' + file_name;
       var access_path = '/uploads/' + file_name;
 
-      fs.rename(tmp_path, target_path, function(err) {
+      mv(tmp_path, target_path, function(err) {
         if (err) {
           throw err;
         }

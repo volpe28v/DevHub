@@ -5,6 +5,9 @@
  *  - checkbox
  */
 
+var emojify = require('emojify.js');
+require('./sanitize');
+
 (function($) {
   var REG_CHECKBOX = /(-|=)[ ]?\[[ ]?\]|(-|=)[ ]?\[x\]/g,
       SYM_CHECKED = "[x]",

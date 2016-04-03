@@ -86,3 +86,5 @@ DropZone.prototype = {
     });
   }
 }
+
+module.exports = DropZone;

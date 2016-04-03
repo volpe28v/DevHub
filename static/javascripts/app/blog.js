@@ -8,6 +8,8 @@ require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
 require('jquery-autosize');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
 
 var COOKIE_NAME = "dev_hub_name";
 
