@@ -1,3 +1,8 @@
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('./jquery.autofit');
+require('./jquery.caret');
+
 var emojify = require('emojify.js');
 
 function addCustomBindingHandlers(ko){

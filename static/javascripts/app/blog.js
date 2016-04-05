@@ -7,7 +7,7 @@ var emojify = require('emojify.js');
 require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
-require('jquery-autosize');
+require('../libs/jquery.autosize');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 

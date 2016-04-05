@@ -219,7 +219,7 @@
 
     module.exports = ClipboardAction;
 });
-},{"select":38}],2:[function(require,module,exports){
+},{"select":37}],2:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
         define(['module', './clipboard-action', 'tiny-emitter', 'good-listener'], factory);
@@ -379,7 +379,7 @@
 
     module.exports = Clipboard;
 });
-},{"./clipboard-action":1,"good-listener":7,"tiny-emitter":39}],3:[function(require,module,exports){
+},{"./clipboard-action":1,"good-listener":7,"tiny-emitter":38}],3:[function(require,module,exports){
 var matches = require('matches-selector')
 
 module.exports = function (element, selector, checkYoSelf) {
@@ -391,7 +391,7 @@ module.exports = function (element, selector, checkYoSelf) {
   }
 }
 
-},{"matches-selector":15}],4:[function(require,module,exports){
+},{"matches-selector":14}],4:[function(require,module,exports){
 var closest = require('closest');
 
 /**
@@ -966,281 +966,6 @@ function listenSelector(selector, type, callback) {
 module.exports = listen;
 
 },{"./is":6,"delegate":4}],8:[function(require,module,exports){
-/*!
-	Autosize 1.18.18
-	license: MIT
-	http://www.jacklmoore.com/autosize
-*/
-(function ($) {
-	var
-	defaults = {
-		className: 'autosizejs',
-		id: 'autosizejs',
-		append: '\n',
-		callback: false,
-		resizeDelay: 10,
-		placeholder: true
-	},
-
-	// line-height is conditionally included because IE7/IE8/old Opera do not return the correct value.
-	typographyStyles = [
-		'fontFamily',
-		'fontSize',
-		'fontWeight',
-		'fontStyle',
-		'letterSpacing',
-		'textTransform',
-		'wordSpacing',
-		'textIndent',
-		'whiteSpace'
-	],
-
-	// to keep track which textarea is being mirrored when adjust() is called.
-	mirrored,
-
-	// the mirror element, which is used to calculate what size the mirrored element should be.
-	mirror = $('<textarea tabindex="-1"/>').data('autosize', true)[0];
-
-	// border:0 is unnecessary, but avoids a bug in Firefox on OSX
-	mirror.style.cssText = "position:absolute; top:-999px; left:0; right:auto; bottom:auto; border:0; padding: 0; -moz-box-sizing:content-box; -webkit-box-sizing:content-box; box-sizing:content-box; word-wrap:break-word; height:0 !important; min-height:0 !important; overflow:hidden; transition:none; -webkit-transition:none; -moz-transition:none;";
-
-	// test that line-height can be accurately copied.
-	mirror.style.lineHeight = '99px';
-	if ($(mirror).css('lineHeight') === '99px') {
-		typographyStyles.push('lineHeight');
-	}
-	mirror.style.lineHeight = '';
-
-	$.fn.autosize = function (options) {
-		if (!this.length) {
-			return this;
-		}
-
-		options = $.extend({}, defaults, options || {});
-
-		if (mirror.parentNode !== document.body) {
-			$(document.body).append(mirror);
-		}
-
-		return this.each(function () {
-			var
-			ta = this,
-			$ta = $(ta),
-			maxHeight,
-			minHeight,
-			boxOffset = 0,
-			callback = $.isFunction(options.callback),
-			originalStyles = {
-				height: ta.style.height,
-				overflow: ta.style.overflow,
-				overflowY: ta.style.overflowY,
-				wordWrap: ta.style.wordWrap,
-				resize: ta.style.resize
-			},
-			timeout,
-			width = $ta.width(),
-			taResize = $ta.css('resize');
-
-			if ($ta.data('autosize')) {
-				// exit if autosize has already been applied, or if the textarea is the mirror element.
-				return;
-			}
-			$ta.data('autosize', true);
-
-			if ($ta.css('box-sizing') === 'border-box' || $ta.css('-moz-box-sizing') === 'border-box' || $ta.css('-webkit-box-sizing') === 'border-box'){
-				boxOffset = $ta.outerHeight() - $ta.height();
-			}
-
-			// IE8 and lower return 'auto', which parses to NaN, if no min-height is set.
-			minHeight = Math.max(parseFloat($ta.css('minHeight')) - boxOffset || 0, $ta.height());
-
-			$ta.css({
-				overflow: 'hidden',
-				overflowY: 'hidden',
-				wordWrap: 'break-word' // horizontal overflow is hidden, so break-word is necessary for handling words longer than the textarea width
-			});
-
-			if (taResize === 'vertical') {
-				$ta.css('resize','none');
-			} else if (taResize === 'both') {
-				$ta.css('resize', 'horizontal');
-			}
-
-			// getComputedStyle is preferred here because it preserves sub-pixel values, while jQuery's .width() rounds to an integer.
-			function setWidth() {
-				var width;
-				var style = window.getComputedStyle ? window.getComputedStyle(ta, null) : null;
-
-				if (style) {
-					width = parseFloat(style.width);
-					if (style.boxSizing === 'border-box' || style.webkitBoxSizing === 'border-box' || style.mozBoxSizing === 'border-box') {
-						$.each(['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'], function(i,val){
-							width -= parseFloat(style[val]);
-						});
-					}
-				} else {
-					width = $ta.width();
-				}
-
-				mirror.style.width = Math.max(width,0) + 'px';
-			}
-
-			function initMirror() {
-				var styles = {};
-
-				mirrored = ta;
-				mirror.className = options.className;
-				mirror.id = options.id;
-				maxHeight = parseFloat($ta.css('maxHeight'));
-
-				// mirror is a duplicate textarea located off-screen that
-				// is automatically updated to contain the same text as the
-				// original textarea.  mirror always has a height of 0.
-				// This gives a cross-browser supported way getting the actual
-				// height of the text, through the scrollTop property.
-				$.each(typographyStyles, function(i,val){
-					styles[val] = $ta.css(val);
-				});
-
-				$(mirror).css(styles).attr('wrap', $ta.attr('wrap'));
-
-				setWidth();
-
-				// Chrome-specific fix:
-				// When the textarea y-overflow is hidden, Chrome doesn't reflow the text to account for the space
-				// made available by removing the scrollbar. This workaround triggers the reflow for Chrome.
-				if (window.chrome) {
-					var width = ta.style.width;
-					ta.style.width = '0px';
-					var ignore = ta.offsetWidth;
-					ta.style.width = width;
-				}
-			}
-
-			// Using mainly bare JS in this function because it is going
-			// to fire very often while typing, and needs to very efficient.
-			function adjust() {
-				var height, originalHeight;
-
-				if (mirrored !== ta) {
-					initMirror();
-				} else {
-					setWidth();
-				}
-
-				if (!ta.value && options.placeholder) {
-					// If the textarea is empty, copy the placeholder text into
-					// the mirror control and use that for sizing so that we
-					// don't end up with placeholder getting trimmed.
-					mirror.value = ($ta.attr("placeholder") || '');
-				} else {
-					mirror.value = ta.value;
-				}
-
-				mirror.value += options.append || '';
-				mirror.style.overflowY = ta.style.overflowY;
-				originalHeight = parseFloat(ta.style.height) || 0;
-
-				// Setting scrollTop to zero is needed in IE8 and lower for the next step to be accurately applied
-				mirror.scrollTop = 0;
-
-				mirror.scrollTop = 9e4;
-
-				// Using scrollTop rather than scrollHeight because scrollHeight is non-standard and includes padding.
-				height = mirror.scrollTop;
-
-				if (maxHeight && height > maxHeight) {
-					ta.style.overflowY = 'scroll';
-					height = maxHeight;
-				} else {
-					ta.style.overflowY = 'hidden';
-					if (height < minHeight) {
-						height = minHeight;
-					}
-				}
-
-				height += boxOffset;
-
-				if (Math.abs(originalHeight - height) > 1/100) {
-					ta.style.height = height + 'px';
-
-					// Trigger a repaint for IE8 for when ta is nested 2 or more levels inside an inline-block
-					mirror.className = mirror.className;
-
-					if (callback) {
-						options.callback.call(ta,ta);
-					}
-					$ta.trigger('autosize.resized');
-				}
-			}
-
-			function resize () {
-				clearTimeout(timeout);
-				timeout = setTimeout(function(){
-					var newWidth = $ta.width();
-
-					if (newWidth !== width) {
-						width = newWidth;
-						adjust();
-					}
-				}, parseInt(options.resizeDelay,10));
-			}
-
-			if ('onpropertychange' in ta) {
-				if ('oninput' in ta) {
-					// Detects IE9.  IE9 does not fire onpropertychange or oninput for deletions,
-					// so binding to onkeyup to catch most of those occasions.  There is no way that I
-					// know of to detect something like 'cut' in IE9.
-					$ta.on('input.autosize keyup.autosize', adjust);
-				} else {
-					// IE7 / IE8
-					$ta.on('propertychange.autosize', function(){
-						if(event.propertyName === 'value'){
-							adjust();
-						}
-					});
-				}
-			} else {
-				// Modern Browsers
-				$ta.on('input.autosize', adjust);
-			}
-
-			// Set options.resizeDelay to false if using fixed-width textarea elements.
-			// Uses a timeout and width check to reduce the amount of times adjust needs to be called after window resize.
-
-			if (options.resizeDelay !== false) {
-				$(window).on('resize.autosize', resize);
-			}
-
-			// Event for manual triggering if needed.
-			// Should only be needed when the value of the textarea is changed through JavaScript rather than user input.
-			$ta.on('autosize.resize', adjust);
-
-			// Event for manual triggering that also forces the styles to update as well.
-			// Should only be needed if one of typography styles of the textarea change, and the textarea is already the target of the adjust method.
-			$ta.on('autosize.resizeIncludeStyle', function() {
-				mirrored = null;
-				adjust();
-			});
-
-			$ta.on('autosize.destroy', function(){
-				mirrored = null;
-				clearTimeout(timeout);
-				$(window).off('resize', resize);
-				$ta
-					.off('autosize')
-					.off('.autosize')
-					.css(originalStyles)
-					.removeData('autosize');
-			});
-
-			// Call adjust in case the textarea already contains text.
-			adjust();
-		});
-	};
-}(jQuery || $)); // jQuery or jQuery-like library, such as Zepto
-
-},{}],9:[function(require,module,exports){
 /*!
 	Colorbox 1.6.3
 	license: MIT
@@ -2347,7 +2072,7 @@ module.exports = listen;
 
 }(jQuery, document, window));
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*! jQuery UI - v1.10.3 - 2013-05-03
@@ -17354,7 +17079,7 @@ $.widget( "ui.tooltip", {
 
 }( jQuery ) );
 
-},{"jquery":12}],11:[function(require,module,exports){
+},{"jquery":11}],10:[function(require,module,exports){
 /*!
  * jQuery Cookie Plugin v1.4.1
  * https://github.com/carhartl/jquery-cookie
@@ -17473,7 +17198,7 @@ $.widget( "ui.tooltip", {
 
 }));
 
-},{"jquery":12}],12:[function(require,module,exports){
+},{"jquery":11}],11:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -27317,7 +27042,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (factory) {
     // Module systems magic dance.
 
@@ -28144,7 +27869,7 @@ return jQuery;
     }
 }));
 
-},{"knockout":14}],14:[function(require,module,exports){
+},{"knockout":13}],13:[function(require,module,exports){
 /*!
  * Knockout JavaScript library v3.4.0
  * (c) Steven Sanderson - http://knockoutjs.com/
@@ -34017,7 +33742,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 }());
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 /**
  * Element prototype.
@@ -34058,12 +33783,12 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":17}],17:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":16}],16:[function(require,module,exports){
 'use strict';
 
 var ps = require('../main')
@@ -34108,7 +33833,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":23,"../plugin/instances":34}],18:[function(require,module,exports){
+},{"../main":22,"../plugin/instances":33}],17:[function(require,module,exports){
 'use strict';
 
 function oldAdd(element, className) {
@@ -34152,7 +33877,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var DOM = {};
@@ -34238,7 +33963,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var EventElement = function (element) {
@@ -34311,7 +34036,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 module.exports = (function () {
@@ -34326,7 +34051,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var cls = require('./class')
@@ -34409,7 +34134,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":18,"./dom":19}],23:[function(require,module,exports){
+},{"./class":17,"./dom":18}],22:[function(require,module,exports){
 'use strict';
 
 var destroy = require('./plugin/destroy')
@@ -34422,7 +34147,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":25,"./plugin/initialize":33,"./plugin/update":37}],24:[function(require,module,exports){
+},{"./plugin/destroy":24,"./plugin/initialize":32,"./plugin/update":36}],23:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -34442,7 +34167,7 @@ module.exports = {
   theme: 'default'
 };
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -34466,7 +34191,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":19,"../lib/helper":22,"./instances":34}],26:[function(require,module,exports){
+},{"../lib/dom":18,"../lib/helper":21,"./instances":33}],25:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -34528,7 +34253,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],27:[function(require,module,exports){
+},{"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],26:[function(require,module,exports){
 'use strict';
 
 var d = require('../../lib/dom')
@@ -34633,7 +34358,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":19,"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],28:[function(require,module,exports){
+},{"../../lib/dom":18,"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],27:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -34761,7 +34486,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/dom":19,"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],29:[function(require,module,exports){
+},{"../../lib/dom":18,"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],28:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -34897,7 +34622,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":34,"../update-geometry":35,"../update-scroll":36}],30:[function(require,module,exports){
+},{"../instances":33,"../update-geometry":34,"../update-scroll":35}],29:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -34914,7 +34639,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":34,"../update-geometry":35}],31:[function(require,module,exports){
+},{"../instances":33,"../update-geometry":34}],30:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -35025,7 +34750,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":22,"../instances":34,"../update-geometry":35,"../update-scroll":36}],32:[function(require,module,exports){
+},{"../../lib/helper":21,"../instances":33,"../update-geometry":34,"../update-scroll":35}],31:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -35195,7 +34920,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":34,"../update-geometry":35,"../update-scroll":36}],33:[function(require,module,exports){
+},{"../instances":33,"../update-geometry":34,"../update-scroll":35}],32:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -35242,7 +34967,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":18,"../lib/helper":22,"./handler/click-rail":26,"./handler/drag-scrollbar":27,"./handler/keyboard":28,"./handler/mouse-wheel":29,"./handler/native-scroll":30,"./handler/selection":31,"./handler/touch":32,"./instances":34,"./update-geometry":35}],34:[function(require,module,exports){
+},{"../lib/class":17,"../lib/helper":21,"./handler/click-rail":25,"./handler/drag-scrollbar":26,"./handler/keyboard":27,"./handler/mouse-wheel":28,"./handler/native-scroll":29,"./handler/selection":30,"./handler/touch":31,"./instances":33,"./update-geometry":34}],33:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -35363,7 +35088,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/class":18,"../lib/dom":19,"../lib/event-manager":20,"../lib/guid":21,"../lib/helper":22,"./default-setting":24}],35:[function(require,module,exports){
+},{"../lib/class":17,"../lib/dom":18,"../lib/event-manager":19,"../lib/guid":20,"../lib/helper":21,"./default-setting":23}],34:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -35491,7 +35216,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":18,"../lib/dom":19,"../lib/helper":22,"./instances":34,"./update-scroll":36}],36:[function(require,module,exports){
+},{"../lib/class":17,"../lib/dom":18,"../lib/helper":21,"./instances":33,"./update-scroll":35}],35:[function(require,module,exports){
 'use strict';
 
 var instances = require('./instances');
@@ -35591,7 +35316,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":34}],37:[function(require,module,exports){
+},{"./instances":33}],36:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -35630,7 +35355,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":19,"../lib/helper":22,"./instances":34,"./update-geometry":35,"./update-scroll":36}],38:[function(require,module,exports){
+},{"../lib/dom":18,"../lib/helper":21,"./instances":33,"./update-geometry":34,"./update-scroll":35}],37:[function(require,module,exports){
 function select(element) {
     var selectedText;
 
@@ -35660,7 +35385,7 @@ function select(element) {
 
 module.exports = select;
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 function E () {
 	// Keep this empty so it's easier to inherit from
   // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -35728,7 +35453,7 @@ E.prototype = {
 
 module.exports = E;
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -35739,7 +35464,7 @@ var emojify = require('emojify.js');
 require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
-require('jquery-autosize');
+require('../libs/jquery.autosize');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 
@@ -35807,7 +35532,7 @@ $(function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":44,"./blog_view_model":41,"emojify.js":5,"jquery":12,"jquery-autosize":8,"jquery-colorbox":9,"jquery-ui":10,"jquery.cookie":11,"knockout":14,"knockout.mapping":13,"perfect-scrollbar/jquery":16}],41:[function(require,module,exports){
+},{"../libs/jquery.autosize":43,"../libs/knockout.devhub_custom":46,"./blog_view_model":40,"emojify.js":5,"jquery":11,"jquery-colorbox":8,"jquery-ui":9,"jquery.cookie":10,"knockout":13,"knockout.mapping":12,"perfect-scrollbar/jquery":15}],40:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -36433,7 +36158,7 @@ BlogViewModel.prototype = {
 module.exports = BlogViewModel; 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/dropzone":42,"../libs/jquery.decora":43,"clipboard":2,"jquery":12,"knockout":14}],42:[function(require,module,exports){
+},{"../libs/dropzone":41,"../libs/jquery.decora":45,"clipboard":2,"jquery":11,"knockout":13}],41:[function(require,module,exports){
 function DropZone(param){
   param.dropTarget.bind("dragenter", this.cancel_event);
   param.dropTarget.bind("dragover", this.cancel_event);
@@ -36525,7 +36250,437 @@ DropZone.prototype = {
 
 module.exports = DropZone;
 
+},{}],42:[function(require,module,exports){
+/*!
+ * jQuery AutoFit TextArea Plugin
+ *
+ */
+(function($) {
+  $.fn.autofit = function( options ){
+    var defaults = {
+      min_height: 200
+    };
+
+    // private method
+    var _autofit = function(that, min_height){
+      if (!$(that).is(':visible')){ return; }
+
+      var el = $(that).get(0);
+      if(el.scrollHeight > el.offsetHeight){
+        el.style.height = el.scrollHeight + 'px';
+      } else {
+        if (!isNaN(parseInt(el.style.height))){
+          while (el.scrollHeight - 50 < parseInt(el.style.height)){
+            if ( parseInt(el.style.height) < min_height){
+              el.style.height = min_height + 'px';
+              el.style.height = el.scrollHeight + 'px';
+              return;
+            }
+            el.style.height = parseInt(el.style.height) - 50 + 'px';
+          }
+          arguments.callee(that, min_height);
+        }
+      }
+    }
+
+    var options = $.extend( defaults, options );
+
+    this.each(function(){
+      $(this).css('overflow','hidden');
+      $(this).css('height',options.min_height + 'px');
+
+      _autofit(this, options.min_height);
+
+      $(this).on('keyup',function(event){
+        // 処理負荷を軽減するため、Enter時のみ実行する
+        // keyCode が undef の場合は明示的に呼ばれた場合とみなす
+        if (event.keyCode == undefined || event.keyCode == 13) {
+          _autofit(this, options.min_height);
+        }
+      });
+    });
+
+    return this;
+  }
+})(jQuery);
+
+
 },{}],43:[function(require,module,exports){
+/*!
+	Autosize 1.18.17
+	license: MIT
+	http://www.jacklmoore.com/autosize
+*/
+(function ($) {
+	var
+	defaults = {
+		className: 'autosizejs',
+		id: 'autosizejs',
+		append: '\n',
+		callback: false,
+		resizeDelay: 10,
+		placeholder: true
+	},
+
+	// border:0 is unnecessary, but avoids a bug in Firefox on OSX
+	copy = '<textarea tabindex="-1" style="position:absolute; top:-999px; left:0; right:auto; bottom:auto; border:0; padding: 0; -moz-box-sizing:content-box; -webkit-box-sizing:content-box; box-sizing:content-box; word-wrap:break-word; height:0 !important; min-height:0 !important; overflow:hidden; transition:none; -webkit-transition:none; -moz-transition:none;"/>',
+
+	// line-height is conditionally included because IE7/IE8/old Opera do not return the correct value.
+	typographyStyles = [
+		'fontFamily',
+		'fontSize',
+		'fontWeight',
+		'fontStyle',
+		'letterSpacing',
+		'textTransform',
+		'wordSpacing',
+		'textIndent',
+		'whiteSpace'
+	],
+
+	// to keep track which textarea is being mirrored when adjust() is called.
+	mirrored,
+
+	// the mirror element, which is used to calculate what size the mirrored element should be.
+	mirror = $(copy).data('autosize', true)[0];
+
+	// test that line-height can be accurately copied.
+	mirror.style.lineHeight = '99px';
+	if ($(mirror).css('lineHeight') === '99px') {
+		typographyStyles.push('lineHeight');
+	}
+	mirror.style.lineHeight = '';
+
+	$.fn.autosize = function (options) {
+		if (!this.length) {
+			return this;
+		}
+
+		options = $.extend({}, defaults, options || {});
+
+		if (mirror.parentNode !== document.body) {
+			$(document.body).append(mirror);
+		}
+
+		return this.each(function () {
+			var
+			ta = this,
+			$ta = $(ta),
+			maxHeight,
+			minHeight,
+			boxOffset = 0,
+			callback = $.isFunction(options.callback),
+			originalStyles = {
+				height: ta.style.height,
+				overflow: ta.style.overflow,
+				overflowY: ta.style.overflowY,
+				wordWrap: ta.style.wordWrap,
+				resize: ta.style.resize
+			},
+			timeout,
+			width = $ta.width(),
+			taResize = $ta.css('resize');
+
+			if ($ta.data('autosize')) {
+				// exit if autosize has already been applied, or if the textarea is the mirror element.
+				return;
+			}
+			$ta.data('autosize', true);
+
+			if ($ta.css('box-sizing') === 'border-box' || $ta.css('-moz-box-sizing') === 'border-box' || $ta.css('-webkit-box-sizing') === 'border-box'){
+				boxOffset = $ta.outerHeight() - $ta.height();
+			}
+
+			// IE8 and lower return 'auto', which parses to NaN, if no min-height is set.
+			minHeight = Math.max(parseFloat($ta.css('minHeight')) - boxOffset || 0, $ta.height());
+
+			$ta.css({
+				overflow: 'hidden',
+				overflowY: 'hidden',
+				wordWrap: 'break-word' // horizontal overflow is hidden, so break-word is necessary for handling words longer than the textarea width
+			});
+
+			if (taResize === 'vertical') {
+				$ta.css('resize','none');
+			} else if (taResize === 'both') {
+				$ta.css('resize', 'horizontal');
+			}
+
+			// getComputedStyle is preferred here because it preserves sub-pixel values, while jQuery's .width() rounds to an integer.
+			function setWidth() {
+				var width;
+				var style = window.getComputedStyle ? window.getComputedStyle(ta, null) : null;
+
+				if (style) {
+					width = parseFloat(style.width);
+					if (style.boxSizing === 'border-box' || style.webkitBoxSizing === 'border-box' || style.mozBoxSizing === 'border-box') {
+						$.each(['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'], function(i,val){
+							width -= parseFloat(style[val]);
+						});
+					}
+				} else {
+					width = $ta.width();
+				}
+
+				mirror.style.width = Math.max(width,0) + 'px';
+			}
+
+			function initMirror() {
+				var styles = {};
+
+				mirrored = ta;
+				mirror.className = options.className;
+				mirror.id = options.id;
+				maxHeight = parseFloat($ta.css('maxHeight'));
+
+				// mirror is a duplicate textarea located off-screen that
+				// is automatically updated to contain the same text as the
+				// original textarea.  mirror always has a height of 0.
+				// This gives a cross-browser supported way getting the actual
+				// height of the text, through the scrollTop property.
+				$.each(typographyStyles, function(i,val){
+					styles[val] = $ta.css(val);
+				});
+
+				$(mirror).css(styles).attr('wrap', $ta.attr('wrap'));
+
+				setWidth();
+
+				// Chrome-specific fix:
+				// When the textarea y-overflow is hidden, Chrome doesn't reflow the text to account for the space
+				// made available by removing the scrollbar. This workaround triggers the reflow for Chrome.
+				if (window.chrome) {
+					var width = ta.style.width;
+					ta.style.width = '0px';
+					var ignore = ta.offsetWidth;
+					ta.style.width = width;
+				}
+			}
+
+			// Using mainly bare JS in this function because it is going
+			// to fire very often while typing, and needs to very efficient.
+			function adjust() {
+				var height, originalHeight;
+
+				if (mirrored !== ta) {
+					initMirror();
+				} else {
+					setWidth();
+				}
+
+				if (!ta.value && options.placeholder) {
+					// If the textarea is empty, copy the placeholder text into
+					// the mirror control and use that for sizing so that we
+					// don't end up with placeholder getting trimmed.
+					mirror.value = ($ta.attr("placeholder") || '');
+				} else {
+					mirror.value = ta.value;
+				}
+
+				mirror.value += options.append || '';
+				mirror.style.overflowY = ta.style.overflowY;
+				originalHeight = parseFloat(ta.style.height) || 0;
+
+				// Setting scrollTop to zero is needed in IE8 and lower for the next step to be accurately applied
+				mirror.scrollTop = 0;
+
+				mirror.scrollTop = 9e4;
+
+				// Using scrollTop rather than scrollHeight because scrollHeight is non-standard and includes padding.
+				height = mirror.scrollTop;
+
+				if (maxHeight && height > maxHeight) {
+					ta.style.overflowY = 'scroll';
+					height = maxHeight;
+				} else {
+					ta.style.overflowY = 'hidden';
+					if (height < minHeight) {
+						height = minHeight;
+					}
+				}
+
+				//height += boxOffset;
+				height += boxOffset - minHeight; // add volpe
+				if (Math.abs(originalHeight - height) > 1/100) {
+					ta.style.height = height + 'px';
+
+					// Trigger a repaint for IE8 for when ta is nested 2 or more levels inside an inline-block
+					mirror.className = mirror.className;
+
+					if (callback) {
+						options.callback.call(ta,ta);
+					}
+					$ta.trigger('autosize.resized');
+				}
+			}
+
+			function resize () {
+				clearTimeout(timeout);
+				timeout = setTimeout(function(){
+					var newWidth = $ta.width();
+
+					if (newWidth !== width) {
+						width = newWidth;
+						adjust();
+					}
+				}, parseInt(options.resizeDelay,10));
+			}
+
+			if ('onpropertychange' in ta) {
+				if ('oninput' in ta) {
+					// Detects IE9.  IE9 does not fire onpropertychange or oninput for deletions,
+					// so binding to onkeyup to catch most of those occasions.  There is no way that I
+					// know of to detect something like 'cut' in IE9.
+					$ta.on('input.autosize keyup.autosize', adjust);
+				} else {
+					// IE7 / IE8
+					$ta.on('propertychange.autosize', function(){
+						if(event.propertyName === 'value'){
+							adjust();
+						}
+					});
+				}
+			} else {
+				// Modern Browsers
+				$ta.on('input.autosize', adjust);
+			}
+
+			// Set options.resizeDelay to false if using fixed-width textarea elements.
+			// Uses a timeout and width check to reduce the amount of times adjust needs to be called after window resize.
+
+			if (options.resizeDelay !== false) {
+				$(window).on('resize.autosize', resize);
+			}
+
+			// Event for manual triggering if needed.
+			// Should only be needed when the value of the textarea is changed through JavaScript rather than user input.
+			$ta.on('autosize.resize', adjust);
+
+			// Event for manual triggering that also forces the styles to update as well.
+			// Should only be needed if one of typography styles of the textarea change, and the textarea is already the target of the adjust method.
+			$ta.on('autosize.resizeIncludeStyle', function() {
+				mirrored = null;
+				adjust();
+			});
+
+			$ta.on('autosize.destroy', function(){
+				mirrored = null;
+				clearTimeout(timeout);
+				$(window).off('resize', resize);
+				$ta
+					.off('autosize')
+					.off('.autosize')
+					.css(originalStyles)
+					.removeData('autosize');
+			});
+
+			// Call adjust in case the textarea already contains text.
+			adjust();
+		});
+	};
+}(jQuery || $)); // jQuery or jQuery-like library, such as Zepto
+
+},{}],44:[function(require,module,exports){
+(function($) {
+  String.prototype.getLinefromCount = function(start){
+    // 文字数から行数を取得
+    var NotLF = /\r\n|\r/g;
+    var region_byCaret = this.slice(0, start);
+    var CRLFs = region_byCaret.match(NotLF);
+    if (CRLFs) {
+      region_byCaret = region_byCaret.replace(NotLF, '\n');
+    }
+
+    var lines = region_byCaret.split('\n');
+    return lines.length;
+  }
+
+  String.prototype.getCountfromLine = function(row){
+    var pos = 0;
+    for ( i = 0; i < row; i++){
+      pos = this.indexOf("\n",pos) + 1;
+    }
+    return pos;
+  }
+
+  var caretLine = function(row) {
+    var item = this.get(0);
+    if (row == null) {
+      return get(item);
+    } else {
+      set(item, row);
+      return this;
+    }
+  };
+
+  var get = function(item) {
+    var CaretPos = 0;
+    if (item.selectionStart || item.selectionStart == "0") { // Firefox, Chrome
+      start = item.selectionStart;
+    } else if (document.selection) { // IE
+      start = getSelectionCount(item)[0];
+    }
+
+    if (isNaN (start)){
+      return;
+    }
+
+    return item.value.getLinefromCount( start );
+  };
+  var set = function(item, row) {
+    var pos = item.value.getCountfromLine(row);
+
+    if (item.setSelectionRange) {  // Firefox, Chrome
+      item.setSelectionRange(pos, pos);
+    } else if (item.createTextRange) { // IE
+      var range = item.createTextRange();
+      range.collapse(true);
+      range.moveEnd("character", pos);
+      range.moveStart("character", pos);
+      range.select();
+    }
+  };
+
+  $.fn.extend({caretLine: caretLine});
+})(jQuery);
+
+function getSelectionCount(textarea) {
+  var selectionRange = textarea.document.selection.createRange();
+
+  if (selectionRange == null || selectionRange.parentElement() !== textarea) {
+    return [ NaN, NaN ];
+  }
+
+  var value = arguments[1] || textarea.value;
+  var valueCount = value.length;
+  var range = textarea.createTextRange();
+  range.moveToBookmark(selectionRange.getBookmark());
+
+  var endBoundary = textarea.createTextRange();
+  endBoundary.collapse(false);
+
+  // endBoundary << range
+  if (range.compareEndPoints('StartToEnd', endBoundary) >= 0) {
+    return [ valueCount, valueCount ];
+  }
+
+  var normalizedValue = arguments[2] || value.replace(/rn|r/g, 'n');
+  var start = -(range.moveStart('character', -valueCount));
+  start += normalizedValue.slice(0, start).split('n').length - 1;
+
+  // range << endBoundary << range
+  if (range.compareEndPoints('EndToEnd', endBoundary) >= 0) {
+    return [ start, valueCount ];
+  }
+
+  // range << endBoundary
+  var end = -(range.moveEnd('character', -valueCount));
+  end += normalizedValue.slice(0, end).split('n').length - 1;
+  return [ start, end ];
+}
+
+
+},{}],45:[function(require,module,exports){
 /*!
  * jQuery Decorate Text Plugin
  *
@@ -37045,7 +37200,13 @@ require('./sanitize');
 })(jQuery);
 
 
-},{"./sanitize":45,"emojify.js":5}],44:[function(require,module,exports){
+},{"./sanitize":47,"emojify.js":5}],46:[function(require,module,exports){
+(function (global){
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('./jquery.autofit');
+require('./jquery.caret');
+
 var emojify = require('emojify.js');
 
 function addCustomBindingHandlers(ko){
@@ -37222,7 +37383,8 @@ module.exports = addCustomBindingHandlers;
 
 
 
-},{"emojify.js":5}],45:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./jquery.autofit":42,"./jquery.caret":44,"emojify.js":5,"jquery":11}],47:[function(require,module,exports){
 (function($) {
   function trimAttributes(node, allowedAttrs) {
     $.each(node.attributes, function() {
@@ -37251,4 +37413,4 @@ module.exports = addCustomBindingHandlers;
   window.sanitize = sanitize;
 })(jQuery);
 
-},{}]},{},[40]);
+},{}]},{},[39]);
