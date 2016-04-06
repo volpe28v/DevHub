@@ -1,3 +1,15 @@
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+require('jquery-colorbox');
+require('jquery.cookie');
+require('perfect-scrollbar/jquery')($);
+var BlogViewModel = require('./blog_view_model');
+var ko = require('knockout');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
+
+
 var COOKIE_NAME = "dev_hub_name";
 var CODE_INDEX_ADJUST_HEIGHT = 10;
 
