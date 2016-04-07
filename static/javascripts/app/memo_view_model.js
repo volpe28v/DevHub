@@ -1,3 +1,12 @@
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+
+var ko = require('knockout');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
+
+
 function DisplayState(parent){
   this.parent = parent;
 
@@ -798,3 +807,5 @@ function MemoViewModel(param){
 
   this.init();
 }
+
+module.exports = MemoViewModel;

@@ -1,5 +1,16 @@
 var LOGIN_COLOR_MAX = 9;
 
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+
+var ko = require('knockout');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
+require('../libs/message_date');
+
+var emojify = require('emojify.js');
+
 function ChatViewModel(param){
   var that = this;
 
@@ -512,3 +523,4 @@ ChatViewModel.prototype = {
   }
 }
 
+module.exports = ChatViewModel;

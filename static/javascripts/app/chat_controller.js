@@ -1,5 +1,19 @@
 var LOGIN_COLOR_MAX = 9;
 
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+
+var ko = require('knockout');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
+require('jquery-textcomplete');
+require('../libs/jquery.exresize');
+
+var emojify = require('emojify.js');
+
+var DropZone = require('../libs/dropzone');
+var ChatViewModel = require('./chat_view_model');
+
 function ChatController(param){
   var that = this;
 
@@ -428,3 +442,5 @@ ChatController.prototype = {
     this.faviconNumber.update(sumUnreadCount);
   },
 }
+
+module.exports = ChatController;

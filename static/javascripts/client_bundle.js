@@ -1,34 +1,11 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_EXPIRES = 365;
-
-global.jQuery = require('jquery');
-global.$ = global.jQuery;
-require('jquery-ui');
-require('bootstrap');
-
-require('jquery-colorbox');
-require('jquery.cookie');
-
-
-var emojify = require('emojify.js');
-require('perfect-scrollbar/jquery')($);
-var socket = require('socket.io-client')('/', {query: 'from=devhub'});
-
-var ko = require('knockout');
-ko.mapping = require('knockout.mapping');
-require('../libs/knockout.devhub_custom')(ko);
-
-require('../libs/jquery.autosize');
-var FaviconNumber = require('../libs/favicon-number');
-var DropZone = require('../libs/dropzone');
-
-var MemoController = require('./memo_controller');
-var ChatController = require('./chat_controller');
 
 function ClientViewModel(){
   var that = this;
 
-  this.socket = socket;
+  this.socket = io.connect('/',{query: 'from=devhub'});
   this.is_mobile = false;
   this.loginName = ko.observable($.cookie(COOKIE_NAME));
   this.loginName.subscribe(function(value){
@@ -39,7 +16,7 @@ function ClientViewModel(){
 
   this.faviconNumber = new FaviconNumber();
 
-  this.memoController = new MemoController({
+  this.memoController = new ShareMemoController({
     socket: that.socket,
     setMessage: function(message){
       that.chatController.setMessage(message);
@@ -321,3 +298,5 @@ $(function() {
   ko.applyBindings(clientViewModel);
   clientViewModel.init();
 });
+
+},{}]},{},[1]);

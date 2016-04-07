@@ -2,8 +2,10 @@ global.jQuery = require('jquery');
 global.$ = global.jQuery;
 require('./jquery.autofit');
 require('./jquery.caret');
+require('./jquery.decora');
 
 var emojify = require('emojify.js');
+var DropZone = require('./dropzone');
 
 function addCustomBindingHandlers(ko){
   ko.bindingHandlers.decoBlogHtml = {

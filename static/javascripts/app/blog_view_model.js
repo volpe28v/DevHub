@@ -619,4 +619,4 @@ BlogViewModel.prototype = {
   },
 }
 
-module.exports = BlogViewModel; 
+module.exports = BlogViewModel;

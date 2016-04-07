@@ -7,6 +7,7 @@
 
 var emojify = require('emojify.js');
 require('./sanitize');
+var prettify = require('prettify');
 
 (function($) {
   var REG_CHECKBOX = /(-|=)[ ]?\[[ ]?\]|(-|=)[ ]?\[x\]/g,

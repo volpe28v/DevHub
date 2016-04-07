@@ -5,7 +5,17 @@ var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 
-function ShareMemoController(param){
+global.jQuery = require('jquery');
+global.$ = global.jQuery;
+require('jquery-ui');
+
+var ko = require('knockout');
+ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
+
+var MemoViewModel = require('./memo_view_model');
+
+function MemoController(param){
   var that = this;
 
   this.socket = param.socket;
@@ -460,3 +470,4 @@ function ShareMemoController(param){
   this.init_sharememo();
 }
 
+module.exports = MemoController;

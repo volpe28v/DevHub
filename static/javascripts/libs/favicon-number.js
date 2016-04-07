@@ -1,3 +1,5 @@
+var Favico = require('favico.js');
+
 function FaviconNumber(data) {
   var userAgent = window.navigator.userAgent.toLowerCase();
 
@@ -27,3 +29,4 @@ FaviconNumber.prototype = {
   },
 }
 
+module.exports = FaviconNumber;
