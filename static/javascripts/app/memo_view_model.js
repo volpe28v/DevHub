@@ -1,11 +1,17 @@
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
 require('jquery-ui');
+require('textarea-helper');
+var moment = require('moment');
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 
+require('../libs/jquery.selection.js');
+
+var difflib = require('../libs/difflib');
+var diffview = require('../libs/diffview');
 
 function DisplayState(parent){
   this.parent = parent;
