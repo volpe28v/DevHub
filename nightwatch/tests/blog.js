@@ -9,7 +9,7 @@ module.exports = {
     client
       .setValue('#blog_form', 'hello')
       .click('#save_btn')
-      .pause(500)
+      .pause(1000)
       .assert.containsText('.blog-body:first-child', 'hello')
       .assert.containsText('.index-body:first-child', 'hello')
   },
