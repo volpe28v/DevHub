@@ -2,11 +2,12 @@ module.exports = function(grunt){
 
   // loadnpmTasksで使用したいタスクを読み込んでおく
   grunt.loadNpmTasks("grunt-contrib-cssmin");
-  grunt.loadNpmTasks("grunt-contrib-uglify");
+  //grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // initConfigで基本設定
   grunt.initConfig({
+    /*
     uglify : {
       min : {
         options : {
@@ -112,6 +113,7 @@ module.exports = function(grunt){
         }
       }
     },
+    */
     cssmin : {
       min : {
         files : {
@@ -151,11 +153,14 @@ module.exports = function(grunt){
         'static/stylesheets/app/*.css',
         'static/stylesheets/libs/*.css'
         ],
-      tasks: ['uglify','cssmin']
+      //tasks: ['uglify','cssmin']
+      tasks: ['cssmin']
     }
   });
 
-  grunt.registerTask("default", ["uglify", "cssmin","watch"]);
-  grunt.registerTask("build", ["uglify", "cssmin"]);
+  //grunt.registerTask("default", ["uglify", "cssmin","watch"]);
+  //grunt.registerTask("build", ["uglify", "cssmin"]);
+  grunt.registerTask("default", ["cssmin","watch"]);
+  grunt.registerTask("build", ["cssmin"]);
 };
 

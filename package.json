@@ -8,7 +8,7 @@
     "watch:upload": "watchify static/javascripts/app/upload.js -o static/javascripts/upload_bundle.js -v",
     "watch:blog": "watchify static/javascripts/app/blog.js -o static/javascripts/blog_bundle.js -v",
     "watch:blog_permalink": "watchify static/javascripts/app/blog_permalink.js -o static/javascripts/blog_permalink_bundle.js -v",
-    "dev": "parallelshell \"npm run watch:devhub\" \"npm run watch:upload\" \"npm run watch:blog\" \"npm run watch:blog_permalink\" \"node-dev app.js\""
+    "dev": "parallelshell \"npm run watch:devhub\" \"npm run watch:upload\" \"npm run watch:blog\" \"npm run watch:blog_permalink\" \"grunt\" \"node-dev app.js\" "
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",

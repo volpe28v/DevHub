@@ -10,6 +10,7 @@ require('jquery-textcomplete');
 require('../libs/jquery.exresize');
 
 var emojify = require('emojify.js');
+var emojies = require('../libs/emojies.js');
 
 var DropZone = require('../libs/dropzone');
 var ChatViewModel = require('./chat_view_model');
@@ -134,7 +135,7 @@ ChatController.prototype = {
     if (that.filterWord() != ""){ return false; }
 
     // 絵文字サジェストが表示中は送信しない
-    if ($('.textcomplete-wrapper .dropdown-menu').css('display') == 'none'){
+    if ($('.textcomplete-dropdown').css('display') == 'none'){
       var name = that.loginName();
       var message = that.inputMessage();
       var avatar = window.localStorage.avatarImage;
