@@ -7,6 +7,7 @@ var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 require('jquery-textcomplete');
+require('jquery-inview');
 require('../libs/jquery.exresize');
 
 var emojify = require('emojify.js');
