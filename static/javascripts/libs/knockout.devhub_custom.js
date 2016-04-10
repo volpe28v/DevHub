@@ -1,5 +1,6 @@
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+require('bootstrap');
 require('./jquery.autofit');
 require('./jquery.caret');
 require('./jquery.decora');

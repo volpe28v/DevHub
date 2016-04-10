@@ -55372,6 +55372,7 @@ var prettify = require('prettify');
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+require('bootstrap');
 require('./jquery.autofit');
 require('./jquery.caret');
 require('./jquery.decora');
@@ -55554,7 +55555,7 @@ module.exports = addCustomBindingHandlers;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./dropzone":103,"./jquery.autofit":106,"./jquery.caret":108,"./jquery.decora":109,"emojify.js":25,"jquery":51}],113:[function(require,module,exports){
+},{"./dropzone":103,"./jquery.autofit":106,"./jquery.caret":108,"./jquery.decora":109,"bootstrap":6,"emojify.js":25,"jquery":51}],113:[function(require,module,exports){
 var localStorage = window.localStorage;
 
 window.MessageDate = {
