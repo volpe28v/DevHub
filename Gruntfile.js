@@ -142,7 +142,10 @@ module.exports = function(grunt){
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
             "static/stylesheets/app/blog_permalink.css",
-          ]
+          ],
+          "static/stylesheets/calendar.min.css" : [
+            "node_modules/fullcalendar/dist/fullcalendar.min.css",
+          ],
         }
       }
     },

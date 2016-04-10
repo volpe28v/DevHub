@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DevHub</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <meta name="description" content="DevHub">
+    <meta name="author" content="Naoki Kodama">
+
+    <script type="text/javascript" src="/javascripts/calendar_bundle.js"></script>
+
+    <link id="devhub-style" href="/stylesheets/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/calendar.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  </head>
+  <body style=":
+    background-color: white;
+    background-attachment: fixed;
+    background-position: center top;
+    background-repeat:  repeat;
+    padding-top: 60px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">DevHub - calendar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div data-bind="fullCalendar: calendarViewModel"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

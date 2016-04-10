@@ -53,6 +53,7 @@ var routes = {
   memo: require('./routes/memo'),
   upload : app.get('gridfs') ? require('./routes/upload_db') : require('./routes/upload'),
   blog: require('./routes/blog'),
+  calendar: require('./routes/calendar'),
 };
 
 app.get('/', function(req,res){ routes.index.get(req,res,app); });
@@ -71,6 +72,8 @@ app.get('/blog/body_older', routes.blog.body_older);
 app.post('/blog', function(req,res){ routes.blog.post(req,res,io); });
 app.delete('/blog', routes.blog.delete);
 app.get('/blog/reset_tags', routes.blog.reset_tags);
+
+app.get('/calendar', routes.calendar.get);
 
 // set db and listen app
 var chat_log = require('./lib/chat_log');
