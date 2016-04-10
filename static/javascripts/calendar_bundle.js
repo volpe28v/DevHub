@@ -1,0 +1,1 @@
+console.error("Error: Cannot find module '/Users/kodama/programing/node/DevHub/static/javascripts/app/calendar.js' from '/Users/kodama/programing/node/DevHub'");

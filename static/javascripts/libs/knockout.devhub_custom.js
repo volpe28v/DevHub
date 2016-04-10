@@ -166,13 +166,13 @@ function addCustomBindingHandlers(ko){
             $(element)
               .decora({
                 checkbox_callback: function(context, applyCheckStatus){
-                                     // チェック対象のテキストを更新する
-                                     viewModel.applyToWritingText(applyCheckStatus);
-                                   },
+                  // チェック対象のテキストを更新する
+                  viewModel.applyToWritingText(applyCheckStatus);
+                },
                 img_size_callback: function(context, applyImgSize){
-                                     // チェック対象のテキストを更新する
-                                     viewModel.applyToWritingText(applyImgSize);
-                                   }
+                  // チェック対象のテキストを更新する
+                  viewModel.applyToWritingText(applyImgSize);
+                }
               });
           }
   }
