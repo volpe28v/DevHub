@@ -1,6 +1,6 @@
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
-var moment = require('moment');
+global.moment = require('moment');
 require('fullcalendar');
 
 var ko = require('knockout');
@@ -25,7 +25,7 @@ ko.bindingHandlers.fullCalendar = {
       header: {
         left: 'title',
         center: '',
-        right: 'agendaDay, agendaWeek, month prev,next today',
+        right: 'prev,next today',
         ignoreTimezone: false
       },
       defaultView: 'month',
@@ -109,8 +109,13 @@ function CalendarViewModel(){
     //var event = this.collection.get(fcEvent.id);
     //if ( event == undefined ){ return };
   }
-  this.eventDropOrResize = function(fcEvent){
-    console.log("eventDropOrResize: " + fcEvent.id);
+  this.eventDropOrResize = function(fcEvent, delta, revertFunc, jsEvent, ui, view ){
+    var text = "";
+    view.calendar.getEventCache().forEach(function(event){
+      text += event.start.format("YYYY/MM/DD") + " " + event.end.format("YYYY/MM/DD") + " " + event.title + "\n";
+    });
+
+    that.eventText(text);
     /*
     var event = this.collection.get(fcEvent.id);
     if ( event == undefined ){ return };
