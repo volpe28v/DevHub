@@ -6,10 +6,19 @@ require('fullcalendar');
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 
+ko.fullCalendar = {
+  viewModel: function(config) {
+    this.header = config.header;
+    this.events = config.events;
+    this.viewDate = config.viewDate;
+    this.select = config.select;
+  }
+};
 ko.bindingHandlers.fullCalendar = {
   update: function(element, viewModelAccessor) {
+    console.log('init');
     var viewModel = viewModelAccessor();
-    element.innerHTML = "";
+    $(element).fullCalendar('destroy');
 
     $(element).fullCalendar({
       events: ko.utils.unwrapObservable(viewModel.events),
@@ -18,23 +27,6 @@ ko.bindingHandlers.fullCalendar = {
         center: '',
         right: 'agendaDay, agendaWeek, month prev,next today',
         ignoreTimezone: false
-      },
-      dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
-      dayNamesShort: ['日','月','火','水','木','金','土'],
-      titleFormat: {
-        month: 'yyyy年 M月',
-        week: '[yyyy年 ]M月 d日{ - [yyyy年 ][ M月] d日}',
-        day: 'yyyy年 M月 d日 dddd'
-      },
-      monthNames: [
-        '１月','２月','３月','４月','５月','６月',
-        '７月','８月','９月','１０月','１１月','１２月'
-      ],
-      buttonText:{
-        today: '今日',
-        month: '月',
-        week: '週',
-        day: '日'
       },
       defaultView: 'month',
       firstHour: 8,
@@ -56,22 +48,61 @@ ko.bindingHandlers.fullCalendar = {
       height: $(window).height() - 10,
     });
     $(element).fullCalendar('gotoDate', ko.utils.unwrapObservable(viewModel.viewDate));
-  }
+  },
 };
+
 
 function CalendarViewModel(){
   var that = this;
 
-  var events = ko.observableArray([
+  this.eventText = ko.observable("2016/04/15 2016/04/16 作業タスクだよ\n2016/04/20 2016/04/22 日またがり");
+  this.delayedText = ko.pureComputed(this.eventText)
+    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+  this.delayedText.subscribe(function (val) {
+    var newEvents = this.textToEvents(val);
+    that.events(newEvents);
+  }, this);
 
+  this.events = ko.observableArray([
+    {title: 'All Day Event', start: Date.now() ,allDay: true}
   ]);
+  this.viewDate = ko.observable(Date.now());
 
   this.init = function(){
+    //that.events.push({title: 'All Day Event',start: new Date(),allDay: true});
+
+    //var eventText = "2016/04/15 2016/04/16 作業タスクだよ\n2016/04/20 2016/04/22 日またがり";
+
+    var newEvents = this.textToEvents(this.eventText());
+    that.events(newEvents);
+  }
+
+  this.textToEvents = function(text){
+    var events = [];
+
+    text.split("\n").forEach(function(line){
+      var found = line.match(/(.+) (.+) (.+)/);
+        console.log(found);
+      if (found){
+        events.push({
+          title: found[3],
+          start: moment(found[1]).toDate(),
+          end: moment(found[2]).toDate(),
+          allDay: true
+        });
+      }
+    });
+
+    return events;
   }
 
   this.select = function(startDate, endDate, allDay){
     console.log("select: " + startDate);
-
+    that.events.push({
+      title: 'All Day Event',
+      start: startDate,
+      allDay: true
+    });
   }
   this.eventClick = function(fcEvent){
     console.log("eventClick: " + fcEvent.id);
@@ -90,11 +121,14 @@ function CalendarViewModel(){
 }
 
 function CalendarModel(){
+  var that = this;
   this.calendarViewModel = new CalendarViewModel();
+  //this.calendarViewModel = new ko.fullCalendar.viewModel(this.calendarViewModelIns);
 
   this.init = function(){
-    this.calendarViewModel.init();
+    that.calendarViewModel.init();
   }
+
 }
 
 $(function() {
