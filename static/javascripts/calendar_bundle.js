@@ -32813,6 +32813,7 @@ ko.bindingHandlers.fullCalendar = {
         ignoreTimezone: false
       },
       defaultView: 'month',
+      defaultDate: viewModel.viewDate,
       firstHour: 8,
       ignoreTimezone: false,
       selectable: true,
@@ -32828,10 +32829,10 @@ ko.bindingHandlers.fullCalendar = {
       eventMouseout: viewModel.eventMouseout,
       eventAfterRender: viewModel.applyCheckEvents,
       eventAfterAllRender: viewModel.eventAfterAllRender,
+      viewRender: viewModel.viewRender,
       timeFormat: "H:mm",
-      height: $(window).height() - 10,
+      height: $(window).height() - 100,
     });
-    $(element).fullCalendar('gotoDate', ko.utils.unwrapObservable(viewModel.viewDate));
   },
 };
 
@@ -32841,22 +32842,16 @@ function CalendarViewModel(){
 
   this.eventText = ko.observable("2016/04/15 2016/04/16 作業タスクだよ\n2016/04/20 2016/04/22 日またがり");
   this.delayedText = ko.pureComputed(this.eventText)
-    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 200 } });
   this.delayedText.subscribe(function (val) {
     var newEvents = this.textToEvents(val);
     that.events(newEvents);
   }, this);
 
-  this.events = ko.observableArray([
-    {title: 'All Day Event', start: Date.now() ,allDay: true}
-  ]);
-  this.viewDate = ko.observable(Date.now());
+  this.events = ko.observableArray([]);
+  this.viewDate = Date.now();
 
   this.init = function(){
-    //that.events.push({title: 'All Day Event',start: new Date(),allDay: true});
-
-    //var eventText = "2016/04/15 2016/04/16 作業タスクだよ\n2016/04/20 2016/04/22 日またがり";
-
     var newEvents = this.textToEvents(this.eventText());
     that.events(newEvents);
   }
@@ -32866,12 +32861,12 @@ function CalendarViewModel(){
 
     text.split("\n").forEach(function(line){
       var found = line.match(/(.+) (.+) (.+)/);
-        console.log(found);
       if (found){
         events.push({
           title: found[3],
           start: moment(found[1]).toDate(),
           end: moment(found[2]).toDate(),
+          textColor: 'white',
           allDay: true
         });
       }
@@ -32880,39 +32875,53 @@ function CalendarViewModel(){
     return events;
   }
 
-  this.select = function(startDate, endDate, allDay){
-    console.log("select: " + startDate);
-    that.events.push({
-      title: 'All Day Event',
-      start: startDate,
-      allDay: true
-    });
+  this.select = function(startDate, endDate, jsEvent, view){
+    var title = prompt("イベント名","");
+    if (title != null){
+      var events = view.calendar.getEventCache();
+      events.push({
+        title: title,
+        start: moment(startDate),
+        end: moment(endDate)
+      });
+
+      that.eventText(that.eventsToText(events));
+    }
   }
   this.eventClick = function(fcEvent){
     console.log("eventClick: " + fcEvent.id);
     //var event = this.collection.get(fcEvent.id);
     //if ( event == undefined ){ return };
   }
-  this.eventDropOrResize = function(fcEvent, delta, revertFunc, jsEvent, ui, view ){
-    var text = "";
-    view.calendar.getEventCache().forEach(function(event){
-      text += event.start.format("YYYY/MM/DD") + " " + event.end.format("YYYY/MM/DD") + " " + event.title + "\n";
-    });
 
+  this.eventDropOrResize = function(fcEvent, delta, revertFunc, jsEvent, ui, view ){
+    var text = that.eventsToText(view.calendar.getEventCache());
     that.eventText(text);
-    /*
-    var event = this.collection.get(fcEvent.id);
-    if ( event == undefined ){ return };
-    if ( fcEvent.end == null ){ fcEvent.end = fcEvent.start; }
-    event.save({start: fcEvent.start, end: fcEvent.end, allDay: fcEvent.allDay});
-    */
+  }
+
+  this.viewRender = function(view){
+    that.viewDate = view.intervalStart;
+  }
+
+  this.eventsToText = function(events){
+    var text = "";
+    events.sort(function(a,b){
+      return a.start > b.start;
+    });
+    events.forEach(function(event){
+      text += that.eventToText(event);
+    });
+    return text;
+  }
+
+  this.eventToText = function(event){
+      return event.start.format("YYYY/MM/DD") + " " + event.end.format("YYYY/MM/DD") + " " + event.title + "\n";
   }
 }
 
 function CalendarModel(){
   var that = this;
   this.calendarViewModel = new CalendarViewModel();
-  //this.calendarViewModel = new ko.fullCalendar.viewModel(this.calendarViewModelIns);
 
   this.init = function(){
     that.calendarViewModel.init();
