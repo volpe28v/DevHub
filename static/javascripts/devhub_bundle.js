@@ -63198,6 +63198,9 @@ function CalendarViewModel(options){
   }
 
   this.select = function(startDate, endDate, jsEvent, view){
+    return; // 今のところ新規追加は非対応
+
+    /*
     var title = prompt("イベント名","");
     if (title != null){
       var events = view.calendar.getEventCache();
@@ -63209,6 +63212,7 @@ function CalendarViewModel(options){
 
       //that.eventText(that.eventsToText(events));
     }
+    */
   }
   this.eventClick = function(fcEvent){
     that.options.selectEventHandler(fcEvent.id);
