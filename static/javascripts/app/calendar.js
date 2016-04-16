@@ -23,10 +23,15 @@ ko.bindingHandlers.fullCalendar = {
     $(element).fullCalendar({
       events: ko.utils.unwrapObservable(viewModel.events),
       header: {
-        left: 'title',
-        center: '',
+        left: '',
+        center: 'title',
         right: 'prev,next today',
         ignoreTimezone: false
+      },
+      views: {
+        month: {
+          titleFormat: 'YYYY/M'
+        }
       },
       defaultView: 'month',
       defaultDate: viewModel.viewDate,
