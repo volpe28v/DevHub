@@ -1,3 +1,10 @@
+var CODE_OUT_ADJUST_HEIGHT = 300;
+var CODE_INDEX_ADJUST_HEIGHT = 40;
+var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
+var CONTROL_FIXED_TOP = 40;
+var CONTROL_FIXED_ZEN_TOP = 0;
+
+
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
 require('jquery-ui');
@@ -12,6 +19,8 @@ require('../libs/jquery.selection.js');
 
 var difflib = require('../libs/difflib');
 var diffview = require('../libs/diffview');
+
+var CalendarViewModel = require('./calendar_view_model');
 
 function DisplayState(parent){
   this.parent = parent;
@@ -201,6 +210,20 @@ function MemoViewModel(param){
 
   this.currentIndexNo = -1;
 
+  this.calendarViewModel = new CalendarViewModel({
+    selectEventHandler: function(index_no){
+      that.switchFixShareMemo(1);
+
+      var $code_out = $('#share_memo_' + that.no).find('.code-out');
+      var pos = $code_out.find(":header").eq(index_no-1).offset().top - $('#share-memo').offset().top;
+      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+    },
+    editEventHandler: function(){
+      that.do_edit();
+    }
+  });
+  this.calendarViewModel.init();
+
   var that = this;
 
   this.init = function(){
@@ -306,11 +329,14 @@ function MemoViewModel(param){
     $share_memo.find('.sync-text').show();
 
     $('#share_memo_index_' + that.no).show();
+    $('#share_memo_calendar_' + that.no).show();
+    that.calendarViewModel.show();
     that.is_shown_move_to_blog(false);
   }
 
   this.unsetDisplayControl = function(){
     $('#share_memo_index_' + that.no).hide();
+    $('#share_memo_calendar_' + that.no).hide();
   }
 
   this.switchEditShareMemo = function(row, offset){
@@ -533,6 +559,7 @@ function MemoViewModel(param){
 
   this.showIndexList = function(){
     $('#index_inner').slideToggle('fast');
+    that.calendarViewModel.show();
   }
 
   this.setCurrentIndex = function(no){
@@ -554,12 +581,15 @@ function MemoViewModel(param){
     var $index_list = $('#share_memo_index_' + this.no);
 
     that.indexes([]);
+    var events = [];
     $.decora.apply_to_deco_and_raw(this.latest_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
+        var index_num = 0;
         deco_text.split("\n").forEach(function(val){
           var matches = val.match(/^(#+)/);
           if (matches){
+            index_num++;
             var header_level = matches[1].length;
             var header_text = val.replace(/^#+/g,"");
 
@@ -568,12 +598,16 @@ function MemoViewModel(param){
                 index_class: "header-level-" + header_level,
                 body: $.decora.to_html(header_text)
               });
+
+            events.push({id: index_num, body: header_text});
           }
         });
       },
       function(raw_text){
         // 装飾なしは目次対象外
       });
+
+    that.calendarViewModel.setEvents(events);
   }
 
   this._getLogsForDiff = function(){
@@ -809,6 +843,23 @@ function MemoViewModel(param){
     that.set_state(that.states.display);
     that.setDisplayControl();
     that.showDiffList();
+  }
+
+  this.do_edit = function(){
+    // 表示しているメモの先頭にカーソルを当てて編集状態へ
+    var pos = $("#memo_area").scrollTop();
+    var offset = $('#share-memo').offset().top;
+    var $code_out = $('#share_memo_' + that.no).find('.code-out');
+    var $code_out_lines = $code_out.find(".code-out-tr");
+    var row = 0;
+    for (var i = $code_out_lines.length - 1; i >= 0; i--){
+      if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
+        row = i;
+        break;
+      }
+    }
+
+    that.switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }
 
   this.init();

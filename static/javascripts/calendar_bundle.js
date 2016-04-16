@@ -32841,7 +32841,6 @@ ko.bindingHandlers.fullCalendar = {
   },
 };
 
-
 function CalendarViewModel(){
   var that = this;
 

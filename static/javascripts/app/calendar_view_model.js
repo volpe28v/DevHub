@@ -5,60 +5,13 @@ require('fullcalendar');
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
+require('../libs/knockout.devhub_custom')(ko);
 
-ko.fullCalendar = {
-  viewModel: function(config) {
-    this.header = config.header;
-    this.events = config.events;
-    this.viewDate = config.viewDate;
-    this.select = config.select;
-  }
-};
-ko.bindingHandlers.fullCalendar = {
-  update: function(element, viewModelAccessor) {
-    console.log('init');
-    var viewModel = viewModelAccessor();
-    $(element).fullCalendar('destroy');
-
-    $(element).fullCalendar({
-      events: ko.utils.unwrapObservable(viewModel.events),
-      header: {
-        left: '',
-        center: 'title',
-        right: 'prev,next today',
-        ignoreTimezone: false
-      },
-      views: {
-        month: {
-          titleFormat: 'YYYY/M'
-        }
-      },
-      defaultView: 'month',
-      defaultDate: viewModel.viewDate,
-      firstHour: 8,
-      ignoreTimezone: false,
-      selectable: true,
-      selectHelper: true,
-      editable: true,
-      eventTextColor: 'black',
-      eventBorderColor: '#aaa',
-      select: viewModel.select,
-      eventClick: viewModel.eventClick,
-      eventDrop: viewModel.eventDropOrResize,
-      eventResize: viewModel.eventDropOrResize,
-      eventMouseover: viewModel.eventMouseover,
-      eventMouseout: viewModel.eventMouseout,
-      eventAfterRender: viewModel.applyCheckEvents,
-      eventAfterAllRender: viewModel.eventAfterAllRender,
-      viewRender: viewModel.viewRender,
-      timeFormat: "H:mm",
-      height: $(window).height() - 100,
-    });
-  },
-};
-
-function CalendarViewModel(){
+function CalendarViewModel(options){
   var that = this;
+
+  this.el = null;
+  this.options = options;
 
   this.eventText = ko.observable("2016/04/15 2016/04/16 作業タスクだよ\n2016/04/20 2016/04/22 日またがり");
   this.delayedText = ko.pureComputed(this.eventText)
@@ -72,21 +25,32 @@ function CalendarViewModel(){
   this.viewDate = Date.now();
 
   this.init = function(){
-    var newEvents = this.textToEvents(this.eventText());
-    that.events(newEvents);
+    //var newEvents = this.textToEvents(this.eventText());
+    //that.events(newEvents);
   }
 
-  this.textToEvents = function(text){
+  this.show = function(){
+    if (that.el == null){ return; }
+    that.el.fullCalendar('render');
+  }
+
+  this.setEvents = function(eventsArray){
+    that.eventText(eventsArray);
+  }
+
+  this.textToEvents = function(eventsArray){
     var events = [];
 
-    text.split("\n").forEach(function(line){
-      var found = line.match(/(.+) (.+) (.+)/);
+    eventsArray.forEach(function(event){
+      var found = event.body.match(/(.+) (.+) (.+)/);
       if (found){
         events.push({
+          id: event.id,
           title: found[3],
           start: moment(found[1]).toDate(),
           end: moment(found[2]).toDate(),
           textColor: 'white',
+          editable: false,
           allDay: true
         });
       }
@@ -105,18 +69,20 @@ function CalendarViewModel(){
         end: moment(endDate)
       });
 
-      that.eventText(that.eventsToText(events));
+      //that.eventText(that.eventsToText(events));
     }
   }
   this.eventClick = function(fcEvent){
-    console.log("eventClick: " + fcEvent.id);
-    //var event = this.collection.get(fcEvent.id);
-    //if ( event == undefined ){ return };
+    that.options.selectEventHandler(fcEvent.id);
+  }
+
+  this.eventDblClick = function(fcEvent){
+    that.options.editEventHandler(fcEvent.id);
   }
 
   this.eventDropOrResize = function(fcEvent, delta, revertFunc, jsEvent, ui, view ){
-    var text = that.eventsToText(view.calendar.getEventCache());
-    that.eventText(text);
+    //var text = that.eventsToText(view.calendar.getEventCache());
+    //that.eventText(text);
   }
 
   this.viewRender = function(view){
@@ -139,6 +105,9 @@ function CalendarViewModel(){
   }
 }
 
+module.exports = CalendarViewModel;
+
+/*
 function CalendarModel(){
   var that = this;
   this.calendarViewModel = new CalendarViewModel();
@@ -146,7 +115,6 @@ function CalendarModel(){
   this.init = function(){
     that.calendarViewModel.init();
   }
-
 }
 
 $(function() {
@@ -154,3 +122,4 @@ $(function() {
   ko.applyBindings(calendarModel);
   calendarModel.init();
 });
+*/

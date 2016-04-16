@@ -123,6 +123,7 @@ module.exports = function(grunt){
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
+            "node_modules/fullcalendar/dist/fullcalendar.min.css",
             "static/stylesheets/app/devhub.css",
           ],
           "static/stylesheets/upload.min.css" : [

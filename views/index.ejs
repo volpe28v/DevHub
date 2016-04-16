@@ -131,6 +131,12 @@
             <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
+
+              <!-- ここにカレンダーを入れてみる -->
+              <div data-bind="attr: {id: 'share_memo_calendar_' + no}, visible: active">
+                <div data-bind="fullCalendar: calendarViewModel"></div>
+              </div>
+
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">
                 <li class="index-li" data-bind="click: function(data, event){ return $parents[1].select_index_li(data,event,$element) }">
                   <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
