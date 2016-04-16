@@ -3,11 +3,14 @@ var COOKIE_EXPIRES = 365;
 
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+global.moment = require('moment');
+require('../libs/moment.lang_ja');
 require('jquery-ui');
 require('bootstrap');
 
 require('jquery-colorbox');
 require('jquery.cookie');
+require('@gigwalk/livestamp');
 
 
 var emojify = require('emojify.js');

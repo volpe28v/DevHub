@@ -1,4 +1,144 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// Livestamp.js / v2.0.0 / (c) 2015 Matt Bradley / MIT License
+(function (plugin) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery', 'moment'], plugin);
+  } else {
+    // Browser globals
+    plugin(jQuery, moment);
+  }
+}(function($, moment) {
+  var updateInterval = 1e3,
+      paused = false,
+      $livestamps = $([]),
+
+  init = function() {
+    livestampGlobal.resume();
+  },
+
+  prep = function($el, timestamp) {
+    var oldData = $el.data('livestampdata');
+    if (typeof timestamp == 'number')
+      timestamp *= 1e3;
+
+    $el.removeAttr('data-livestamp')
+      .removeData('livestamp');
+
+    timestamp = moment(timestamp);
+    if (moment.isMoment(timestamp) && !isNaN(+timestamp)) {
+      var newData = $.extend({ }, { 'original': $el.contents() }, oldData);
+      newData.moment = moment(timestamp);
+
+      $el.data('livestampdata', newData).empty();
+      $livestamps.push($el[0]);
+    }
+  },
+
+  run = function() {
+    if (paused) return;
+    livestampGlobal.update();
+    setTimeout(run, updateInterval);
+  },
+
+  livestampGlobal = {
+    update: function() {
+      $('[data-livestamp]').each(function() {
+        var $this = $(this);
+        prep($this, $this.data('livestamp'));
+      });
+
+      var toRemove = [];
+      $livestamps.each(function() {
+        var $this = $(this),
+            data = $this.data('livestampdata');
+
+        if (data === undefined)
+          toRemove.push(this);
+        else if (moment.isMoment(data.moment)) {
+          var from = $this.html(),
+              to = data.moment.fromNow();
+
+          if (from != to) {
+            var e = $.Event('change.livestamp');
+            $this.trigger(e, [from, to]);
+            if (!e.isDefaultPrevented())
+              $this.html(to);
+          }
+        }
+      });
+
+      $livestamps = $livestamps.not(toRemove);
+      delete $livestamps.prevObject
+    },
+
+    pause: function() {
+      paused = true;
+    },
+
+    resume: function() {
+      paused = false;
+      run();
+    },
+
+    interval: function(interval) {
+      if (interval === undefined)
+        return updateInterval;
+      updateInterval = interval;
+    }
+  },
+
+  livestampLocal = {
+    add: function($el, timestamp) {
+      if (typeof timestamp == 'number')
+        timestamp *= 1e3;
+      timestamp = moment(timestamp);
+
+      if (moment.isMoment(timestamp) && !isNaN(+timestamp)) {
+        $el.each(function() {
+          prep($(this), timestamp);
+        });
+        livestampGlobal.update();
+      }
+
+      return $el;
+    },
+
+    destroy: function($el) {
+      $livestamps = $livestamps.not($el);
+      $el.each(function() {
+        var $this = $(this),
+            data = $this.data('livestampdata');
+
+        if (data === undefined)
+          return $el;
+
+        $this
+          .html(data.original ? data.original : '')
+          .removeData('livestampdata');
+      });
+
+      return $el;
+    },
+
+    isLivestamp: function($el) {
+      return $el.data('livestampdata') !== undefined;
+    }
+  };
+
+  $.livestamp = livestampGlobal;
+  $(init);
+  $.fn.livestamp = function(method, options) {
+    if (!livestampLocal[method]) {
+      options = method;
+      method = 'add';
+    }
+
+    return livestampLocal[method](this, options);
+  };
+}));
+
+},{}],2:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -28,7 +168,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -59,7 +199,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -146,7 +286,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -207,7 +347,7 @@ Backoff.prototype.setJitter = function(jitter){
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -307,7 +447,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -321,7 +461,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":7,"../../js/alert.js":8,"../../js/button.js":9,"../../js/carousel.js":10,"../../js/collapse.js":11,"../../js/dropdown.js":12,"../../js/modal.js":13,"../../js/popover.js":14,"../../js/scrollspy.js":15,"../../js/tab.js":16,"../../js/tooltip.js":17,"../../js/transition.js":18}],7:[function(require,module,exports){
+},{"../../js/affix.js":8,"../../js/alert.js":9,"../../js/button.js":10,"../../js/carousel.js":11,"../../js/collapse.js":12,"../../js/dropdown.js":13,"../../js/modal.js":14,"../../js/popover.js":15,"../../js/scrollspy.js":16,"../../js/tab.js":17,"../../js/tooltip.js":18,"../../js/transition.js":19}],8:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -485,7 +625,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -581,7 +721,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -703,7 +843,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -942,7 +1082,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -1155,7 +1295,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -1322,7 +1462,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -1661,7 +1801,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -1771,7 +1911,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -1945,7 +2085,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -2102,7 +2242,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -2618,7 +2758,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -2679,9 +2819,9 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],19:[function(require,module,exports){
-
 },{}],20:[function(require,module,exports){
+
+},{}],21:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -2706,7 +2846,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -2872,7 +3012,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -2880,7 +3020,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -3050,7 +3190,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":24}],24:[function(require,module,exports){
+},{"./debug":25}],25:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -3249,7 +3389,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":56}],25:[function(require,module,exports){
+},{"ms":57}],26:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
 
@@ -3629,11 +3769,11 @@ function coerce(val) {
     }
 ));
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":27}],27:[function(require,module,exports){
+},{"./lib/":28}],28:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -3645,7 +3785,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":28,"engine.io-parser":36}],28:[function(require,module,exports){
+},{"./socket":29,"engine.io-parser":37}],29:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -4377,7 +4517,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":29,"./transports":30,"component-emitter":21,"debug":23,"engine.io-parser":36,"indexof":46,"parsejson":57,"parseqs":58,"parseuri":59}],29:[function(require,module,exports){
+},{"./transport":30,"./transports":31,"component-emitter":22,"debug":24,"engine.io-parser":37,"indexof":47,"parsejson":58,"parseqs":59,"parseuri":60}],30:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -4534,7 +4674,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":21,"engine.io-parser":36}],30:[function(require,module,exports){
+},{"component-emitter":22,"engine.io-parser":37}],31:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -4591,7 +4731,7 @@ function polling(opts){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":31,"./polling-xhr":32,"./websocket":34,"xmlhttprequest-ssl":35}],31:[function(require,module,exports){
+},{"./polling-jsonp":32,"./polling-xhr":33,"./websocket":35,"xmlhttprequest-ssl":36}],32:[function(require,module,exports){
 (function (global){
 
 /**
@@ -4833,7 +4973,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":33,"component-inherit":22}],32:[function(require,module,exports){
+},{"./polling":34,"component-inherit":23}],33:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -5249,7 +5389,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":33,"component-emitter":21,"component-inherit":22,"debug":23,"xmlhttprequest-ssl":35}],33:[function(require,module,exports){
+},{"./polling":34,"component-emitter":22,"component-inherit":23,"debug":24,"xmlhttprequest-ssl":36}],34:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -5498,7 +5638,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":29,"component-inherit":22,"debug":23,"engine.io-parser":36,"parseqs":58,"xmlhttprequest-ssl":35,"yeast":96}],34:[function(require,module,exports){
+},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":59,"xmlhttprequest-ssl":36,"yeast":97}],35:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -5790,7 +5930,7 @@ WS.prototype.check = function(){
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":29,"component-inherit":22,"debug":23,"engine.io-parser":36,"parseqs":58,"ws":19,"yeast":96}],35:[function(require,module,exports){
+},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":59,"ws":20,"yeast":97}],36:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -5828,7 +5968,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":45}],36:[function(require,module,exports){
+},{"has-cors":46}],37:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -6426,7 +6566,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":37,"after":1,"arraybuffer.slice":2,"base64-arraybuffer":4,"blob":5,"has-binary":38,"utf8":95}],37:[function(require,module,exports){
+},{"./keys":38,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":5,"blob":6,"has-binary":39,"utf8":96}],38:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -6447,7 +6587,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (global){
 
 /*
@@ -6509,12 +6649,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":39}],39:[function(require,module,exports){
+},{"isarray":40}],40:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /**
  * @license MIT
  * @fileOverview Favico animations
@@ -7373,7 +7513,7 @@ module.exports = Array.isArray || function (arr) {
 
 })();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /*!
  * FullCalendar v2.7.0-beta
  * Docs & License: http://fullcalendar.io/
@@ -19922,7 +20062,7 @@ fcViews.agendaWeek = {
 
 return FC; // export for Node/CommonJS
 });
-},{"jquery":52,"moment":55}],42:[function(require,module,exports){
+},{"jquery":53,"moment":56}],43:[function(require,module,exports){
 !function(){var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
 (function(){function S(a){function d(e){var b=e.charCodeAt(0);if(b!==92)return b;var a=e.charAt(1);return(b=r[a])?b:"0"<=a&&a<="7"?parseInt(e.substring(1),8):a==="u"||a==="x"?parseInt(e.substring(2),16):e.charCodeAt(1)}function g(e){if(e<32)return(e<16?"\\x0":"\\x")+e.toString(16);e=String.fromCharCode(e);return e==="\\"||e==="-"||e==="]"||e==="^"?"\\"+e:e}function b(e){var b=e.substring(1,e.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),e=[],a=
 b[0]==="^",c=["["];a&&c.push("^");for(var a=a?1:0,f=b.length;a<f;++a){var h=b[a];if(/\\[bdsw]/i.test(h))c.push(h);else{var h=d(h),l;a+2<f&&"-"===b[a+1]?(l=d(b[a+2]),a+=2):l=h;e.push([h,l]);l<65||h>122||(l<65||h>90||e.push([Math.max(65,h)|32,Math.min(l,90)|32]),l<97||h>122||e.push([Math.max(97,h)&-33,Math.min(l,122)&-33]))}}e.sort(function(e,a){return e[0]-a[0]||a[1]-e[1]});b=[];f=[];for(a=0;a<e.length;++a)h=e[a],h[0]<=f[1]+1?f[1]=Math.max(f[1],h[1]):b.push(f=h);for(a=0;a<b.length;++a)h=b[a],c.push(g(h[0])),
@@ -19954,7 +20094,7 @@ o.className&&e.test(o.className)){m=!0;break}if(!m){d.className+=" prettyprinted
 {h:m,c:d,j:u,i:o};K(r)}}}i<p.length?setTimeout(g,250):"function"===typeof a&&a()}for(var b=d||document.body,s=b.ownerDocument||document,b=[b.getElementsByTagName("pre"),b.getElementsByTagName("code"),b.getElementsByTagName("xmp")],p=[],m=0;m<b.length;++m)for(var j=0,k=b[m].length;j<k;++j)p.push(b[m][j]);var b=q,c=Date;c.now||(c={now:function(){return+new Date}});var i=0,r,n=/\blang(?:uage)?-([\w.]+)(?!\S)/,e=/\bprettyprint\b/,v=/\bprettyprinted\b/,w=/pre|xmp/i,t=/^code$/i,f=/^(?:pre|code|xmp)$/i,
 h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify",[],function(){return Y})})();}()
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (global){
 
 /*
@@ -20017,9 +20157,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":44}],44:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"dup":39}],45:[function(require,module,exports){
+},{"isarray":45}],45:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"dup":40}],46:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -20038,7 +20178,7 @@ try {
   module.exports = false;
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -20049,7 +20189,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*!
 	Colorbox 1.6.3
 	license: MIT
@@ -21156,7 +21296,7 @@ module.exports = function(arr, obj){
 
 }(jQuery, document, window));
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /**
  * author Christopher Blum
  *    - based on the idea of Remy Sharp, http://remysharp.com/2009/01/26/element-in-view-event-plugin/
@@ -21300,7 +21440,7 @@ module.exports = function(arr, obj){
   }
 }));
 
-},{"jquery":52}],49:[function(require,module,exports){
+},{"jquery":53}],50:[function(require,module,exports){
 (function (factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -22697,7 +22837,7 @@ $.fn.textcomplete.getCaretCoordinates = getCaretCoordinates;
 return jQuery;
 }));
 
-},{"jquery":52}],50:[function(require,module,exports){
+},{"jquery":53}],51:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*! jQuery UI - v1.10.3 - 2013-05-03
@@ -37704,7 +37844,7 @@ $.widget( "ui.tooltip", {
 
 }( jQuery ) );
 
-},{"jquery":52}],51:[function(require,module,exports){
+},{"jquery":53}],52:[function(require,module,exports){
 /*!
  * jQuery Cookie Plugin v1.4.1
  * https://github.com/carhartl/jquery-cookie
@@ -37823,7 +37963,7 @@ $.widget( "ui.tooltip", {
 
 }));
 
-},{"jquery":52}],52:[function(require,module,exports){
+},{"jquery":53}],53:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -47667,7 +47807,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (factory) {
     // Module systems magic dance.
 
@@ -48494,7 +48634,7 @@ return jQuery;
     }
 }));
 
-},{"knockout":54}],54:[function(require,module,exports){
+},{"knockout":55}],55:[function(require,module,exports){
 /*!
  * Knockout JavaScript library v3.4.0
  * (c) Steven Sanderson - http://knockoutjs.com/
@@ -54367,7 +54507,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 }());
 })();
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 //! moment.js
 //! version : 2.12.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -58056,7 +58196,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
     return _moment;
 
 }));
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -58183,7 +58323,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -58218,7 +58358,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -58257,7 +58397,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -58298,12 +58438,12 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":61}],61:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":62}],62:[function(require,module,exports){
 'use strict';
 
 var ps = require('../main')
@@ -58348,7 +58488,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":67,"../plugin/instances":78}],62:[function(require,module,exports){
+},{"../main":68,"../plugin/instances":79}],63:[function(require,module,exports){
 'use strict';
 
 function oldAdd(element, className) {
@@ -58392,7 +58532,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 var DOM = {};
@@ -58478,7 +58618,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 var EventElement = function (element) {
@@ -58551,7 +58691,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 module.exports = (function () {
@@ -58566,7 +58706,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 var cls = require('./class')
@@ -58649,7 +58789,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":62,"./dom":63}],67:[function(require,module,exports){
+},{"./class":63,"./dom":64}],68:[function(require,module,exports){
 'use strict';
 
 var destroy = require('./plugin/destroy')
@@ -58662,7 +58802,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":69,"./plugin/initialize":77,"./plugin/update":81}],68:[function(require,module,exports){
+},{"./plugin/destroy":70,"./plugin/initialize":78,"./plugin/update":82}],69:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -58682,7 +58822,7 @@ module.exports = {
   theme: 'default'
 };
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -58706,7 +58846,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":63,"../lib/helper":66,"./instances":78}],70:[function(require,module,exports){
+},{"../lib/dom":64,"../lib/helper":67,"./instances":79}],71:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -58768,7 +58908,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":66,"../instances":78,"../update-geometry":79,"../update-scroll":80}],71:[function(require,module,exports){
+},{"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],72:[function(require,module,exports){
 'use strict';
 
 var d = require('../../lib/dom')
@@ -58873,7 +59013,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":63,"../../lib/helper":66,"../instances":78,"../update-geometry":79,"../update-scroll":80}],72:[function(require,module,exports){
+},{"../../lib/dom":64,"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],73:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -59001,7 +59141,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/dom":63,"../../lib/helper":66,"../instances":78,"../update-geometry":79,"../update-scroll":80}],73:[function(require,module,exports){
+},{"../../lib/dom":64,"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],74:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59137,7 +59277,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":78,"../update-geometry":79,"../update-scroll":80}],74:[function(require,module,exports){
+},{"../instances":79,"../update-geometry":80,"../update-scroll":81}],75:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59154,7 +59294,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":78,"../update-geometry":79}],75:[function(require,module,exports){
+},{"../instances":79,"../update-geometry":80}],76:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -59265,7 +59405,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":66,"../instances":78,"../update-geometry":79,"../update-scroll":80}],76:[function(require,module,exports){
+},{"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],77:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59435,7 +59575,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":78,"../update-geometry":79,"../update-scroll":80}],77:[function(require,module,exports){
+},{"../instances":79,"../update-geometry":80,"../update-scroll":81}],78:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59482,7 +59622,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":62,"../lib/helper":66,"./handler/click-rail":70,"./handler/drag-scrollbar":71,"./handler/keyboard":72,"./handler/mouse-wheel":73,"./handler/native-scroll":74,"./handler/selection":75,"./handler/touch":76,"./instances":78,"./update-geometry":79}],78:[function(require,module,exports){
+},{"../lib/class":63,"../lib/helper":67,"./handler/click-rail":71,"./handler/drag-scrollbar":72,"./handler/keyboard":73,"./handler/mouse-wheel":74,"./handler/native-scroll":75,"./handler/selection":76,"./handler/touch":77,"./instances":79,"./update-geometry":80}],79:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59603,7 +59743,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/class":62,"../lib/dom":63,"../lib/event-manager":64,"../lib/guid":65,"../lib/helper":66,"./default-setting":68}],79:[function(require,module,exports){
+},{"../lib/class":63,"../lib/dom":64,"../lib/event-manager":65,"../lib/guid":66,"../lib/helper":67,"./default-setting":69}],80:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59731,7 +59871,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":62,"../lib/dom":63,"../lib/helper":66,"./instances":78,"./update-scroll":80}],80:[function(require,module,exports){
+},{"../lib/class":63,"../lib/dom":64,"../lib/helper":67,"./instances":79,"./update-scroll":81}],81:[function(require,module,exports){
 'use strict';
 
 var instances = require('./instances');
@@ -59831,7 +59971,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":78}],81:[function(require,module,exports){
+},{"./instances":79}],82:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -59870,7 +60010,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":63,"../lib/helper":66,"./instances":78,"./update-geometry":79,"./update-scroll":80}],82:[function(require,module,exports){
+},{"../lib/dom":64,"../lib/helper":67,"./instances":79,"./update-geometry":80,"./update-scroll":81}],83:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -59964,7 +60104,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":83,"./socket":85,"./url":86,"debug":23,"socket.io-parser":89}],83:[function(require,module,exports){
+},{"./manager":84,"./socket":86,"./url":87,"debug":24,"socket.io-parser":90}],84:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -60523,7 +60663,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":84,"./socket":85,"backo2":3,"component-bind":20,"component-emitter":87,"debug":23,"engine.io-client":26,"indexof":46,"socket.io-parser":89}],84:[function(require,module,exports){
+},{"./on":85,"./socket":86,"backo2":4,"component-bind":21,"component-emitter":88,"debug":24,"engine.io-client":27,"indexof":47,"socket.io-parser":90}],85:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -60549,7 +60689,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -60963,7 +61103,7 @@ Socket.prototype.compress = function(compress){
   return this;
 };
 
-},{"./on":84,"component-bind":20,"component-emitter":87,"debug":23,"has-binary":43,"socket.io-parser":89,"to-array":94}],86:[function(require,module,exports){
+},{"./on":85,"component-bind":21,"component-emitter":88,"debug":24,"has-binary":44,"socket.io-parser":90,"to-array":95}],87:[function(require,module,exports){
 (function (global){
 
 /**
@@ -61043,7 +61183,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":23,"parseuri":59}],87:[function(require,module,exports){
+},{"debug":24,"parseuri":60}],88:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -61206,7 +61346,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -61351,7 +61491,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":90,"isarray":91}],89:[function(require,module,exports){
+},{"./is-buffer":91,"isarray":92}],90:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -61753,7 +61893,7 @@ function error(data){
   };
 }
 
-},{"./binary":88,"./is-buffer":90,"component-emitter":21,"debug":23,"isarray":91,"json3":92}],90:[function(require,module,exports){
+},{"./binary":89,"./is-buffer":91,"component-emitter":22,"debug":24,"isarray":92,"json3":93}],91:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -61770,9 +61910,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],91:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"dup":39}],92:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"dup":40}],93:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -62678,7 +62818,7 @@ arguments[4][39][0].apply(exports,arguments)
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],93:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 (function ($) {
   'use strict';
 
@@ -62801,7 +62941,7 @@ arguments[4][39][0].apply(exports,arguments)
 
 })(jQuery);
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -62816,7 +62956,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -63064,7 +63204,7 @@ function toArray(list, index) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -63134,7 +63274,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -63267,7 +63407,7 @@ $(function() {
 */
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":114,"fullcalendar":41,"jquery":52,"knockout":54,"knockout.mapping":53,"moment":55}],98:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":115,"fullcalendar":42,"jquery":53,"knockout":55,"knockout.mapping":54,"moment":56}],99:[function(require,module,exports){
 (function (global){
 var LOGIN_COLOR_MAX = 9;
 
@@ -63719,7 +63859,7 @@ ChatController.prototype = {
 module.exports = ChatController;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/dropzone":105,"../libs/emojies.js":106,"../libs/jquery.exresize":112,"../libs/knockout.devhub_custom":114,"./chat_view_model":99,"emojify.js":25,"jquery":52,"jquery-inview":48,"jquery-textcomplete":49,"knockout":54,"knockout.mapping":53}],99:[function(require,module,exports){
+},{"../libs/dropzone":106,"../libs/emojies.js":107,"../libs/jquery.exresize":113,"../libs/knockout.devhub_custom":115,"./chat_view_model":100,"emojify.js":26,"jquery":53,"jquery-inview":49,"jquery-textcomplete":50,"knockout":55,"knockout.mapping":54}],100:[function(require,module,exports){
 (function (global){
 var LOGIN_COLOR_MAX = 9;
 
@@ -64249,18 +64389,21 @@ ChatViewModel.prototype = {
 module.exports = ChatViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":114,"../libs/message_date":115,"emojify.js":25,"jquery":52,"jquery-ui":50,"knockout":54,"knockout.mapping":53}],100:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":115,"../libs/message_date":116,"emojify.js":26,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54}],101:[function(require,module,exports){
 (function (global){
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_EXPIRES = 365;
 
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+global.moment = require('moment');
+require('../libs/moment.lang_ja');
 require('jquery-ui');
 require('bootstrap');
 
 require('jquery-colorbox');
 require('jquery.cookie');
+require('@gigwalk/livestamp');
 
 
 var emojify = require('emojify.js');
@@ -64576,7 +64719,7 @@ $(function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/dropzone":105,"../libs/favicon-number":107,"../libs/jquery.autosize":109,"../libs/knockout.devhub_custom":114,"./chat_controller":98,"./memo_controller":101,"bootstrap":6,"emojify.js":25,"jquery":52,"jquery-colorbox":47,"jquery-ui":50,"jquery.cookie":51,"knockout":54,"knockout.mapping":53,"perfect-scrollbar/jquery":60,"socket.io-client":82}],101:[function(require,module,exports){
+},{"../libs/dropzone":106,"../libs/favicon-number":108,"../libs/jquery.autosize":110,"../libs/knockout.devhub_custom":115,"../libs/moment.lang_ja":117,"./chat_controller":99,"./memo_controller":102,"@gigwalk/livestamp":1,"bootstrap":7,"emojify.js":26,"jquery":53,"jquery-colorbox":48,"jquery-ui":51,"jquery.cookie":52,"knockout":55,"knockout.mapping":54,"moment":56,"perfect-scrollbar/jquery":61,"socket.io-client":83}],102:[function(require,module,exports){
 (function (global){
 var SHARE_MEMO_NUMBER = 30;
 var CODE_OUT_ADJUST_HEIGHT = 300;
@@ -65053,7 +65196,7 @@ function MemoController(param){
 module.exports = MemoController;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":114,"./memo_view_model":102,"jquery":52,"jquery-ui":50,"knockout":54,"knockout.mapping":53}],102:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":115,"./memo_view_model":103,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54}],103:[function(require,module,exports){
 (function (global){
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
@@ -65925,7 +66068,7 @@ function MemoViewModel(param){
 module.exports = MemoViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/difflib":103,"../libs/diffview":104,"../libs/jquery.selection.js":113,"../libs/knockout.devhub_custom":114,"./calendar_view_model":97,"jquery":52,"jquery-ui":50,"knockout":54,"knockout.mapping":53,"moment":55,"textarea-helper":93}],103:[function(require,module,exports){
+},{"../libs/difflib":104,"../libs/diffview":105,"../libs/jquery.selection.js":114,"../libs/knockout.devhub_custom":115,"./calendar_view_model":98,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54,"moment":56,"textarea-helper":94}],104:[function(require,module,exports){
 /***
 This is part of jsdifflib v1.0. <http://snowtide.com/jsdifflib>
 
@@ -66338,7 +66481,7 @@ difflib = module.exports = {
 };
 
 
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 /*
 This is part of jsdifflib v1.0. <http://github.com/cemerick/jsdifflib>
 
@@ -66541,7 +66684,7 @@ diffview = module.exports = {
 };
 
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 function DropZone(param){
   param.dropTarget.bind("dragenter", this.cancel_event);
   param.dropTarget.bind("dragover", this.cancel_event);
@@ -66633,12 +66776,12 @@ DropZone.prototype = {
 
 module.exports = DropZone;
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 var emojies = ["blush","scream","smirk","smiley","stuck_out_tongue_closed_eyes","stuck_out_tongue_winking_eye","rage","disappointed","sob","kissing_heart","wink","pensive","confounded","flushed","relaxed","mask","heart","broken_heart","sunny","umbrella","cloud","snowflake","snowman","zap","cyclone","foggy","ocean","cat","dog","mouse","hamster","rabbit","wolf","frog","tiger","koala","bear","pig","pig_nose","cow","boar","monkey_face","monkey","horse","racehorse","camel","sheep","elephant","panda_face","snake","bird","baby_chick","hatched_chick","hatching_chick","chicken","penguin","turtle","bug","honeybee","ant","beetle","snail","octopus","tropical_fish","fish","whale","whale2","dolphin","cow2","ram","rat","water_buffalo","tiger2","rabbit2","dragon","goat","rooster","dog2","pig2","mouse2","ox","dragon_face","blowfish","crocodile","dromedary_camel","leopard","cat2","poodle","paw_prints","bouquet","cherry_blossom","tulip","four_leaf_clover","rose","sunflower","hibiscus","maple_leaf","leaves","fallen_leaf","herb","mushroom","cactus","palm_tree","evergreen_tree","deciduous_tree","chestnut","seedling","blossom","ear_of_rice","shell","globe_with_meridians","sun_with_face","full_moon_with_face","new_moon_with_face","new_moon","waxing_crescent_moon","first_quarter_moon","waxing_gibbous_moon","full_moon","waning_gibbous_moon","last_quarter_moon","waning_crescent_moon","last_quarter_moon_with_face","first_quarter_moon_with_face","moon","earth_africa","earth_americas","earth_asia","volcano","milky_way","partly_sunny","octocat","squirrel","bamboo","gift_heart","dolls","school_satchel","mortar_board","flags","fireworks","sparkler","wind_chime","rice_scene","jack_o_lantern","ghost","santa","christmas_tree","gift","bell","no_bell","tanabata_tree","tada","confetti_ball","balloon","crystal_ball","cd","dvd","floppy_disk","camera","video_camera","movie_camera","computer","tv","iphone","phone","telephone","telephone_receiver","pager","fax","minidisc","vhs","sound","speaker","mute","loudspeaker","mega","hourglass","hourglass_flowing_sand","alarm_clock","watch","radio","satellite","loop","mag","mag_right","unlock","lock","lock_with_ink_pen","closed_lock_with_key","key","bulb","flashlight","high_brightness","low_brightness","electric_plug","battery","calling","email","mailbox","postbox","bath","bathtub","shower","toilet","wrench","nut_and_bolt","hammer","seat","moneybag","yen","dollar","pound","euro","credit_card","money_with_wings","e-mail","inbox_tray","outbox_tray","envelope","incoming_envelope","postal_horn","mailbox_closed","mailbox_with_mail","mailbox_with_no_mail","door","smoking","bomb","gun","hocho","pill","syringe","page_facing_up","page_with_curl","bookmark_tabs","bar_chart","chart_with_upwards_trend","chart_with_downwards_trend","scroll","clipboard","calendar","date","card_index","file_folder","open_file_folder","scissors","pushpin","paperclip","black_nib","pencil2","straight_ruler","triangular_ruler","closed_book","green_book","blue_book","orange_book","notebook","notebook_with_decorative_cover","ledger","books","bookmark","name_badge","microscope","telescope","newspaper","football","basketball","soccer","baseball","tennis","8ball","rugby_football","bowling","golf","mountain_bicyclist","bicyclist","horse_racing","snowboarder","swimmer","surfer","ski","spades","hearts","clubs","diamonds","gem","ring","trophy","musical_score","musical_keyboard","violin","space_invader","video_game","black_joker","flower_playing_cards","game_die","dart","mahjong","clapper","memo","pencil","book","art","microphone","headphones","trumpet","saxophone","guitar","shoe","sandal","high_heel","lipstick","boot","shirt","tshirt","necktie","womans_clothes","dress","running_shirt_with_sash","jeans","kimono","bikini","ribbon","tophat","crown","womans_hat","mans_shoe","closed_umbrella","briefcase","handbag","pouch","purse","eyeglasses","fishing_pole_and_fish","coffee","tea","sake","baby_bottle","beer","beers","cocktail","tropical_drink","wine_glass","fork_and_knife","pizza","hamburger","fries","poultry_leg","meat_on_bone","spaghetti","curry","fried_shrimp","bento","sushi","fish_cake","rice_ball","rice_cracker","rice","ramen","stew","oden","dango","egg","bread","doughnut","custard","icecream","ice_cream","shaved_ice","birthday","cake","cookie","chocolate_bar","candy","lollipop","honey_pot","apple","green_apple","tangerine","lemon","cherries","grapes","watermelon","strawberry","peach","melon","banana","pear","pineapple","sweet_potato","eggplant","tomato","corn","alien","angel","anger","angry","anguished","astonished","baby","blue_heart","blush","boom","bow","bowtie","boy","bride_with_veil","broken_heart","bust_in_silhouette","busts_in_silhouette","clap","cold_sweat","collision","confounded","confused","construction_worker","cop","couple_with_heart","couple","couplekiss","cry","crying_cat_face","cupid","dancer","dancers","dash","disappointed","dizzy_face","dizzy","droplet","ear","exclamation","expressionless","eyes","facepunch","family","fearful","feelsgood","feet","finnadie","fire","fist","flushed","frowning","girl","goberserk","godmode","green_heart","grey_exclamation","grey_question","grimacing","grin","grinning","guardsman","haircut","hand","hankey","hear_no_evil","heart_eyes_cat","heart_eyes","heart","heartbeat","heartpulse","hurtrealbad","hushed","imp","information_desk_person","innocent","japanese_goblin","japanese_ogre","joy_cat","joy","kiss","kissing_cat","kissing_closed_eyes","kissing_heart","kissing_smiling_eyes","kissing","laughing","lips","love_letter","man_with_gua_pi_mao","man_with_turban","man","mask","massage","metal","muscle","musical_note","nail_care","neckbeard","neutral_face","no_good","no_mouth","nose","notes","ok_hand","ok_woman","older_man","older_woman","open_hands","open_mouth","pensive","persevere","person_frowning","person_with_blond_hair","person_with_pouting_face","point_down","point_left","point_right","point_up_2","point_up","poop","pouting_cat","pray","princess","punch","purple_heart","question","rage","rage1","rage2","rage3","rage4","raised_hand","raised_hands","relaxed","relieved","revolving_hearts","runner","running","satisfied","scream_cat","scream","see_no_evil","shit","skull","sleeping","sleepy","smile_cat","smile","smiley_cat","smiley","smiling_imp","smirk_cat","smirk","sob","sparkling_heart","sparkles","speak_no_evil","speech_balloon","star","star2","stuck_out_tongue_closed_eyes","stuck_out_tongue_winking_eye","stuck_out_tongue","sunglasses","suspect","sweat_drops","sweat_smile","sweat","thought_balloon","-1","thumbsdown","thumbsup","+1","tired_face","tongue","triumph","trollface","two_hearts","two_men_holding_hands","two_women_holding_hands","unamused","v","walking","wave","weary","wink2","wink","woman","worried","yellow_heart","yum","zzz","109","house","house_with_garden","school","office","post_office","hospital","bank","convenience_store","love_hotel","hotel","wedding","church","department_store","european_post_office","city_sunrise","city_sunset","japanese_castle","european_castle","tent","factory","tokyo_tower","japan","mount_fuji","sunrise_over_mountains","sunrise","stars","statue_of_liberty","bridge_at_night","carousel_horse","rainbow","ferris_wheel","fountain","roller_coaster","ship","speedboat","boat","sailboat","rowboat","anchor","rocket","airplane","helicopter","steam_locomotive","tram","mountain_railway","bike","aerial_tramway","suspension_railway","mountain_cableway","tractor","blue_car","oncoming_automobile","car","red_car","taxi","oncoming_taxi","articulated_lorry","bus","oncoming_bus","rotating_light","police_car","oncoming_police_car","fire_engine","ambulance","minibus","truck","train","station","train2","bullettrain_front","bullettrain_side","light_rail","monorail","railway_car","trolleybus","ticket","fuelpump","vertical_traffic_light","traffic_light","warning","construction","beginner","atm","slot_machine","busstop","barber","hotsprings","checkered_flag","crossed_flags","izakaya_lantern","moyai","circus_tent","performing_arts","round_pushpin","triangular_flag_on_post","jp","kr","cn","us","fr","es","it","ru","gb","uk","de","100","1234","one","two","three","four","five","six","seven","eight","nine","keycap_ten","zero","hash","symbols","arrow_backward","arrow_down","arrow_forward","arrow_left","capital_abcd","abcd","abc","arrow_lower_left","arrow_lower_right","arrow_right","arrow_up","arrow_upper_left","arrow_upper_right","arrow_double_down","arrow_double_up","arrow_down_small","arrow_heading_down","arrow_heading_up","leftwards_arrow_with_hook","arrow_right_hook","left_right_arrow","arrow_up_down","arrow_up_small","arrows_clockwise","arrows_counterclockwise","rewind","fast_forward","information_source","ok","twisted_rightwards_arrows","repeat","repeat_one","new","top","up","cool","free","ng","cinema","koko","signal_strength","u5272","u5408","u55b6","u6307","u6708","u6709","u6e80","u7121","u7533","u7a7a","u7981","sa","restroom","mens","womens","baby_symbol","no_smoking","parking","wheelchair","metro","baggage_claim","accept","wc","potable_water","put_litter_in_its_place","secret","congratulations","m","passport_control","left_luggage","customs","ideograph_advantage","cl","sos","id","no_entry_sign","underage","no_mobile_phones","do_not_litter","non-potable_water","no_bicycles","no_pedestrians","children_crossing","no_entry","eight_spoked_asterisk","eight_pointed_black_star","heart_decoration","vs","vibration_mode","mobile_phone_off","chart","currency_exchange","aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces","ophiuchus","six_pointed_star","negative_squared_cross_mark","a","b","ab","o2","diamond_shape_with_a_dot_inside","recycle","end","on","soon","clock1","clock130","clock10","clock1030","clock11","clock1130","clock12","clock1230","clock2","clock230","clock3","clock330","clock4","clock430","clock5","clock530","clock6","clock630","clock7","clock730","clock8","clock830","clock9","clock930","heavy_dollar_sign","copyright","registered","tm","x","heavy_exclamation_mark","bangbang","interrobang","o","heavy_multiplication_x","heavy_plus_sign","heavy_minus_sign","heavy_division_sign","white_flower","heavy_check_mark","ballot_box_with_check","radio_button","link","curly_loop","wavy_dash","part_alternation_mark","trident","black_square","white_square","white_check_mark","black_square_button","white_square_button","black_circle","white_circle","red_circle","large_blue_circle","large_blue_diamond","large_orange_diamond","small_blue_diamond","small_orange_diamond","small_red_triangle","small_red_triangle_down","shipit"];
 
 module.exports = emojies;
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 var Favico = require('favico.js');
 
 function FaviconNumber(data) {
@@ -66672,7 +66815,7 @@ FaviconNumber.prototype = {
 
 module.exports = FaviconNumber;
 
-},{"favico.js":40}],108:[function(require,module,exports){
+},{"favico.js":41}],109:[function(require,module,exports){
 /*!
  * jQuery AutoFit TextArea Plugin
  *
@@ -66727,7 +66870,7 @@ module.exports = FaviconNumber;
 })(jQuery);
 
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /*!
 	Autosize 1.18.17
 	license: MIT
@@ -67002,7 +67145,7 @@ module.exports = FaviconNumber;
 	};
 }(jQuery || $)); // jQuery or jQuery-like library, such as Zepto
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function($) {
   String.prototype.getLinefromCount = function(start){
     // 文字数から行数を取得
@@ -67102,7 +67245,7 @@ function getSelectionCount(textarea) {
 }
 
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /*!
  * jQuery Decorate Text Plugin
  *
@@ -67623,7 +67766,7 @@ var prettify = require('prettify');
 })(jQuery);
 
 
-},{"./sanitize":116,"emojify.js":25,"prettify":42}],112:[function(require,module,exports){
+},{"./sanitize":118,"emojify.js":26,"prettify":43}],113:[function(require,module,exports){
 /*
  * 	exResize 0.2.0 - jQuery plugin
  *	written by Cyokodog	
@@ -67745,7 +67888,7 @@ var prettify = require('prettify');
 	}
 })(jQuery);
 
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /*!
  * jQuery.selection - jQuery Plugin
  *
@@ -68101,7 +68244,7 @@ var prettify = require('prettify');
     });
 })(jQuery, window, window.document);
 
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -68345,7 +68488,7 @@ module.exports = addCustomBindingHandlers;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./dropzone":105,"./jquery.autofit":108,"./jquery.caret":110,"./jquery.decora":111,"bootstrap":6,"emojify.js":25,"jquery":52}],115:[function(require,module,exports){
+},{"./dropzone":106,"./jquery.autofit":109,"./jquery.caret":111,"./jquery.decora":112,"bootstrap":7,"emojify.js":26,"jquery":53}],116:[function(require,module,exports){
 var localStorage = window.localStorage;
 
 window.MessageDate = {
@@ -68381,7 +68524,94 @@ window.MessageDate = {
 };
 
 
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
+// moment.js
+// version : 1.7.0
+// author : Tim Wood
+// license : MIT
+// momentjs.com
+
+// moment.lang_ja.js
+// このスクリプトは　moment.js の表示文言部分を日本語でオーバーライドしたものです。
+// ライセンスは本家を継承します。
+
+// 本家moment.jsのあとに呼んでください。
+
+// 例：
+// <script src="moment.js"></script>
+// <script src="moment.lang_ja.js"></script>
+
+// 作成者：佐藤　毅 （株式会社ジーティーアイ　http://gti.jp ）
+
+		moment.lang('ja', {
+//        months : "January_February_March_April_May_June_July_August_September_October_November_December".split("_"),
+        months : "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),
+//        monthsShort : "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),
+        monthsShort : "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),
+//        weekdays : "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),
+        weekdays : "日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日".split("_"),
+//        weekdaysShort : "Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),
+        weekdaysShort : "（日）_（月）_（火）_（水）_（木）_（金）_（土）".split("_"),
+//        weekdaysMin : "Su_Mo_Tu_We_Th_Fr_Sa".split("_"),
+		weekdaysMin : "日_月_火_水_木_金_土".split("_"),
+        longDateFormat : {
+            LT : "h:mm A",
+            L : "MM/DD/YYYY",
+            LL : "MMMM D YYYY",
+            LLL : "MMMM D YYYY LT",
+            LLLL : "dddd, MMMM D YYYY LT"
+        },
+        meridiem : function (hours, minutes, isLower) {
+            if (hours > 11) {
+                return isLower ? 'pm' : 'PM';
+            } else {
+                return isLower ? 'am' : 'AM';
+            }
+        },
+        calendar : {
+            sameDay : '[Today at] LT',
+            nextDay : '[Tomorrow at] LT',
+            nextWeek : 'dddd [at] LT',
+            lastDay : '[Yesterday at] LT',
+            lastWeek : '[last] dddd [at] LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : "%s後",
+            past : "%s前",
+//            s : "a few seconds",
+			      s : "<font color=red>ちょっと</font>",
+//            m : "a minute",
+            m : "<font color=red>約1分</font>",
+//            mm : "%d minutes",
+            mm : "<font color=red>%d分</font>",
+//            h : "an hour",
+            h : "<font color=red>約1時間</font>",
+//            hh : "%d hours",
+            hh : "<font color=orange>%d時間</font>",
+//            d : "a day",
+            d : "1日",
+//            dd : "%d days",
+            dd : "%d日",
+//            M : "a month",
+            M : "1ヶ月",
+//            MM : "%d months",
+            MM : "%dヶ月",
+//            y : "a year",
+            y : "1年",
+//            yy : "%d years"
+            yy : "%d年"
+        },
+        ordinal : function (number) {
+            var b = number % 10;
+            return (~~ (number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+        }
+    });
+
+},{}],118:[function(require,module,exports){
 (function($) {
   function trimAttributes(node, allowedAttrs) {
     $.each(node.attributes, function() {
@@ -68410,4 +68640,4 @@ window.MessageDate = {
   window.sanitize = sanitize;
 })(jQuery);
 
-},{}]},{},[100]);
+},{}]},{},[101]);
