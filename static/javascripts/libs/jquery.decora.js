@@ -91,7 +91,7 @@ var prettify = require('prettify');
     $(this).on('click',':checkbox', function(){
       var check_no = $(this).data('no');
       if (check_no == undefined){ return; }
-      var is_checked = $(this).attr("checked") ? true : false;
+      var is_checked = $(this).prop("checked") ? true : false;
       var that = this;
 
       options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked));

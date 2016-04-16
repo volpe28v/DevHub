@@ -38873,7 +38873,7 @@ var prettify = require('prettify');
     $(this).on('click',':checkbox', function(){
       var check_no = $(this).data('no');
       if (check_no == undefined){ return; }
-      var is_checked = $(this).attr("checked") ? true : false;
+      var is_checked = $(this).prop("checked") ? true : false;
       var that = this;
 
       options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked));
@@ -39470,13 +39470,13 @@ function addCustomBindingHandlers(ko){
             $(element)
               .decora({
                 checkbox_callback: function(context, applyCheckStatus){
-                                     // チェック対象のテキストを更新する
-                                     viewModel.applyToWritingText(applyCheckStatus);
-                                   },
+                  // チェック対象のテキストを更新する
+                  viewModel.applyToWritingText(applyCheckStatus);
+                },
                 img_size_callback: function(context, applyImgSize){
-                                     // チェック対象のテキストを更新する
-                                     viewModel.applyToWritingText(applyImgSize);
-                                   }
+                  // チェック対象のテキストを更新する
+                  viewModel.applyToWritingText(applyImgSize);
+                }
               });
           }
   }
