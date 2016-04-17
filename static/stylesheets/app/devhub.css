@@ -916,6 +916,15 @@ button.close {
   background-color: #fafafa;
 }
 
+.fc-toolbar {
+  margin-bottom: 0;
+}
+
+.fc-content {
+  padding: 1px;
+  cursor: pointer;
+}
+
 @media (max-width: 767px) {
   .modal.fade.in {
     top: 20px;

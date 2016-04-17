@@ -877,7 +877,6 @@ function MemoViewModel(param){
     $('#memo_area').scrollTop(0);
   }
 
-
   this.init();
 }
 

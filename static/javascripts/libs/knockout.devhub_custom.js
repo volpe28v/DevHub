@@ -224,6 +224,7 @@ function addCustomBindingHandlers(ko){
                 eventAfterAllRender: viewModel.eventAfterAllRender,
                 viewRender: viewModel.viewRender,
                 timeFormat: "H:mm",
+                aspectRatio: 0.8,
                 eventRender: function(event, element) {
                   element.bind('dblclick', function() {
                     viewModel.eventDblClick(event, element);
