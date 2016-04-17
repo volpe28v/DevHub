@@ -159,8 +159,14 @@ function ClientViewModel(){
            */
       }
     });
+
     $('a[rel=tooltip]').tooltip({
       placement : 'bottom'
+    });
+
+    $('#settings_modal').modal({
+      backdrop: true,
+      show: false
     });
   }
 
@@ -203,6 +209,10 @@ function ClientViewModel(){
     $("#chat_area").removeClass("span5");
     $("#chat_area").addClass("span12");
     $("#memo_area").trigger("scroll");
+  }
+
+  this.showSetting = function(){
+    $('#settings_modal').modal('show');
   }
 
   this.login_action = function(){

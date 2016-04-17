@@ -64552,8 +64552,14 @@ function ClientViewModel(){
            */
       }
     });
+
     $('a[rel=tooltip]').tooltip({
       placement : 'bottom'
+    });
+
+    $('#settings_modal').modal({
+      backdrop: true,
+      show: false
     });
   }
 
@@ -64596,6 +64602,10 @@ function ClientViewModel(){
     $("#chat_area").removeClass("span5");
     $("#chat_area").addClass("span12");
     $("#memo_area").trigger("scroll");
+  }
+
+  this.showSetting = function(){
+    $('#settings_modal').modal('show');
   }
 
   this.login_action = function(){
@@ -65081,6 +65091,19 @@ function MemoController(param){
     that.currentMemo().showIndexList();
   }
 
+  this.hideIndex = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showIndexList();
+  }
+
+  this.showCalendar = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showCalendar();
+  }
+
+  this.hideCalendar = function(){
+    $('#calendar_inner').slideUp('fast');
+  }
 
   this.init_sharememo = function(){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
@@ -65112,10 +65135,6 @@ function MemoController(param){
 
         that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
       }
-    });
-
-    $("#hide_index").click(function(){
-      $('#index_inner').hide();
     });
 
     $("#tab_change").click(function(){
@@ -65759,6 +65778,10 @@ function MemoViewModel(param){
 
   this.showIndexList = function(){
     $('#index_inner').slideToggle('fast');
+  }
+
+  this.showCalendar = function(){
+    $('#calendar_inner').slideToggle('fast');
     that.calendarViewModel.show();
   }
 

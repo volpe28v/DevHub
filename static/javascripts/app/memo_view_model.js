@@ -559,6 +559,10 @@ function MemoViewModel(param){
 
   this.showIndexList = function(){
     $('#index_inner').slideToggle('fast');
+  }
+
+  this.showCalendar = function(){
+    $('#calendar_inner').slideToggle('fast');
     that.calendarViewModel.show();
   }
 

@@ -79,11 +79,12 @@
 
 
           <ul class="nav pull-right">
-            <li><a id="memo_index" data-bind="click: memoController.showIndex" href="#" rel="tooltip" title="Memo Index"><i class="icon-white icon-align-left"></i></a></li>
-            <li><a id="tab_change" href="#" rel="tooltip" title="Change Tab Layout"><i class="icon-white icon-resize-full"></i></a></li>
-            <li><a id="scroll_top" data-bind="click: memoController.top" href="#" rel="tooltip" title="Scroll Top"><i class="icon-white icon-arrow-up"></i></a></li>
+            <li><a data-bind="click: memoController.showCalendar" rel="tooltip" title="Calendar" style="cursor: pointer"><i class="icon-white icon-calendar"></i></a></li>
+            <li><a data-bind="click: memoController.showIndex" rel="tooltip" title="Memo Index" style="cursor: pointer"><i class="icon-white icon-align-left"></i></a></li>
+            <li><a id="tab_change" rel="tooltip" title="Change Tab Layout" style="cursor: pointer"><i class="icon-white icon-resize-full"></i></a></li>
+            <li><a id="scroll_top" data-bind="click: memoController.top" rel="tooltip" title="Scroll Top" style="cursor: pointer"><i class="icon-white icon-arrow-up"></i></a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen">
+              <a class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen" style="cursor: pointer">
                 <i class="icon-white icon-fullscreen"></i>
                 <b class="caret"></b>
               </a>
@@ -93,9 +94,9 @@
                 <li><a data-bind="click: fullscreen_chat" href="#">Chat only</a></li>
               </ul>
             </a></li>
-            <li><a href="/blog" target="_blank"   rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
-            <li><a href="/upload" target="_blank" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
-            <li><a href="#settings_modal" rel="tooltip" title="Settings" data-toggle="modal"><i class="icon-white icon-cog"></i></a></li>
+            <li><a onClick="window.open('/blog', '_blank');" rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
+            <li><a onClick="window open('/upload', '_blank');" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
+            <li><a data-bind="click: showSetting" rel="tooltip" title="Settings"><i class="icon-white icon-cog"></i></a></li>
           </ul>
 
           <div id="search_box" data-bind="with: memoController">
@@ -127,16 +128,20 @@
       <div class="row-fluid flipsnap">
         <div id="chat_area" class="span5">
           <div class="dummy-top-space hidden-phone"></div>
-          <div id="index_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
-            <button id="hide_index" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
+          <div id="calendar_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
+            <button data-bind="click: hideCalendar" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
-            <div id="share_memo_index" data-bind="foreach: memoViewModels">
-
-              <!-- ここにカレンダーを入れてみる -->
+            <div data-bind="foreach: memoViewModels">
               <div data-bind="attr: {id: 'share_memo_calendar_' + no}, visible: active">
                 <div data-bind="fullCalendar: calendarViewModel"></div>
               </div>
+            </div>
+          </div>
 
+          <div id="index_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
+            <button data-bind="click: hideIndex" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
+            <div class="clearfix"></div>
+            <div id="share_memo_index" data-bind="foreach: memoViewModels">
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">
                 <li class="index-li" data-bind="click: function(data, event){ return $parents[1].select_index_li(data,event,$element) }">
                   <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>

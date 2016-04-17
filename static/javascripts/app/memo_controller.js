@@ -358,6 +358,19 @@ function MemoController(param){
     that.currentMemo().showIndexList();
   }
 
+  this.hideIndex = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showIndexList();
+  }
+
+  this.showCalendar = function(){
+    $('#chat_area').scrollTop(0);
+    that.currentMemo().showCalendar();
+  }
+
+  this.hideCalendar = function(){
+    $('#calendar_inner').slideUp('fast');
+  }
 
   this.init_sharememo = function(){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
@@ -389,10 +402,6 @@ function MemoController(param){
 
         that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
       }
-    });
-
-    $("#hide_index").click(function(){
-      $('#index_inner').hide();
     });
 
     $("#tab_change").click(function(){
