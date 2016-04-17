@@ -65026,28 +65026,6 @@ function MemoController(param){
     }
   }
 
-  this.do_edit = function(){
-    // 表示しているメモの先頭にカーソルを当てて編集状態へ
-    var pos = $("#memo_area").scrollTop();
-    var offset = $('#share-memo').offset().top;
-    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-    var $code_out_lines = $code_out.find(".code-out-tr");
-    var row = 0;
-    for (var i = $code_out_lines.length - 1; i >= 0; i--){
-      if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
-        row = i;
-        break;
-      }
-    }
-
-    that.currentMemo().switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-  }
-
-  this.do_fix =  function(element){
-    var $code = $(element).closest('.share-memo').find('.code');
-    that.currentMemo().switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-  }
-
   this.wip_jump = function(){
     that.currentMemo().switchFixShareMemo(1);
 
@@ -66084,6 +66062,18 @@ function MemoViewModel(param){
 
     that.switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }
+
+  this.do_fix =  function(element){
+    //var $code = $(element).closest('.share-memo').find('.code');
+    var $code = $('#share_memo_' + that.no).find('.code');
+    that.switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
+
+  this.done_diff = function(){
+    that.switchFixShareMemo(1);
+    $('#memo_area').scrollTop(0);
+  }
+
 
   this.init();
 }

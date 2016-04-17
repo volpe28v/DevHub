@@ -866,6 +866,18 @@ function MemoViewModel(param){
     that.switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }
 
+  this.do_fix =  function(element){
+    //var $code = $(element).closest('.share-memo').find('.code');
+    var $code = $('#share_memo_' + that.no).find('.code');
+    that.switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
+
+  this.done_diff = function(){
+    that.switchFixShareMemo(1);
+    $('#memo_area').scrollTop(0);
+  }
+
+
   this.init();
 }
 

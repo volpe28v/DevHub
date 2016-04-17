@@ -286,13 +286,13 @@
                     css: {active: active}"
                     class="share-memo tab-pane">
                     <div class="memo-control">
-                      <button data-bind="click: $parent.do_edit" class="sync-text btn btn-primary" style="float: left">
+                      <button data-bind="click: do_edit" class="sync-text btn btn-primary" style="float: left">
                         <i class="icon-edit icon-white"></i> Edit
                       </button>
-                      <button data-bind="click: $parent.do_fix.bind($data, $element)" class="fix-text btn btn-info" style="float: left; display: none">
+                      <button data-bind="click: do_fix.bind($data, $element)" class="fix-text btn btn-info" style="float: left; display: none">
                         <i class="icon-edit icon-white"></i> Done
                       </button>
-                      <button data-bind="click: $parent.done_diff" class="diff-done btn btn-info" style="float: left; display: none">
+                      <button data-bind="click: done_diff" class="diff-done btn btn-info" style="float: left; display: none">
                         <i class="icon-resize-vertical icon-white"></i> Done
                       </button>
                       <div class="btn-group" style="float: left">
