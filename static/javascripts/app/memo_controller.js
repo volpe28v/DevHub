@@ -303,8 +303,21 @@ function MemoController(param){
   }
 
   this.set_ref_point = function(element){
-    var id = $(element).attr("id");
-    that.setMessage("[ref:" + id + "]");
+    if ($('#chat_inner').is(':visible')){
+      var id = $(element).attr("id");
+      that.setMessage("[ref:" + id + "]");
+    }else{
+      // 無理やりチャットを表示しているがなんとかしたい
+      $('#chat_area').scrollTop(0);
+      $('#index_inner').hide();
+      $('#calendar_inner').hide();
+      $('#chat_inner').show();
+
+      setTimeout(function(){
+        var id = $(element).attr("id");
+        that.setMessage("[ref:" + id + "]");
+      },500);
+    }
   }
 
   this.select_index_li = function(data, event, element){
@@ -332,6 +345,8 @@ function MemoController(param){
   }
 
   this.showIndex = function(){
+    $('#chat_inner').hide();
+    $('#calendar_inner').hide();
     $('#chat_area').scrollTop(0);
     that.currentMemo().showIndexList();
   }
@@ -343,6 +358,8 @@ function MemoController(param){
 
   this.showCalendar = function(){
     $('#chat_area').scrollTop(0);
+    $('#chat_inner').hide();
+    $('#index_inner').hide();
     that.currentMemo().showCalendar();
   }
 

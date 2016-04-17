@@ -184,6 +184,13 @@ function ClientViewModel(){
     });
   }
 
+  this.showChat = function(){
+    $('#chat_area').scrollTop(0);
+    $('#index_inner').hide();
+    $('#calendar_inner').hide();
+    $('#chat_inner').show();
+  }
+
   this.fullscreen_both = function(){
     this.zenMode = true;
     $(".navbar").fadeOut();

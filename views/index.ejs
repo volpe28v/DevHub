@@ -75,13 +75,14 @@
               </ul>
             </li>
             <% } %>
+            <li><a data-bind="click: showChat" rel="tooltip" title="Chat" style="cursor: pointer"><i class="icon-white icon-comment"></i></a></li>
+            <li><a data-bind="click: memoController.showCalendar" rel="tooltip" title="Memo Calendar" style="cursor: pointer"><i class="icon-white icon-calendar"></i></a></li>
+            <li><a data-bind="click: memoController.showIndex" rel="tooltip" title="Memo Index" style="cursor: pointer"><i class="icon-white icon-align-left"></i></a></li>
           </ul>
 
 
           <ul class="nav pull-right">
-            <li><a data-bind="click: memoController.showCalendar" rel="tooltip" title="Calendar" style="cursor: pointer"><i class="icon-white icon-calendar"></i></a></li>
-            <li><a data-bind="click: memoController.showIndex" rel="tooltip" title="Memo Index" style="cursor: pointer"><i class="icon-white icon-align-left"></i></a></li>
-            <li><a id="tab_change" rel="tooltip" title="Change Tab Layout" style="cursor: pointer"><i class="icon-white icon-resize-full"></i></a></li>
+           <li><a id="tab_change" rel="tooltip" title="Change Tab Layout" style="cursor: pointer"><i class="icon-white icon-resize-full"></i></a></li>
             <li><a id="scroll_top" data-bind="click: memoController.top" rel="tooltip" title="Scroll Top" style="cursor: pointer"><i class="icon-white icon-arrow-up"></i></a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen" style="cursor: pointer">
@@ -129,7 +130,6 @@
         <div id="chat_area" class="span5">
           <div class="dummy-top-space hidden-phone"></div>
           <div id="calendar_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
-            <button data-bind="click: hideCalendar" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
             <div data-bind="foreach: memoViewModels">
               <div data-bind="attr: {id: 'share_memo_calendar_' + no}, visible: active">
@@ -139,7 +139,6 @@
           </div>
 
           <div id="index_inner" data-bind="with: memoController" class="area-inner" style="display:none;">
-            <button data-bind="click: hideIndex" class="btn btn-mini btn-link" style="float: right"><i class="icon-remove"></i></button>
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">

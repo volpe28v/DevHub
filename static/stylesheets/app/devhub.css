@@ -107,6 +107,11 @@ body{
   margin-left: 14px;
 }
 
+#calendar_inner, #index_inner {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .dummy-top-space {
   height: 40px;
 }
