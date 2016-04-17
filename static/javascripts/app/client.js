@@ -188,7 +188,7 @@ function ClientViewModel(){
     $('#chat_area').scrollTop(0);
     $('#index_inner').hide();
     $('#calendar_inner').hide();
-    $('#chat_inner').show();
+    $('#chat_inner').fadeIn();
   }
 
   this.fullscreen_both = function(){

@@ -558,11 +558,11 @@ function MemoViewModel(param){
   }
 
   this.showIndexList = function(){
-    $('#index_inner').show();
+    $('#index_inner').fadeIn();
   }
 
   this.showCalendar = function(){
-    $('#calendar_inner').show();
+    $('#calendar_inner').fadeIn();
     that.calendarViewModel.show();
   }
 

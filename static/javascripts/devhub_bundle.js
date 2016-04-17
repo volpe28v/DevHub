@@ -64574,7 +64574,7 @@ function ClientViewModel(){
     $('#chat_area').scrollTop(0);
     $('#index_inner').hide();
     $('#calendar_inner').hide();
-    $('#chat_inner').show();
+    $('#chat_inner').fadeIn();
   }
 
   this.fullscreen_both = function(){
@@ -65084,20 +65084,11 @@ function MemoController(param){
     that.currentMemo().showIndexList();
   }
 
-  this.hideIndex = function(){
-    $('#chat_area').scrollTop(0);
-    that.currentMemo().showIndexList();
-  }
-
   this.showCalendar = function(){
     $('#chat_area').scrollTop(0);
     $('#chat_inner').hide();
     $('#index_inner').hide();
     that.currentMemo().showCalendar();
-  }
-
-  this.hideCalendar = function(){
-    $('#calendar_inner').slideUp('fast');
   }
 
   this.init_sharememo = function(){
@@ -65772,11 +65763,11 @@ function MemoViewModel(param){
   }
 
   this.showIndexList = function(){
-    $('#index_inner').show();
+    $('#index_inner').fadeIn();
   }
 
   this.showCalendar = function(){
-    $('#calendar_inner').show();
+    $('#calendar_inner').fadeIn();
     that.calendarViewModel.show();
   }
 

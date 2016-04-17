@@ -351,20 +351,11 @@ function MemoController(param){
     that.currentMemo().showIndexList();
   }
 
-  this.hideIndex = function(){
-    $('#chat_area').scrollTop(0);
-    that.currentMemo().showIndexList();
-  }
-
   this.showCalendar = function(){
     $('#chat_area').scrollTop(0);
     $('#chat_inner').hide();
     $('#index_inner').hide();
     that.currentMemo().showCalendar();
-  }
-
-  this.hideCalendar = function(){
-    $('#calendar_inner').slideUp('fast');
   }
 
   this.init_sharememo = function(){
