@@ -188,7 +188,9 @@ function ClientViewModel(){
     $('#chat_area').scrollTop(0);
     $('#index_inner').hide();
     $('#calendar_inner').hide();
-    $('#chat_inner').fadeIn();
+    $('#chat_inner').fadeIn(function(){
+      $('#message').trigger('autosize.resize').focus();
+    });
   }
 
   this.fullscreen_both = function(){
