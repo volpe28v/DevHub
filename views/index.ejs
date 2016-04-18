@@ -332,7 +332,7 @@
                         keyup: function(data, event){ return keyupOnCodeArea(data, event, $element)},
                         select: function(data, event){ selectText(data, event, $element)}
                       }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
-                    <div data-bind="visible: show_empty_alert, event: {dblclick: $parent.do_edit}" class="memo-alert alert alert-info">
+                    <div data-bind="visible: show_empty_alert, event: {dblclick: do_edit}" class="memo-alert alert alert-info">
                       This is a real-time shared memo area.<br>You can edit this by Press "Edit" Button or double click here.
                     </div>
                     <pre class="code-out-base" data-bind="decora: true">
