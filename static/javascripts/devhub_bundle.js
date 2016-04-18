@@ -63313,7 +63313,6 @@ function CalendarViewModel(options){
     eventsArray.forEach(function(event){
       var matches = event.body.match(/((\d\d\d\d\/)?((\d{1,2}\/)(\d{1,2})))([ -]+((\d\d\d\d\/)?((\d{1,2}\/)?(\d{1,2}))))?[ ]+(.+)?/);
       if (matches){
-        console.log(matches);
         var today = moment();
         var fromYear = matches[2] || today.year() + '/';
         var fromMonth = matches[4];
@@ -63327,21 +63326,23 @@ function CalendarViewModel(options){
         var to = moment(toYear + toMonth + toDay).add(1,'days');
 
         titleColor = 'gray';
-        var titleMatches = title.match(/(.+)[ ]+#(.+)/);
-        if (titleMatches){
-          title = titleMatches[1];
-          titleColor = titleMatches[2];
+        if (title != null){
+          var titleMatches = title.match(/(.+)[ ]+#(.+)/);
+          if (titleMatches){
+            title = titleMatches[1];
+            titleColor = titleMatches[2];
 
-          switch(titleColor){
-            case 'r':
-              titleColor = '#ba2636';
-              break;
-            case 'g':
-              titleColor = '#387d39';
-              break;
-            case 'b':
-              titleColor = '#333399';
-              break;
+            switch(titleColor){
+              case 'r':
+                titleColor = '#ba2636';
+                break;
+              case 'g':
+                titleColor = '#387d39';
+                break;
+              case 'b':
+                titleColor = '#333399';
+                break;
+            }
           }
         }
 
