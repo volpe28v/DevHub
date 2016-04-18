@@ -12,7 +12,7 @@ require('jquery-colorbox');
 require('jquery.cookie');
 require('@gigwalk/livestamp');
 
-
+var Flipsnap = require('flipsnap');
 var emojify = require('emojify.js');
 require('perfect-scrollbar/jquery')($);
 var socket = require('socket.io-client')('/', {query: 'from=devhub'});

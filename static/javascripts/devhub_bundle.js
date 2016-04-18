@@ -3389,7 +3389,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":57}],26:[function(require,module,exports){
+},{"ms":58}],26:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
 
@@ -4517,7 +4517,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":30,"./transports":31,"component-emitter":22,"debug":24,"engine.io-parser":37,"indexof":47,"parsejson":58,"parseqs":59,"parseuri":60}],30:[function(require,module,exports){
+},{"./transport":30,"./transports":31,"component-emitter":22,"debug":24,"engine.io-parser":37,"indexof":48,"parsejson":59,"parseqs":60,"parseuri":61}],30:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -5638,7 +5638,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":59,"xmlhttprequest-ssl":36,"yeast":97}],35:[function(require,module,exports){
+},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":60,"xmlhttprequest-ssl":36,"yeast":98}],35:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -5930,7 +5930,7 @@ WS.prototype.check = function(){
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":59,"ws":20,"yeast":97}],36:[function(require,module,exports){
+},{"../transport":30,"component-inherit":23,"debug":24,"engine.io-parser":37,"parseqs":60,"ws":20,"yeast":98}],36:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -5968,7 +5968,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":46}],37:[function(require,module,exports){
+},{"has-cors":47}],37:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -6566,7 +6566,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":38,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":5,"blob":6,"has-binary":39,"utf8":96}],38:[function(require,module,exports){
+},{"./keys":38,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":5,"blob":6,"has-binary":39,"utf8":97}],38:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -7514,6 +7514,616 @@ module.exports = Array.isArray || function (arr) {
 })();
 
 },{}],42:[function(require,module,exports){
+/**
+ * flipsnap.js
+ *
+ * @version  0.6.3
+ * @url http://hokaccha.github.com/js-flipsnap/
+ *
+ * Copyright 2011 PixelGrid, Inc.
+ * Licensed under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.Flipsnap = factory();
+  }
+})(this, function() {
+
+var div = document.createElement('div');
+var prefix = ['webkit', 'moz', 'o', 'ms'];
+var saveProp = {};
+var support = Flipsnap.support = {};
+var gestureStart = false;
+
+var DISTANCE_THRESHOLD = 5;
+var ANGLE_THREHOLD = 55;
+
+support.transform3d = hasProp([
+  'perspectiveProperty',
+  'WebkitPerspective',
+  'MozPerspective',
+  'OPerspective',
+  'msPerspective'
+]);
+
+support.transform = hasProp([
+  'transformProperty',
+  'WebkitTransform',
+  'MozTransform',
+  'OTransform',
+  'msTransform'
+]);
+
+support.transition = hasProp([
+  'transitionProperty',
+  'WebkitTransitionProperty',
+  'MozTransitionProperty',
+  'OTransitionProperty',
+  'msTransitionProperty'
+]);
+
+support.addEventListener = 'addEventListener' in window;
+support.mspointer = window.navigator.msPointerEnabled;
+
+support.cssAnimation = (support.transform3d || support.transform) && support.transition;
+
+var eventTypes = ['touch', 'mouse'];
+var events = {
+  start: {
+    touch: 'touchstart',
+    mouse: 'mousedown'
+  },
+  move: {
+    touch: 'touchmove',
+    mouse: 'mousemove'
+  },
+  end: {
+    touch: 'touchend',
+    mouse: 'mouseup'
+  }
+};
+
+if (support.addEventListener) {
+  document.addEventListener('gesturestart', function() {
+    gestureStart = true;
+  });
+
+  document.addEventListener('gestureend', function() {
+    gestureStart = false;
+  });
+}
+
+function Flipsnap(element, opts) {
+  return (this instanceof Flipsnap)
+    ? this.init(element, opts)
+    : new Flipsnap(element, opts);
+}
+
+Flipsnap.prototype.init = function(element, opts) {
+  var self = this;
+
+  // set element
+  self.element = element;
+  if (typeof element === 'string') {
+    self.element = document.querySelector(element);
+  }
+
+  if (!self.element) {
+    throw new Error('element not found');
+  }
+
+  if (support.mspointer) {
+    self.element.style.msTouchAction = 'pan-y';
+  }
+
+  // set opts
+  opts = opts || {};
+  self.distance = opts.distance;
+  self.maxPoint = opts.maxPoint;
+  self.disableTouch = (opts.disableTouch === undefined) ? false : opts.disableTouch;
+  self.disable3d = (opts.disable3d === undefined) ? false : opts.disable3d;
+  self.transitionDuration = (opts.transitionDuration === undefined) ? '350ms' : opts.transitionDuration + 'ms';
+  self.threshold = opts.threshold || 0;
+
+  // set property
+  self.currentPoint = 0;
+  self.currentX = 0;
+  self.animation = false;
+  self.timerId = null;
+  self.use3d = support.transform3d;
+  if (self.disable3d === true) {
+    self.use3d = false;
+  }
+
+  // set default style
+  if (support.cssAnimation) {
+    self._setStyle({
+      transitionProperty: getCSSVal('transform'),
+      transitionTimingFunction: 'cubic-bezier(0,0,0.25,1)',
+      transitionDuration: '0ms',
+      transform: self._getTranslate(0)
+    });
+  }
+  else {
+    self._setStyle({
+      position: 'relative',
+      left: '0px'
+    });
+  }
+
+  // initilize
+  self.refresh();
+
+  eventTypes.forEach(function(type) {
+    self.element.addEventListener(events.start[type], self, false);
+  });
+
+  return self;
+};
+
+Flipsnap.prototype.handleEvent = function(event) {
+  var self = this;
+
+  switch (event.type) {
+    // start
+    case events.start.touch: self._touchStart(event, 'touch'); break;
+    case events.start.mouse: self._touchStart(event, 'mouse'); break;
+
+    // move
+    case events.move.touch: self._touchMove(event, 'touch'); break;
+    case events.move.mouse: self._touchMove(event, 'mouse'); break;
+
+    // end
+    case events.end.touch: self._touchEnd(event, 'touch'); break;
+    case events.end.mouse: self._touchEnd(event, 'mouse'); break;
+
+    // click
+    case 'click': self._click(event); break;
+  }
+};
+
+Flipsnap.prototype.refresh = function() {
+  var self = this;
+
+  // setting max point
+  self._maxPoint = (self.maxPoint === undefined) ? (function() {
+    var childNodes = self.element.childNodes,
+      itemLength = -1,
+      i = 0,
+      len = childNodes.length,
+      node;
+    for(; i < len; i++) {
+      node = childNodes[i];
+      if (node.nodeType === 1) {
+        itemLength++;
+      }
+    }
+
+    return itemLength;
+  })() : self.maxPoint;
+
+  // setting distance
+  if (self.distance === undefined) {
+    if (self._maxPoint < 0) {
+      self._distance = 0;
+    }
+    else {
+      self._distance = self.element.scrollWidth / (self._maxPoint + 1);
+    }
+  }
+  else {
+    self._distance = self.distance;
+  }
+
+  // setting maxX
+  self._maxX = -self._distance * self._maxPoint;
+
+  self.moveToPoint();
+};
+
+Flipsnap.prototype.hasNext = function() {
+  var self = this;
+
+  return self.currentPoint < self._maxPoint;
+};
+
+Flipsnap.prototype.hasPrev = function() {
+  var self = this;
+
+  return self.currentPoint > 0;
+};
+
+Flipsnap.prototype.toNext = function(transitionDuration) {
+  var self = this;
+
+  if (!self.hasNext()) {
+    return;
+  }
+
+  self.moveToPoint(self.currentPoint + 1, transitionDuration);
+};
+
+Flipsnap.prototype.toPrev = function(transitionDuration) {
+  var self = this;
+
+  if (!self.hasPrev()) {
+    return;
+  }
+
+  self.moveToPoint(self.currentPoint - 1, transitionDuration);
+};
+
+Flipsnap.prototype.moveToPoint = function(point, transitionDuration) {
+  var self = this;
+  
+  transitionDuration = transitionDuration === undefined
+    ? self.transitionDuration : transitionDuration + 'ms';
+
+  var beforePoint = self.currentPoint;
+
+  // not called from `refresh()`
+  if (point === undefined) {
+    point = self.currentPoint;
+  }
+
+  if (point < 0) {
+    self.currentPoint = 0;
+  }
+  else if (point > self._maxPoint) {
+    self.currentPoint = self._maxPoint;
+  }
+  else {
+    self.currentPoint = parseInt(point, 10);
+  }
+
+  if (support.cssAnimation) {
+    self._setStyle({ transitionDuration: transitionDuration });
+  }
+  else {
+    self.animation = true;
+  }
+  self._setX(- self.currentPoint * self._distance, transitionDuration);
+
+  if (beforePoint !== self.currentPoint) { // is move?
+    // `fsmoveend` is deprecated
+    // `fspointmove` is recommend.
+    self._triggerEvent('fsmoveend', true, false);
+    self._triggerEvent('fspointmove', true, false);
+  }
+};
+
+Flipsnap.prototype._setX = function(x, transitionDuration) {
+  var self = this;
+
+  self.currentX = x;
+  if (support.cssAnimation) {
+    self.element.style[ saveProp.transform ] = self._getTranslate(x);
+  }
+  else {
+    if (self.animation) {
+      self._animate(x, transitionDuration || self.transitionDuration);
+    }
+    else {
+      self.element.style.left = x + 'px';
+    }
+  }
+};
+
+Flipsnap.prototype._touchStart = function(event, type) {
+  var self = this;
+
+  if (self.disableTouch || self.scrolling || gestureStart) {
+    return;
+  }
+
+  self.element.addEventListener(events.move[type], self, false);
+  document.addEventListener(events.end[type], self, false);
+
+  var tagName = event.target.tagName;
+  if (type === 'mouse' && tagName !== 'SELECT' && tagName !== 'INPUT' && tagName !== 'TEXTAREA' && tagName !== 'BUTTON') {
+    event.preventDefault();
+  }
+
+  if (support.cssAnimation) {
+    self._setStyle({ transitionDuration: '0ms' });
+  }
+  else {
+    self.animation = false;
+  }
+  self.scrolling = true;
+  self.moveReady = false;
+  self.startPageX = getPage(event, 'pageX');
+  self.startPageY = getPage(event, 'pageY');
+  self.basePageX = self.startPageX;
+  self.directionX = 0;
+  self.startTime = event.timeStamp;
+  self._triggerEvent('fstouchstart', true, false);
+};
+
+Flipsnap.prototype._touchMove = function(event, type) {
+  var self = this;
+
+  if (!self.scrolling || gestureStart) {
+    return;
+  }
+
+  var pageX = getPage(event, 'pageX');
+  var pageY = getPage(event, 'pageY');
+  var distX;
+  var newX;
+
+  if (self.moveReady) {
+    event.preventDefault();
+
+    distX = pageX - self.basePageX;
+    newX = self.currentX + distX;
+    if (newX >= 0 || newX < self._maxX) {
+      newX = Math.round(self.currentX + distX / 3);
+    }
+
+    // When distX is 0, use one previous value.
+    // For android firefox. When touchend fired, touchmove also
+    // fired and distX is certainly set to 0. 
+    self.directionX =
+      distX === 0 ? self.directionX :
+      distX > 0 ? -1 : 1;
+
+    // if they prevent us then stop it
+    var isPrevent = !self._triggerEvent('fstouchmove', true, true, {
+      delta: distX,
+      direction: self.directionX
+    });
+
+    if (isPrevent) {
+      self._touchAfter({
+        moved: false,
+        originalPoint: self.currentPoint,
+        newPoint: self.currentPoint,
+        cancelled: true
+      });
+    } else {
+      self._setX(newX);
+    }
+  }
+  else {
+    // https://github.com/hokaccha/js-flipsnap/pull/36
+    var triangle = getTriangleSide(self.startPageX, self.startPageY, pageX, pageY);
+    if (triangle.z > DISTANCE_THRESHOLD) {
+      if (getAngle(triangle) > ANGLE_THREHOLD) {
+        event.preventDefault();
+        self.moveReady = true;
+        self.element.addEventListener('click', self, true);
+      }
+      else {
+        self.scrolling = false;
+      }
+    }
+  }
+
+  self.basePageX = pageX;
+};
+
+Flipsnap.prototype._touchEnd = function(event, type) {
+  var self = this;
+
+  self.element.removeEventListener(events.move[type], self, false);
+  document.removeEventListener(events.end[type], self, false);
+
+  if (!self.scrolling) {
+    return;
+  }
+
+  var newPoint = -self.currentX / self._distance;
+  newPoint =
+    (self.directionX > 0) ? Math.ceil(newPoint) :
+    (self.directionX < 0) ? Math.floor(newPoint) :
+    Math.round(newPoint);
+
+  if (newPoint < 0) {
+    newPoint = 0;
+  }
+  else if (newPoint > self._maxPoint) {
+    newPoint = self._maxPoint;
+  }
+
+  if (Math.abs(self.startPageX - self.basePageX) < self.threshold) {
+    newPoint = self.currentPoint;
+  }
+
+  self._touchAfter({
+    moved: newPoint !== self.currentPoint,
+    originalPoint: self.currentPoint,
+    newPoint: newPoint,
+    cancelled: false
+  });
+
+  self.moveToPoint(newPoint);
+};
+
+Flipsnap.prototype._click = function(event) {
+  var self = this;
+
+  event.stopPropagation();
+  event.preventDefault();
+};
+
+Flipsnap.prototype._touchAfter = function(params) {
+  var self = this;
+
+  self.scrolling = false;
+  self.moveReady = false;
+
+  setTimeout(function() {
+    self.element.removeEventListener('click', self, true);
+  }, 200);
+
+  self._triggerEvent('fstouchend', true, false, params);
+};
+
+Flipsnap.prototype._setStyle = function(styles) {
+  var self = this;
+  var style = self.element.style;
+
+  for (var prop in styles) {
+    setStyle(style, prop, styles[prop]);
+  }
+};
+
+Flipsnap.prototype._animate = function(x, transitionDuration) {
+  var self = this;
+
+  var elem = self.element;
+  var begin = +new Date();
+  var from = parseInt(elem.style.left, 10);
+  var to = x;
+  var duration = parseInt(transitionDuration, 10);
+  var easing = function(time, duration) {
+    return -(time /= duration) * (time - 2);
+  };
+
+  if (self.timerId) {
+    clearInterval(self.timerId);
+  }
+  self.timerId = setInterval(function() {
+    var time = new Date() - begin;
+    var pos, now;
+    if (time > duration) {
+      clearInterval(self.timerId);
+      self.timerId = null;
+      now = to;
+    }
+    else {
+      pos = easing(time, duration);
+      now = pos * (to - from) + from;
+    }
+    elem.style.left = now + "px";
+  }, 10);
+};
+
+Flipsnap.prototype.destroy = function() {
+  var self = this;
+
+  eventTypes.forEach(function(type) {
+    self.element.removeEventListener(events.start[type], self, false);
+  });
+};
+
+Flipsnap.prototype._getTranslate = function(x) {
+  var self = this;
+
+  return self.use3d
+    ? 'translate3d(' + x + 'px, 0, 0)'
+    : 'translate(' + x + 'px, 0)';
+};
+
+Flipsnap.prototype._triggerEvent = function(type, bubbles, cancelable, data) {
+  var self = this;
+
+  var ev = document.createEvent('Event');
+  ev.initEvent(type, bubbles, cancelable);
+
+  if (data) {
+    for (var d in data) {
+      if (data.hasOwnProperty(d)) {
+        ev[d] = data[d];
+      }
+    }
+  }
+
+  return self.element.dispatchEvent(ev);
+};
+
+function getPage(event, page) {
+  return event.changedTouches ? event.changedTouches[0][page] : event[page];
+}
+
+function hasProp(props) {
+  return some(props, function(prop) {
+    return div.style[ prop ] !== undefined;
+  });
+}
+
+function setStyle(style, prop, val) {
+  var _saveProp = saveProp[ prop ];
+  if (_saveProp) {
+    style[ _saveProp ] = val;
+  }
+  else if (style[ prop ] !== undefined) {
+    saveProp[ prop ] = prop;
+    style[ prop ] = val;
+  }
+  else {
+    some(prefix, function(_prefix) {
+      var _prop = ucFirst(_prefix) + ucFirst(prop);
+      if (style[ _prop ] !== undefined) {
+        saveProp[ prop ] = _prop;
+        style[ _prop ] = val;
+        return true;
+      }
+    });
+  }
+}
+
+function getCSSVal(prop) {
+  if (div.style[ prop ] !== undefined) {
+    return prop;
+  }
+  else {
+    var ret;
+    some(prefix, function(_prefix) {
+      var _prop = ucFirst(_prefix) + ucFirst(prop);
+      if (div.style[ _prop ] !== undefined) {
+        ret = '-' + _prefix + '-' + prop;
+        return true;
+      }
+    });
+    return ret;
+  }
+}
+
+function ucFirst(str) {
+  return str.charAt(0).toUpperCase() + str.substr(1);
+}
+
+function some(ary, callback) {
+  for (var i = 0, len = ary.length; i < len; i++) {
+    if (callback(ary[i], i)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getTriangleSide(x1, y1, x2, y2) {
+  var x = Math.abs(x1 - x2);
+  var y = Math.abs(y1 - y2);
+  var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+  return {
+    x: x,
+    y: y,
+    z: z
+  };
+}
+
+function getAngle(triangle) {
+  var cos = triangle.y / triangle.z;
+  var radian = Math.acos(cos);
+
+  return 180 / (Math.PI / radian);
+}
+
+return Flipsnap;
+
+});
+
+},{}],43:[function(require,module,exports){
 /*!
  * FullCalendar v2.7.0-beta
  * Docs & License: http://fullcalendar.io/
@@ -20062,7 +20672,7 @@ fcViews.agendaWeek = {
 
 return FC; // export for Node/CommonJS
 });
-},{"jquery":53,"moment":56}],43:[function(require,module,exports){
+},{"jquery":54,"moment":57}],44:[function(require,module,exports){
 !function(){var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
 (function(){function S(a){function d(e){var b=e.charCodeAt(0);if(b!==92)return b;var a=e.charAt(1);return(b=r[a])?b:"0"<=a&&a<="7"?parseInt(e.substring(1),8):a==="u"||a==="x"?parseInt(e.substring(2),16):e.charCodeAt(1)}function g(e){if(e<32)return(e<16?"\\x0":"\\x")+e.toString(16);e=String.fromCharCode(e);return e==="\\"||e==="-"||e==="]"||e==="^"?"\\"+e:e}function b(e){var b=e.substring(1,e.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),e=[],a=
 b[0]==="^",c=["["];a&&c.push("^");for(var a=a?1:0,f=b.length;a<f;++a){var h=b[a];if(/\\[bdsw]/i.test(h))c.push(h);else{var h=d(h),l;a+2<f&&"-"===b[a+1]?(l=d(b[a+2]),a+=2):l=h;e.push([h,l]);l<65||h>122||(l<65||h>90||e.push([Math.max(65,h)|32,Math.min(l,90)|32]),l<97||h>122||e.push([Math.max(97,h)&-33,Math.min(l,122)&-33]))}}e.sort(function(e,a){return e[0]-a[0]||a[1]-e[1]});b=[];f=[];for(a=0;a<e.length;++a)h=e[a],h[0]<=f[1]+1?f[1]=Math.max(f[1],h[1]):b.push(f=h);for(a=0;a<b.length;++a)h=b[a],c.push(g(h[0])),
@@ -20094,7 +20704,7 @@ o.className&&e.test(o.className)){m=!0;break}if(!m){d.className+=" prettyprinted
 {h:m,c:d,j:u,i:o};K(r)}}}i<p.length?setTimeout(g,250):"function"===typeof a&&a()}for(var b=d||document.body,s=b.ownerDocument||document,b=[b.getElementsByTagName("pre"),b.getElementsByTagName("code"),b.getElementsByTagName("xmp")],p=[],m=0;m<b.length;++m)for(var j=0,k=b[m].length;j<k;++j)p.push(b[m][j]);var b=q,c=Date;c.now||(c={now:function(){return+new Date}});var i=0,r,n=/\blang(?:uage)?-([\w.]+)(?!\S)/,e=/\bprettyprint\b/,v=/\bprettyprinted\b/,w=/pre|xmp/i,t=/^code$/i,f=/^(?:pre|code|xmp)$/i,
 h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify",[],function(){return Y})})();}()
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (global){
 
 /*
@@ -20157,9 +20767,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":45}],45:[function(require,module,exports){
+},{"isarray":46}],46:[function(require,module,exports){
 arguments[4][40][0].apply(exports,arguments)
-},{"dup":40}],46:[function(require,module,exports){
+},{"dup":40}],47:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -20178,7 +20788,7 @@ try {
   module.exports = false;
 }
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -20189,7 +20799,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*!
 	Colorbox 1.6.3
 	license: MIT
@@ -21296,7 +21906,7 @@ module.exports = function(arr, obj){
 
 }(jQuery, document, window));
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /**
  * author Christopher Blum
  *    - based on the idea of Remy Sharp, http://remysharp.com/2009/01/26/element-in-view-event-plugin/
@@ -21440,7 +22050,7 @@ module.exports = function(arr, obj){
   }
 }));
 
-},{"jquery":53}],50:[function(require,module,exports){
+},{"jquery":54}],51:[function(require,module,exports){
 (function (factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -22837,7 +23447,7 @@ $.fn.textcomplete.getCaretCoordinates = getCaretCoordinates;
 return jQuery;
 }));
 
-},{"jquery":53}],51:[function(require,module,exports){
+},{"jquery":54}],52:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*! jQuery UI - v1.10.3 - 2013-05-03
@@ -37844,7 +38454,7 @@ $.widget( "ui.tooltip", {
 
 }( jQuery ) );
 
-},{"jquery":53}],52:[function(require,module,exports){
+},{"jquery":54}],53:[function(require,module,exports){
 /*!
  * jQuery Cookie Plugin v1.4.1
  * https://github.com/carhartl/jquery-cookie
@@ -37963,7 +38573,7 @@ $.widget( "ui.tooltip", {
 
 }));
 
-},{"jquery":53}],53:[function(require,module,exports){
+},{"jquery":54}],54:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -47807,7 +48417,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 (function (factory) {
     // Module systems magic dance.
 
@@ -48634,7 +49244,7 @@ return jQuery;
     }
 }));
 
-},{"knockout":55}],55:[function(require,module,exports){
+},{"knockout":56}],56:[function(require,module,exports){
 /*!
  * Knockout JavaScript library v3.4.0
  * (c) Steven Sanderson - http://knockoutjs.com/
@@ -54507,7 +55117,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 }());
 })();
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 //! moment.js
 //! version : 2.12.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -58196,7 +58806,7 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
     return _moment;
 
 }));
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -58323,7 +58933,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -58358,7 +58968,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -58397,7 +59007,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -58438,12 +59048,12 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":62}],62:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":63}],63:[function(require,module,exports){
 'use strict';
 
 var ps = require('../main')
@@ -58488,7 +59098,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":68,"../plugin/instances":79}],63:[function(require,module,exports){
+},{"../main":69,"../plugin/instances":80}],64:[function(require,module,exports){
 'use strict';
 
 function oldAdd(element, className) {
@@ -58532,7 +59142,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 var DOM = {};
@@ -58618,7 +59228,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 var EventElement = function (element) {
@@ -58691,7 +59301,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 module.exports = (function () {
@@ -58706,7 +59316,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 var cls = require('./class')
@@ -58789,7 +59399,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":63,"./dom":64}],68:[function(require,module,exports){
+},{"./class":64,"./dom":65}],69:[function(require,module,exports){
 'use strict';
 
 var destroy = require('./plugin/destroy')
@@ -58802,7 +59412,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":70,"./plugin/initialize":78,"./plugin/update":82}],69:[function(require,module,exports){
+},{"./plugin/destroy":71,"./plugin/initialize":79,"./plugin/update":83}],70:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -58822,7 +59432,7 @@ module.exports = {
   theme: 'default'
 };
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -58846,7 +59456,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":64,"../lib/helper":67,"./instances":79}],71:[function(require,module,exports){
+},{"../lib/dom":65,"../lib/helper":68,"./instances":80}],72:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -58908,7 +59518,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],72:[function(require,module,exports){
+},{"../../lib/helper":68,"../instances":80,"../update-geometry":81,"../update-scroll":82}],73:[function(require,module,exports){
 'use strict';
 
 var d = require('../../lib/dom')
@@ -59013,7 +59623,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":64,"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],73:[function(require,module,exports){
+},{"../../lib/dom":65,"../../lib/helper":68,"../instances":80,"../update-geometry":81,"../update-scroll":82}],74:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -59141,7 +59751,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/dom":64,"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],74:[function(require,module,exports){
+},{"../../lib/dom":65,"../../lib/helper":68,"../instances":80,"../update-geometry":81,"../update-scroll":82}],75:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59277,7 +59887,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":79,"../update-geometry":80,"../update-scroll":81}],75:[function(require,module,exports){
+},{"../instances":80,"../update-geometry":81,"../update-scroll":82}],76:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59294,7 +59904,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":79,"../update-geometry":80}],76:[function(require,module,exports){
+},{"../instances":80,"../update-geometry":81}],77:[function(require,module,exports){
 'use strict';
 
 var h = require('../../lib/helper')
@@ -59405,7 +60015,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":67,"../instances":79,"../update-geometry":80,"../update-scroll":81}],77:[function(require,module,exports){
+},{"../../lib/helper":68,"../instances":80,"../update-geometry":81,"../update-scroll":82}],78:[function(require,module,exports){
 'use strict';
 
 var instances = require('../instances')
@@ -59575,7 +60185,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":79,"../update-geometry":80,"../update-scroll":81}],78:[function(require,module,exports){
+},{"../instances":80,"../update-geometry":81,"../update-scroll":82}],79:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59622,7 +60232,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":63,"../lib/helper":67,"./handler/click-rail":71,"./handler/drag-scrollbar":72,"./handler/keyboard":73,"./handler/mouse-wheel":74,"./handler/native-scroll":75,"./handler/selection":76,"./handler/touch":77,"./instances":79,"./update-geometry":80}],79:[function(require,module,exports){
+},{"../lib/class":64,"../lib/helper":68,"./handler/click-rail":72,"./handler/drag-scrollbar":73,"./handler/keyboard":74,"./handler/mouse-wheel":75,"./handler/native-scroll":76,"./handler/selection":77,"./handler/touch":78,"./instances":80,"./update-geometry":81}],80:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59743,7 +60353,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/class":63,"../lib/dom":64,"../lib/event-manager":65,"../lib/guid":66,"../lib/helper":67,"./default-setting":69}],80:[function(require,module,exports){
+},{"../lib/class":64,"../lib/dom":65,"../lib/event-manager":66,"../lib/guid":67,"../lib/helper":68,"./default-setting":70}],81:[function(require,module,exports){
 'use strict';
 
 var cls = require('../lib/class')
@@ -59871,7 +60481,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":63,"../lib/dom":64,"../lib/helper":67,"./instances":79,"./update-scroll":81}],81:[function(require,module,exports){
+},{"../lib/class":64,"../lib/dom":65,"../lib/helper":68,"./instances":80,"./update-scroll":82}],82:[function(require,module,exports){
 'use strict';
 
 var instances = require('./instances');
@@ -59971,7 +60581,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":79}],82:[function(require,module,exports){
+},{"./instances":80}],83:[function(require,module,exports){
 'use strict';
 
 var d = require('../lib/dom')
@@ -60010,7 +60620,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":64,"../lib/helper":67,"./instances":79,"./update-geometry":80,"./update-scroll":81}],83:[function(require,module,exports){
+},{"../lib/dom":65,"../lib/helper":68,"./instances":80,"./update-geometry":81,"./update-scroll":82}],84:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -60104,7 +60714,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":84,"./socket":86,"./url":87,"debug":24,"socket.io-parser":90}],84:[function(require,module,exports){
+},{"./manager":85,"./socket":87,"./url":88,"debug":24,"socket.io-parser":91}],85:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -60663,7 +61273,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":85,"./socket":86,"backo2":4,"component-bind":21,"component-emitter":88,"debug":24,"engine.io-client":27,"indexof":47,"socket.io-parser":90}],85:[function(require,module,exports){
+},{"./on":86,"./socket":87,"backo2":4,"component-bind":21,"component-emitter":89,"debug":24,"engine.io-client":27,"indexof":48,"socket.io-parser":91}],86:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -60689,7 +61299,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -61103,7 +61713,7 @@ Socket.prototype.compress = function(compress){
   return this;
 };
 
-},{"./on":85,"component-bind":21,"component-emitter":88,"debug":24,"has-binary":44,"socket.io-parser":90,"to-array":95}],87:[function(require,module,exports){
+},{"./on":86,"component-bind":21,"component-emitter":89,"debug":24,"has-binary":45,"socket.io-parser":91,"to-array":96}],88:[function(require,module,exports){
 (function (global){
 
 /**
@@ -61183,7 +61793,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":24,"parseuri":60}],88:[function(require,module,exports){
+},{"debug":24,"parseuri":61}],89:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -61346,7 +61956,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -61491,7 +62101,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":91,"isarray":92}],90:[function(require,module,exports){
+},{"./is-buffer":92,"isarray":93}],91:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -61893,7 +62503,7 @@ function error(data){
   };
 }
 
-},{"./binary":89,"./is-buffer":91,"component-emitter":22,"debug":24,"isarray":92,"json3":93}],91:[function(require,module,exports){
+},{"./binary":90,"./is-buffer":92,"component-emitter":22,"debug":24,"isarray":93,"json3":94}],92:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -61910,9 +62520,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 arguments[4][40][0].apply(exports,arguments)
-},{"dup":40}],93:[function(require,module,exports){
+},{"dup":40}],94:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -62818,7 +63428,7 @@ arguments[4][40][0].apply(exports,arguments)
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 (function ($) {
   'use strict';
 
@@ -62941,7 +63551,7 @@ arguments[4][40][0].apply(exports,arguments)
 
 })(jQuery);
 
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -62956,7 +63566,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -63204,7 +63814,7 @@ function toArray(list, index) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -63274,7 +63884,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -63401,7 +64011,7 @@ function CalendarViewModel(options){
 module.exports = CalendarViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":115,"fullcalendar":42,"jquery":53,"knockout":55,"knockout.mapping":54,"moment":56}],99:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":116,"fullcalendar":43,"jquery":54,"knockout":56,"knockout.mapping":55,"moment":57}],100:[function(require,module,exports){
 (function (global){
 var LOGIN_COLOR_MAX = 9;
 
@@ -63853,7 +64463,7 @@ ChatController.prototype = {
 module.exports = ChatController;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/dropzone":106,"../libs/emojies.js":107,"../libs/jquery.exresize":113,"../libs/knockout.devhub_custom":115,"./chat_view_model":100,"emojify.js":26,"jquery":53,"jquery-inview":49,"jquery-textcomplete":50,"knockout":55,"knockout.mapping":54}],100:[function(require,module,exports){
+},{"../libs/dropzone":107,"../libs/emojies.js":108,"../libs/jquery.exresize":114,"../libs/knockout.devhub_custom":116,"./chat_view_model":101,"emojify.js":26,"jquery":54,"jquery-inview":50,"jquery-textcomplete":51,"knockout":56,"knockout.mapping":55}],101:[function(require,module,exports){
 (function (global){
 var LOGIN_COLOR_MAX = 9;
 
@@ -64388,7 +64998,7 @@ ChatViewModel.prototype = {
 module.exports = ChatViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":115,"../libs/message_date":116,"emojify.js":26,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54}],101:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":116,"../libs/message_date":117,"emojify.js":26,"jquery":54,"jquery-ui":52,"knockout":56,"knockout.mapping":55}],102:[function(require,module,exports){
 (function (global){
 var COOKIE_NAME = "dev_hub_name";
 var COOKIE_EXPIRES = 365;
@@ -64404,7 +65014,7 @@ require('jquery-colorbox');
 require('jquery.cookie');
 require('@gigwalk/livestamp');
 
-
+var Flipsnap = require('flipsnap');
 var emojify = require('emojify.js');
 require('perfect-scrollbar/jquery')($);
 var socket = require('socket.io-client')('/', {query: 'from=devhub'});
@@ -64735,7 +65345,7 @@ $(function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/dropzone":106,"../libs/favicon-number":108,"../libs/jquery.autosize":110,"../libs/knockout.devhub_custom":115,"../libs/moment.lang_ja":117,"./chat_controller":99,"./memo_controller":102,"@gigwalk/livestamp":1,"bootstrap":7,"emojify.js":26,"jquery":53,"jquery-colorbox":48,"jquery-ui":51,"jquery.cookie":52,"knockout":55,"knockout.mapping":54,"moment":56,"perfect-scrollbar/jquery":61,"socket.io-client":83}],102:[function(require,module,exports){
+},{"../libs/dropzone":107,"../libs/favicon-number":109,"../libs/jquery.autosize":111,"../libs/knockout.devhub_custom":116,"../libs/moment.lang_ja":118,"./chat_controller":100,"./memo_controller":103,"@gigwalk/livestamp":1,"bootstrap":7,"emojify.js":26,"flipsnap":42,"jquery":54,"jquery-colorbox":49,"jquery-ui":52,"jquery.cookie":53,"knockout":56,"knockout.mapping":55,"moment":57,"perfect-scrollbar/jquery":62,"socket.io-client":84}],103:[function(require,module,exports){
 (function (global){
 var SHARE_MEMO_NUMBER = 30;
 var CODE_OUT_ADJUST_HEIGHT = 300;
@@ -65207,7 +65817,7 @@ function MemoController(param){
 module.exports = MemoController;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/knockout.devhub_custom":115,"./memo_view_model":103,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54}],103:[function(require,module,exports){
+},{"../libs/knockout.devhub_custom":116,"./memo_view_model":104,"jquery":54,"jquery-ui":52,"knockout":56,"knockout.mapping":55}],104:[function(require,module,exports){
 (function (global){
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
@@ -66094,7 +66704,7 @@ function MemoViewModel(param){
 module.exports = MemoViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../libs/difflib":104,"../libs/diffview":105,"../libs/jquery.selection.js":114,"../libs/knockout.devhub_custom":115,"./calendar_view_model":98,"jquery":53,"jquery-ui":51,"knockout":55,"knockout.mapping":54,"moment":56,"textarea-helper":94}],104:[function(require,module,exports){
+},{"../libs/difflib":105,"../libs/diffview":106,"../libs/jquery.selection.js":115,"../libs/knockout.devhub_custom":116,"./calendar_view_model":99,"jquery":54,"jquery-ui":52,"knockout":56,"knockout.mapping":55,"moment":57,"textarea-helper":95}],105:[function(require,module,exports){
 /***
 This is part of jsdifflib v1.0. <http://snowtide.com/jsdifflib>
 
@@ -66507,7 +67117,7 @@ difflib = module.exports = {
 };
 
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /*
 This is part of jsdifflib v1.0. <http://github.com/cemerick/jsdifflib>
 
@@ -66710,7 +67320,7 @@ diffview = module.exports = {
 };
 
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 function DropZone(param){
   param.dropTarget.bind("dragenter", this.cancel_event);
   param.dropTarget.bind("dragover", this.cancel_event);
@@ -66802,12 +67412,12 @@ DropZone.prototype = {
 
 module.exports = DropZone;
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 var emojies = ["blush","scream","smirk","smiley","stuck_out_tongue_closed_eyes","stuck_out_tongue_winking_eye","rage","disappointed","sob","kissing_heart","wink","pensive","confounded","flushed","relaxed","mask","heart","broken_heart","sunny","umbrella","cloud","snowflake","snowman","zap","cyclone","foggy","ocean","cat","dog","mouse","hamster","rabbit","wolf","frog","tiger","koala","bear","pig","pig_nose","cow","boar","monkey_face","monkey","horse","racehorse","camel","sheep","elephant","panda_face","snake","bird","baby_chick","hatched_chick","hatching_chick","chicken","penguin","turtle","bug","honeybee","ant","beetle","snail","octopus","tropical_fish","fish","whale","whale2","dolphin","cow2","ram","rat","water_buffalo","tiger2","rabbit2","dragon","goat","rooster","dog2","pig2","mouse2","ox","dragon_face","blowfish","crocodile","dromedary_camel","leopard","cat2","poodle","paw_prints","bouquet","cherry_blossom","tulip","four_leaf_clover","rose","sunflower","hibiscus","maple_leaf","leaves","fallen_leaf","herb","mushroom","cactus","palm_tree","evergreen_tree","deciduous_tree","chestnut","seedling","blossom","ear_of_rice","shell","globe_with_meridians","sun_with_face","full_moon_with_face","new_moon_with_face","new_moon","waxing_crescent_moon","first_quarter_moon","waxing_gibbous_moon","full_moon","waning_gibbous_moon","last_quarter_moon","waning_crescent_moon","last_quarter_moon_with_face","first_quarter_moon_with_face","moon","earth_africa","earth_americas","earth_asia","volcano","milky_way","partly_sunny","octocat","squirrel","bamboo","gift_heart","dolls","school_satchel","mortar_board","flags","fireworks","sparkler","wind_chime","rice_scene","jack_o_lantern","ghost","santa","christmas_tree","gift","bell","no_bell","tanabata_tree","tada","confetti_ball","balloon","crystal_ball","cd","dvd","floppy_disk","camera","video_camera","movie_camera","computer","tv","iphone","phone","telephone","telephone_receiver","pager","fax","minidisc","vhs","sound","speaker","mute","loudspeaker","mega","hourglass","hourglass_flowing_sand","alarm_clock","watch","radio","satellite","loop","mag","mag_right","unlock","lock","lock_with_ink_pen","closed_lock_with_key","key","bulb","flashlight","high_brightness","low_brightness","electric_plug","battery","calling","email","mailbox","postbox","bath","bathtub","shower","toilet","wrench","nut_and_bolt","hammer","seat","moneybag","yen","dollar","pound","euro","credit_card","money_with_wings","e-mail","inbox_tray","outbox_tray","envelope","incoming_envelope","postal_horn","mailbox_closed","mailbox_with_mail","mailbox_with_no_mail","door","smoking","bomb","gun","hocho","pill","syringe","page_facing_up","page_with_curl","bookmark_tabs","bar_chart","chart_with_upwards_trend","chart_with_downwards_trend","scroll","clipboard","calendar","date","card_index","file_folder","open_file_folder","scissors","pushpin","paperclip","black_nib","pencil2","straight_ruler","triangular_ruler","closed_book","green_book","blue_book","orange_book","notebook","notebook_with_decorative_cover","ledger","books","bookmark","name_badge","microscope","telescope","newspaper","football","basketball","soccer","baseball","tennis","8ball","rugby_football","bowling","golf","mountain_bicyclist","bicyclist","horse_racing","snowboarder","swimmer","surfer","ski","spades","hearts","clubs","diamonds","gem","ring","trophy","musical_score","musical_keyboard","violin","space_invader","video_game","black_joker","flower_playing_cards","game_die","dart","mahjong","clapper","memo","pencil","book","art","microphone","headphones","trumpet","saxophone","guitar","shoe","sandal","high_heel","lipstick","boot","shirt","tshirt","necktie","womans_clothes","dress","running_shirt_with_sash","jeans","kimono","bikini","ribbon","tophat","crown","womans_hat","mans_shoe","closed_umbrella","briefcase","handbag","pouch","purse","eyeglasses","fishing_pole_and_fish","coffee","tea","sake","baby_bottle","beer","beers","cocktail","tropical_drink","wine_glass","fork_and_knife","pizza","hamburger","fries","poultry_leg","meat_on_bone","spaghetti","curry","fried_shrimp","bento","sushi","fish_cake","rice_ball","rice_cracker","rice","ramen","stew","oden","dango","egg","bread","doughnut","custard","icecream","ice_cream","shaved_ice","birthday","cake","cookie","chocolate_bar","candy","lollipop","honey_pot","apple","green_apple","tangerine","lemon","cherries","grapes","watermelon","strawberry","peach","melon","banana","pear","pineapple","sweet_potato","eggplant","tomato","corn","alien","angel","anger","angry","anguished","astonished","baby","blue_heart","blush","boom","bow","bowtie","boy","bride_with_veil","broken_heart","bust_in_silhouette","busts_in_silhouette","clap","cold_sweat","collision","confounded","confused","construction_worker","cop","couple_with_heart","couple","couplekiss","cry","crying_cat_face","cupid","dancer","dancers","dash","disappointed","dizzy_face","dizzy","droplet","ear","exclamation","expressionless","eyes","facepunch","family","fearful","feelsgood","feet","finnadie","fire","fist","flushed","frowning","girl","goberserk","godmode","green_heart","grey_exclamation","grey_question","grimacing","grin","grinning","guardsman","haircut","hand","hankey","hear_no_evil","heart_eyes_cat","heart_eyes","heart","heartbeat","heartpulse","hurtrealbad","hushed","imp","information_desk_person","innocent","japanese_goblin","japanese_ogre","joy_cat","joy","kiss","kissing_cat","kissing_closed_eyes","kissing_heart","kissing_smiling_eyes","kissing","laughing","lips","love_letter","man_with_gua_pi_mao","man_with_turban","man","mask","massage","metal","muscle","musical_note","nail_care","neckbeard","neutral_face","no_good","no_mouth","nose","notes","ok_hand","ok_woman","older_man","older_woman","open_hands","open_mouth","pensive","persevere","person_frowning","person_with_blond_hair","person_with_pouting_face","point_down","point_left","point_right","point_up_2","point_up","poop","pouting_cat","pray","princess","punch","purple_heart","question","rage","rage1","rage2","rage3","rage4","raised_hand","raised_hands","relaxed","relieved","revolving_hearts","runner","running","satisfied","scream_cat","scream","see_no_evil","shit","skull","sleeping","sleepy","smile_cat","smile","smiley_cat","smiley","smiling_imp","smirk_cat","smirk","sob","sparkling_heart","sparkles","speak_no_evil","speech_balloon","star","star2","stuck_out_tongue_closed_eyes","stuck_out_tongue_winking_eye","stuck_out_tongue","sunglasses","suspect","sweat_drops","sweat_smile","sweat","thought_balloon","-1","thumbsdown","thumbsup","+1","tired_face","tongue","triumph","trollface","two_hearts","two_men_holding_hands","two_women_holding_hands","unamused","v","walking","wave","weary","wink2","wink","woman","worried","yellow_heart","yum","zzz","109","house","house_with_garden","school","office","post_office","hospital","bank","convenience_store","love_hotel","hotel","wedding","church","department_store","european_post_office","city_sunrise","city_sunset","japanese_castle","european_castle","tent","factory","tokyo_tower","japan","mount_fuji","sunrise_over_mountains","sunrise","stars","statue_of_liberty","bridge_at_night","carousel_horse","rainbow","ferris_wheel","fountain","roller_coaster","ship","speedboat","boat","sailboat","rowboat","anchor","rocket","airplane","helicopter","steam_locomotive","tram","mountain_railway","bike","aerial_tramway","suspension_railway","mountain_cableway","tractor","blue_car","oncoming_automobile","car","red_car","taxi","oncoming_taxi","articulated_lorry","bus","oncoming_bus","rotating_light","police_car","oncoming_police_car","fire_engine","ambulance","minibus","truck","train","station","train2","bullettrain_front","bullettrain_side","light_rail","monorail","railway_car","trolleybus","ticket","fuelpump","vertical_traffic_light","traffic_light","warning","construction","beginner","atm","slot_machine","busstop","barber","hotsprings","checkered_flag","crossed_flags","izakaya_lantern","moyai","circus_tent","performing_arts","round_pushpin","triangular_flag_on_post","jp","kr","cn","us","fr","es","it","ru","gb","uk","de","100","1234","one","two","three","four","five","six","seven","eight","nine","keycap_ten","zero","hash","symbols","arrow_backward","arrow_down","arrow_forward","arrow_left","capital_abcd","abcd","abc","arrow_lower_left","arrow_lower_right","arrow_right","arrow_up","arrow_upper_left","arrow_upper_right","arrow_double_down","arrow_double_up","arrow_down_small","arrow_heading_down","arrow_heading_up","leftwards_arrow_with_hook","arrow_right_hook","left_right_arrow","arrow_up_down","arrow_up_small","arrows_clockwise","arrows_counterclockwise","rewind","fast_forward","information_source","ok","twisted_rightwards_arrows","repeat","repeat_one","new","top","up","cool","free","ng","cinema","koko","signal_strength","u5272","u5408","u55b6","u6307","u6708","u6709","u6e80","u7121","u7533","u7a7a","u7981","sa","restroom","mens","womens","baby_symbol","no_smoking","parking","wheelchair","metro","baggage_claim","accept","wc","potable_water","put_litter_in_its_place","secret","congratulations","m","passport_control","left_luggage","customs","ideograph_advantage","cl","sos","id","no_entry_sign","underage","no_mobile_phones","do_not_litter","non-potable_water","no_bicycles","no_pedestrians","children_crossing","no_entry","eight_spoked_asterisk","eight_pointed_black_star","heart_decoration","vs","vibration_mode","mobile_phone_off","chart","currency_exchange","aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces","ophiuchus","six_pointed_star","negative_squared_cross_mark","a","b","ab","o2","diamond_shape_with_a_dot_inside","recycle","end","on","soon","clock1","clock130","clock10","clock1030","clock11","clock1130","clock12","clock1230","clock2","clock230","clock3","clock330","clock4","clock430","clock5","clock530","clock6","clock630","clock7","clock730","clock8","clock830","clock9","clock930","heavy_dollar_sign","copyright","registered","tm","x","heavy_exclamation_mark","bangbang","interrobang","o","heavy_multiplication_x","heavy_plus_sign","heavy_minus_sign","heavy_division_sign","white_flower","heavy_check_mark","ballot_box_with_check","radio_button","link","curly_loop","wavy_dash","part_alternation_mark","trident","black_square","white_square","white_check_mark","black_square_button","white_square_button","black_circle","white_circle","red_circle","large_blue_circle","large_blue_diamond","large_orange_diamond","small_blue_diamond","small_orange_diamond","small_red_triangle","small_red_triangle_down","shipit"];
 
 module.exports = emojies;
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 var Favico = require('favico.js');
 
 function FaviconNumber(data) {
@@ -66841,7 +67451,7 @@ FaviconNumber.prototype = {
 
 module.exports = FaviconNumber;
 
-},{"favico.js":41}],109:[function(require,module,exports){
+},{"favico.js":41}],110:[function(require,module,exports){
 /*!
  * jQuery AutoFit TextArea Plugin
  *
@@ -66896,7 +67506,7 @@ module.exports = FaviconNumber;
 })(jQuery);
 
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /*!
 	Autosize 1.18.17
 	license: MIT
@@ -67171,7 +67781,7 @@ module.exports = FaviconNumber;
 	};
 }(jQuery || $)); // jQuery or jQuery-like library, such as Zepto
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 (function($) {
   String.prototype.getLinefromCount = function(start){
     // 文字数から行数を取得
@@ -67271,7 +67881,7 @@ function getSelectionCount(textarea) {
 }
 
 
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 /*!
  * jQuery Decorate Text Plugin
  *
@@ -67794,7 +68404,7 @@ var prettify = require('prettify');
 })(jQuery);
 
 
-},{"./sanitize":118,"emojify.js":26,"prettify":43}],113:[function(require,module,exports){
+},{"./sanitize":119,"emojify.js":26,"prettify":44}],114:[function(require,module,exports){
 /*
  * 	exResize 0.2.0 - jQuery plugin
  *	written by Cyokodog	
@@ -67916,7 +68526,7 @@ var prettify = require('prettify');
 	}
 })(jQuery);
 
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 /*!
  * jQuery.selection - jQuery Plugin
  *
@@ -68272,7 +68882,7 @@ var prettify = require('prettify');
     });
 })(jQuery, window, window.document);
 
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 (function (global){
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
@@ -68517,7 +69127,7 @@ module.exports = addCustomBindingHandlers;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./dropzone":106,"./jquery.autofit":109,"./jquery.caret":111,"./jquery.decora":112,"bootstrap":7,"emojify.js":26,"jquery":53}],116:[function(require,module,exports){
+},{"./dropzone":107,"./jquery.autofit":110,"./jquery.caret":112,"./jquery.decora":113,"bootstrap":7,"emojify.js":26,"jquery":54}],117:[function(require,module,exports){
 var localStorage = window.localStorage;
 
 window.MessageDate = {
@@ -68553,7 +69163,7 @@ window.MessageDate = {
 };
 
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 // moment.js
 // version : 1.7.0
 // author : Tim Wood
@@ -68640,7 +69250,7 @@ window.MessageDate = {
         }
     });
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 (function($) {
   function trimAttributes(node, allowedAttrs) {
     $.each(node.attributes, function() {
@@ -68669,4 +69279,4 @@ window.MessageDate = {
   window.sanitize = sanitize;
 })(jQuery);
 
-},{}]},{},[101]);
+},{}]},{},[102]);
