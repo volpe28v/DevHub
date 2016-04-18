@@ -88,7 +88,9 @@ ChatViewModel.prototype = {
   _msg_post_processing: function(data, $msg){
     var that = this;
     that.setColorbox($msg.find('.thumbnail'));
-    emojify.run($msg.get(0));
+    $msg.find('.msg').each(function(){
+      emojify.run($(this).get(0));
+    });
 
     // リンク内の絵文字を有効化
     $msg.find('a').each(function(){
@@ -160,7 +162,10 @@ ChatViewModel.prototype = {
       if (add_count > 0){
         var $chat_body = $(that.listId);
         that.setColorbox($chat_body.find('.thumbnail'));
-        emojify.run($chat_body.get(0));
+
+        $chat_body.find('.msg').each(function(){
+          emojify.run($(this).get(0));
+        });
 
         // リンク内の絵文字を有効化
         $chat_body.find('a').each(function(){
