@@ -220,6 +220,14 @@ function MemoViewModel(param){
     },
     editEventHandler: function(){
       that.do_edit();
+    },
+    addEventHandler: function(title){
+      that.switchEditShareMemo(-1);
+
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var row = $code.caretLine();
+      that.insert(row -1 , "### " + title);
+      $code.caretLine(row);
     }
   });
   this.calendarViewModel.init();
@@ -488,13 +496,6 @@ function MemoViewModel(param){
     var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
     that.edit_text(text_array.join("\n"));
-
-    that.socket.emit('text',{
-      no: this.no,
-      name: this.getName(),
-      avatar: window.localStorage.avatarImage,
-      text: that.edit_text()
-    });
   }
 
   this.select = function(){
@@ -808,7 +809,7 @@ function MemoViewModel(param){
     this.is_shown_move_to_blog(true);
   }
 
-  this.moveToBlog= function(){
+  this.moveToBlog = function(){
     that.is_shown_move_to_blog(false);
 
     var $target_code = $('#share_memo_' + that.no).children('.code');
@@ -867,7 +868,6 @@ function MemoViewModel(param){
   }
 
   this.do_fix =  function(element){
-    //var $code = $(element).closest('.share-memo').find('.code');
     var $code = $('#share_memo_' + that.no).find('.code');
     that.switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }

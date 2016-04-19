@@ -100,12 +100,7 @@ function MemoController(param){
   this.setFocus = function(){
     var data_no = that.currentMemo().no;
     var targetMemo = this.memoViewModels()[data_no-1];
-    if (targetMemo.edit_mode){
-      $('#share_memo_' + data_no).find(".code").focus();
-    }else{
-      var $share_memo = $('#share_memo_' + data_no);
-      targetMemo.switchEditShareMemo(-1);
-    }
+    targetMemo.switchEditShareMemo(-1);
   }
 
   this.top = function(){

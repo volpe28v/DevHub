@@ -63974,21 +63974,28 @@ function CalendarViewModel(options){
   }
 
   this.select = function(startDate, endDate, jsEvent, view){
-    return; // 今のところ新規追加は非対応
-
-    /*
     var title = prompt("イベント名","");
     if (title != null){
-      var events = view.calendar.getEventCache();
-      events.push({
-        title: title,
-        start: moment(startDate),
-        end: moment(endDate)
-      });
+      var start = moment(startDate).format('YYYY/M/D');
+      var end = moment(endDate).add(-1,'days').format('YYYY/M/D');
 
-      //that.eventText(that.eventsToText(events));
+      var eventTitle = "";
+      if (start == end){
+        eventTitle = start + ' ' + title;
+      }else{
+        if (startDate.year() == endDate.year()){
+          if (startDate.month() == endDate.month()){
+            end = moment(endDate).add(-1,'days').format('D');
+          }else{
+            end = moment(endDate).add(-1,'days').format('M/D');
+          }
+        }
+
+        eventTitle = start + '-' + end + ' ' + title;
+      }
+
+      that.options.addEventHandler(eventTitle);
     }
-    */
   }
   this.eventClick = function(fcEvent){
     that.options.selectEventHandler(fcEvent.id);
@@ -65442,12 +65449,7 @@ function MemoController(param){
   this.setFocus = function(){
     var data_no = that.currentMemo().no;
     var targetMemo = this.memoViewModels()[data_no-1];
-    if (targetMemo.edit_mode){
-      $('#share_memo_' + data_no).find(".code").focus();
-    }else{
-      var $share_memo = $('#share_memo_' + data_no);
-      targetMemo.switchEditShareMemo(-1);
-    }
+    targetMemo.switchEditShareMemo(-1);
   }
 
   this.top = function(){
@@ -66034,6 +66036,14 @@ function MemoViewModel(param){
     },
     editEventHandler: function(){
       that.do_edit();
+    },
+    addEventHandler: function(title){
+      that.switchEditShareMemo(-1);
+
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var row = $code.caretLine();
+      that.insert(row -1 , "### " + title);
+      $code.caretLine(row);
     }
   });
   this.calendarViewModel.init();
@@ -66302,13 +66312,6 @@ function MemoViewModel(param){
     var text_array = org_text.text.split("\n");
     text_array.splice(row,0,text);
     that.edit_text(text_array.join("\n"));
-
-    that.socket.emit('text',{
-      no: this.no,
-      name: this.getName(),
-      avatar: window.localStorage.avatarImage,
-      text: that.edit_text()
-    });
   }
 
   this.select = function(){
@@ -66622,7 +66625,7 @@ function MemoViewModel(param){
     this.is_shown_move_to_blog(true);
   }
 
-  this.moveToBlog= function(){
+  this.moveToBlog = function(){
     that.is_shown_move_to_blog(false);
 
     var $target_code = $('#share_memo_' + that.no).children('.code');
@@ -66681,7 +66684,6 @@ function MemoViewModel(param){
   }
 
   this.do_fix =  function(element){
-    //var $code = $(element).closest('.share-memo').find('.code');
     var $code = $('#share_memo_' + that.no).find('.code');
     that.switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }

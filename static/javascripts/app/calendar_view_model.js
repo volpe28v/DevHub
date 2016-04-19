@@ -86,21 +86,28 @@ function CalendarViewModel(options){
   }
 
   this.select = function(startDate, endDate, jsEvent, view){
-    return; // 今のところ新規追加は非対応
-
-    /*
     var title = prompt("イベント名","");
     if (title != null){
-      var events = view.calendar.getEventCache();
-      events.push({
-        title: title,
-        start: moment(startDate),
-        end: moment(endDate)
-      });
+      var start = moment(startDate).format('YYYY/M/D');
+      var end = moment(endDate).add(-1,'days').format('YYYY/M/D');
 
-      //that.eventText(that.eventsToText(events));
+      var eventTitle = "";
+      if (start == end){
+        eventTitle = start + ' ' + title;
+      }else{
+        if (startDate.year() == endDate.year()){
+          if (startDate.month() == endDate.month()){
+            end = moment(endDate).add(-1,'days').format('D');
+          }else{
+            end = moment(endDate).add(-1,'days').format('M/D');
+          }
+        }
+
+        eventTitle = start + '-' + end + ' ' + title;
+      }
+
+      that.options.addEventHandler(eventTitle);
     }
-    */
   }
   this.eventClick = function(fcEvent){
     that.options.selectEventHandler(fcEvent.id);
