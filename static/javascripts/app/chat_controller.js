@@ -258,15 +258,6 @@ ChatController.prototype = {
     });
 
     // for chat list
-    $('.chat-tab-content').on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
-      // ログ追加読み込みイベント
-      if (!isInView){ return false; }
-
-      var data = ko.dataFor(this);
-      var parent = ko.contextFor(this).$parent;
-      parent.load_log_more(data._id);
-    });
-
     $('#chat_body').on('click', '.close', function(){
       var data_id = $(this).closest(".alert").attr('id');
       if (data_id == "mention_own_alert"){

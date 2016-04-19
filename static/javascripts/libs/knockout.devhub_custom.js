@@ -233,6 +233,22 @@ function addCustomBindingHandlers(ko){
               });
     },
   };
+
+  ko.bindingHandlers.inview = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            if (valueAccessor()){
+              var viewModel = bindingContext.$data;
+
+              $(element).on('inview', 'li:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+                // ログ追加読み込みイベント
+                if (!isInView){ return false; }
+
+                var data = ko.dataFor(this);
+                viewModel.load_log_more(data._id);
+              });
+            }
+          }
+  }
 }
 
 
