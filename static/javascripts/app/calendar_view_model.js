@@ -103,7 +103,7 @@ function CalendarViewModel(options){
           }
         }
 
-        eventTitle = start + '-' + end + ' ' + title;
+        eventTitle = start + ' - ' + end + ' ' + title;
       }
 
       that.options.addEventHandler(eventTitle);
