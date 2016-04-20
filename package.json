@@ -3,13 +3,19 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node app.js",
-    "build:upload": "browserify static/javascripts/app/upload.js --debug > static/javascripts/upload_bundle.js",
+    "watch_r:devhub": "watchify static/javascripts/app/client.js -o 'uglifyjs -cm > static/javascripts/devhub_bundle.js' -v",
+    "watch_r:upload": "watchify static/javascripts/app/upload.js -o 'uglifyjs -cm > static/javascripts/upload_bundle.js' -v",
+    "watch_r:blog": "watchify static/javascripts/app/blog.js -o 'uglifyjs -cm > static/javascripts/blog_bundle.js' -v",
+    "watch_r:blog_permalink": "watchify static/javascripts/app/blog_permalink.js -o 'uglifyjs -cm > static/javascripts/blog_permalink_bundle.js' -v",
+    "watch_r:calendar": "watchify static/javascripts/app/calendar.js -o 'uglifyjs -cm > static/javascripts/calendar_bundle.js' -v",
+
     "watch:devhub": "watchify static/javascripts/app/client.js -o static/javascripts/devhub_bundle.js -v",
     "watch:upload": "watchify static/javascripts/app/upload.js -o static/javascripts/upload_bundle.js -v",
     "watch:blog": "watchify static/javascripts/app/blog.js -o static/javascripts/blog_bundle.js -v",
     "watch:blog_permalink": "watchify static/javascripts/app/blog_permalink.js -o static/javascripts/blog_permalink_bundle.js -v",
     "watch:calendar": "watchify static/javascripts/app/calendar.js -o static/javascripts/calendar_bundle.js -v",
-    "dev": "parallelshell \"npm run watch:devhub\" \"npm run watch:upload\" \"npm run watch:blog\" \"npm run watch:blog_permalink\" \"npm run watch:calendar\" \"grunt\" \"node-dev app.js\" "
+    "dev": "parallelshell \"npm run watch:devhub\" \"npm run watch:upload\" \"npm run watch:blog\" \"npm run watch:blog_permalink\" \"npm run watch:calendar\" \"grunt\" \"node-dev app.js\" ",
+    "rel": "parallelshell \"npm run watch_r:devhub\" \"npm run watch_r:upload\" \"npm run watch_r:blog\" \"npm run watch_r:blog_permalink\" \"npm run watch_r:calendar\" \"grunt\" \"node-dev app.js\" "
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",

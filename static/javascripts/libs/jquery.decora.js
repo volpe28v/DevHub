@@ -173,7 +173,7 @@ var prettify = require('prettify');
     _set_colorbox($(this).find('.thumbnail'));
 
     // 絵文字表示
-    $(this).find('td').each(function(){
+    $(this).find("tr").find("*").each(function(){
       emojify.run($(this).get(0));
     });
   }
