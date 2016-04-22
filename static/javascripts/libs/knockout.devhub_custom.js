@@ -226,6 +226,7 @@ function addCustomBindingHandlers(ko){
                 timeFormat: "H:mm",
                 height: $(window).height() - 65,
                 eventRender: function(event, element) {
+                  $(element).attr('data-original-title', event.title).tooltip({placement: 'bottom'});
                   element.bind('dblclick', function() {
                     viewModel.eventDblClick(event, element);
                   });
