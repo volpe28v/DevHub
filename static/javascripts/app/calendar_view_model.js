@@ -47,9 +47,9 @@ function CalendarViewModel(options){
         var from = moment(fromYear + fromMonth + fromDay);
         var to = moment(toYear + toMonth + toDay).add(1,'days');
 
-        titleColor = 'gray';
+        titleColor = '#666';
         if (title != null){
-          var titleMatches = title.match(/(.+)[ ]+#(.+)/);
+          var titleMatches = title.match(/(.+)[　 ]+#(.+)/);
           if (titleMatches){
             title = titleMatches[1];
             titleColor = titleMatches[2];
