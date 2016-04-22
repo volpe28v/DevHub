@@ -587,10 +587,10 @@ function MemoViewModel(param){
 
     that.indexes([]);
     var events = [];
+    var index_num = 0;
     $.decora.apply_to_deco_and_raw(this.latest_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
-        var index_num = 0;
         deco_text.split("\n").forEach(function(val){
           var matches = val.match(/^(#+)/);
           if (matches){
