@@ -6,12 +6,6 @@ global.$ = global.jQuery;
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
-require('jquery-textcomplete');
-require('jquery-inview');
-require('../libs/jquery.exresize');
-
-var emojify = require('emojify.js');
-var emojies = require('../libs/emojies.js');
 
 var DropZone = require('../libs/dropzone');
 var ChatViewModel = require('./chat_view_model');
@@ -224,25 +218,6 @@ ChatController.prototype = {
   initChat: function(){
     var that = this;
 
-    $('#message').textcomplete([
-      {
-        match: /\B:([\-+\w]*)$/,
-        search: function (term, callback) {
-          callback($.map(emojies, function (emoji) {
-            return emoji.indexOf(term) === 0 ? emoji : null;
-          }));
-        },
-        template: function (value) {
-          return '<img class="emoji-suggest" src="img/emoji/' + value + '.png"></img> ' + value;
-        },
-        replace: function (value) {
-          return ':' + value + ': ';
-        },
-        index: 1,
-        maxCount: 8
-      }
-    ]).autosize();
-
     $('#chat_body').exResize(function(){
       $('.chat-control').addClass('chat-fixed');
       $('.chat-control-dummy').show();
@@ -251,10 +226,6 @@ ChatController.prototype = {
 
     $('.chat-control').exResize(function(){
       $('.chat-control-dummy').height($(this).outerHeight());
-    });
-
-    emojify.setConfig({
-      img_dir: 'img/emoji',  // Directory for emoji images
     });
 
     // for chat list

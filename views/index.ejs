@@ -179,6 +179,8 @@
                         id="message"
                         data-bind="
                           textInput: inputMessage,
+                          textcomplete: true,
+                          autosize: true,
                           css: {'client-command': isCommand},
                           event: {keydown: function(data, event){ return keydownInputMessage(data, event, $element)}}"
                         style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;"

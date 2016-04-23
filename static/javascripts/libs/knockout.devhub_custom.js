@@ -4,8 +4,17 @@ require('bootstrap');
 require('./jquery.autofit');
 require('./jquery.caret');
 require('./jquery.decora');
+require('jquery-textcomplete');
+require('jquery-inview');
+require('../libs/jquery.exresize');
 
 var emojify = require('emojify.js');
+var emojies = require('../libs/emojies.js');
+
+emojify.setConfig({
+  img_dir: 'img/emoji',  // Directory for emoji images
+});
+
 var DropZone = require('./dropzone');
 
 function addCustomBindingHandlers(ko){
@@ -250,6 +259,40 @@ function addCustomBindingHandlers(ko){
             }
           }
   }
+
+  // textcomplete カスタムバインディング(true の場合に有効)
+  ko.bindingHandlers.textcomplete = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      if (valueAccessor()){
+        $(element).textcomplete([{
+          match: /\B:([\-+\w]*)$/,
+          search: function (term, callback) {
+            callback($.map(emojies, function (emoji) {
+              return emoji.indexOf(term) === 0 ? emoji : null;
+            }));
+          },
+          template: function (value) {
+            return '<img class="emoji-suggest" src="img/emoji/' + value + '.png"></img> ' + value;
+          },
+          replace: function (value) {
+            return ' :' + value + ':';
+          },
+          index: 1,
+          maxCount: 8
+        }]);
+      }
+    }
+  }
+
+  // autosize カスタムバインディング(true の場合に有効)
+  ko.bindingHandlers.autosize = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      if (valueAccessor()){
+        $(element).autosize();
+      }
+    }
+  }
+ 
 }
 
 
