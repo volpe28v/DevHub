@@ -6,6 +6,7 @@ require('fullcalendar');
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
+var RGBColor = require('rgbcolor');
 
 function CalendarViewModel(options){
   var that = this;
@@ -68,13 +69,15 @@ function CalendarViewModel(options){
           }
         }
 
+        var rgbColor = new RGBColor(titleColor);
         events.push({
           id: event.id,
           title: title,
           start: from,
           end: to,
-          color: titleColor,
-          textColor: 'white',
+          backgroundColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.06)',
+          textColor: titleColor,
+          borderColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.5)',
           editable: false,
           allDay: true
         });
