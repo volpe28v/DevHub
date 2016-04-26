@@ -48,7 +48,7 @@ function CalendarViewModel(options){
         var from = moment(fromYear + fromMonth + fromDay);
         var to = moment(toYear + toMonth + toDay).add(1,'days');
 
-        titleColor = '#666';
+        titleColor = '#444';
         if (title != null){
           var titleMatches = title.match(/(.+)[　 ]+#(.+)/);
           if (titleMatches){
@@ -77,7 +77,7 @@ function CalendarViewModel(options){
           end: to,
           backgroundColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.1)',
           textColor: titleColor,
-          borderColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.5)',
+          borderColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.4)',
           editable: false,
           allDay: true
         });
