@@ -75,7 +75,7 @@ function CalendarViewModel(options){
           title: title,
           start: from,
           end: to,
-          backgroundColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.06)',
+          backgroundColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.1)',
           textColor: titleColor,
           borderColor: 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.5)',
           editable: false,
