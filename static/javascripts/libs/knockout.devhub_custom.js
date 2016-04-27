@@ -236,6 +236,7 @@ function addCustomBindingHandlers(ko){
                 height: $(window).height() - 65,
                 eventRender: function(event, element) {
                   $(element).attr('data-original-title', event.title).tooltip({placement: 'bottom'});
+                  emojify.run($(element[0]).find(".fc-title").get(0));
                   element.bind('dblclick', function() {
                     viewModel.eventDblClick(event, element);
                   });
