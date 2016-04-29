@@ -684,57 +684,68 @@ function MemoViewModel(param){
     // diff 生成
     var $diff_out = $share_memo.find('.diff-view');
     $diff_out.empty();
-    $diff_out.append(that.createDiff(index));
-    $diff_out.showDecora();
+    that.createDiff(index, function(diff){
+      $diff_out.append(diff);
+      $diff_out.showDecora();
 
-    // diff 画面を有効化
-    $diff_out.show();
-    $code_out.hide();
+      // diff 画面を有効化
+      $diff_out.show();
+      $code_out.hide();
 
-    $share_memo.find('.diff-done').show();
-    $share_memo.find('.sync-text').hide();
+      $share_memo.find('.diff-done').show();
+      $share_memo.find('.sync-text').hide();
 
-    if (that.diff_block_list.length > 0){
-      $('#diff_controller').fadeIn();
-    }
+      if (that.diff_block_list.length > 0){
+        $('#diff_controller').fadeIn();
+      }
 
-    // 一つ目のDiffに移動
-    var pos = that.getNextDiffPos();
-    $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+      // 一つ目のDiffに移動
+      var pos = that.getNextDiffPos();
+      $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+    });
 
     return true;
   }
 
-  this.createDiff = function(index){
+  this.createDiff = function(index, callback){
     index++; // 0番目はリストに表示しないので 1番目の履歴は 0で来る
     var text_log = this._getLogsForDiff();
-    var baseHtml = $.decora.to_html(text_log[index].text);
-    var newHtml = $.decora.to_html(text_log[0].text);
 
-    // 差分には現れて欲しくない文字列を削除
-    baseHtml = baseHtml.replace(/data-no="\d+"/g,"");
-    newHtml = newHtml.replace(/data-no="\d+"/g,"");
+    // メモ本文をサーバから取得する
+    $.ajax('memo/body' , {
+      type: 'GET',
+      cache: false,
+      data: {id: text_log[index]._id},
+      success: function(data){
+        var baseHtml = $.decora.to_html(data.text);
+        var newHtml = $.decora.to_html(that.latest_text().text);
 
-    var base   = difflib.stringAsLines(baseHtml);
-    var newtxt = difflib.stringAsLines(newHtml);
-    var sm = new difflib.SequenceMatcher(base, newtxt);
-    var opcodes = sm.get_opcodes();
+        // 差分には現れて欲しくない文字列を削除
+        baseHtml = baseHtml.replace(/data-no="\d+"/g,"");
+        newHtml = newHtml.replace(/data-no="\d+"/g,"");
 
-    var diff_body = diffview.buildView({
-      baseTextLines: base,
-      newTextLines: newtxt,
-      opcodes: opcodes,
-      baseTextName: text_log[0].date + ' - ' + text_log[0].name,
-      newTextName: text_log[index].date + " - " + text_log[index].name,
-      viewType: 1
+        var base   = difflib.stringAsLines(baseHtml);
+        var newtxt = difflib.stringAsLines(newHtml);
+        var sm = new difflib.SequenceMatcher(base, newtxt);
+        var opcodes = sm.get_opcodes();
+
+        var diff_body = diffview.buildView({
+          baseTextLines: base,
+            newTextLines: newtxt,
+            opcodes: opcodes,
+            baseTextName: text_log[0].date + ' - ' + text_log[0].name,
+            newTextName: text_log[index].date + " - " + text_log[index].name,
+            viewType: 1
+        });
+
+        that.diff_index = 0;
+        that.diff_mode = true;
+        that._createDiffBlockList(diff_body);
+
+        $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + that.diff_block_list.length);
+        callback(diff_body);
+      }
     });
-
-    this.diff_index = 0;
-    this.diff_mode = true;
-    this._createDiffBlockList(diff_body);
-
-    $('#move_to_diff .btn').html('<i class="icon-arrow-down icon-white"></i> Next Diff 0/' + this.diff_block_list.length);
-    return diff_body;
   }
 
   this._createDiffBlockList = function(diff_body){

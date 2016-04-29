@@ -1,7 +1,7 @@
 var text_log = require('../lib/text_log');
 var util = require('../lib/util');
 
-exports.get = function(req, res, io) {
+exports.insert = function(req, res, io) {
   console.log('/memo');
   console.log(req.query);
 
@@ -23,4 +23,13 @@ exports.get = function(req, res, io) {
   });
 
   res.end('received memo');
+}
+
+exports.get = function(req, res) {
+  console.log('/memo/body');
+  var id = req.query.id;
+
+  text_log.get(id,function(text_log){
+    res.send(text_log);
+  });
 }

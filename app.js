@@ -58,7 +58,8 @@ var routes = {
 
 app.get('/', function(req,res){ routes.index.get(req,res,app); });
 app.get('/notify', function(req, res) { routes.notify.get(req,res,io); });
-app.get('/memo', function(req, res) { routes.memo.get(req,res,io); });
+app.get('/memo', function(req, res) { routes.memo.insert(req,res,io); });
+app.get('/memo/body', routes.memo.get);
 
 app.post('/upload', routes.upload.post);
 app.get('/upload', routes.upload.get);
