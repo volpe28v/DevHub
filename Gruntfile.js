@@ -124,6 +124,7 @@ module.exports = function(grunt){
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
             "node_modules/fullcalendar/dist/fullcalendar.min.css",
+            "node_modules/sweetalert/dist/sweetalert.css",
             "static/stylesheets/app/devhub.css",
           ],
           "static/stylesheets/upload.min.css" : [

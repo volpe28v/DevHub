@@ -186,15 +186,6 @@ function addCustomBindingHandlers(ko){
           }
   }
 
-  ko.fullCalendar = {
-    viewModel: function(config) {
-                 this.header = config.header;
-                 this.events = config.events;
-                 this.viewDate = config.viewDate;
-                 this.select = config.select;
-               }
-  };
-
   ko.bindingHandlers.fullCalendar = {
     update: function(element, viewModelAccessor) {
               var viewModel = viewModelAccessor();

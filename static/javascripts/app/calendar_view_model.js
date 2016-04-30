@@ -2,6 +2,7 @@ global.jQuery = require('jquery');
 global.$ = global.jQuery;
 global.moment = require('moment');
 require('fullcalendar');
+require('sweetalert');
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
@@ -89,29 +90,40 @@ function CalendarViewModel(options){
   }
 
   this.select = function(startDate, endDate, jsEvent, view){
-    var title = prompt("イベント名","");
-    if (title != null){
-      var start = moment(startDate).format('YYYY/M/D');
-      var end = moment(endDate).add(-1,'days').format('YYYY/M/D');
+    var start = moment(startDate).format('YYYY/M/D');
+    var end = moment(endDate).add(-1,'days').format('YYYY/M/D');
 
-      var eventTitle = "";
-      if (start == end){
-        eventTitle = start + ' ' + title;
-      }else{
-        if (startDate.year() == endDate.year()){
-          if (startDate.month() == endDate.month()){
-            end = moment(endDate).add(-1,'days').format('D');
-          }else{
-            end = moment(endDate).add(-1,'days').format('M/D');
-          }
+    var eventRange = "";
+    if (start == end){
+      eventRange = start;
+    }else{
+      if (startDate.year() == endDate.year()){
+        if (startDate.month() == endDate.month()){
+          end = moment(endDate).add(-1,'days').format('D');
+        }else{
+          end = moment(endDate).add(-1,'days').format('M/D');
         }
-
-        eventTitle = start + ' - ' + end + ' ' + title;
       }
 
-      that.options.addEventHandler(eventTitle);
+      eventRange = start + ' - ' + end;
     }
+
+    swal({
+      title: "Input the event title",
+      text: eventRange,
+      type: "input",
+      showCancelButton: true,
+      closeOnConfirm: true,
+      animation: true,
+      inputPlaceholder: "title"
+    }, function(title){
+      if (title === false) return false;
+      if (title === "") return false;
+
+      that.options.addEventHandler(eventRange + ' ' + title);
+    });
   }
+
   this.eventClick = function(fcEvent){
     that.options.selectEventHandler(fcEvent.id);
   }
