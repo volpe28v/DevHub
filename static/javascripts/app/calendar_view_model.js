@@ -121,19 +121,6 @@ function CalendarViewModel(options){
   }
 
   this.eventDropOrResize = function(fcEvent, delta, revertFunc, jsEvent, ui, view ){
-    //var text = that.eventsToText(view.calendar.getEventCache());
-    //that.eventText(text);
-  }
-
-  this.eventMouseover = function(fcEvent,jsEvent){
-/*
-      if (this.isUserEvent(event)){
-        // 追加直後のイベントにはフルネームを設定していないためここで判定する(いずれはDBを修正したい)
-        $(jsEvent.currentTarget).attr("title", "【" + this.options.user.get('name') + "】 " + event.get('title'));
-      }else{
-        $(jsEvent.currentTarget).attr("title", "【" + event.get('user') + "】 " + event.get('title'));
-      }
-      */
   }
 
   this.viewRender = function(view){
