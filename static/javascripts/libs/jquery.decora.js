@@ -96,39 +96,7 @@ var prettify = require('prettify');
 
       options.checkbox_callback(that, _updateCheckboxStatus.curry(check_no, is_checked));
     })
-    .on('click','.img-plus', function(){
-      var that = this;
-      var $img = $(this).closest('a').find('img');
-      var img_index = $(this).closest('a').data('index');
-      var current_height = Number($img.css('height').replace('px',''));
-      var next_height = current_height + 20;
-      $img.css('height', next_height + "px");
-
-      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
-      return false;
-    })
-    .on('click','.img-minus', function(){
-      var that = this;
-      var $img = $(this).closest('a').find('img');
-      var img_index = $(this).closest('a').data('index');
-      var current_height = Number($img.css('height').replace('px',''));
-      var next_height = current_height - 20;
-      if (next_height < 20){ next_height = 20; }
-      $img.css('height', next_height + "px");
-
-      options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
-      return false;
-    })
-    .on('dblclick','.img-plus', function(){
-      return false;
-    })
-    .on('dblclick','.img-minus', function(){
-      return false;
-    })
     .on('mouseenter','.thumbnail', function(){
-      $(this).find(".img-plus").show();
-      $(this).find(".img-minus").show();
-
       var that = this;
       var img_index = $(this).data('index');
       $(this).find("img").resizable({
@@ -147,10 +115,6 @@ var prettify = require('prettify');
           $(that).on('click', function(){ return true; });
         }
       });
-    })
-    .on('mouseleave','.thumbnail', function(){
-      $(this).find(".img-plus").hide();
-      $(this).find(".img-minus").hide();
     });
 
     return this;
@@ -368,7 +332,7 @@ var prettify = require('prettify');
             height_css = "max-height:";
           }
           var prefix = arguments[1] ? arguments[1] : "";
-          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/><button class="img-plus btn btn-info btn-mini" style="display: none; position: absolute; top: 2px; left: 2px;"><i class="icon-plus icon-white"></i></button><button class="img-minus btn btn-info btn-mini" style="display: none; position: absolute; top: 25px; left: 2px;"><i class="icon-minus icon-white"></i></button></a>';
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/></a>';
         });
     return {text: img_text, no: img_index};
   }
