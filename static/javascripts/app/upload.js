@@ -3,25 +3,34 @@ global.$ = global.jQuery;
 require('jquery-ui');
 require('jquery-colorbox');
 require('lazyload');
+require('sweetalert');
 
 $(function() {
   $('.delete-button').click(function(){
-    if (!window.confirm('Are you sure?')){
-      return true;
-    }
+    var that = this;
 
-    $.ajax('upload?file=' + $(this).attr('data-name') , {
-      type: 'DELETE',
-      cache: false,
-      data: {file: $(this).attr('data-name')},
-      success: function(data){
-        var size = (data.all_size/1024/1024).toFixed(2);
-        $('#all_size_mb').html(size);
-      }
-    });
+    swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this file!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      closeOnConfirm: true
+    },function(){
+      $.ajax('upload?file=' + $(that).attr('data-name') , {
+        type: 'DELETE',
+        cache: false,
+        data: {file: $(that).attr('data-name')},
+        success: function(data){
+          var size = (data.all_size/1024/1024).toFixed(2);
+          $('#all_size_mb').html(size);
+        }
+      });
 
-    $(this).closest('tr').fadeOut('normal',function(){
-      $(this).remove();
+      $(that).closest('tr').fadeOut('normal',function(){
+        $(this).remove();
+      });
     });
   });
 

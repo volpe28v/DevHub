@@ -4,6 +4,7 @@ global.$ = global.jQuery;
 var ko = require('knockout');
 var Clipboard = require('clipboard');
 require('../libs/jquery.decora');
+require('sweetalert');
 var DropZone = require('../libs/dropzone');
 
 function BlogViewModel(name, start, end){
@@ -88,26 +89,34 @@ function BlogViewModel(name, start, end){
   }
 
   this.destroy = function(){
-    if (!window.confirm('Are you sure?')){
-      return true;
-    }
-
     var blog = this;
-    var remove_blog = {
-      _id: blog._id()
-    };
+    swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this blog!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      closeOnConfirm: true
+    },function(){
+      var remove_blog = {
+        _id: blog._id()
+      };
 
-    $.ajax('blog' , {
-      type: 'DELETE',
-      cache: false,
-      data: {blog: remove_blog},
-      success: function(data){
-        that.tags(data.tags);
-        that._update_tags();
-      }
+      $.ajax('blog' , {
+        type: 'DELETE',
+        cache: false,
+        data: {blog: remove_blog},
+        success: function(data){
+          that.tags(data.tags);
+          that._update_tags();
+        }
+      });
+
+      $('#' + blog._id()).fadeOut('normal', function(){
+        that.items.remove(blog);
+      });
     });
-
-    that.items.remove(blog);
   }
 
   this.keydownEditing = function(data, event, element){

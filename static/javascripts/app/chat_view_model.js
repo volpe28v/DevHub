@@ -8,6 +8,7 @@ var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 require('../libs/message_date');
+require('sweetalert');
 
 var emojify = require('emojify.js');
 
@@ -58,15 +59,22 @@ function ChatViewModel(param){
 
   this.remove_msg = function(element){
     var this_msg = this;
-    if (!window.confirm('Are you sure?')){
-      return true;
-    }
-    var data_id = $(element).closest('li').data('id');
+    swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this message!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      closeOnConfirm: true
+    },function(){
+      var data_id = $(element).closest('li').data('id');
 
-    that.socket.emit('remove_message', {id: data_id});
-    $("#msg_" + data_id).fadeOut('normal', function(){
-      $(this).remove();
-      that.messages.remove(this_msg);
+      that.socket.emit('remove_message', {id: data_id});
+      $("#msg_" + data_id).fadeOut('normal', function(){
+        $(this).remove();
+        that.messages.remove(this_msg);
+      });
     });
 
     return true;

@@ -129,6 +129,7 @@ module.exports = function(grunt){
           ],
           "static/stylesheets/upload.min.css" : [
             "static/stylesheets/libs/colorbox.css",
+            "node_modules/sweetalert/dist/sweetalert.css",
             "static/stylesheets/app/upload.css",
           ],
           "static/stylesheets/blog.min.css" : [
@@ -136,6 +137,7 @@ module.exports = function(grunt){
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
+            "node_modules/sweetalert/dist/sweetalert.css",
             "static/stylesheets/app/blog.css",
           ],
           "static/stylesheets/blog_permalink.min.css" : [
@@ -143,6 +145,7 @@ module.exports = function(grunt){
             "static/stylesheets/libs/perfect-scrollbar.min.css",
             "static/stylesheets/libs/emolett.css",
             "static/stylesheets/libs/colorbox.css",
+            "node_modules/sweetalert/dist/sweetalert.css",
             "static/stylesheets/app/blog_permalink.css",
           ],
           "static/stylesheets/calendar.min.css" : [
