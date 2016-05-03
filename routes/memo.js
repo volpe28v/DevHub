@@ -26,7 +26,6 @@ exports.insert = function(req, res, io) {
 }
 
 exports.get = function(req, res) {
-  console.log('/memo/body');
   var id = req.query.id;
 
   text_log.get(id,function(text_log){
