@@ -2,7 +2,7 @@ global.jQuery = require('jquery');
 global.$ = global.jQuery;
 require('jquery-ui');
 require('jquery-colorbox');
-require('lazyload');
+require('jquery-lazyload');
 require('sweetalert');
 
 $(function() {

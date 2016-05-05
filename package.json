@@ -41,7 +41,7 @@
     "jquery": "2.2.2",
     "jquery-ui": "1.10.5",
     "jquery-colorbox": "1.6.3",
-    "lazyload": "1.8.4",
+    "jquery-lazyload": "1.9.7",
     "bootstrap": "3.3.6",
     "favico.js": "0.3.10",
     "jquery-autosize": "1.18.18",
@@ -69,7 +69,6 @@
     "watchify": "^3.4.0"
   },
   "browser": {
-    "lazyload": "./node_modules/lazyload/jquery.lazyload.js",
     "prettify": "./node_modules/google-code-prettify/bin/prettify.min.js"
   },
   "engines": {
