@@ -16,7 +16,7 @@
 
 // 作成者：佐藤　毅 （株式会社ジーティーアイ　http://gti.jp ）
 
-		moment.lang('ja', {
+		moment.locale('ja', {
 //        months : "January_February_March_April_May_June_July_August_September_October_November_December".split("_"),
         months : "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),
 //        monthsShort : "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),
