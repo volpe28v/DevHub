@@ -353,6 +353,17 @@ function MemoController(param){
     that.currentMemo().showCalendar();
   }
 
+  this.startTabMoving = function(){
+    that.isMovingTab = true;
+  }
+
+  this.stopTabMoving = function(memo_tabs){
+    that.isMovingTab = false;
+
+    var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); });
+    that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
+  }
+
   this.init_sharememo = function(){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
@@ -363,27 +374,6 @@ function MemoController(param){
         endSearch: that.end_search_control
       }));
     }
-
-    $("#share_memo_nav").sortable({
-      items: ".share-memo-tab",
-      placeholder: 'draggable-placeholder',
-      revert: true,
-      tolerance: "pointer",
-      distance: 20,
-      forcePlaceholderSize: true,
-      scroll: false,
-      start: function(event,ui){
-        that.isMovingTab = true;
-      },
-      stop: function(event,ui){
-        that.isMovingTab = false;
-
-        var memo_tabs = $(this).sortable('toArray');
-        var tab_numbers = memo_tabs.map(function(m){ return m.replace('share_memo_li_',''); });
-
-        that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
-      }
-    });
 
     $("#tab_change").click(function(){
       if ($('#share_memo_tabbable').hasClass("tabs-left")){

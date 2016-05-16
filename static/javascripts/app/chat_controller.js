@@ -39,9 +39,12 @@ function ChatController(param){
   this.isCommand = ko.observable(false);
 
   this.chatViewModels = ko.observableArray([]);
+  this.isTabMoving = false;
 
   // Member function
   this.selectChatTab = function(){
+    if(that.isTabMoving){ return; }
+
     var thisVm = this;
     if (thisVm.isActive()){
       // 部屋名をフォームに設定する
@@ -56,6 +59,20 @@ function ChatController(param){
       }
     });
     return true;
+  }
+
+  this.startTabMoving = function(){
+    console.log("startTabMoving");
+    that.isTabMoving = true;
+  }
+
+  this.stopTabMoving = function(tabs){
+    console.log("stopTabMoving");
+    that.isTabMoving = false;
+
+    var tab_numbers = tabs.map(function(m){ return m.replace('chat_li_',''); }); 
+    console.log(tab_numbers);
+    //that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
   }
 
   this.keydownInputMessage = function(data, event, element){

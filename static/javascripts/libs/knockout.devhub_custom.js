@@ -1,5 +1,6 @@
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+require('jquery-ui');
 require('bootstrap');
 require('./jquery.autofit');
 require('./jquery.caret');
@@ -285,6 +286,30 @@ function addCustomBindingHandlers(ko){
     }
   }
  
+  // sortable カスタムバインディング
+  ko.bindingHandlers.sortable = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      if (!valueAccessor()){ return }
+
+      var viewModel = bindingContext.$data;
+
+      $(element).sortable({
+        placeholder: 'draggable-placeholder',
+        revert: true,
+        tolerance: "pointer",
+        distance: 20,
+        forcePlaceholderSize: true,
+        scroll: false,
+        start: function(event,ui){
+          viewModel.startTabMoving();
+        },
+        stop: function(event,ui){
+          var tabs = $(this).sortable('toArray');
+          viewModel.stopTabMoving(tabs);
+        }
+      });
+    }
+  }
 }
 
 

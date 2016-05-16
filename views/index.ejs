@@ -234,8 +234,11 @@
                 </div>
               </div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul id="chat_nav" data-bind="foreach: chatViewModels" class="nav nav-tabs">
-                  <li data-bind="css{active: isActive}">
+                <ul id="chat_nav" class="nav nav-tabs" data-bind="
+                  sortable: true,
+                  foreach: chatViewModels
+                ">
+                  <li data-bind="attr: {id: 'chat_li_' + no}, css{active: isActive}">
                     <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
                       <span data-bind="text: room"></span>
                       <!-- ko if: mentionCount() != 0 -->
@@ -275,7 +278,10 @@
             <div class="dummy-top-space hidden-phone"></div>
             <div id="share-memo" data-bind="with: memoController">
               <div id="share_memo_tabbable"  class="tabbable tabs-left">
-                <ul id="share_memo_nav" class="nav nav-tabs" data-bind="foreach: memoViewModels">
+                <ul id="share_memo_nav" class="nav nav-tabs" data-bind="
+                  sortable: true,
+                  foreach: memoViewModels
+                ">
                   <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}, css: {active: active}" class="share-memo-tab">
                     <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
                       <span class="share-memo-title" data-bind="decoMemoTitle: title"></span>
