@@ -211,11 +211,11 @@ var prettify = require('prettify');
     if (is_code){
       // コードに色付け
       var raw_text = text.replace(/^code/,"");
-      var $pretty_tmp_span = $('<span/>').addClass("prettyprint").text(raw_text);
-      var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_span);
+      var $pretty_tmp_pre= $('<pre/>').addClass("prettyprint").text(raw_text);
+      var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_pre);
 
       prettyPrint(null, $pretty_tmp_div.get(0));
-      raw_text = $pretty_tmp_span.html();
+      raw_text = $pretty_tmp_pre.html();
       $pretty_tmp_div.empty();
       raw_text = raw_text.split("\n");
 
