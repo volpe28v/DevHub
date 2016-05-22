@@ -299,6 +299,7 @@ ChatController.prototype = {
     });
 
     this.socket.on('chat_number', function(number) {
+      console.log(number);
       if (number.num == 1){
         $('#chat_nav').css('display','none');
       }else{
@@ -311,6 +312,7 @@ ChatController.prototype = {
       });
 
       var active_numbers = that.getActiveNumbers(number.num, number.numbers);
+      console.log(active_numbers);
 
       that.chatViewModels([]);
       active_numbers.forEach(function(no){
@@ -368,7 +370,6 @@ ChatController.prototype = {
       if (num <= numbers.length){
         return numbers.slice(0,num);
       }
-
     }
 
     this.socket.on('chat_tab_numbers', function(number) {
