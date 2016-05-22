@@ -299,7 +299,6 @@ ChatController.prototype = {
     });
 
     this.socket.on('chat_number', function(number) {
-      console.log(number);
       if (number.num == 1){
         $('#chat_nav').css('display','none');
       }else{
@@ -312,7 +311,6 @@ ChatController.prototype = {
       });
 
       var active_numbers = that.getActiveNumbers(number.num, number.numbers);
-      console.log(active_numbers);
 
       that.chatViewModels([]);
       active_numbers.forEach(function(no){
@@ -343,6 +341,7 @@ ChatController.prototype = {
     });
 
     this.getActiveNumbers = function(num, numbers){
+      num = Number(num);
       var active_numbers = [];
 
       // numbers が null なら連番
@@ -373,20 +372,9 @@ ChatController.prototype = {
     }
 
     this.socket.on('chat_tab_numbers', function(number) {
-      var chatViewModelsTemp = that.chatViewModels.removeAll();
       number.numbers.forEach(function(num){
-        that.chatViewModels.push(
-          chatViewModelsTemp.filter(function(elem){
-            return elem.no == Number(num);
-          })[0]
-        );
+        $('#chat_nav').append($('#chat_li_' + num));
       });
-
-      var active_no = chatViewModelsTemp.filter(function(elem){
-        return elem.isActive();
-      })[0].no;
-
-      $("#chat_tab_" + active_no).tab('show');
     });
 
 
