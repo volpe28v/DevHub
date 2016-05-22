@@ -62,17 +62,14 @@ function ChatController(param){
   }
 
   this.startTabMoving = function(){
-    console.log("startTabMoving");
     that.isTabMoving = true;
   }
 
   this.stopTabMoving = function(tabs){
-    console.log("stopTabMoving");
     that.isTabMoving = false;
 
-    var tab_numbers = tabs.map(function(m){ return m.replace('chat_li_',''); }); 
-    console.log(tab_numbers);
-    //that.socket.emit('memo_tab_numbers', {numbers: tab_numbers});
+    var tab_numbers = tabs.map(function(m){ return m.replace('chat_li_',''); });
+    that.socket.emit('chat_tab_numbers', {numbers: tab_numbers});
   }
 
   this.keydownInputMessage = function(data, event, element){
@@ -312,10 +309,23 @@ ChatController.prototype = {
       that.chatViewModels().forEach(function(vm){
         vm.destroySocket();
       });
+
+      var active_numbers = that.getActiveNumbers(number.num, number.numbers);
+
       that.chatViewModels([]);
-      for (var i = 1; i <= number.num; i++){
+      active_numbers.forEach(function(no){
+        no = Number(no);
+        var room_name = "Room" + no;
+        if (number.rooms != null){
+          var room = number.rooms.filter(function(elem){ return elem.no == no; })[0];
+          if (room != null){
+            room_name = room.name;
+          }
+        }
+
         that.chatViewModels.push(new ChatViewModel({
-          no: i,
+          no: no,
+          room_name: room_name,
           socket: that.socket,
           getId: function(name) {return that.getId(name); },
           getName: function() {return that.getName(); },
@@ -325,10 +335,59 @@ ChatController.prototype = {
           notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
           showRefPoint: that.showRefPoint
         }));
+      });
+
+      $("#chat_tab_" + that.chatViewModels()[0].no).click();
+    });
+
+    this.getActiveNumbers = function(num, numbers){
+      var active_numbers = [];
+
+      // numbers が null なら連番
+      if (numbers == null){
+        for(var i = 1; i <= num; i++){
+          active_numbers.push(i);
+        }
+        return active_numbers;
       }
 
-      $("#chat_tab_1").click();
+      // num 以下なら不足分を補間
+      if (num > numbers.length){
+        active_numbers = numbers;
+
+        var search_number = 1;
+        while (num > active_numbers.length){
+          if (numbers.filter(function(elem){ return elem == search_number; }).length == 0){
+            active_numbers.push(search_number);
+          }
+          search_number++;
+        }
+      }
+
+      // num 以上なら num まで取得
+      if (num <= numbers.length){
+        return numbers.slice(0,num);
+      }
+
+    }
+
+    this.socket.on('chat_tab_numbers', function(number) {
+      var chatViewModelsTemp = that.chatViewModels.removeAll();
+      number.numbers.forEach(function(num){
+        that.chatViewModels.push(
+          chatViewModelsTemp.filter(function(elem){
+            return elem.no == Number(num);
+          })[0]
+        );
+      });
+
+      var active_no = chatViewModelsTemp.filter(function(elem){
+        return elem.isActive();
+      })[0].no;
+
+      $("#chat_tab_" + active_no).tab('show');
     });
+
 
     this.socket.on('list', function(login_list) {
       $('#login_list_loader').hide();

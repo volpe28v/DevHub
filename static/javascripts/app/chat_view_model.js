@@ -16,6 +16,7 @@ function ChatViewModel(param){
   var that = this;
 
   this.no = param.no;
+  this.room = ko.observable(param.room_name);
   this.socket = param.socket;
   this.getId = param.getId; // function
   this.getName = param.getName; // function
@@ -26,7 +27,6 @@ function ChatViewModel(param){
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
-  this.room = ko.observable("Room" + this.no);
   this.messages = ko.observableArray([]);
   this.mentionCount = ko.observable(0);
   this.unreadRoomCount = ko.observable(0);
@@ -90,7 +90,7 @@ ChatViewModel.prototype = {
 
     this.isLoadingLog = true;
     this.socket.emit('latest_log', {room_id: this.no});
-    this.socket.emit('room_name', {room_id: this.no});
+    //this.socket.emit('room_name', {room_id: this.no});
   },
 
   _msg_post_processing: function(data, $msg){
