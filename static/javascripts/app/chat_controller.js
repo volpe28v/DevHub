@@ -313,6 +313,7 @@ ChatController.prototype = {
       var active_numbers = that.getActiveNumbers(number.num, number.numbers);
 
       that.chatViewModels([]);
+      $('#chat_nav').empty();
       active_numbers.forEach(function(no){
         no = Number(no);
         var room_name = "Room" + no;
