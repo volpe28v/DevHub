@@ -446,13 +446,16 @@
 
               <label class="control-label">Enable chat room</label>
               <div class="controls">
-                <select id="chat_number" class="span1">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+                <!-- ko with: chatController -->
+                <select id="chat_number" class="span1" data-bind="
+                  value: chatNumber,
+                  event: {change: changeChatNumber}
+                  ">
+                  <!-- ko foreach: chatMaxNumber -->
+                  <option data-bind="text: no, attr: {value: no}"></option>
+                  <!-- /ko -->
                 </select>
+                <!-- /ko -->
                 rooms.
               </div>
             </div>

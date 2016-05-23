@@ -25,6 +25,13 @@ function ChatController(param){
     that.doClientCommand(message);
   }, this);
 
+  this.chatNumber = ko.observable(1);
+  var chatMaxNumberTemp = [];
+  for(var i = 1; i <= 10; i++){
+    chatMaxNumberTemp.push({no:i});
+  }
+  this.chatMaxNumber = ko.observableArray(chatMaxNumberTemp);
+
   this.ownName = ko.observable();
   this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = ko.observable(0);
@@ -112,6 +119,141 @@ function ChatController(param){
 
   this.changeLoginName = function(){
     $('#name_in').modal("show");
+  }
+
+  this.changeChatNumber = function(){
+    that.socket.emit('chat_number', {num: that.chatNumber()});
+  }
+
+  this.initSocket = function(){
+    that.socket.on('remove_message', function(data) {
+      $('#msg_' + data.id).fadeOut('normal',function(){
+        $(this).remove();
+      });
+    });
+
+    that.socket.on('chat_number', function(number) {
+      if (number.num == 1){
+        $('#chat_nav').css('display','none');
+      }else{
+        $('#chat_nav').css('display','block');
+      }
+
+      if (that.chatNumber() != number.num){
+        that.chatNumber(number.num);
+      }
+      that.chatViewModels().forEach(function(vm){
+        vm.destroySocket();
+      });
+
+      var active_numbers = that.getActiveNumbers(number.num, number.numbers);
+
+      that.chatViewModels([]);
+      $('#chat_nav').empty();
+      active_numbers.forEach(function(no){
+        no = Number(no);
+        var room_name = "Room" + no;
+        if (number.rooms != null){
+          var room = number.rooms.filter(function(elem){ return elem.no == no; })[0];
+          if (room != null){
+            room_name = room.name;
+          }
+        }
+
+        that.chatViewModels.push(new ChatViewModel({
+          no: no,
+          room_name: room_name,
+          socket: that.socket,
+          getId: function(name) {return that.getId(name); },
+          getName: function() {return that.getName(); },
+          getFilterName: function() {return that.getFilterName(); },
+          getFilterWord: function() {return that.getFilterWord(); },
+          upHidingCount: function() {return that.upHidingCount(); },
+          notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
+          showRefPoint: that.showRefPoint
+        }));
+      });
+
+      $("#chat_tab_" + that.chatViewModels()[0].no).click();
+    });
+
+    that.getActiveNumbers = function(num, numbers){
+      num = Number(num);
+      var active_numbers = [];
+
+      // numbers が null なら連番
+      if (numbers == null){
+        for(var i = 1; i <= num; i++){
+          active_numbers.push(i);
+        }
+        return active_numbers;
+      }
+
+      // num 以下なら不足分を補間
+      if (num > numbers.length){
+        active_numbers = numbers;
+
+        var search_number = 1;
+        while (num > active_numbers.length){
+          if (numbers.filter(function(elem){ return elem == search_number; }).length == 0){
+            active_numbers.push(search_number);
+          }
+          search_number++;
+        }
+      }
+
+      // num 以上なら num まで取得
+      if (num <= numbers.length){
+        return numbers.slice(0,num);
+      }
+    }
+
+    that.socket.on('chat_tab_numbers', function(number) {
+      number.numbers.forEach(function(num){
+        $('#chat_nav').append($('#chat_li_' + num));
+      });
+    });
+
+
+    that.socket.on('list', function(login_list) {
+      $('#login_list_loader').hide();
+      $('#login_list span[rel=tooltip]').tooltip('hide');
+
+      var login_elems = [];
+      var avatar_elems = [];
+      for (var i = 0; i < login_list.length; ++i){
+        var place = "";
+        if ( login_list[i].place != "" ){
+          place = "@" + login_list[i].place;
+        }
+
+        var login_elem = {
+            id: login_list[i].id,
+            color_id: "login-symbol login-elem login-name" + that.getColorIdByNameId(login_list[i].id),
+            name: login_list[i].name,
+            avatar: login_list[i].avatar,
+            place: place,
+            pomo_min: login_list[i].pomo_min
+          };
+        if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
+          login_elem.has_avatar = true;
+          if (login_elem.name == that.loginName()){
+            that.ownName(login_elem);
+          }else{
+            avatar_elems.push(login_elem);
+          }
+        }else{
+          login_elem.has_avatar = false;
+          if (login_elem.name == that.loginName()){
+            that.ownName(login_elem);
+          }else{
+            login_elems.push(login_elem);
+          }
+        }
+      }
+      that.loginElemList(avatar_elems.concat(login_elems));
+      $('#login_list span[rel=tooltip]').tooltip({placement: 'bottom'});
+    });
   }
 
   // initialize
@@ -284,141 +426,6 @@ ChatController.prototype = {
     $('#chat_area').css('width',width + 'px').css('margin',0);
   },
 
-  initSocket: function(){
-    var that = this;
-
-    this.socket.on('remove_message', function(data) {
-      $('#msg_' + data.id).fadeOut('normal',function(){
-        $(this).remove();
-      });
-    });
-
-    $('#chat_number').bind('change',function(){
-      var num = $(this).val();
-      that.socket.emit('chat_number', {num: num});
-    });
-
-    this.socket.on('chat_number', function(number) {
-      if (number.num == 1){
-        $('#chat_nav').css('display','none');
-      }else{
-        $('#chat_nav').css('display','block');
-      }
-
-      $('#chat_number').val(number.num);
-      that.chatViewModels().forEach(function(vm){
-        vm.destroySocket();
-      });
-
-      var active_numbers = that.getActiveNumbers(number.num, number.numbers);
-
-      that.chatViewModels([]);
-      $('#chat_nav').empty();
-      active_numbers.forEach(function(no){
-        no = Number(no);
-        var room_name = "Room" + no;
-        if (number.rooms != null){
-          var room = number.rooms.filter(function(elem){ return elem.no == no; })[0];
-          if (room != null){
-            room_name = room.name;
-          }
-        }
-
-        that.chatViewModels.push(new ChatViewModel({
-          no: no,
-          room_name: room_name,
-          socket: that.socket,
-          getId: function(name) {return that.getId(name); },
-          getName: function() {return that.getName(); },
-          getFilterName: function() {return that.getFilterName(); },
-          getFilterWord: function() {return that.getFilterWord(); },
-          upHidingCount: function() {return that.upHidingCount(); },
-          notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
-          showRefPoint: that.showRefPoint
-        }));
-      });
-
-      $("#chat_tab_" + that.chatViewModels()[0].no).click();
-    });
-
-    this.getActiveNumbers = function(num, numbers){
-      num = Number(num);
-      var active_numbers = [];
-
-      // numbers が null なら連番
-      if (numbers == null){
-        for(var i = 1; i <= num; i++){
-          active_numbers.push(i);
-        }
-        return active_numbers;
-      }
-
-      // num 以下なら不足分を補間
-      if (num > numbers.length){
-        active_numbers = numbers;
-
-        var search_number = 1;
-        while (num > active_numbers.length){
-          if (numbers.filter(function(elem){ return elem == search_number; }).length == 0){
-            active_numbers.push(search_number);
-          }
-          search_number++;
-        }
-      }
-
-      // num 以上なら num まで取得
-      if (num <= numbers.length){
-        return numbers.slice(0,num);
-      }
-    }
-
-    this.socket.on('chat_tab_numbers', function(number) {
-      number.numbers.forEach(function(num){
-        $('#chat_nav').append($('#chat_li_' + num));
-      });
-    });
-
-
-    this.socket.on('list', function(login_list) {
-      $('#login_list_loader').hide();
-      $('#login_list span[rel=tooltip]').tooltip('hide');
-
-      var login_elems = [];
-      var avatar_elems = [];
-      for (var i = 0; i < login_list.length; ++i){
-        var place = "";
-        if ( login_list[i].place != "" ){
-          place = "@" + login_list[i].place;
-        }
-
-        var login_elem = {
-            id: login_list[i].id,
-            color_id: "login-symbol login-elem login-name" + that.getColorIdByNameId(login_list[i].id),
-            name: login_list[i].name,
-            avatar: login_list[i].avatar,
-            place: place,
-            pomo_min: login_list[i].pomo_min
-          };
-        if (login_list[i].avatar != undefined && login_list[i].avatar != ""){
-          login_elem.has_avatar = true;
-          if (login_elem.name == that.loginName()){
-            that.ownName(login_elem);
-          }else{
-            avatar_elems.push(login_elem);
-          }
-        }else{
-          login_elem.has_avatar = false;
-          if (login_elem.name == that.loginName()){
-            that.ownName(login_elem);
-          }else{
-            login_elems.push(login_elem);
-          }
-        }
-      }
-      that.loginElemList(avatar_elems.concat(login_elems));
-      $('#login_list span[rel=tooltip]').tooltip({placement: 'bottom'});
-    });
-  },
 
   initDropzone: function(){
     var that = this;
