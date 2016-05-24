@@ -40,7 +40,7 @@ function ChatViewModel(param){
   this.isActive = ko.observable(false);
 
   this.isLoadingLog = false;
-  this.loadingAfterEvent = null;
+  this.reloadAgain = false;
 
   // socket.io event handler
   this.on_message_own = this._message_own_handler();
@@ -90,7 +90,6 @@ ChatViewModel.prototype = {
 
     this.isLoadingLog = true;
     this.socket.emit('latest_log', {room_id: this.no});
-    //this.socket.emit('room_name', {room_id: this.no});
   },
 
   _msg_post_processing: function(data, $msg){
@@ -139,22 +138,19 @@ ChatViewModel.prototype = {
   _latest_log_handler: function() {
     var that = this;
     return function(msgs){
-      $('#message_loader').hide();
-      if (msgs.length == 0){
-        that.isLoadingLog = false;
+      that.isLoadingLog = false;
+
+      // 読込中に新規読み込み要求が来たらやり直す
+      if (that.reloadAgain){
+        that.reloadAgain = false;
+        that.reloadTimeline();
         return;
       }
 
-      // 読み込みがキャンセルされていれば以降の処理を停止
-      // 読み込み停止後のイベントが設定されていれば呼び出す
-      if (!that.isLoadingLog){
-        if(that.loadingAfterEvent != null){
-          that.loadingAfterEvent();
-          that.loadingAfterEvent = null;
-        }
+      $('#message_loader').hide();
+
+      if (msgs.length == 0){
         return;
-      }else{
-        that.isLoadingLog = false;
       }
 
       var add_count = 0;
@@ -197,20 +193,15 @@ ChatViewModel.prototype = {
 
   reloadTimeline: function(){
     var that = this;
-    this.clear_unread();
-    $(this.listId).empty();
+    that.clear_unread();
+    $(that.listId).empty();
 
     var filterName = that.getFilterName();
     var filterWord = that.getFilterWord();
 
     // 既に読み込み中の場合は完了後に再度読み込み開始する
-    if (this.isLoadingLog){
-      that.isLoadingLog = false;
-      that.loadingAfterEvent = function(){
-        that.isLoadingLog = true;
-        that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord});
-        $('#message_loader').show();
-      };
+    if (that.isLoadingLog){
+      that.reloadAgain = true;
     }else{
       that.isLoadingLog = true;
       that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord});
