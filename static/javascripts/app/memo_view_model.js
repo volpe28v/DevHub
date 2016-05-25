@@ -38,6 +38,10 @@ function DisplayState(parent){
     parent._updateIndexPos(no);
   }
 
+  this.insertText = function(row,text){
+    parent._insertToLatestText(row,text);
+  }
+
   this.exit = function(){}
 }
 
@@ -61,6 +65,10 @@ function EditState(parent){
 
   this.setIndex = function(no){}
 
+  this.insertText = function(row,text){
+    parent._insertToEditText(row,text);
+  }
+
   this.exit = function(){
     parent._add_history();
   }
@@ -78,6 +86,7 @@ function HideState(parent){
   }
 
   this.setIndex = function(no){}
+  this.insertText = function(row,text){}
   this.exit = function(){}
 }
 
@@ -93,6 +102,7 @@ function DiffState(parent){
   }
 
   this.setIndex = function(no){}
+  this.insertText = function(row,text){}
   this.exit = function(){
     parent.endDiff();
   }
@@ -112,6 +122,8 @@ function SearchState(parent){
   this.setIndex = function(no){
     parent._updateIndexPos(no);
   }
+
+  this.insertText = function(row,text){}
 
   this.exit = function(next){
     // 遷移先が Dispay Edit Diff なら検索終了
@@ -492,8 +504,19 @@ function MemoViewModel(param){
   }
 
   this.insert = function(row, text){
+    that.current_state().insertText(row,text);
+  }
+
+  this._insertToLatestText = function(row, text){
     var org_text = this.latest_text();
     var text_array = org_text.text.split("\n");
+    text_array.splice(row,0,text);
+    that.edit_text(text_array.join("\n"));
+  }
+
+  this._insertToEditText = function(row, text){
+    var org_text = this.edit_text();
+    var text_array = org_text.split("\n");
     text_array.splice(row,0,text);
     that.edit_text(text_array.join("\n"));
   }
