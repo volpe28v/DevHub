@@ -425,8 +425,8 @@ function MemoViewModel(param){
     $code_out.off('click');
 
     $target.find('.code-out').sortable({
-      items: "tr:has(.checkbox-draggable),tr:has(.text-draggable)",
-      distance: 6,
+      items: "tr.code-out-tr",
+      distance: 10,
       start: function(event,ui){
         that.drag_index = ui.item.index();
       },
@@ -455,6 +455,7 @@ function MemoViewModel(param){
       placeholder: 'draggable-placeholder',
       revert: true,
       axis: "y",
+      opacity: 0.7,
       scroll: true
     });
 
