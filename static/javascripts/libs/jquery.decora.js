@@ -131,8 +131,9 @@ var prettify = require('prettify');
     $(this).find('td:has(.code-out-pre-top)').addClass("code-out-pre-top-td");
     $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
 
-    $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr");
-    $(this).find('tr:has(.text-draggable)').addClass("draggable-text-tr");
+    $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr").removeClass("fixity");
+    $(this).find('tr:has(.text-draggable)').addClass("draggable-text-tr").removeClass("fixity");
+    $(this).find('tr:has(.thumbnail)').removeClass("fixity");
 
     _set_colorbox($(this).find('.thumbnail'));
 
@@ -144,8 +145,8 @@ var prettify = require('prettify');
 
   // private method
   function _set_to_table(html){
-    var table_html = '<table><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
-    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
+    var table_html = '<table><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
+    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
     return table_html += "</td></tr></table>";
   }
 
@@ -383,7 +384,7 @@ var prettify = require('prettify');
     var draggable_text = text.replace(/^=(.*)/mg, function(){
       var matched_text = arguments[1];
       if (matched_text == "[input]"){
-        return '<div class="text-draggable" style="padding-right: 10px"><input type="text" class="input-task" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
+        return '<div class="" style="padding-right: 10px"><input type="text" class="input-task" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
       }else{
         return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
       }

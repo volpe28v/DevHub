@@ -426,9 +426,11 @@ function MemoViewModel(param){
 
     $target.find('.code-out').sortable({
       items: "tr.code-out-tr",
-      distance: 10,
+      cancel: "tr.fixity",
+      distance: 6,
       start: function(event,ui){
         that.drag_index = ui.item.index();
+        ui.placeholder.height(ui.helper.outerHeight());
       },
       stop: function(event,ui){
         var drag_stop_index = ui.item.index();
@@ -453,9 +455,10 @@ function MemoViewModel(param){
         return $helper;
       },
       placeholder: 'draggable-placeholder',
+      tolerance: 'pointer',
       revert: true,
       axis: "y",
-      opacity: 0.7,
+      opacity: 0.5,
       scroll: true
     });
 
