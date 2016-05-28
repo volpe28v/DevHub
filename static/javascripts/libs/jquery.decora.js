@@ -370,7 +370,7 @@ var prettify = require('prettify');
       var matched_text = arguments[0];
       var sym_prefix = arguments[1] || arguments[2];
       var checkbox_class = sym_prefix == "-" ? "checkbox-normal" : "checkbox-draggable";
-      var delete_button = sym_prefix == "-" ? "" : '<a class="delete-task" href="#">x</a>';
+      var delete_button = sym_prefix == "-" ? "" : '<a class="delete-task" data-bind="click: function(data,event){ deleteTask(data, event, $element)}" href="#">x</a>';
       if ( matched_text.indexOf("x") > 0 ){
         return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />' + delete_button;
       }else{
@@ -384,7 +384,7 @@ var prettify = require('prettify');
     var draggable_text = text.replace(/^=(.*)/mg, function(){
       var matched_text = arguments[1];
       if (matched_text == "[input]"){
-        return '<div class="" style="padding-right: 10px"><input type="text" class="input-task" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
+        return '<div class="" style="padding-right: 10px"><input type="text" class="input-task" data-bind="event: {keydown: function(data,event){ return keydownInputTask(data,event,$element)}}" style="width:100%; margin-bottom:2px;" placeholder="type task and enter key."></div>';
       }else{
         return '<span class="text-draggable">' + _decorate_line_color(matched_text) + '</span>';
       }

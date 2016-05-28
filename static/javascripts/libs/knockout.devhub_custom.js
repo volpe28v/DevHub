@@ -310,6 +310,42 @@ function addCustomBindingHandlers(ko){
       });
     }
   }
+
+  // sortableMemo カスタムバインディング
+  ko.bindingHandlers.sortableMemo = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      if (!valueAccessor()){ return }
+
+      var viewModel = bindingContext.$data;
+
+      $(element).sortable({
+        items: "tr.code-out-tr",
+        cancel: "tr.fixity",
+        distance: 6,
+        start: function(event,ui){
+          viewModel.startMemoMoving(ui);
+        },
+        stop: function(event,ui){
+          viewModel.stopMemoMoving(ui);
+        },
+        helper: function(e, tr){
+          var $originals = tr.children();
+          var $helper = tr.clone();
+          $helper.children().each(function(index)
+          {
+            $(this).width($originals.eq(index).width());
+          });
+          return $helper;
+        },
+        placeholder: 'draggable-placeholder',
+        tolerance: 'pointer',
+        revert: true,
+        axis: "y",
+        opacity: 0.5,
+        scroll: true
+      });
+    }
+  }
 }
 
 

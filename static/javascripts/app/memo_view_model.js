@@ -421,90 +421,68 @@ function MemoViewModel(param){
 
     this._setFocusToInputTask($target, focus_index);
 
-    $code_out.off('keydown');
-    $code_out.off('click');
+    // チェックボックスの進捗表示
+    that.checked_count($code_out.find("input:checked").length);
+    that.checkbox_count($code_out.find("input[type=checkbox]").length);
+  }
 
-    $target.find('.code-out').sortable({
-      items: "tr.code-out-tr",
-      cancel: "tr.fixity",
-      distance: 6,
-      start: function(event,ui){
-        that.drag_index = ui.item.index();
-        ui.placeholder.height(ui.helper.outerHeight());
-      },
-      stop: function(event,ui){
-        var drag_stop_index = ui.item.index();
-        if (drag_stop_index == that.drag_index){ return; }
+  this.startMemoMoving = function(ui){
+    that.drag_index = ui.item.index();
+    ui.placeholder.height(ui.helper.outerHeight());
+  }
 
-        var text_array = that.latest_text().text.split("\n");
-        text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
-        that.latest_text().text = text_array.join("\n");
-        that.socket.emit('text',{
-          no: that.no,
-          name: that.getName(),
-          avatar: window.localStorage.avatarImage,
-          text: that.latest_text().text});
-      },
-      helper: function(e, tr){
-        var $originals = tr.children();
-        var $helper = tr.clone();
-        $helper.children().each(function(index)
-        {
-          $(this).width($originals.eq(index).width());
-        });
-        return $helper;
-      },
-      placeholder: 'draggable-placeholder',
-      tolerance: 'pointer',
-      revert: true,
-      axis: "y",
-      opacity: 0.5,
-      scroll: true
-    });
+  this.stopMemoMoving = function(ui){
+    var drag_stop_index = ui.item.index();
+    if (drag_stop_index == that.drag_index){ return; }
 
-    //TODO バインドする
-    $target.find('.code-out').on('click','.delete-task', function(e){
-      var $this_tr = $(this).closest('tr');
-      var delete_index = $this_tr.index();
+    var text_array = that.latest_text().text.split("\n");
+    text_array.splice(drag_stop_index, 0, text_array.splice(that.drag_index,1));
+    that.latest_text().text = text_array.join("\n");
+    that.socket.emit('text',{
+      no: that.no,
+      name: that.getName(),
+      avatar: window.localStorage.avatarImage,
+      text: that.latest_text().text});
+  }
 
-      $this_tr.fadeOut('normal', function(){
-        $(this).remove();
+  this.keydownInputTask = function(data, event, element){
+    if ( event.keyCode != 13) { return true; }
 
-        var text_array = that.latest_text().text.split("\n");
-        text_array.splice(delete_index, 1);
-        that.latest_text().text = text_array.join("\n");
-        that.socket.emit('text',{
-          no: that.no,
-          name: that.getName(),
-          avatar: window.localStorage.avatarImage,
-          text: that.latest_text().text});
-      });
-    });
+    var input_text = $(element).val();
+    if (input_text == ""){ return false; }
 
-    //TODO バインドする
-    $target.find('.code-out').on('keydown', '.input-task', function(event){
-      if ( event.keyCode != 13) { return true; }
+    var $this_tr = $(element).closest('tr');
+    var input_index = $this_tr.index();
+    $(element).val("");
 
-      var $this_tr = $(this).closest('tr');
-      var input_index = $this_tr.index();
-      var input_text = $(this).val();
-      $(this).val("");
+    var text_array = that.latest_text().text.split("\n");
+    text_array.splice(input_index, 0, "=[ ] " + input_text);
+    that.latest_text().text = text_array.join("\n");
+    that.socket.emit('text',{
+      no: that.no,
+      name: that.getName(),
+      avatar: window.localStorage.avatarImage,
+      text: that.latest_text().text});
+
+    return false;
+  }
+
+  this.deleteTask = function(data, event, element){
+    var $this_tr = $(element).closest('tr');
+    var delete_index = $this_tr.index();
+
+    $this_tr.fadeOut('normal', function(){
+      $(this).remove();
 
       var text_array = that.latest_text().text.split("\n");
-      text_array.splice(input_index, 0, "=[ ] " + input_text);
+      text_array.splice(delete_index, 1);
       that.latest_text().text = text_array.join("\n");
       that.socket.emit('text',{
         no: that.no,
         name: that.getName(),
         avatar: window.localStorage.avatarImage,
         text: that.latest_text().text});
-
-      return false;
     });
-
-    // チェックボックスの進捗表示
-    that.checked_count($code_out.find("input:checked").length);
-    that.checkbox_count($code_out.find("input[type=checkbox]").length);
   }
 
   this.insert = function(row, text){
