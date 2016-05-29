@@ -428,7 +428,6 @@ function MemoViewModel(param){
 
   this.startMemoMoving = function(ui){
     that.drag_index = ui.item.index();
-    ui.placeholder.height(ui.helper.outerHeight());
   }
 
   this.stopMemoMoving = function(ui){

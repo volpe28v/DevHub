@@ -352,7 +352,7 @@
                     <pre class="code-out-base" data-bind="decora: true">
                       <div class="code-out" data-bind="
                         dropzoneDisp: true,
-                        sortableMemo: true,
+                        sortableMemo: {items: 'tr.code-out-tr', cancel: 'tr.fixity'},
                         event: {dblclick: function(data, event){ editMemo(data, event, $element) }},
                         decoHtml: display_text">
                       </div>

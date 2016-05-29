@@ -314,15 +314,15 @@ function addCustomBindingHandlers(ko){
   // sortableMemo カスタムバインディング
   ko.bindingHandlers.sortableMemo = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-      if (!valueAccessor()){ return }
-
+      var params = valueAccessor();
       var viewModel = bindingContext.$data;
 
       $(element).sortable({
-        items: "tr.code-out-tr",
-        cancel: "tr.fixity",
+        items: params.items,
+        cancel: params.cancel,
         distance: 6,
         start: function(event,ui){
+          ui.placeholder.height(ui.helper.outerHeight());
           viewModel.startMemoMoving(ui);
         },
         stop: function(event,ui){
