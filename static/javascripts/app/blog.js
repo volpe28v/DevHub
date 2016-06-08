@@ -6,7 +6,6 @@ require('jquery-ui');
 require('jquery-colorbox');
 require('jquery.cookie');
 require('@gigwalk/livestamp');
-var emojify = require('emojify.js');
 require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
@@ -18,9 +17,6 @@ var COOKIE_NAME = "dev_hub_name";
 
 $(function() {
   var name = $.cookie(COOKIE_NAME);
-  emojify.setConfig({
-    img_dir: 'img/emoji',  // Directory for emoji images
-  });
 
   // スクロールバーの設定
   var scrollOption = {

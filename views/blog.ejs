@@ -73,7 +73,11 @@
           <div class="row-fluid" id="blog_input_area">
             <div class="span10">
               <div id="blog_input_form">
-                <textarea id="blog_form" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Write here" data-bind="textInput: input_text, event: {keydown: function(data,event){ return keydownBlogForm(data,event,$element)}}"></textarea>
+                <textarea id="blog_form" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Write here" data-bind="
+                  textInput: input_text,
+                  textcomplete: true,
+                  event: {keydown: function(data,event){ return keydownBlogForm(data,event,$element)}}
+                "></textarea>
               </div>
             </div>
             <div class="span2">
@@ -102,6 +106,7 @@
                 <div>
                   <textarea class="edit-area" data-bind="
                     textInput: text,
+                    textcomplete: true,
                     hasFocus: editing(),
                     editStartTextarea: editing(),
                     event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},

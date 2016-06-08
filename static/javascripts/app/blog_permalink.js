@@ -1,11 +1,15 @@
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
+global.moment = require('moment');
+require('../libs/moment.lang_ja');
 require('jquery-ui');
 require('jquery-colorbox');
 require('jquery.cookie');
+require('@gigwalk/livestamp');
 require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
+require('../libs/jquery.autosize');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 

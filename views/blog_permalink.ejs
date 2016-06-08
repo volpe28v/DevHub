@@ -65,6 +65,7 @@
                 <div>
                   <textarea class="edit-area" data-bind="
                     textInput: text,
+                    textcomplete: true,
                     hasFocus: editing(),
                     editStartTextarea: editing(),
                     event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
