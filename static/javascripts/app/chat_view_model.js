@@ -491,7 +491,7 @@ ChatViewModel.prototype = {
   },
 
   do_notification: function(data){
-    var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "");
+    var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "") + " -> " + this.room();
     var notif_icon = 'notification.png';
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
       notif_icon = data.avatar;
