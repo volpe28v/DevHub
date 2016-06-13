@@ -21,7 +21,7 @@ $(function() {
   // スクロールバーの設定
   var scrollOption = {
     wheelSpeed: 1,
-    useKeyboard: false,
+    useKeyboard: true,
     suppressScrollX: true
   };
 
