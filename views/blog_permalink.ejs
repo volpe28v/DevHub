@@ -20,21 +20,22 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script type="text/javascript">
       var BLOG_ID = "<%= id %>";
+      var Editing = <%= editing %>;
     </script>
   </head>
   <body style=":
     background-attachment: fixed;
     background-position: center top;
     background-repeat:  repeat;
-    padding-top: 60px;">
+    padding-top: 0px;">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="/">DevHub - blog</a>
           <ul class="nav pull-right">
-            <li><a href="/blog" target="_blank"   rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
-            <li><a href="/upload" target="_blank" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
+            <li><a href="/blog" rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
+            <li><a href="/upload" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
           </ul>
         </div>
       </div>
@@ -44,9 +45,9 @@
       <div class="row-fluid">
        <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
-          <ul id="blog_list" data-bind="foreach: items">
-            <li data-bind="attr: {id: _id}" class="blog-body">
-              <div class="alert alert-info">
+          <ul id="blog_list" data-bind="foreach: items" style="height: 100%;">
+            <li data-bind="attr: {id: _id}" class="blog-body" style="height: 100%">
+              <div data-bind="visible: !editing()" class="alert alert-info">
                 <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
                 <div class="blog-header">
                   <!-- ko if: has_avatar -->
@@ -60,21 +61,23 @@
                   <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
                 </div>
               </div>
-              <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
-              <div class="edit-form" data-bind="visible: editing()" style="display: none">
-                <div>
-                  <textarea class="edit-area" data-bind="
-                    textInput: text,
-                    textcomplete: true,
-                    hasFocus: editing(),
-                    editStartTextarea: editing(),
-                    event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
+
+              <div data-bind="visible: !editing()">
+                <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
+              </div>
+
+              <div data-bind="visible: editing()" style="height: 100%">
+                <div class="edit-form" style="display: flex; min-height: 100%;flex-direction: column;">
+                  <textarea class="edit-area" style="flex:1" data-bind="
+                  textInput: text,
+                  textcomplete: true,
+                  event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
                   "></textarea>
-                </div>
-                <div class="blog-action">
-                  <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
-                  <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
-                  <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
+                  <div class="blog-action" style="height: 40px">
+                    <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
+                    <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
+                    <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
+                  </div>
                 </div>
               </div>
             </li>

@@ -40,7 +40,8 @@ $(function() {
   var blogViewModel = new BlogViewModel(
     name,
     function(){},
-    function(){}
+    function(){},
+    Editing
   );
 
   ko.applyBindings(blogViewModel);

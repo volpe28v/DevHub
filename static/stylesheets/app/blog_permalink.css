@@ -35,7 +35,7 @@ body{
 }
 
 .dummy-space {
-  height: 40px;
+  height: 50px;
 }
 
 a, a:hover {
@@ -44,12 +44,12 @@ a, a:hover {
 
 #blog_list {
   margin: 0;
-  padding: 10px;
+  padding: 0px;
   list-style-type: none;
 }
 
 #blog_list > li {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .cancel-edit,
@@ -59,7 +59,6 @@ a, a:hover {
 }
 
 .update-notify-blog {
-  position: absolute;
   bottom: 0;
 }
 
@@ -251,8 +250,8 @@ pre.text-base-style {
 }
 
 .edit-form {
-  padding: 8px;
-  margin-bottom: 9px;
+  padding: 0px;
+  margin-bottom: 0px;
 }
 
 .edit-area {
@@ -263,6 +262,7 @@ pre.text-base-style {
   width: 100%;
   display: block;
   padding: 8px;
+  margin-top: 10px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;

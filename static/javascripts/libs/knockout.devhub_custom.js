@@ -95,7 +95,8 @@ function addCustomBindingHandlers(ko){
 
               if (valueUnwrapped == true){
                 $(element).caretLine(0);
-                $(element).autofit({min_height: 100});
+                $(element).keyup();
+                //$(element).autofit({min_height: 100});
               }
             }
   }

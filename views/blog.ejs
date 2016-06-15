@@ -76,6 +76,7 @@
                 <textarea id="blog_form" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Write here" data-bind="
                   textInput: input_text,
                   textcomplete: true,
+                  autosize: true,
                   event: {keydown: function(data,event){ return keydownBlogForm(data,event,$element)}}
                 "></textarea>
               </div>
@@ -95,7 +96,7 @@
                   <!-- ko ifnot: has_avatar -->
                   <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
-                  <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
+                  <a class="edit-blog" data-bind="attr: {href:'blog?id=' + _id() + '&edit=true'}"><i class="icon-pencil"></i></a>
                   <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
                   <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
                   <a class="btn btn-mini " data-bind="attr: {href:'blog?id=' + _id()}" target="_blank"> Permalink</a>
@@ -108,6 +109,7 @@
                     textInput: text,
                     textcomplete: true,
                     hasFocus: editing(),
+                    autofit: true,
                     editStartTextarea: editing(),
                     event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
                   "></textarea>

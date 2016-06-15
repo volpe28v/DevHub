@@ -7,9 +7,10 @@ require('../libs/jquery.decora');
 require('sweetalert');
 var DropZone = require('../libs/dropzone');
 
-function BlogViewModel(name, start, end){
+function BlogViewModel(name, start, end, editing){
   var that = this;
   this.name = name;
+  this.initialEditing = editing;
   this.input_text = ko.observable("");
   this.items = ko.observableArray([]);
   this.item_count = ko.observable(0);
@@ -45,11 +46,15 @@ function BlogViewModel(name, start, end){
   this.update = function(){
     var blog = this;
     that._update(blog, false);
+    $('.navbar').show();
+    $('.dummy-space').show();
   }
 
   this.updateWithNotify = function(){
     var blog = this;
     that._update(blog, true);
+    $('.navbar').show();
+    $('.dummy-space').show();
   }
 
   this._update = function(blog, is_notify){
@@ -86,6 +91,8 @@ function BlogViewModel(name, start, end){
     var blog = this;
     blog.text(blog.pre_text);
     blog.editing(false);
+    $('.navbar').show();
+    $('.dummy-space').show();
   }
 
   this.destroy = function(){
@@ -124,6 +131,9 @@ function BlogViewModel(name, start, end){
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
       that._update(data, false);
+      $('.navbar').show();
+      $('.dummy-space').show();
+
       return false;
     }else{
       return true;
@@ -239,7 +249,7 @@ BlogViewModel.prototype = {
       (event.ctrlKey == true && event.keyCode == 13)) {
       $(element).blur(); //入力を確定するためにフォーカス外す
       that.add();
-      $('#blog_form').trigger('autosize.resize');
+      //$('#blog_form').trigger('autosize.resize');
       return false;
     }
 
@@ -373,7 +383,7 @@ BlogViewModel.prototype = {
         that.tags(data.tags);
         var blogs = data.blogs;
         blogs.body.forEach(function(blog){
-          that._addItem(blog);
+          that._addItem(blog, that.initialEditing);
         });
       }
     });
@@ -436,12 +446,13 @@ BlogViewModel.prototype = {
     that.input_text("");
   },
 
-  edit: function(){
-    var blog = this;
+  edit: function(blog){
     blog.pre_text = blog.text();
     blog.editing(true);
+    $('.navbar').hide();
+    $('.dummy-space').hide();
   },
-  
+
   _title_plane: function(text){
     var blog_lines = text.split('\n');
     var title = "";
@@ -584,7 +595,7 @@ BlogViewModel.prototype = {
     item.text(text_array.join("\n"));
   },
 
-  _addItem: function(item){
+  _addItem: function(item, initialEditing){
     var that = this;
     var id = item._id;
     for (var i = 0; i < this.items().length; i++){
@@ -602,6 +613,10 @@ BlogViewModel.prototype = {
     var mapped_item = ko.mapping.fromJS(item);
 
     that.items.push(mapped_item);
+
+    if (initialEditing){
+      that.edit(mapped_item);
+    }
 
     var $target = $('#' + id);
     that._setDropZone(mapped_item, $target.find('.edit-area'));
