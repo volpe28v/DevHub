@@ -67,8 +67,8 @@
               </div>
 
               <div data-bind="visible: editing()" style="height: 100%">
-                <div class="edit-form" style="display: flex; min-height: 100%;flex-direction: column;">
-                  <textarea class="edit-area" style="flex:1" data-bind="
+                <div class="edit-form" style="display: flex; min-height: 100vh; height:100%; flex-direction: column;">
+                  <textarea class="edit-area" style="flex:1 0 auto" data-bind="
                   textInput: text,
                   textcomplete: true,
                   event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
