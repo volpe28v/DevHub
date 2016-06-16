@@ -29,7 +29,7 @@
     background-repeat:  repeat;
     padding-top: 0px;">
 
-    <div class="navbar navbar-fixed-top">
+    <div data-bind="visible: !has_editing()" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="/">DevHub - blog</a>
@@ -44,7 +44,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
        <div id="blog_area" class="span8">
-          <div class="dummy-space"></div>
+          <div data-bind="visible: !has_editing()" class="dummy-space"></div>
           <ul id="blog_list" data-bind="foreach: items" style="height: 100%;">
             <li data-bind="attr: {id: _id}" class="blog-body" style="height: 100%">
               <div data-bind="visible: !editing()" class="alert alert-info">
@@ -84,7 +84,7 @@
           </ul>
         </div>
         <div id="index_header_area" class="span4">
-          <div class="dummy-space"></div>
+          <div data-bind="visible: !has_editing()" class="dummy-space"></div>
           <ul id="index_header" data-bind="foreach: items">
             <li>
               <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">

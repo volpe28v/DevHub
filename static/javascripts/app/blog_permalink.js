@@ -44,6 +44,14 @@ $(function() {
     Editing
   );
 
+  blogViewModel.has_editing.subscribe(function(editing){
+    if (editing){
+      $('#blog_area').perfectScrollbar('destroy');
+    }else{
+      $('#blog_area').perfectScrollbar(scrollOption);
+    }
+  });
+
   ko.applyBindings(blogViewModel);
 
   blogViewModel.loadByID(BLOG_ID);
