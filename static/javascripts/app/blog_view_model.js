@@ -138,29 +138,21 @@ function BlogViewModel(name, start, end, editing){
     }
   }
 
-  this.selectIndex = function(){
-    $target = $("#" + this._id());
+  this.selectIndex = function(blog){
+    $target = $("#" + blog._id());
     var target_top = $target.offset().top;
     var base_top = $("#blog_list").offset().top;
     $('#blog_area').scrollTop(target_top - base_top + 38);
 
-    that.toggleIndexes(this);
+    that.toggleIndexes(blog);
   }
 
-  this.selectIndexHeader = function(offset){
+  this.selectIndexHeader = function(offset, blog){
     var specify_offset = offset ? offset : 42;
 
-    var $code_out = $('#' + this.id());
-    var pos = $code_out.find(":header").eq(this.no()).offset().top - $('#blog_list').offset().top;
+    var $code_out = $('#' + blog.id());
+    var pos = $code_out.find(":header").eq(blog.no()).offset().top - $('#blog_list').offset().top;
     $('#blog_area').scrollTop(pos + specify_offset);
-
-    return true;
-  }
-
-  this.selectPermalinkIndexHeader = function(){
-    var $code_out = $('#' + this.id());
-    var pos = $code_out.find(":header").eq(this.no()).offset().top - $('#blog_list').offset().top;
-    $('#blog_area').scrollTop(pos - 10);
 
     return true;
   }
@@ -596,6 +588,12 @@ function BlogViewModel(name, start, end, editing){
     item.copy_title = that._createCopyTitle(item.text, item._id);
 
     var mapped_item = ko.mapping.fromJS(item);
+    mapped_item.delayedText = ko.pureComputed(mapped_item.text)
+        .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
+
+    mapped_item.delayedText.subscribe(function (val) {
+      mapped_item.indexes(that._indexes(val, mapped_item._id()));
+    }, mapped_item);
 
     that.items.push(mapped_item);
 
