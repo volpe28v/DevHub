@@ -66,9 +66,16 @@ function BlogViewModel(name, start, end, editing){
 
     update_blog.name = that.name;
     update_blog.title = that._title_plane(update_blog.text);
-    update_blog.avatar = window.localStorage.avatarImage; 
+    update_blog.avatar = window.localStorage.avatarImage;
     update_blog.is_notify = is_notify;
     delete update_blog.pre_text;
+    delete update_blog.copy_title;
+    delete update_blog.delayedText;
+    delete update_blog.indexes;
+    delete update_blog.editing;
+    delete update_blog.has_avatar;
+    delete update_blog.matched;
+    delete update_blog.display_indexes;
 
     $.ajax('blog' , {
       type: 'POST',
