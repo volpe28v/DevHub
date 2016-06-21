@@ -39,8 +39,8 @@ $(function() {
 
   var blogViewModel = new BlogViewModel(
     name,
-    function(){},
-    function(){},
+    null,
+    null,
     Editing
   );
 

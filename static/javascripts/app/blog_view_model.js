@@ -45,6 +45,8 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.selectTagInTitle = function(data, event, element){
+    if (that.load_start == null){ return; }
+
     var tag = $(element).data("tag");
     that.search_by_tag(tag);
   }
@@ -85,7 +87,11 @@ function BlogViewModel(name, start, end, editing){
         that.tags(data.tags);
         blog.name(data.blog.name);
         blog.indexes(ko.mapping.fromJS(that._indexes(data.blog.text, data.blog._id))());
-        blog.avatar(data.blog.avatar);
+        if (blog.avatar != null){
+          blog.avatar(data.blog.avatar);
+        }else{
+          blog.avatar = ko.observable(data.blog.avatar);
+        }
         blog.title(data.blog.title);
         blog.date(data.blog.date);
         blog.has_avatar(data.blog.avatar != null && data.blog.avatar != "");
@@ -244,7 +250,6 @@ function BlogViewModel(name, start, end, editing){
       (event.ctrlKey == true && event.keyCode == 13)) {
       $(element).blur(); //入力を確定するためにフォーカス外す
       that.add();
-      //$('#blog_form').trigger('autosize.resize');
       return false;
     }
 
@@ -252,16 +257,15 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.hasKeyword = function(){
-    return this.keyword() != "" ? true : false;
+    return that.keyword() != "" ? true : false;
   }
 
   this.search_by_tag = function(tag){
-    this.keyword("tag:" + tag);
-    this.search();
+    that.keyword("tag:" + tag);
+    that.search();
   }
 
   this.search = function(){
-    this.keyword($('.search-query').val().replace(/^[\s　]+|[\s　]+$/g, ""));
     // キーワード無しの場合は全blog更新
     if (this.keyword() == ""){
       this.before_keyword = "";
