@@ -79,6 +79,12 @@ function BlogViewModel(name, start, end, editing){
     delete update_blog.matched;
     delete update_blog.display_indexes;
 
+    if (update_blog._id == "new-blog"){
+      console.log("new-blog");
+      that._add_from_permalink(update_blog, is_notify);
+      return;
+    }
+
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
@@ -102,8 +108,31 @@ function BlogViewModel(name, start, end, editing){
     });
   }
 
+  this._add_from_permalink = function(blog, is_notify){
+    blog._id = undefined;
+
+    $.ajax('blog' , {
+      type: 'POST',
+      cache: false,
+      data: {blog: blog},
+      success: function(data){
+        that.items.removeAll();
+        that.tags(data.tags);
+        var blog = data.blog;
+        that._addItem(blog, false);
+      }
+    });
+  }
+
   this.cancel = function(){
     var blog = this;
+
+    if (blog._id() == "new-blog"){
+      var url_base = location.href.split('?')[0];
+      location.href = url_base;
+      return;
+    }
+
     blog.text(blog.pre_text);
     blog.editing(false);
   }
@@ -371,19 +400,28 @@ function BlogViewModel(name, start, end, editing){
 
   // for Permalink
   this.loadByID = function(id){
-    $.ajax('blog/body' , {
-      type: 'GET',
-      cache: false,
-      data: {_id: id},
-      success: function(data){
-        //$.observable(that.tags).refresh(data.tags);
-        that.tags(data.tags);
-        var blogs = data.blogs;
-        blogs.body.forEach(function(blog){
-          that._addItem(blog, that.initialEditing);
-        });
-      }
-    });
+    if (id == ""){
+      // 新規追加画面
+      var blog = {
+        text: "",
+        _id: "new-blog",
+        date: new Date(),
+      };
+      that._addItem(blog, that.initialEditing);
+    }else{
+      $.ajax('blog/body' , {
+        type: 'GET',
+        cache: false,
+        data: {_id: id},
+        success: function(data){
+          that.tags(data.tags);
+          var blogs = data.blogs;
+          blogs.body.forEach(function(blog){
+            that._addItem(blog, that.initialEditing);
+          });
+        }
+      });
+    }
   }
 
   this.load_more = function(){

@@ -52,9 +52,9 @@ exports.post = function(req, res, io) {
 };
 
 exports.get = function(req, res){
-  var id = req.query.id;
+  var id = req.query.id || "";
   var editing = req.query.edit ? req.query.edit : false;
-  if (id == undefined){
+  if (id == "" && editing == false){
     res.render('blog');
   }else{
     res.render('blog_permalink',{id: id, editing: editing});

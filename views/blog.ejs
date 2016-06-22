@@ -38,8 +38,9 @@
           </span></a>
           <div id="blog_navi">
             <ul class="nav pull-right">
+              <li><a href="/blog?edit=true" rel="tooltip" title="New Blog"><i class="icon-white icon-plus"></i></a></li>
               <li><a href="#tags_modal" rel="tooltip" title="Tags" data-toggle="modal" href="#"><i class="icon-white icon-tags"></i></a></li>
-              <li><a id="scroll_top" href="#" data-bind="click: moveTop"><i class="icon-white icon-arrow-up"></i></a></li>
+              <li><a id="scroll_top" rel="tooltip" title="Scroll Top" href="#" data-bind="click: moveTop"><i class="icon-white icon-arrow-up"></i></a></li>
             </ul>
 
             <form id="search_form" class="navbar-form pull-right" data-bind="submit: submitSearch">
@@ -70,21 +71,6 @@
 
         <div id="blog_area" class="span8">
           <div class="dummy-space"></div>
-          <div class="row-fluid" id="blog_input_area">
-            <div class="span10">
-              <div id="blog_input_form">
-                <textarea id="blog_form" style="width: 100%; resize: vertical; height: 18px;  line-height: 18px;" rows="1" autocomplete="off" placeholder="Write here" data-bind="
-                  textInput: input_text,
-                  textcomplete: true,
-                  autosize: true,
-                  event: {keydown: function(data,event){ return keydownBlogForm(data,event,$element)}}
-                "></textarea>
-              </div>
-            </div>
-            <div class="span2">
-              <button id="save_btn" class="btn btn-primary">Save</button>
-            </div>
-          </div>
           <ul id="blog_list" data-bind="foreach: items">
             <li data-bind="attr: {id: _id}" class="blog-body">
               <div class="alert alert-info">

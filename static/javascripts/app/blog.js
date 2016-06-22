@@ -18,6 +18,10 @@ var COOKIE_NAME = "dev_hub_name";
 $(function() {
   var name = $.cookie(COOKIE_NAME);
 
+  $('a[rel=tooltip]').tooltip({
+    placement : 'bottom'
+  });
+
   // スクロールバーの設定
   var scrollOption = {
     wheelSpeed: 1,
