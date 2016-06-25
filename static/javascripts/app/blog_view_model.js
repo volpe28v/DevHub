@@ -62,12 +62,14 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this._update = function(blog, is_notify){
+    var update_blog = ko.toJS(blog);
+    var title = that._title_plane(update_blog.text);
+    if (title == ""){ return; }
+
     blog.editing(false);
 
-    var update_blog = ko.toJS(blog);
-
     update_blog.name = that.name;
-    update_blog.title = that._title_plane(update_blog.text);
+    update_blog.title = title;
     update_blog.avatar = window.localStorage.avatarImage;
     update_blog.is_notify = is_notify;
     delete update_blog.pre_text;
