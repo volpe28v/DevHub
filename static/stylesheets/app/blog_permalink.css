@@ -262,13 +262,17 @@ pre.text-base-style {
   width: 100%;
   display: block;
   padding: 8px;
-  margin-top: 10px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.blog-permalink-edit-title {
+  margin-top: 5px;
+  margin-bottom: 10px;
 }
 
 .blog-header {

@@ -644,6 +644,7 @@ function BlogViewModel(name, start, end, editing){
 
     mapped_item.delayedText.subscribe(function (val) {
       mapped_item.indexes(that._indexes(val, mapped_item._id()));
+      mapped_item.title(that._title(val));
     }, mapped_item);
 
     that.items.push(mapped_item);
