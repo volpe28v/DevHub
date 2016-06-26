@@ -69,8 +69,8 @@
               <div data-bind="visible: editing()" style="height: 100%">
                 <div class="edit-form" style="display: flex; min-height: 100vh; height:100%; flex-direction: column;">
                   <div class="blog-permalink-edit-title">
-                    <h1 class="blog-title" style="height: 40px" data-bind="decoBlogTitleHtml: title">
-                    </h1>
+                    <h1 class="blog-title" style="height: 40px" data-bind="visible: title() != '', decoBlogTitleHtml: title"></h1>
+                    <h1 class="blog-title-none" style="height: 40px" data-bind="visible: title() == ''">Blog Title</h1>
                   </div>
                   <textarea class="edit-area" style="flex:1 0 auto" data-bind="
                   textInput: text,
