@@ -186,13 +186,13 @@ function BlogViewModel(name, start, end, editing){
     $target = $("#" + blog._id());
     var target_top = $target.offset().top;
     var base_top = $("#blog_list").offset().top;
-    $('#blog_area').scrollTop(target_top - base_top + 38);
+    $('#blog_area').scrollTop(target_top - base_top);
 
     that.toggleIndexes(blog);
   }
 
   this.selectIndexHeader = function(offset, blog){
-    var specify_offset = offset ? offset : 42;
+    var specify_offset = offset ? offset : 0;
 
     var $code_out = $('#' + blog.id());
     var pos = $code_out.find(":header").eq(blog.no()).offset().top - $('#blog_list').offset().top;
