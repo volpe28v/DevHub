@@ -286,7 +286,7 @@ function addCustomBindingHandlers(ko){
       }
     }
   }
- 
+
   // sortable カスタムバインディング
   ko.bindingHandlers.sortable = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -321,6 +321,7 @@ function addCustomBindingHandlers(ko){
       $(element).sortable({
         items: params.items,
         cancel: params.cancel,
+        handle: ".drag-handle",
         distance: 6,
         start: function(event,ui){
           ui.placeholder.height(ui.helper.outerHeight());
@@ -340,7 +341,8 @@ function addCustomBindingHandlers(ko){
         },
         placeholder: 'draggable-placeholder',
         tolerance: 'pointer',
-        revert: true,
+        cursor: 'row-resize',
+        revert: false,
         axis: "y",
         opacity: 0.5,
         scroll: true

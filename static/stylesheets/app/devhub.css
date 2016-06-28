@@ -208,7 +208,7 @@ a, a:hover {
 .share-memo pre {
   margin-top: 2px;
   line-height: 0;
-  padding: 14px;
+  padding: 14px 0px;
 }
 
 .share-memo-tab-elem {
@@ -321,6 +321,29 @@ a, a:hover {
 .code-out-base {
   background-color: #fff;
   border: 0px solid rgba(0, 0, 0, 0.1);
+}
+
+.draggable-tr:hover {
+  background: #fafafa;
+  border-top: 1px solid #ededed !important;
+  border-bottom: 1px solid #ededed;
+}
+
+.draggable-tr:hover > .drag-handle-td > .drag-handle {
+  display: block;
+}
+
+.draggable-tr:hover > td > .delete-task {
+  display: block;
+}
+
+.drag-handle-td {
+  width: 16px;
+}
+
+.drag-handle {
+  cursor: row-resize;
+  display: none;
 }
 
 .text-highlight {
@@ -459,29 +482,6 @@ a, a:hover {
   line-height: 0.2 !important;
 }
 
-.checkbox-draggable {
-  margin-left: 4px !important;
-}
-
-.draggable-tr td {
-  cursor: pointer;
-  background-color: #f7f7f7;
-  border: 1px solid #ccc;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  -webkit-border-radius: 3px;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  padding: 4px;
-}
-
-.draggable-tr td:hover {
-  border: 1px solid #bbb;
-}
-
-.draggable-text-tr td {
-  background-color: #ffffff;
-  cursor: pointer;
-}
-
 .draggable-placeholder {
   background-color: beige !important;
 }
@@ -489,6 +489,7 @@ a, a:hover {
 .delete-task {
   float: right;
   margin-right: 4px;
+  display: none;
 }
 
 .diff-view {

@@ -145,8 +145,8 @@ var prettify = require('prettify');
 
   // private method
   function _set_to_table(html){
-    var table_html = '<table><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>';
-    table_html += html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td>');
+    var table_html = '<table><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td class="drag-handle-td">';
+    table_html += '<i class="icon-align-justify drag-handle"></i></td><td>' + html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td class="drag-handle-td"><i class="icon-align-justify drag-handle"></i></td><td>');
     return table_html += "</td></tr></table>";
   }
 
@@ -333,7 +333,7 @@ var prettify = require('prettify');
             height_css = "max-height:";
           }
           var prefix = arguments[1] ? arguments[1] : "";
-          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/></a>';
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail drag-handle" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/></a>';
         });
     return {text: img_text, no: img_index};
   }
@@ -369,8 +369,8 @@ var prettify = require('prettify');
     var check_text = text.replace(REG_CHECKBOX, function(){
       var matched_text = arguments[0];
       var sym_prefix = arguments[1] || arguments[2];
-      var checkbox_class = sym_prefix == "-" ? "checkbox-normal" : "checkbox-draggable";
-      var delete_button = sym_prefix == "-" ? "" : '<a class="delete-task" data-bind="click: function(data,event){ deleteTask(data, event, $element)}" href="#">x</a>';
+      var checkbox_class = "checkbox-draggable";
+      var delete_button = '<a class="delete-task" data-bind="click: function(data,event){ deleteTask(data, event, $element)}" href="#">x</a>';
       if ( matched_text.indexOf("x") > 0 ){
         return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />' + delete_button;
       }else{
