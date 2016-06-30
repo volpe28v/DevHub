@@ -149,7 +149,7 @@ var prettify = require('prettify');
   // private method
   function _set_to_table(html){
     var table_html = '<table><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td class="drag-handle-td">';
-    table_html += '<i class="icon-align-justify drag-handle"></i></td><td>' + html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td class="drag-handle-td"><i class="icon-align-justify drag-handle"></i></td><td>');
+    table_html += '<svg class="drag-handle" aria-hidden="true" width="16" height="15" version="1.1" viewBox="0 0 16 15"><path d="M12,4V5H4V4h8ZM4,8h8V7H4V8Zm0,3h8V10H4v1Z"></path></svg></td><td>' + html.replace(/[\n]/g,'</td></tr><tr class="code-out-tr fixity" data-bind="event: {dblclick: function(data,event){ editSpecificRow(data, event, $element)}}, dblclickBubble: false"><td class="drag-handle-td"><svg class="drag-handle" aria-hidden="true" width="16" height="15" version="1.1" viewBox="0 0 16 15"><path d="M12,4V5H4V4h8ZM4,8h8V7H4V8Zm0,3h8V10H4v1Z"></path></svg></td><td>');
     return table_html += "</td></tr></table>";
   }
 
