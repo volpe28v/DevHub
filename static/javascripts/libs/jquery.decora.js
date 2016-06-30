@@ -132,6 +132,9 @@ var prettify = require('prettify');
     $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
 
     $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr").removeClass("fixity");
+
+    var delete_button = '<a class="delete-task" data-bind="click: function(data,event){ deleteTask(data, event, $element)}" href="#">x</a>';
+    $(this).find('td:has(.checkbox-draggable)').addClass("checkbox-draggable-td").prepend(delete_button);
     $(this).find('tr:has(.text-draggable)').addClass("draggable-tr").removeClass("fixity");
     $(this).find('tr:has(.thumbnail)').addClass("draggable-tr").removeClass("fixity");
 
@@ -370,11 +373,10 @@ var prettify = require('prettify');
       var matched_text = arguments[0];
       var sym_prefix = arguments[1] || arguments[2];
       var checkbox_class = "checkbox-draggable";
-      var delete_button = '<a class="delete-task" data-bind="click: function(data,event){ deleteTask(data, event, $element)}" href="#">x</a>';
       if ( matched_text.indexOf("x") > 0 ){
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />' + delete_button;
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />';
       }else{
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />' + delete_button;
+        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />';
       }
     });
     return {text: check_text, no: no};

@@ -323,6 +323,15 @@ a, a:hover {
   border: 0px solid rgba(0, 0, 0, 0.1);
 }
 
+.checkbox-draggable {
+  margin: 0 0 0 -1.6em !important;
+}
+
+.checkbox-draggable-td {
+  padding-left: 26px;
+  padding-right: 26px;
+}
+
 .draggable-tr:hover {
   background: #fafafa;
 }
@@ -488,6 +497,7 @@ a, a:hover {
   float: right;
   margin-right: 4px;
   display: none;
+  margin: 0 -1.4em 0 0 !important;
 }
 
 .diff-view {

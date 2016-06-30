@@ -267,7 +267,12 @@ pre.text-base-style {
 }
 
 .checkbox-draggable {
-  margin-left: 4px !important;
+  margin: 0 0 0 -1.6em !important;
+}
+
+.checkbox-draggable-td {
+  padding-left: 26px;
+  padding-right: 26px;
 }
 
 .drag-handle-td {

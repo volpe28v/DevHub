@@ -21,6 +21,7 @@ body{
   height: 100%;
   top: 0px;
   left: 14px;
+  padding-right: 12px;
 }
 
 #index_header_area {
@@ -178,7 +179,12 @@ pre.text-base-style {
 }
 
 .checkbox-draggable {
-  margin-left: 4px !important;
+  margin: 0 0 0 -1.6em !important;
+}
+
+.checkbox-draggable-td {
+  padding-left: 26px;
+  padding-right: 26px;
 }
 
 .drag-handle-td {
