@@ -83,7 +83,7 @@ a, a:hover {
 
 pre.text-base-style {
   border: 0px;
-  padding: 14px;
+  padding: 14px 0px;
 }
 
 .code-out {
@@ -181,31 +181,19 @@ pre.text-base-style {
   margin-left: 4px !important;
 }
 
-.draggable-tr td {
-  cursor: pointer;
-  background-color: #f7f7f7;
-  border: 1px solid #ccc;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  -webkit-border-radius: 3px;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+.drag-handle-td {
+  width: 16px;
 }
 
-.draggable-tr td:hover {
-  border: 1px solid #bbb;
-}
-
-.draggable-text-tr td {
-  background-color: #ffffff;
-  cursor: pointer;
-}
-
-.draggable-placeholder {
-  background-color: beige !important;
+.drag-handle {
+  cursor: row-resize;
+  display: none;
 }
 
 .delete-task {
   float: right;
   margin-right: 4px;
+  display: none;
 }
 
 .diff-view {
@@ -234,6 +222,10 @@ pre.text-base-style {
   height: 1.5em;
   display: inline-block;
   margin-bottom: 0.2em;
+}
+
+.input-task {
+  background-color: #fafafa;
 }
 
 #blog_form {

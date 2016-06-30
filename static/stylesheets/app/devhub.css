@@ -325,8 +325,6 @@ a, a:hover {
 
 .draggable-tr:hover {
   background: #fafafa;
-  border-top: 1px solid #ededed !important;
-  border-bottom: 1px solid #ededed;
 }
 
 .draggable-tr:hover > .drag-handle-td > .drag-handle {

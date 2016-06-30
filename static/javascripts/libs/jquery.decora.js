@@ -132,8 +132,8 @@ var prettify = require('prettify');
     $(this).find('td:has(.code-out-pre-bottom)').addClass("code-out-pre-bottom-td");
 
     $(this).find('tr:has(.checkbox-draggable)').addClass("draggable-tr").removeClass("fixity");
-    $(this).find('tr:has(.text-draggable)').addClass("draggable-text-tr").removeClass("fixity");
-    $(this).find('tr:has(.thumbnail)').removeClass("fixity");
+    $(this).find('tr:has(.text-draggable)').addClass("draggable-tr").removeClass("fixity");
+    $(this).find('tr:has(.thumbnail)').addClass("draggable-tr").removeClass("fixity");
 
     _set_colorbox($(this).find('.thumbnail'));
 
@@ -333,7 +333,7 @@ var prettify = require('prettify');
             height_css = "max-height:";
           }
           var prefix = arguments[1] ? arguments[1] : "";
-          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail drag-handle" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/></a>';
+          return prefix + '<a href="' + matched_link + '" data-index="' + img_index + '" class="thumbnail" style="position: relative; vertical-align: top;"><img src="' + matched_link + '" style="' + height_css + height + 'px"/></a>';
         });
     return {text: img_text, no: img_index};
   }
