@@ -10,7 +10,7 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  var REG_CHECKBOX = /(-|=)[ ]?\[[ ]?\]|(-|=)[ ]?\[x\]/g,
+  var REG_CHECKBOX = /^([ |　|#]*)([-|=])[ ]?\[([ |x])?\]/mg,
       SYM_CHECKED = "[x]",
       SYM_UNCHECKED = "[ ]";
 
@@ -46,12 +46,13 @@ var prettify = require('prettify');
         function(){
           var matched_check = arguments[0];
           var current_index = check_index++;
-          var sym_prefix = arguments[1] || arguments[2];
+          var prefix = arguments[1];
+          var sym_prefix = arguments[2];
           if ( check_no == current_index){
             if (is_checked){
-              return sym_prefix + SYM_CHECKED;
+              return prefix +sym_prefix + SYM_CHECKED;
             }else{
-              return sym_prefix + SYM_UNCHECKED;
+              return prefix + sym_prefix + SYM_UNCHECKED;
             }
           }else{
             return matched_check;
@@ -371,13 +372,11 @@ var prettify = require('prettify');
   function _decorate_checkbox( text, no ){
     var check_text = text.replace(REG_CHECKBOX, function(){
       var matched_text = arguments[0];
-      var sym_prefix = arguments[1] || arguments[2];
+      var prefix = arguments[1];
+      var sym_prefix = arguments[2];
+      var checked = arguments[3] == 'x' ? 'checked' : '';
       var checkbox_class = "checkbox-draggable";
-      if ( matched_text.indexOf("x") > 0 ){
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" checked />';
-      }else{
-        return '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" />';
-      }
+      return prefix + '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" ' + checked + ' />';
     });
     return {text: check_text, no: no};
   }
