@@ -10,7 +10,7 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  var REG_CHECKBOX = /^([ |　|#]*)([-|=])[ ]?\[([ |x])?\]/mg,
+  var REG_CHECKBOX = /^([ |　]*)([-|=])[ ]?\[([ |x])?\]/mg,
       SYM_CHECKED = "[x]",
       SYM_UNCHECKED = "[ ]";
 
