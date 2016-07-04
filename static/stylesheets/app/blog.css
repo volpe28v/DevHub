@@ -461,9 +461,36 @@ hr {
 }
 
 .index-ul a:hover {
-  color: white !important;
   background-color: #0088cc !important;
 }
+
+.index-li h1 {
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 25px;
+}
+
+.index-li h2 {
+  font-size: 17px;
+  font-weight: normal;
+  line-height: 22px;
+}
+
+.index-li h3 {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 19px;
+}
+
+.index-li h4,
+.index-li h5,
+.index-li h6
+{
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 16px;
+}
+
 
 .avatar {
   padding: 1px;

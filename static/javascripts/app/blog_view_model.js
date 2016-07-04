@@ -532,7 +532,7 @@ function BlogViewModel(name, start, end, editing){
           var matches = val.match(/^(#+)/);
           if (matches){
             var header_level = matches[1].length;
-            var header_text = val.replace(/#/g,"");
+            var header_text = val;
             indexes.push({
               index_class: "header-level-" + header_level,
               body: $.decora.to_html(header_text),

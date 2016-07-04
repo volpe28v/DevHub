@@ -600,7 +600,7 @@ function MemoViewModel(param){
           if (matches){
             index_num++;
             var header_level = matches[1].length;
-            var header_text = val.replace(/^#+/g,"");
+            var header_text = val;
 
             that.indexes.push(
               {
