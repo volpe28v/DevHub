@@ -465,15 +465,15 @@ hr {
 }
 
 .index-li h1 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: normal;
-  line-height: 25px;
+  line-height: 23px;
 }
 
 .index-li h2 {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: normal;
-  line-height: 22px;
+  line-height: 21px;
 }
 
 .index-li h3 {
@@ -486,9 +486,9 @@ hr {
 .index-li h5,
 .index-li h6
 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: normal;
-  line-height: 16px;
+  line-height: 17px;
 }
 
 
