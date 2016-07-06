@@ -10,7 +10,8 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  var REG_CHECKBOX = /^([ |　]*)([-|=])[ ]?\[([ |x])?\]/mg,
+  //var REG_CHECKBOX = /^([ |　]*)([-|=])[ ]?\[([ |x])?\]/mg,
+  var REG_CHECKBOX = /(^([ |　]*)([-|=])[ ]?\[([ |x])?\])|(([-|=])[ ]?\[([ |x])?\])/mg,
       SYM_CHECKED = "[x]",
       SYM_UNCHECKED = "[ ]";
 
@@ -46,16 +47,29 @@ var prettify = require('prettify');
         function(){
           var matched_check = arguments[0];
           var current_index = check_index++;
-          var prefix = arguments[1];
-          var sym_prefix = arguments[2];
-          if ( check_no == current_index){
-            if (is_checked){
-              return prefix +sym_prefix + SYM_CHECKED;
+          var prefix = arguments[2];
+          if (prefix != undefined){
+            var sym_prefix = arguments[3];
+            if ( check_no == current_index){
+              if (is_checked){
+                return prefix + sym_prefix + SYM_CHECKED;
+              }else{
+                return prefix + sym_prefix + SYM_UNCHECKED;
+              }
             }else{
-              return prefix + sym_prefix + SYM_UNCHECKED;
+              return matched_check;
             }
           }else{
-            return matched_check;
+            var sym_prefix = arguments[6];
+            if ( check_no == current_index){
+              if (is_checked){
+                return sym_prefix + SYM_CHECKED;
+              }else{
+                return sym_prefix + SYM_UNCHECKED;
+              }
+            }else{
+              return matched_check;
+            }
           }
         });
     }
@@ -372,11 +386,16 @@ var prettify = require('prettify');
   function _decorate_checkbox( text, no ){
     var check_text = text.replace(REG_CHECKBOX, function(){
       var matched_text = arguments[0];
-      var prefix = arguments[1];
-      var sym_prefix = arguments[2];
-      var checked = arguments[3] == 'x' ? 'checked' : '';
-      var checkbox_class = "checkbox-draggable";
-      return prefix + '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" ' + checked + ' />';
+      var prefix = arguments[2];
+      if (prefix != undefined){
+        var sym_prefix = arguments[3];
+        var checked = arguments[4] == 'x' ? 'checked' : '';
+        var checkbox_class = "checkbox-draggable";
+        return prefix + '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" ' + checked + ' />';
+      }else{
+        var checked = arguments[7] == 'x' ? 'checked' : '';
+        return '<input type="checkbox" class="checkbox" data-no="' + no++ + '" ' + checked + ' />';
+      }
     });
     return {text: check_text, no: no};
   }
