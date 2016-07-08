@@ -148,7 +148,7 @@ function MemoController(param){
     setTimeout(function(){
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
       $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 16);
-    },700);
+    },100);
   }
 
   this.search = function(){
@@ -286,15 +286,6 @@ function MemoController(param){
         break;
       }
     }
-  }
-
-  this.wip_jump = function(){
-    that.currentMemo().switchFixShareMemo(1);
-
-    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-    var pos = $($code_out.find("tr:contains('[WIP]')")[0]).offset().top - $('#share-memo').offset().top;
-    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
-    return true;
   }
 
   this.set_ref_point = function(element){

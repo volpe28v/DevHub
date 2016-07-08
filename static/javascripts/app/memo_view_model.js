@@ -79,6 +79,7 @@ function HideState(parent){
 
   this.enter = function(){
     parent.is_shown_move_to_blog(false);
+    parent.currentWip = 0;
   }
 
   this.updateText = function(new_text){
@@ -206,6 +207,8 @@ function MemoViewModel(param){
   this.title = ko.observable("- No." + this.no + " -");
   this.bytes = ko.observable("");
   this.hasWip = ko.observable(false);
+  this.wipCount = ko.observable(0);
+  this.currentWip = 0;
   this.update_timer = ko.observable(null);
   this.writer = ko.observable("");
   this.is_shown_move_to_blog = ko.observable(false);
@@ -305,6 +308,8 @@ function MemoViewModel(param){
     this.title(this._title(this.latest_text().text));
     this.bytes(this.latest_text().text.length + "bytes");
     this.hasWip(this.latest_text().text.match(/\[WIP\]/));
+    this.wipCount((this.latest_text().text.match(new RegExp(/\[WIP\]/, "g")) || []).length);
+    this.currentWip = 0;
     this._updateIndexes();
 
     if (this.update_timer()){
@@ -319,6 +324,16 @@ function MemoViewModel(param){
 
   this.setEditText = function(){
     this.edit_text(this.latest_text().text);
+  }
+
+  this.wipJump = function(){
+    that.switchFixShareMemo(1);
+
+    that.currentWip = that.wipCount() <= that.currentWip ? 1 : that.currentWip + 1;
+    var $code_out = $('#share_memo_' + that.no).find('.code-out');
+    var pos = $($code_out.find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
+    return true;
   }
 
   this.switchFixShareMemo = function(row, offset){

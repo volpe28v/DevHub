@@ -325,8 +325,8 @@
                           </li>
                         </ul>
                       </div>
-                      <button data-bind="click: $parent.wip_jump, visible: hasWip" class="wip-jump btn btn-danger" style="float: left; display: none">
-                        <i class="icon-fire icon-white"></i> WIP
+                      <button data-bind="click: wipJump, visible: hasWip" class="wip-jump btn btn-danger" style="float: left; display: none">
+                        <i class="icon-fire icon-white"></i> WIP <span data-bind="visible: wipCount() > 1">(<span data-bind="text: wipCount"></span>)</span>
                       </button>
                       <span class="text-date" data-bind="text: latest_text().date_name, css: {'writing-name': update_timer() != null}"></span>
                       <span data-bind="visible: !is_memo_empty(), text: bytes" class="memo-bytes"></span>
