@@ -73,9 +73,11 @@
                     <h1 class="blog-title-none" style="height: 40px" data-bind="visible: title() == ''">Blog Title</h1>
                   </div>
                   <textarea class="edit-area" style="flex:1 0 auto" data-bind="
-                  textInput: text,
-                  textcomplete: true,
-                  event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
+                    textInput: editing_text,
+                    textcomplete: true,
+                    event: {
+                      keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}
+                    },
                   "></textarea>
                   <div class="blog-action" style="height: 40px">
                     <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>

@@ -62,6 +62,8 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this._update = function(blog, is_notify){
+    blog.text(blog.editing_text());
+    blog.indexes(that._indexes(blog.text(), blog._id()));
     var update_blog = ko.toJS(blog);
     var title = that._title_plane(update_blog.text);
     if (title == ""){ return; }
@@ -72,7 +74,7 @@ function BlogViewModel(name, start, end, editing){
     update_blog.title = title;
     update_blog.avatar = window.localStorage.avatarImage;
     update_blog.is_notify = is_notify;
-    delete update_blog.pre_text;
+    delete update_blog.editing_text;
     delete update_blog.copy_title;
     delete update_blog.delayedText;
     delete update_blog.indexes;
@@ -135,7 +137,8 @@ function BlogViewModel(name, start, end, editing){
       return;
     }
 
-    blog.text(blog.pre_text);
+    blog.title(that._title(blog.text()));
+    blog.indexes(that._indexes(blog.text(), blog._id()));
     blog.editing(false);
   }
 
@@ -482,7 +485,7 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.edit = function(blog){
-    blog.pre_text = blog.text();
+    blog.editing_text(blog.text());
     blog.editing(true);
   }
 
@@ -631,6 +634,7 @@ function BlogViewModel(name, start, end, editing){
     }
 
     item.title = that._title(item.text);
+    item.editing_text = item.text;
     item.indexes = that._indexes(item.text, item._id);
     item.display_indexes = false;
     item.has_avatar = (item.avatar != null && item.avatar != "");
@@ -639,7 +643,7 @@ function BlogViewModel(name, start, end, editing){
     item.copy_title = that._createCopyTitle(item.text, item._id);
 
     var mapped_item = ko.mapping.fromJS(item);
-    mapped_item.delayedText = ko.pureComputed(mapped_item.text)
+    mapped_item.delayedText = ko.pureComputed(mapped_item.editing_text)
         .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
 
     mapped_item.delayedText.subscribe(function (val) {
