@@ -71,17 +71,12 @@ function BlogViewModel(name, start, end, editing){
     update_blog.avatar = window.localStorage.avatarImage;
     update_blog.is_notify = is_notify;
 
-    if (update_blog._id == "new-blog"){
-      console.log("new-blog");
-      that._add_from_permalink(update_blog, is_notify);
-      return;
-    }
-
     $.ajax('blog' , {
       type: 'POST',
       cache: false,
       data: {blog: update_blog},
       success: function(data){
+        console.log(data);
         that.tags(data.tags);
         blog.apply(data.blog);
         that._update_tags();
@@ -89,26 +84,10 @@ function BlogViewModel(name, start, end, editing){
     });
   }
 
-  this._add_from_permalink = function(blog, is_notify){
-    blog._id = undefined;
-
-    $.ajax('blog' , {
-      type: 'POST',
-      cache: false,
-      data: {blog: blog},
-      success: function(data){
-        that.items.removeAll();
-        that.tags(data.tags);
-        var blog = data.blog;
-        that._addItem(blog, false);
-      }
-    });
-  }
-
   this.cancel = function(){
     var blog = this;
 
-    if (blog._id() == "new-blog"){
+    if (blog._id() == undefined){
       var url_base = location.href.split('?')[0];
       location.href = url_base;
       return;
@@ -361,7 +340,7 @@ function BlogViewModel(name, start, end, editing){
       // 新規追加画面
       var blog = {
         text: "",
-        _id: "new-blog",
+        _id: undefined,
         date: new Date(),
       };
       that._addItem(blog, that.initialEditing);
