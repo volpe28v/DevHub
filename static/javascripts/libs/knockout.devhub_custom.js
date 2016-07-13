@@ -341,8 +341,8 @@ function addCustomBindingHandlers(ko){
         },
         placeholder: 'draggable-placeholder',
         tolerance: 'pointer',
-        cursor: 'row-resize',
         revert: false,
+        cursor: '-webkit-grabbing',
         axis: "y",
         opacity: 0.5,
         scroll: true

@@ -309,7 +309,6 @@ function MemoViewModel(param){
     this.bytes(this.latest_text().text.length + "bytes");
     this.hasWip(this.latest_text().text.match(/\[WIP\]/));
     this.wipCount((this.latest_text().text.match(/\[WIP\]/g) || []).length);
-    console.log(this.wipCount());
     this.currentWip = 0;
     this._updateIndexes();
 

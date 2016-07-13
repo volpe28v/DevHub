@@ -375,8 +375,16 @@ a, a:hover {
 }
 
 .drag-handle {
-  cursor: row-resize;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
   display: none;
+}
+
+.grabbing {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 
 .text-highlight {
