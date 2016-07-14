@@ -506,6 +506,10 @@ function BlogViewModel(name, start, end, editing){
         }
     });
   }
+
+  this.set_ref_point = function(){
+    // dummy
+  }
 }
 
 module.exports = BlogViewModel;

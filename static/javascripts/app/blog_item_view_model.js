@@ -148,6 +148,10 @@ function BlogItemViewModel(item, parent){
     return indexes;
   }
 
+  this.editSpecificRow = function(){
+    // dummy
+  }
+
   that.initialize(item, parent);
 }
 

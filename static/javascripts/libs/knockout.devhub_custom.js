@@ -17,6 +17,7 @@ emojify.setConfig({
 });
 
 var DropZone = require('./dropzone');
+var Clipboard = require('clipboard');
 
 function addCustomBindingHandlers(ko){
   ko.bindingHandlers.decoBlogHtml = {
@@ -25,6 +26,7 @@ function addCustomBindingHandlers(ko){
           },
     update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
               $(element).showDecora(ko.unwrap(valueAccessor()));
+              ko.applyBindingsToDescendants(bindingContext, element);
             }
   }
 
@@ -349,6 +351,17 @@ function addCustomBindingHandlers(ko){
       });
     }
   }
+
+  // clippable カスタムバインディング(true の場合に有効)
+  ko.bindingHandlers.clippable = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      if (valueAccessor()){
+        new Clipboard(element);
+      }
+    }
+  }
+
+
 }
 
 

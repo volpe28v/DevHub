@@ -189,6 +189,7 @@ var prettify = require('prettify');
     target_text = _decorate_line_color( target_text );
     target_text = _decorate_ref( target_text );
     target_text = _decorate_hr( target_text );
+    target_text = _decorate_windows_path( target_text );
 
     return target_text;
   }
@@ -221,6 +222,7 @@ var prettify = require('prettify');
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
       deco_text = _decorate_hr( deco_text );
+      deco_text = _decorate_windows_path( deco_text );
       return deco_text;
     }
   }
@@ -467,6 +469,16 @@ var prettify = require('prettify');
           return '<hr></hr>';
         });
     return hr_text;
+  }
+
+  function _decorate_windows_path( text ){
+    var win_path = text.replace(/(^|[ ]+)((¥¥[^\s　]+|[a-zA-Z]:)¥[^\s　]+)/mg,
+        function(){
+          var prefix = arguments[1];
+          var matched = arguments[2];
+          return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy to clipboard">' + matched + '</span>';
+        });
+    return win_path;
   }
 
   $.decora = {

@@ -974,6 +974,16 @@ button.close {
   cursor: pointer;
 }
 
+.win-path {
+  cursor: pointer;
+  color: #d14;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  border-radius: 3px;
+  padding: 3px 4px;
+  font-size: 12px;
+}
+
 @media (max-width: 767px) {
   .modal.fade.in {
     top: 20px;
