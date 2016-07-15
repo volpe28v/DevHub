@@ -472,11 +472,11 @@ var prettify = require('prettify');
   }
 
   function _decorate_windows_path( text ){
-    var win_path = text.replace(/(^|[ ]+)((¥¥[^\s　]+|[a-zA-Z]:)¥[^\s　]+)/mg,
+    var win_path = text.replace(/(^|[ ]+)((\\\\[^\s　]+|[a-zA-Z]:)\\[^\s　]+)/mg,
         function(){
           var prefix = arguments[1];
           var matched = arguments[2];
-          return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy to clipboard">' + matched + '</span>';
+          return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + matched + '</span>';
         });
     return win_path;
   }
