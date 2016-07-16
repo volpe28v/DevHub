@@ -81,10 +81,10 @@
                     },
                   "></textarea>
                   <div class="blog-action" style="height: 40px">
-                    <!-- ko if: _id() == null -->
+                    <!-- ko if: isNew -->
                     <button class="btn btn-primary update-blog" data-bind="click: $parent.update">Add</button>
                     <!-- /ko -->
-                    <!-- ko ifnot: _id() == null -->
+                    <!-- ko ifnot: isNew -->
                     <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
                     <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
                     <!-- /ko -->

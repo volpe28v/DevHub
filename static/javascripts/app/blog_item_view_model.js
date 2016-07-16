@@ -30,6 +30,10 @@ function BlogItemViewModel(item, parent){
     that.title(that._title(val));
   }, that);
 
+  that.isNew = ko.computed(function(){
+    return that._id() == null;
+  });
+
   this.initialize = function(item, parent){
     that.parent = parent;
 
