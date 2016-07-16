@@ -96,7 +96,7 @@ function BlogViewModel(name, start, end, editing){
     blog.cancelEdit();
   }
 
-  this.destroy = function(){
+  this.destroy = function(goto_blog){
     var blog = this;
     swal({
       title: "Are you sure?",
@@ -118,6 +118,10 @@ function BlogViewModel(name, start, end, editing){
         success: function(data){
           that.tags(data.tags);
           that._update_tags();
+
+          if (goto_blog){
+            location.href = "/blog";
+          }
         }
       });
 

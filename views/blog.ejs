@@ -83,7 +83,7 @@
                   <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <a class="edit-blog" data-bind="attr: {href:'blog?id=' + _id() + '&edit=true'}"><i class="icon-pencil"></i></a>
-                  <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
+                  <span class="remove-blog" data-bind="click: $parent.destroy.bind($data, false)"><i class="icon-trash"></i></span>
                   <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
                   <a class="btn btn-mini " data-bind="attr: {href:'blog?id=' + _id()}" target="_blank"> Permalink</a>
                 </div>

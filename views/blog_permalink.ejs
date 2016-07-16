@@ -34,6 +34,7 @@
         <div class="container-fluid">
           <a class="brand" href="/">DevHub - blog</a>
           <ul class="nav pull-right">
+            <li><a href="/blog?edit=true" rel="tooltip" title="New Blog"><i class="icon-white icon-plus"></i></a></li>
             <li><a href="/blog" rel="tooltip" title="Blog Page"><i class="icon-white icon-book"></i></a></li>
             <li><a href="/upload" rel="tooltip" title="Uploaded Files Page"><i class="icon-white icon-file"></i></a></li>
           </ul>
@@ -57,7 +58,7 @@
                   <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <span class="edit-blog" data-bind="click: $parent.edit"><i class="icon-pencil"></i></span>
-                  <span class="remove-blog" data-bind="click: $parent.destroy"><i class="icon-trash"></i></span>
+                  <span class="remove-blog" data-bind="click: $parent.destroy.bind($data, true)"><i class="icon-trash"></i></span>
                   <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
                 </div>
               </div>
@@ -80,8 +81,13 @@
                     },
                   "></textarea>
                   <div class="blog-action" style="height: 40px">
+                    <!-- ko if: _id() == null -->
+                    <button class="btn btn-primary update-blog" data-bind="click: $parent.update">Add</button>
+                    <!-- /ko -->
+                    <!-- ko ifnot: _id() == null -->
                     <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
                     <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
+                    <!-- /ko -->
                     <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
                   </div>
                 </div>
