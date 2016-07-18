@@ -10,8 +10,7 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  //var REG_CHECKBOX = /^([ |　]*)([-|=])[ ]?\[([ |x])?\]/mg,
-  var REG_CHECKBOX = /(^([ |　]*)([-|=])[ ]?\[([ |x])?\])|(([-|=])[ ]?\[([ |x])?\])/mg,
+  var REG_CHECKBOX = /(^([ 　]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
       SYM_CHECKED = "[x]",
       SYM_UNCHECKED = "[ ]";
 
@@ -389,6 +388,7 @@ var prettify = require('prettify');
 
   function _decorate_checkbox( text, no ){
     var check_text = text.replace(REG_CHECKBOX, function(){
+      console.log(arguments);
       var matched_text = arguments[0];
       var prefix = arguments[2];
       if (prefix != undefined){
