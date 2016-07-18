@@ -223,6 +223,8 @@ var prettify = require('prettify');
       deco_text = _decorate_ref( deco_text );
       deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_windows_path( deco_text );
+      deco_text = _decorate_table( deco_text );
+
       return deco_text;
     }
   }
@@ -479,6 +481,44 @@ var prettify = require('prettify');
           return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + matched + '</span>';
         });
     return win_path;
+  }
+
+  function _decorate_table( text ){
+    var text_array = text.split(/\n/);
+    var isInTable = false;
+    var tabled_text_array = [];
+    var table_tmp = "";
+    for (var i = 0; i < text_array.length; i++){
+      if (text_array[i].match(/^\|/)){
+        var rows = text_array[i].split(/\|/);
+        // 先頭と末尾の空を排除
+        rows.shift();
+        rows.pop();
+
+        if (!isInTable){
+          isInTable = true;
+
+          // table 作成開始
+          table_tmp = '<table class="table table-bordered code-table"><tbody>';
+          table_tmp += '<tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+        }else{
+          table_tmp += '<tr class="code-out-tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+        }
+      }else{
+        if (isInTable){
+          isInTable = false;
+
+          // table を完成させて出力する
+          table_tmp += '</tbody></table>';
+
+          tabled_text_array.push(table_tmp);
+        }
+
+        tabled_text_array.push(text_array[i]);
+      }
+    }
+
+    return tabled_text_array.join('\n');
   }
 
   $.decora = {

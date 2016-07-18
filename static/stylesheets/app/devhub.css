@@ -430,11 +430,11 @@ a, a:hover {
   line-height: 21px;
 }
 
-.code-out table,.diff-view table {
+.code-out > table,.diff-view > table {
   width: 100%;
 }
 
-.code-out table tr,.diff-view table tr {
+.code-out > table tr,.diff-view > table tr {
   height: 21px;
 }
 
@@ -475,9 +475,14 @@ a, a:hover {
   font-size: 1.2em;
 }
 
-.code-out table,
-.diff-view table{
+.code-out > table,
+.diff-view > table{
   border-collapse: separate;
+}
+
+.code-table {
+  width: initial;
+
 }
 
 .code-out-pre-td {

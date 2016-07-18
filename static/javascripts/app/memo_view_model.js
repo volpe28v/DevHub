@@ -404,7 +404,8 @@ function MemoViewModel(param){
   this._getFocusFromInputTask = function(){
     var $focus_dom = $(':focus');
     if ($focus_dom && $focus_dom.hasClass('input-task')){
-      return $focus_dom.closest('tr').index();
+      var $target = $('#share_memo_' + that.no);
+      return $target.find('.code-out-tr').index($focus_dom.closest('tr'));
     }
     return -1;
   },
@@ -412,7 +413,7 @@ function MemoViewModel(param){
   this._setFocusToInputTask = function($target, focus_index){
     focus_index++;
     if (focus_index >= 0){
-      var $focus_dom = $target.find('.code-out').find('tr:eq(' + focus_index + ')').find('.input-task');
+      var $focus_dom = $target.find('.code-out').find('.code-out-tr:eq(' + focus_index + ')').find('.input-task');
       if ($focus_dom){
         $focus_dom.focus();
       }
@@ -442,11 +443,15 @@ function MemoViewModel(param){
   }
 
   this.startMemoMoving = function(ui){
-    that.drag_index = ui.item.index();
+    var $target = $('#share_memo_' + this.no);
+    var row = $target.find('.code-out-tr').index(ui.item);
+    that.drag_index = row;
+    console.log(that.drag_index + " : " + row);
   }
 
   this.stopMemoMoving = function(ui){
-    var drag_stop_index = ui.item.index();
+    var $target = $('#share_memo_' + this.no);
+    var drag_stop_index = $target.find('.code-out-tr').index(ui.item);
     if (drag_stop_index == that.drag_index){ return; }
 
     var text_array = that.latest_text().text.split("\n");
@@ -465,8 +470,10 @@ function MemoViewModel(param){
     var input_text = $(element).val();
     if (input_text == ""){ return false; }
 
+    var $target = $('#share_memo_' + this.no);
     var $this_tr = $(element).closest('tr');
-    var input_index = $this_tr.index();
+    var input_index = $target.find('.code-out-tr').index($this_tr);
+
     $(element).val("");
 
     var text_array = that.latest_text().text.split("\n");
@@ -482,8 +489,9 @@ function MemoViewModel(param){
   }
 
   this.deleteTask = function(data, event, element){
+    var $target = $('#share_memo_' + this.no);
     var $this_tr = $(element).closest('tr');
-    var delete_index = $this_tr.index();
+    delete_index = $target.find('.code-out-tr').index($this_tr);
 
     $this_tr.fadeOut('normal', function(){
       $(this).remove();
@@ -651,7 +659,7 @@ function MemoViewModel(param){
 
   this.editSpecificRow = function(data, event, element){
     // クリック時の行数を取得してキャレットに設定する
-    var row = $(element).closest("table").find("tr").index(element);
+    var row = $(element).closest("table").find(".code-out-tr").index(element);
     that.switchEditShareMemo(row, event.pageY);
 
     return false;
