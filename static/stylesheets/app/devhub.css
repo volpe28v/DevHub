@@ -432,6 +432,7 @@ a, a:hover {
 
 .code-out > table,.diff-view > table {
   width: 100%;
+  border-collapse: separate;
 }
 
 .code-out > table tr,.diff-view > table tr {
@@ -475,14 +476,8 @@ a, a:hover {
   font-size: 1.2em;
 }
 
-.code-out > table,
-.diff-view > table{
-  border-collapse: separate;
-}
-
 .code-table {
   width: initial;
-
 }
 
 .code-out-pre-td {

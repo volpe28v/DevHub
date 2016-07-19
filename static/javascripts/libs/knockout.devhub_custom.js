@@ -126,7 +126,6 @@ function addCustomBindingHandlers(ko){
                 alertTarget: $('#loading'),
                 uploadedAction: function(context, res){
                   if (res.fileName == null){ return; }
-                  //var row = $(context).closest("table").find("tr").index(context);
                   var row = $(context).closest("table").find(".code-out-tr").index(context);
 
                   // ドロップ位置にファイルを差し込む
