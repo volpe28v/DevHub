@@ -155,8 +155,8 @@ function BlogViewModel(name, start, end, editing){
   this.selectIndexHeader = function(offset, blog){
     var specify_offset = offset ? offset : 0;
 
-    var $code_out = $('#' + blog.id());
-    var pos = $code_out.find(":header").eq(blog.no()).offset().top - $('#blog_list').offset().top;
+    var $code_out = $('#' + blog.id);
+    var pos = $code_out.find(":header").eq(blog.no).offset().top - $('#blog_list').offset().top;
     $('#blog_area').scrollTop(pos + specify_offset);
 
     return true;

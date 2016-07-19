@@ -465,6 +465,10 @@ hr {
   background-color: #0088cc !important;
 }
 
+.index-li {
+  cursor: pointer;
+}
+
 .index-li h1 {
   font-size: 18px;
   font-weight: normal;
