@@ -94,11 +94,12 @@ pre.text-base-style {
   line-height: 160%;
 }
 
-.code-out table{
+.code-out > table{
   width: 100%;
+  border-collapse: separate;
 }
 
-.code-out table tr{
+.code-out > table tr{
   height: 21px;
 }
 
@@ -131,8 +132,8 @@ pre.text-base-style {
   font-size: 1.2em;
 }
 
-.code-out table{
-  border-collapse: separate;
+.code-table{
+  width: initial;
 }
 
 .code-out-pre-td {
