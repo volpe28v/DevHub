@@ -478,6 +478,7 @@ a, a:hover {
 
 .code-table {
   width: initial;
+  margin: 5px 0;
 }
 
 .code-out-pre-td {

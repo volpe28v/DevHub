@@ -348,7 +348,7 @@ function MemoViewModel(param){
     offset = offset == undefined ? $(window).height()/3 : offset - 14;
 
     // 閲覧モード時に編集していたキャレット位置を表示する
-    var $target_tr = $share_memo.find('table tr').eq(row - 1);
+    var $target_tr = $share_memo.find('.code-out-tr').eq(row - 1);
     if ($target_tr.length > 0){
       $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - offset);
@@ -653,7 +653,7 @@ function MemoViewModel(param){
 
   this.editMemo = function(data, event, element){
     // 文字列が無い場合は最下部にキャレットを設定する
-    var row = $(element).find("table tr").length - 1;
+    var row = $(element).find(".code-out-tr").length - 1;
     that.switchEditShareMemo(row, event.pageY);
   }
 
