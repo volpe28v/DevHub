@@ -189,6 +189,7 @@ var prettify = require('prettify');
     target_text = _decorate_ref( target_text );
     target_text = _decorate_hr( target_text );
     target_text = _decorate_windows_path( target_text );
+    target_text = _decorate_table( target_text );
 
     return target_text;
   }
@@ -515,6 +516,10 @@ var prettify = require('prettify');
 
         tabled_text_array.push(text_array[i]);
       }
+    }
+    if (isInTable){
+      table_tmp += '</tbody></table>';
+      tabled_text_array.push(table_tmp);
     }
 
     return tabled_text_array.join('\n');
