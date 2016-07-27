@@ -11,6 +11,7 @@ require('../libs/message_date');
 require('sweetalert');
 
 var emojify = require('emojify.js');
+require('ion-sound');
 
 function ChatViewModel(param){
   var that = this;
@@ -453,16 +454,20 @@ ChatViewModel.prototype = {
 
   play_sound: function(text){
     if(text.match(/play:(.+)/)){
-      $.ionSound.destroy();
       var sound_name = RegExp.$1.split(".")[0];
-      $.ionSound({
-            sounds: [
-               sound_name
-            ],
-            path: "/uploads/",
-            volume: "0.5"
+      ion.sound({
+        sounds: [
+          {
+            name: sound_name
+          }
+        ],
+          path: "/uploads/",
+          volume: "0.5",
+          ended_callback: function (obj) {
+            ion.sound.destroy(obj.name);
+          }
       });
-      $.ionSound.play(sound_name);
+      ion.sound.play(sound_name);
     }
   },
 

@@ -357,6 +357,8 @@ ChatController.prototype = {
       that.isCommand(true);
       window.localStorage.timeline = "own";
       that.doFilterTimeline();
+    }else if (message.match(/^play:/)){
+      that.isCommand(true);
     }else{
       that.isCommand(false);
       that.filterWord("");

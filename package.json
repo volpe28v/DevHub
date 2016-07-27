@@ -60,7 +60,8 @@
     "flipsnap": "0.6.3",
     "fullcalendar": "2.7.0-beta",
     "sweetalert": "1.1.3",
-    "rgbcolor": "0.0.4"
+    "rgbcolor": "0.0.4",
+    "ion-sound": "3.0.7"
   },
   "devDependencies": {
     "node-dev": "^2.7.1",
