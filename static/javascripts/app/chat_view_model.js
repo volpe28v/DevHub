@@ -462,7 +462,7 @@ ChatViewModel.prototype = {
           }
         ],
           path: "/uploads/",
-          volume: "0.5",
+          volume: 1,
           ended_callback: function (obj) {
             ion.sound.destroy(obj.name);
           }
@@ -496,6 +496,22 @@ ChatViewModel.prototype = {
   },
 
   do_notification: function(data){
+    var notif_msg = data.msg;
+
+    if (window.localStorage.popupNotification == 'true' ||
+        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.getName()))){
+      if(Notification){
+        if (Notification.permission != "denied"){
+          this._do_notification(data);
+          this._play_notification_sound(data);
+        }
+      }else{
+        Notification.requestPermission();
+      }
+    }
+  },
+
+  _do_notification: function(data){
     var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "") + " -> " + this.room();
     var notif_icon = 'notification.png';
     if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
@@ -503,22 +519,31 @@ ChatViewModel.prototype = {
     }
     var notif_msg = data.msg;
 
-    if (window.localStorage.popupNotification == 'true' ||
-        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.getName()))){
-      if(Notification){
-        if (Notification.permission != "denied"){
-          var notification = new Notification(notif_title, {
-            icon: notif_icon,
-            body: notif_msg
-          });
-          setTimeout(function(){
-            notification.close();
-          }, window.localStorage.notificationSeconds * 1000);
-        }
-      }else{
-        Notification.requestPermission();
-      }
-    }
+    var notification = new Notification(notif_title, {
+      icon: notif_icon,
+      body: notif_msg
+    });
+    setTimeout(function(){
+      notification.close();
+    }, window.localStorage.notificationSeconds * 1000);
+  },
+
+  _play_notification_sound: function(data){
+    var sound_name = window.localStorage.notificationSound;
+    console.log(sound_name)
+    if (sound_name == undefined){ return; }
+
+    ion.sound({
+      sounds: [
+        { alias: "s1", name: "glass"},
+        { alias: "s2", name: "snap"},
+        { alias: "s3", name: "water_droplet_3"},
+      ],
+      path: "/sounds/",
+      volume: 1
+    });
+
+    ion.sound.play(sound_name);
   }
 }
 
