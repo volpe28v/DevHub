@@ -416,6 +416,24 @@
                 seconds.
               </div>
             </div>
+            <div class="control-group">
+              <label class="control-label">Notification sound</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="notificaton-sound" value="off" data-bind="checked: notificationSoundMode"> Off
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="notificaton-sound" value="on" data-bind="checked: notificationSoundMode"> On
+                </label>
+                <select class="span2" style="margin-left: 5px" data-bind="options: notificationSounds,
+                                                 optionsText: 'name',
+                                                 optionsValue: 'alias',
+                                                 value: selectedNotiSound,
+                                                 enable: notificationSoundMode() == 'on'">
+                </select>
+              </div>
+            </div>
+
             <div class="control-group" id="avatar_setting">
               <label class="control-label">Avatar</label>
               <div class="controls">

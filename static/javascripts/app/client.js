@@ -40,6 +40,23 @@ function ClientViewModel(){
   });
   this.avatar = ko.observable(window.localStorage.avatarImage != null ? window.localStorage.avatarImage : "");
 
+  // notification sound
+  this.notificationSoundMode = ko.observable(window.localStorage.notificationSoundMode != null ? window.localStorage.notificationSoundMode : "off");
+  this.notificationSoundMode.subscribe(function(newValue){
+    window.localStorage.notificationSoundMode = newValue;
+  });
+
+  this.notificationSounds = ko.observableArray([
+    { name: "glass", alias: "s1" },
+    { name: "snap" , alias: "s2" },
+    { name: "water", alias: "s3" }
+  ]);
+  var notiSound = this.notificationSounds().filter(function(sound){ return sound.alias == window.localStorage.notificationSound; })[0];
+  this.selectedNotiSound = ko.observable(notiSound != null ? notiSound.alias : this.notificationSounds()[0].alias);
+  this.selectedNotiSound.subscribe(function(newValue){
+    window.localStorage.notificationSound = newValue;
+  });
+
   this.faviconNumber = new FaviconNumber();
 
   this.memoController = new MemoController({

@@ -529,9 +529,10 @@ ChatViewModel.prototype = {
   },
 
   _play_notification_sound: function(data){
+    if (window.localStorage.notificationSoundMode != "on"){ return; }
+
     var sound_name = window.localStorage.notificationSound;
-    console.log(sound_name)
-    if (sound_name == undefined){ return; }
+    if (sound_name == undefined){ sound_name = "s1"; }
 
     ion.sound({
       sounds: [
