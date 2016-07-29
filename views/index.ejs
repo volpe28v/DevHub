@@ -426,11 +426,12 @@
                   <input type="radio" name="notificaton-sound" value="on" data-bind="checked: notificationSoundMode"> On
                 </label>
                 <select class="span2" style="margin-left: 5px" data-bind="options: notificationSounds,
-                                                 optionsText: 'name',
+                                                 optionsText: 'dispName',
                                                  optionsValue: 'alias',
                                                  value: selectedNotiSound,
                                                  enable: notificationSoundMode() == 'on'">
                 </select>
+                <button class="btn" data-bind="click: playNotificationSound"><i class="icon-volume-up"></i></button>
               </div>
             </div>
 

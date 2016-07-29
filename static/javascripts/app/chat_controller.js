@@ -17,6 +17,7 @@ function ChatController(param){
   this.faviconNumber = param.faviconNumber;
   this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
+  this.playNotificationSound = param.playNotificationSound;
 
   // Models
   this.loginName = ko.observable("");
@@ -170,6 +171,7 @@ function ChatController(param){
           getFilterWord: function() {return that.getFilterWord(); },
           upHidingCount: function() {return that.upHidingCount(); },
           notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
+          playNotificationSound: that.playNotificationSound,
           showRefPoint: that.showRefPoint
         }));
       });

@@ -11,6 +11,7 @@ require('bootstrap');
 require('jquery-colorbox');
 require('jquery.cookie');
 require('@gigwalk/livestamp');
+require('ion-sound');
 
 var Flipsnap = require('flipsnap');
 var emojify = require('emojify.js');
@@ -41,21 +42,40 @@ function ClientViewModel(){
   this.avatar = ko.observable(window.localStorage.avatarImage != null ? window.localStorage.avatarImage : "");
 
   // notification sound
-  this.notificationSoundMode = ko.observable(window.localStorage.notificationSoundMode != null ? window.localStorage.notificationSoundMode : "off");
+  this.notificationSoundMode = ko.observable(window.localStorage.notificationSoundMode == "on" ? "on" : "off");
   this.notificationSoundMode.subscribe(function(newValue){
     window.localStorage.notificationSoundMode = newValue;
   });
 
   this.notificationSounds = ko.observableArray([
-    { name: "glass", alias: "s1" },
-    { name: "snap" , alias: "s2" },
-    { name: "water", alias: "s3" }
+    { name: "snap" ,           dispName: "snap" ,    alias: "s2" },
+    { name: "pop_cork",        dispName: "pop_cork", alias: "s9" },
+    { name: "tap",             dispName: "tap",      alias: "s10"},
+    { name: "glass",           dispName: "glass",    alias: "s1" },
+    { name: "water_droplet",   dispName: "water1",   alias: "s3" },
+    { name: "water_droplet_2", dispName: "water2",   alias: "s4" },
+    { name: "water_droplet_3", dispName: "water3",   alias: "s5" },
+    { name: "button_click_on", dispName: "button1",  alias: "s6" },
+    { name: "button_push"    , dispName: "button2",  alias: "s7" },
+    { name: "button_tiny",     dispName: "button3",  alias: "s8" },
   ]);
   var notiSound = this.notificationSounds().filter(function(sound){ return sound.alias == window.localStorage.notificationSound; })[0];
   this.selectedNotiSound = ko.observable(notiSound != null ? notiSound.alias : this.notificationSounds()[0].alias);
   this.selectedNotiSound.subscribe(function(newValue){
     window.localStorage.notificationSound = newValue;
   });
+
+  this.playNotificationSound = function(){
+    if (that.notificationSoundMode() == "off"){ return; }
+
+    ion.sound({
+      sounds: that.notificationSounds(),
+      path: "/sounds/",
+      volume: 1
+    });
+
+    ion.sound.play(that.selectedNotiSound());
+  }
 
   this.faviconNumber = new FaviconNumber();
 
@@ -78,7 +98,8 @@ function ClientViewModel(){
     },
     showRefPoint: function(id){
       that.memoController.move(id);
-    }
+    },
+    playNotificationSound: that.playNotificationSound
   });
 
   this.zenMode = false;

@@ -25,6 +25,7 @@ function ChatViewModel(param){
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.notifyChangeUnreadCount = param.notifyChangeUnreadCount; // function
+  this.playNotificationSound = param.playNotificationSound; // function
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
@@ -457,15 +458,13 @@ ChatViewModel.prototype = {
       var sound_name = RegExp.$1.split(".")[0];
       ion.sound({
         sounds: [
-          {
-            name: sound_name
-          }
+          { name: sound_name }
         ],
-          path: "/uploads/",
-          volume: 1,
-          ended_callback: function (obj) {
-            ion.sound.destroy(obj.name);
-          }
+        path: "/uploads/",
+        volume: 1,
+        ended_callback: function (obj) {
+          ion.sound.destroy(obj.name);
+        }
       });
       ion.sound.play(sound_name);
     }
@@ -503,7 +502,7 @@ ChatViewModel.prototype = {
       if(Notification){
         if (Notification.permission != "denied"){
           this._do_notification(data);
-          this._play_notification_sound(data);
+          this.playNotificationSound();
         }
       }else{
         Notification.requestPermission();
@@ -526,25 +525,6 @@ ChatViewModel.prototype = {
     setTimeout(function(){
       notification.close();
     }, window.localStorage.notificationSeconds * 1000);
-  },
-
-  _play_notification_sound: function(data){
-    if (window.localStorage.notificationSoundMode != "on"){ return; }
-
-    var sound_name = window.localStorage.notificationSound;
-    if (sound_name == undefined){ sound_name = "s1"; }
-
-    ion.sound({
-      sounds: [
-        { alias: "s1", name: "glass"},
-        { alias: "s2", name: "snap"},
-        { alias: "s3", name: "water_droplet_3"},
-      ],
-      path: "/sounds/",
-      volume: 1
-    });
-
-    ion.sound.play(sound_name);
   }
 }
 
