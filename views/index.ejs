@@ -433,6 +433,13 @@
                 </select>
                 <button class="btn" data-bind="click: playNotificationSound"><i class="icon-volume-up"></i></button>
               </div>
+              <div class="controls" style="margin-top: 5px" data-bind="visible: selectedNotiSound() == 'up'">
+                <div class="input-append">
+                  <input type="text" id="upload_sound_name" data-bind="textInput: uploadedSound" placeholder="xxxx.mp3">
+                  <button data-bind="click: upload_sound" class="btn btn-small"><i class="icon-file"></i></button>
+                </div>
+                <input type="file" id="upload_sound" name="file" style="display:none" accept=".mp3"></input>
+              </div>
             </div>
 
             <div class="control-group" id="avatar_setting">

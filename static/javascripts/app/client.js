@@ -58,23 +58,41 @@ function ClientViewModel(){
     { name: "button_click_on", dispName: "button1",  alias: "s6" },
     { name: "button_push"    , dispName: "button2",  alias: "s7" },
     { name: "button_tiny",     dispName: "button3",  alias: "s8" },
+    { name: "upload",          dispName: "*upload sound*",  alias: "up" },
   ]);
   var notiSound = this.notificationSounds().filter(function(sound){ return sound.alias == window.localStorage.notificationSound; })[0];
   this.selectedNotiSound = ko.observable(notiSound != null ? notiSound.alias : this.notificationSounds()[0].alias);
   this.selectedNotiSound.subscribe(function(newValue){
     window.localStorage.notificationSound = newValue;
   });
+  this.uploadedSound = ko.observable(window.localStorage.notificationUploadedSound);
+  this.uploadedSound.subscribe(function(newValue){
+    window.localStorage.notificationUploadedSound = newValue;
+  });
 
   this.playNotificationSound = function(){
     if (that.notificationSoundMode() == "off"){ return; }
 
-    ion.sound({
-      sounds: that.notificationSounds(),
-      path: "/sounds/",
-      volume: 1
-    });
+    if (that.selectedNotiSound() == "up"){
+      if (that.uploadedSound() == null){ return; }
 
-    ion.sound.play(that.selectedNotiSound());
+      var sound_name = that.uploadedSound().replace(".mp3","");
+      ion.sound({
+        sounds: [ { name: sound_name } ],
+        path: "/uploads/",
+        volume: 1
+      });
+
+      ion.sound.play(sound_name);
+    }else{
+      ion.sound({
+        sounds: that.notificationSounds(),
+        path: "/sounds/",
+        volume: 1
+      });
+
+      ion.sound.play(that.selectedNotiSound());
+    }
   }
 
   this.faviconNumber = new FaviconNumber();
@@ -345,6 +363,18 @@ function ClientViewModel(){
         that.avatar(res.fileName);
       }
     });
+
+    new DropZone({
+      dropTarget: $('#upload_sound_name'),
+      alertTarget: $('#loading'),
+      fileTarget: $('#upload_sound'),
+      pasteValid: true,
+      uploadedAction: function(self, res){
+        if (res.fileName == null){ return; }
+        that.uploadedSound(res.fileName.replace("/uploads/",""));
+      }
+    });
+
   }
 
   this.upload_avatar = function(){
@@ -361,6 +391,11 @@ function ClientViewModel(){
         name: that.loginName(),
         avatar: that.avatar()
       });
+    return false;
+  }
+
+  this.upload_sound = function(){
+    $('#upload_sound').click();
     return false;
   }
 
