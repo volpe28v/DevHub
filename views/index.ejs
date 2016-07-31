@@ -386,25 +386,25 @@
       <div class="modal-body">
         <div id="settings_memo">
           <form class="form-horizontal">
-            <div class="control-group notify-radio">
+            <div class="control-group">
               <legend>Personal Settings</legend>
               <label class="control-label">Show notifications</label>
               <div class="controls">
                 <label class="radio inline">
-                  <input type="radio" name="notificaton" id="notify_disable" value="disable" checked> Disable
+                  <input type="radio" name="notificaton" value="disable" data-bind="checked: notificationMode" /> Disable
                 </label>
                 <label class="radio inline">
-                  <input type="radio" name="notificaton" id="notify_all" value="true"> All
+                  <input type="radio" name="notificaton" value="true" data-bind="checked: notificationMode" /> All
                 </label>
                 <label class="radio inline">
-                  <input type="radio" name="notificaton" id="notify_mention" value="mention"> Mention only
+                  <input type="radio" name="notificaton" value="mention" data-bind="checked: notificationMode" /> Mention only
                 </label>
               </div>
             </div>
             <div class="control-group">
               <label class="control-label">Close notification in</label>
               <div class="controls">
-                <select id="notification_seconds" class="span1">
+                <select class="span1" data-bind="value: notificationSeconds">
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>

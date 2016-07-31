@@ -41,6 +41,21 @@ function ClientViewModel(){
   });
   this.avatar = ko.observable(window.localStorage.avatarImage != null ? window.localStorage.avatarImage : "");
 
+  // notification mode
+  this.notificationMode = ko.observable(window.localStorage.popupNotification != null ? window.localStorage.popupNotification : 'disable');
+  this.notificationMode.subscribe(function(newValue){
+    window.localStorage.popupNotification = newValue;
+    if (newValue != "disable"){
+      if(Notification){
+        Notification.requestPermission();
+      }
+    }
+  });
+  this.notificationSeconds = ko.observable(window.localStorage.notificationSeconds != null ? window.localStorage.notificationSeconds : 5);
+  this.notificationSeconds.subscribe(function(newValue){
+    window.localStorage.notificationSeconds = newValue;
+  });
+
   // notification sound
   this.notificationSoundMode = ko.observable(window.localStorage.notificationSoundMode == "on" ? "on" : "off");
   this.notificationSoundMode.subscribe(function(newValue){
@@ -292,33 +307,6 @@ function ClientViewModel(){
 
   this.initSettings = function(){
     var that = this;
-
-    if(window.localStorage.popupNotification == 'true'){
-      $('#notify_all').attr('checked', 'checked');
-    }else if (window.localStorage.popupNotification == 'mention'){
-      $('#notify_mention').attr('checked', 'checked');
-    }
-
-    $('.notify-radio').on('change', "input", function(){
-      var mode = $(this).val();
-      window.localStorage.popupNotification = mode;
-      if (mode != "disable"){
-        if(Notification){
-          Notification.requestPermission();
-        }
-      }
-    });
-
-    if (window.localStorage.notificationSeconds){
-      $('#notification_seconds').val(window.localStorage.notificationSeconds);
-    }else{
-      $('#notification_seconds').val(5);
-      window.localStorage.notificationSeconds = 5;
-    }
-
-    $('#notification_seconds').on('change',function(){
-      window.localStorage.notificationSeconds = $(this).val();
-    });
 
     // for Timeline
     if(window.localStorage.timeline == 'own'){
