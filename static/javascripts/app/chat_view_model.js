@@ -25,7 +25,7 @@ function ChatViewModel(param){
   this.getFilterWord = param.getFilterWord; // function
   this.upHidingCount = param.upHidingCount; // function
   this.notifyChangeUnreadCount = param.notifyChangeUnreadCount; // function
-  this.playNotificationSound = param.playNotificationSound; // function
+  this.doNotification = param.doNotification; // function
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
@@ -126,7 +126,7 @@ ChatViewModel.prototype = {
         that.do_notification(data);
 
         $msg.addClass("unread-msg");
-        if (that.include_target_name(data.msg,that.getName())){
+        if (that.include_target_name(data.msg)){
           that.mentionCount(that.mentionCount() + 1);
         }else if (that.include_room_name(data.msg)){
           that.unreadRoomCount(that.unreadRoomCount() + 1);
@@ -251,7 +251,7 @@ ChatViewModel.prototype = {
       if (MessageDate.isNew(that.no, data.date)){
         msg.css += " unread-msg";
 
-        if (that.include_target_name(data.msg,that.getName())){
+        if (that.include_target_name(data.msg)){
           that.mentionCount(that.mentionCount() + 1);
         }else if (that.include_room_name(data.msg)){
           that.unreadRoomCount(that.unreadRoomCount() + 1);
@@ -336,7 +336,7 @@ ChatViewModel.prototype = {
         css: "own_msg",
         _id: data._id.toString()
       };
-    } else if (this.include_target_name(data.msg,this.getName())){
+    } else if (this.include_target_name(data.msg)){
       return {
         html: this.get_msg_body(data) + ' <span class="target_msg_date">' + disp_date + '</span></td></tr></table>',
         css: "target_msg",
@@ -424,7 +424,8 @@ ChatViewModel.prototype = {
     return target.replace(/\W/g,"\\$&");
   },
 
-  include_target_name: function(msg,name){
+  include_target_name: function(msg){
+    var name = this.getName();
     var name_reg = RegExp("@" + this.escape_reg(name) + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
         msg.match("@みなさん") ||
@@ -496,35 +497,9 @@ ChatViewModel.prototype = {
 
   do_notification: function(data){
     var notif_msg = data.msg;
+    var isMention = this.include_target_name(notif_msg);
 
-    if (window.localStorage.popupNotification == 'true' ||
-        (window.localStorage.popupNotification == 'mention' && this.include_target_name(notif_msg, this.getName()))){
-      if(Notification){
-        if (Notification.permission != "denied"){
-          this._do_notification(data);
-          this.playNotificationSound();
-        }
-      }else{
-        Notification.requestPermission();
-      }
-    }
-  },
-
-  _do_notification: function(data){
-    var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "") + " -> " + this.room();
-    var notif_icon = 'notification.png';
-    if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
-      notif_icon = data.avatar;
-    }
-    var notif_msg = data.msg;
-
-    var notification = new Notification(notif_title, {
-      icon: notif_icon,
-      body: notif_msg
-    });
-    setTimeout(function(){
-      notification.close();
-    }, window.localStorage.notificationSeconds * 1000);
+    this.doNotification(data, isMention, this.room());
   }
 }
 

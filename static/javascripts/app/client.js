@@ -85,6 +85,37 @@ function ClientViewModel(){
     window.localStorage.notificationUploadedSound = newValue;
   });
 
+  this.doNotification = function(data, isMention, room){
+    if (that.notificationMode() == 'true' ||
+        (that.notificationMode() == 'mention' && isMention)){
+      if(Notification){
+        if (Notification.permission != "denied"){
+          that._do_notification(data, room);
+          that.playNotificationSound();
+        }
+      }else{
+        Notification.requestPermission();
+      }
+    }
+  }
+
+  this._do_notification = function(data, room){
+    var notif_title = data.name + (TITLE_NAME != "" ? " @" + TITLE_NAME : "") + " -> " + room;
+    var notif_icon = 'notification.png';
+    if (data.avatar != null && data.avatar != "" && data.avatar != "undefined"){
+      notif_icon = data.avatar;
+    }
+    var notif_msg = data.msg;
+
+    var notification = new Notification(notif_title, {
+      icon: notif_icon,
+      body: notif_msg
+    });
+    setTimeout(function(){
+      notification.close();
+    }, that.notificationSeconds() * 1000);
+  }
+
   this.playNotificationSound = function(){
     if (that.notificationSoundMode() == "off"){ return; }
 
@@ -132,7 +163,7 @@ function ClientViewModel(){
     showRefPoint: function(id){
       that.memoController.move(id);
     },
-    playNotificationSound: that.playNotificationSound
+    doNotification: that.doNotification
   });
 
   this.zenMode = false;
