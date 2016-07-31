@@ -446,12 +446,12 @@
               <label class="control-label">Avatar</label>
               <div class="controls">
                 <div class="input-append">
-                  <input type="text" id="avatar" data-bind="textInput: avatar" placeholder="xxxx.jpg">
+                  <input type="text" id="avatar" data-bind="textInput: avatar" placeholder="xxxx.jpg (option)">
                   <button data-bind="click: set_avatar" class="btn">Set</button>
                   <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
                   <img data-bind="attr: {src: avatar}" class="avatar">
                 </div>
-                <input type="file" id="upload_avatar" name="file" style="display:none"></input>
+                <input type="file" id="upload_avatar" name="file" style="display:none" accept="image/gif,image/jpeg,image/png"></input>
               </div>
             </div>
             <div class="control-group send-message-key-radio">
