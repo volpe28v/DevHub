@@ -43,7 +43,12 @@
             <label class="control-label">Avatar</label>
             <div class="controls">
               <div class="input-append">
-                <input type="text" id="avatar_login" data-bind="textInput: avatar" placeholder="xxxx.jpg (option)">
+                <input type="text" id="avatar_login" data-bind="
+                  textInput: avatar,
+                  dropzoneSetting: {
+                    fileTarget: '#upload_avatar',
+                    action: function(fileName){ avatar(fileName);}
+                  }" placeholder="xxxx.jpg (option)"></input>
                 <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
                 <img data-bind="attr: {src: avatar}" class="avatar">
               </div>
@@ -435,7 +440,12 @@
               </div>
               <div class="controls" style="margin-top: 5px" data-bind="visible: selectedNotiSound() == 'up'">
                 <div class="input-append">
-                  <input type="text" id="upload_sound_name" data-bind="textInput: uploadedSound" placeholder="xxxx.mp3">
+                  <input type="text" id="upload_sound_name" data-bind="
+                    textInput: uploadedSound,
+                    dropzoneSetting: {
+                      fileTarget: '#upload_sound',
+                      action: function(fileName){ uploadedSound(fileName.replace('/uploads/',''));}
+                    }" placeholder="xxxx.mp3"></input>
                   <button data-bind="click: upload_sound" class="btn btn-small"><i class="icon-file"></i></button>
                 </div>
                 <input type="file" id="upload_sound" name="file" style="display:none" accept=".mp3"></input>
@@ -446,7 +456,12 @@
               <label class="control-label">Avatar</label>
               <div class="controls">
                 <div class="input-append">
-                  <input type="text" id="avatar" data-bind="textInput: avatar" placeholder="xxxx.jpg (option)">
+                  <input type="text" id="avatar" data-bind="
+                    textInput: avatar,
+                    dropzoneSetting: {
+                      fileTarget: '#upload_avatar',
+                      action: function(fileName){ avatar(fileName);}
+                    }" placeholder="xxxx.jpg (option)"></input>
                   <button data-bind="click: set_avatar" class="btn">Set</button>
                   <button data-bind="click: upload_avatar" class="btn btn-small"><i class="icon-file"></i></button>
                   <img data-bind="attr: {src: avatar}" class="avatar">

@@ -147,7 +147,7 @@ function addCustomBindingHandlers(ko){
           }
   }
 
-  ko.bindingHandlers.dropzoneEdit= {
+  ko.bindingHandlers.dropzoneEdit = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
             if (!valueAccessor()){ return }
 
@@ -165,6 +165,27 @@ function addCustomBindingHandlers(ko){
                   // メモのキャレット位置にファイルを差し込む
                   viewModel.insert(row - 1, res.fileName + " ");
                   $(context).caretLine(row);
+                }
+            });
+          }
+  }
+
+  ko.bindingHandlers.dropzoneSetting = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var fileTarget = valueAccessor().fileTarget;
+            var action = valueAccessor().action;
+
+            var viewModel = bindingContext.$data;
+
+            // 編集モードへのドロップ
+            new DropZone({
+              dropTarget: $(element),
+                alertTarget: $('#loading'),
+                fileTarget: $(fileTarget),
+                pasteValid: true,
+                uploadedAction: function(context, res){
+                  if (res.fileName == null){ return; }
+                  action(res.fileName);
                 }
             });
           }

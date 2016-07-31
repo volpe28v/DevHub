@@ -340,41 +340,6 @@ function ClientViewModel(){
       var key = $(this).val();
       window.localStorage.sendkey = key;
     });
-
-    // アバターフォームへのドロップ
-    new DropZone({
-      dropTarget: $('#avatar'),
-      alertTarget: $('#loading'),
-      fileTarget: $('#upload_avatar'),
-      pasteValid: true,
-      uploadedAction: function(self, res){
-        if (res.fileName == null){ return; }
-        that.avatar(res.fileName);
-      }
-    });
-
-    new DropZone({
-      dropTarget: $('#avatar_login'),
-      alertTarget: $('#loading'),
-      fileTarget: $('#upload_avatar'),
-      pasteValid: true,
-      uploadedAction: function(self, res){
-        if (res.fileName == null){ return; }
-        that.avatar(res.fileName);
-      }
-    });
-
-    new DropZone({
-      dropTarget: $('#upload_sound_name'),
-      alertTarget: $('#loading'),
-      fileTarget: $('#upload_sound'),
-      pasteValid: true,
-      uploadedAction: function(self, res){
-        if (res.fileName == null){ return; }
-        that.uploadedSound(res.fileName.replace("/uploads/",""));
-      }
-    });
-
   }
 
   this.upload_avatar = function(){
