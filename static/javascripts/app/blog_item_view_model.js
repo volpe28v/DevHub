@@ -76,6 +76,12 @@ function BlogItemViewModel(item, parent){
     that.title(that._title(that.text()));
   }
 
+  this.insert = function(row, text){
+    var text_array = that.editing_text().split("\n");
+    text_array.splice(row,0,text);
+    that.editing_text(text_array.join("\n"));
+  }
+
   this.toJS = function(){
     return {
       _id: that._id(),

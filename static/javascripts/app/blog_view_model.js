@@ -76,7 +76,6 @@ function BlogViewModel(name, start, end, editing){
       cache: false,
       data: {blog: update_blog},
       success: function(data){
-        console.log(data);
         that.tags(data.tags);
         blog.apply(data.blog);
         that._update_tags();
@@ -470,9 +469,7 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.insertText = function(item, row, text){
-    var text_array = item.text().split("\n");
-    text_array.splice(row,0,text);
-    item.text(text_array.join("\n"));
+    item.insert(row,text);
   }
 
   this._addItem = function(item, initialEditing){
@@ -490,25 +487,7 @@ function BlogViewModel(name, start, end, editing){
     }
 
     var $target = $('#' + id);
-    that._setDropZone(blog_item, $target.find('.edit-area'));
     return $target;
-  }
-
-  this._setDropZone = function(item, $target){
-    // 編集モードへのドロップ
-    new DropZone({
-      dropTarget: $target,
-        alertTarget: $('#loading'),
-        pasteValid: true,
-        uploadedAction: function(context, res){
-          if (res.fileName == null){ return; }
-          var row = $(context).caretLine();
-
-          // メモのキャレット位置にファイルを差し込む
-          that.insertText(item, row - 1, res.fileName + " ");
-          $(context).caretLine(row);
-        }
-    });
   }
 
   this.set_ref_point = function(){
