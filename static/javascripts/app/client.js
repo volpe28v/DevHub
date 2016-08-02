@@ -10,7 +10,7 @@ require('bootstrap');
 
 require('jquery-colorbox');
 require('jquery.cookie');
-require('@gigwalk/livestamp');
+require('../libs/livestamp');
 require('ion-sound');
 
 var Flipsnap = require('flipsnap');

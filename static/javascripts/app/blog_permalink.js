@@ -5,7 +5,7 @@ require('../libs/moment.lang_ja');
 require('jquery-ui');
 require('jquery-colorbox');
 require('jquery.cookie');
-require('@gigwalk/livestamp');
+require('../libs/livestamp');
 require('perfect-scrollbar/jquery')($);
 var BlogViewModel = require('./blog_view_model');
 var ko = require('knockout');
