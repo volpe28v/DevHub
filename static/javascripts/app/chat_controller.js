@@ -15,9 +15,9 @@ function ChatController(param){
 
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
-  this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
-  this.doNotification = param.doNotification;
+  this.doNotification = param.settingViewModel.doNotification;
+  this.settingViewModel = param.settingViewModel;
 
   // Models
   this.loginName = ko.observable("");
@@ -48,6 +48,8 @@ function ChatController(param){
 
   this.chatViewModels = ko.observableArray([]);
   this.isTabMoving = false;
+
+  this.timeline = ko.observable("all");
 
   // Member function
   this.selectChatTab = function(){
@@ -81,27 +83,8 @@ function ChatController(param){
   }
 
   this.keydownInputMessage = function(data, event, element){
-    if(window.localStorage.sendkey == 'ctrl'){
-      if ( event.ctrlKey && event.keyCode == 13) {
-        return that.sendMessage();
-      }
-    }else if (window.localStorage.sendkey == 'shift'){
-      if ( event.shiftKey && event.keyCode == 13) {
-        return that.sendMessage();
-      }
-    }else{
-      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
-        return true;
-      }else if(event.keyCode == 13){
-        return that.sendMessage();
-      }
-    }
-    return true;
-  }
-
-  this.keydownInputName = function(data, event){
-    if ( event.keyCode == 13) {
-      that.changedLoginName(that.loginName());
+    if(that.settingViewModel.judgeSendKey(event)){
+      return that.sendMessage();
     }
     return true;
   }
@@ -165,13 +148,7 @@ function ChatController(param){
           no: no,
           room_name: room_name,
           socket: that.socket,
-          getId: function(name) {return that.getId(name); },
-          getName: function() {return that.getName(); },
-          getFilterName: function() {return that.getFilterName(); },
-          getFilterWord: function() {return that.getFilterWord(); },
-          upHidingCount: function() {return that.upHidingCount(); },
-          notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
-          doNotification: that.doNotification,
+          parent: that,
           showRefPoint: that.showRefPoint
         }));
       });
@@ -291,7 +268,7 @@ ChatController.prototype = {
     if ($('.textcomplete-dropdown').css('display') == 'none'){
       var name = that.loginName();
       var message = that.inputMessage();
-      var avatar = window.localStorage.avatarImage;
+      var avatar = that.settingViewModel.avatar();
 
       if ( message && name ){
         that.inputMessage("");
@@ -315,12 +292,12 @@ ChatController.prototype = {
     var that = this;
     that.hidingMessageCount(0);
 
-    if (window.localStorage.timeline == "mention"){
+    if (that.timeline() == "mention"){
       $('#mention_alert').slideDown();
     }else{
       $('#mention_alert').slideUp();
     }
-    if (window.localStorage.timeline == "own"){
+    if (that.timeline() == "own"){
       $('#mention_own_alert').slideDown();
     }else{
       $('#mention_own_alert').slideUp();
@@ -353,11 +330,11 @@ ChatController.prototype = {
       that.isCommand(true);
     }else if (message.match(/^m:$/)){
       that.isCommand(true);
-      window.localStorage.timeline = "mention";
+      that.timeline("mention");
       that.doFilterTimeline();
     }else if (message.match(/^mo:$/)){
       that.isCommand(true);
-      window.localStorage.timeline = "own";
+      that.timeline("own");
       that.doFilterTimeline();
     }else if (message.match(/^play:/)){
       that.isCommand(true);
@@ -366,8 +343,8 @@ ChatController.prototype = {
       that.filterWord("");
 
       // mention か mention & own の場合はフィルタリングを解除
-      if (window.localStorage.timeline != "all"){
-        window.localStorage.timeline = "all";
+      if (that.timeline() != "all"){
+        that.timeline("all");
         that.doFilterTimeline();
       }
     }
@@ -392,11 +369,11 @@ ChatController.prototype = {
     $('#chat_body').on('click', '.close', function(){
       var data_id = $(this).closest(".alert").attr('id');
       if (data_id == "mention_own_alert"){
-        window.localStorage.timeline = "all";
+        that.timeline("all");
         that.inputMessage("");
         that.isCommand(false);
       }else if (data_id == "mention_alert"){
-        window.localStorage.timeline = "all";
+        that.timeline("all");
         that.inputMessage("");
         that.isCommand(false);
       }else if (data_id == "filter_name_alert"){

@@ -67279,9 +67279,9 @@ function ChatController(param){
 
   this.socket = param.socket;
   this.faviconNumber = param.faviconNumber;
-  this.changedLoginName = param.changedLoginName;
   this.showRefPoint = param.showRefPoint;
-  this.doNotification = param.doNotification;
+  this.doNotification = param.settingViewModel.doNotification;
+  this.settingViewModel = param.settingViewModel;
 
   // Models
   this.loginName = ko.observable("");
@@ -67312,6 +67312,8 @@ function ChatController(param){
 
   this.chatViewModels = ko.observableArray([]);
   this.isTabMoving = false;
+
+  this.timeline = ko.observable("all");
 
   // Member function
   this.selectChatTab = function(){
@@ -67345,27 +67347,8 @@ function ChatController(param){
   }
 
   this.keydownInputMessage = function(data, event, element){
-    if(window.localStorage.sendkey == 'ctrl'){
-      if ( event.ctrlKey && event.keyCode == 13) {
-        return that.sendMessage();
-      }
-    }else if (window.localStorage.sendkey == 'shift'){
-      if ( event.shiftKey && event.keyCode == 13) {
-        return that.sendMessage();
-      }
-    }else{
-      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
-        return true;
-      }else if(event.keyCode == 13){
-        return that.sendMessage();
-      }
-    }
-    return true;
-  }
-
-  this.keydownInputName = function(data, event){
-    if ( event.keyCode == 13) {
-      that.changedLoginName(that.loginName());
+    if(that.settingViewModel.judgeSendKey(event)){
+      return that.sendMessage();
     }
     return true;
   }
@@ -67429,13 +67412,7 @@ function ChatController(param){
           no: no,
           room_name: room_name,
           socket: that.socket,
-          getId: function(name) {return that.getId(name); },
-          getName: function() {return that.getName(); },
-          getFilterName: function() {return that.getFilterName(); },
-          getFilterWord: function() {return that.getFilterWord(); },
-          upHidingCount: function() {return that.upHidingCount(); },
-          notifyChangeUnreadCount: function() {return that.updateFaviconNumber(); },
-          doNotification: that.doNotification,
+          parent: that,
           showRefPoint: that.showRefPoint
         }));
       });
@@ -67555,7 +67532,7 @@ ChatController.prototype = {
     if ($('.textcomplete-dropdown').css('display') == 'none'){
       var name = that.loginName();
       var message = that.inputMessage();
-      var avatar = window.localStorage.avatarImage;
+      var avatar = that.settingViewModel.avatar();
 
       if ( message && name ){
         that.inputMessage("");
@@ -67579,12 +67556,12 @@ ChatController.prototype = {
     var that = this;
     that.hidingMessageCount(0);
 
-    if (window.localStorage.timeline == "mention"){
+    if (that.timeline() == "mention"){
       $('#mention_alert').slideDown();
     }else{
       $('#mention_alert').slideUp();
     }
-    if (window.localStorage.timeline == "own"){
+    if (that.timeline() == "own"){
       $('#mention_own_alert').slideDown();
     }else{
       $('#mention_own_alert').slideUp();
@@ -67617,11 +67594,11 @@ ChatController.prototype = {
       that.isCommand(true);
     }else if (message.match(/^m:$/)){
       that.isCommand(true);
-      window.localStorage.timeline = "mention";
+      that.timeline("mention");
       that.doFilterTimeline();
     }else if (message.match(/^mo:$/)){
       that.isCommand(true);
-      window.localStorage.timeline = "own";
+      that.timeline("own");
       that.doFilterTimeline();
     }else if (message.match(/^play:/)){
       that.isCommand(true);
@@ -67630,8 +67607,8 @@ ChatController.prototype = {
       that.filterWord("");
 
       // mention か mention & own の場合はフィルタリングを解除
-      if (window.localStorage.timeline != "all"){
-        window.localStorage.timeline = "all";
+      if (that.timeline() != "all"){
+        that.timeline("all");
         that.doFilterTimeline();
       }
     }
@@ -67656,11 +67633,11 @@ ChatController.prototype = {
     $('#chat_body').on('click', '.close', function(){
       var data_id = $(this).closest(".alert").attr('id');
       if (data_id == "mention_own_alert"){
-        window.localStorage.timeline = "all";
+        that.timeline("all");
         that.inputMessage("");
         that.isCommand(false);
       }else if (data_id == "mention_alert"){
-        window.localStorage.timeline = "all";
+        that.timeline("all");
         that.inputMessage("");
         that.isCommand(false);
       }else if (data_id == "filter_name_alert"){
@@ -67774,13 +67751,7 @@ function ChatViewModel(param){
   this.no = param.no;
   this.room = ko.observable(param.room_name);
   this.socket = param.socket;
-  this.getId = param.getId; // function
-  this.getName = param.getName; // function
-  this.getFilterName = param.getFilterName; // function
-  this.getFilterWord = param.getFilterWord; // function
-  this.upHidingCount = param.upHidingCount; // function
-  this.notifyChangeUnreadCount = param.notifyChangeUnreadCount; // function
-  this.doNotification = param.doNotification; // function
+  this.parent = param.parent;
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
@@ -67792,7 +67763,7 @@ function ChatViewModel(param){
     return that.mentionCount() + that.unreadCount() + that.unreadRoomCount();
   }).extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 200 }});
   this.allUnreadCount.subscribe(function(value){
-    that.notifyChangeUnreadCount();
+    that.parent.updateFaviconNumber();
   });
   this.isActive = ko.observable(false);
 
@@ -67953,8 +67924,8 @@ ChatViewModel.prototype = {
     that.clear_unread();
     $(that.listId).empty();
 
-    var filterName = that.getFilterName();
-    var filterWord = that.getFilterWord();
+    var filterName = that.parent.getFilterName();
+    var filterWord = that.parent.getFilterWord();
 
     // 既に読み込み中の場合は完了後に再度読み込み開始する
     if (that.isLoadingLog){
@@ -67974,8 +67945,8 @@ ChatViewModel.prototype = {
     $('#message_loader').show();
     this.isLoadingLog = true;
 
-    var filterName = this.getFilterName();
-    var filterWord = this.getFilterWord();
+    var filterName = this.parent.getFilterName();
+    var filterWord = this.parent.getFilterWord();
     this.socket.emit('load_log_more', {room_id: this.no, id: id, name: filterName, word: filterWord});
   },
 
@@ -68047,7 +68018,7 @@ ChatViewModel.prototype = {
       callback($msg);
       return true;
     }else{
-      this.upHidingCount();
+      this.parent.upHidingCount();
       return false;
     }
   },
@@ -68072,7 +68043,7 @@ ChatViewModel.prototype = {
       callback($msg);
       return true;
     }else{
-      this.upHidingCount();
+      this.parent.upHidingCount();
       return false;
     }
   },
@@ -68085,7 +68056,7 @@ ChatViewModel.prototype = {
 
   get_msg_html: function(data){
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
-    if ( data.name == this.getName()){
+    if ( data.name == this.parent.getName()){
       return {
         html: this.get_msg_body(data) + '<a data-bind="click: $parent.remove_msg.bind($data, $element)" class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
         css: "own_msg",
@@ -68119,7 +68090,7 @@ ChatViewModel.prototype = {
     var name_class = "login-name";
     var msg_class = "msg";
 
-    data.id = this.getId(data.name)
+    data.id = this.parent.getId(data.name);
 
     if ( data.name == "System" ){
       name_class = "login-name-system";
@@ -68162,7 +68133,7 @@ ChatViewModel.prototype = {
     var deco_msg = msg;
     var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room(), "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.getName()||
+      if (arguments[1] == that.parent.getName()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
@@ -68180,7 +68151,7 @@ ChatViewModel.prototype = {
   },
 
   include_target_name: function(msg){
-    var name = this.getName();
+    var name = this.parent.getName();
     var name_reg = RegExp("@" + this.escape_reg(name) + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
         msg.match("@みなさん") ||
@@ -68227,22 +68198,23 @@ ChatViewModel.prototype = {
   },
 
   display_message: function(msg){
-    if (window.localStorage.timeline == "own"){
+    var that = this;
+    if (that.parent.timeline() == "own"){
       if (msg.css == 'normal_msg'){
         return false;
       }
-    }else if (window.localStorage.timeline == "mention"){
+    }else if (that.parent.timeline() == "mention"){
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
         return false;
       }
-    }else if (this.getFilterName() != ""){
-      if ($(msg.html).find(".login-symbol").data("name") != this.getFilterName()){
+    }else if (this.parent.getFilterName() != ""){
+      if ($(msg.html).find(".login-symbol").data("name") != this.parent.getFilterName()){
         return false;
       }
     }
 
-    if (this.getFilterWord() != ""){
-      var reg = RegExp(this.getFilterWord(),"im");
+    if (this.parent.getFilterWord() != ""){
+      var reg = RegExp(this.parent.getFilterWord(),"im");
       if (!$(msg.html).find(".msg").text().match(reg)){
         return false;
       }
@@ -68254,7 +68226,7 @@ ChatViewModel.prototype = {
     var notif_msg = data.msg;
     var isMention = this.include_target_name(notif_msg);
 
-    this.doNotification(data, isMention, this.room());
+    this.parent.doNotification(data, isMention, this.room());
   }
 }
 
@@ -68287,6 +68259,7 @@ require('../libs/jquery.autosize');
 var FaviconNumber = require('../libs/favicon-number');
 var DropZone = require('../libs/dropzone');
 
+// ViewModels
 var SettingViewModel = require('./setting_view_model');
 var MemoController = require('./memo_controller');
 var ChatController = require('./chat_controller');
@@ -68316,14 +68289,11 @@ function ClientViewModel(){
   this.chatController = new ChatController({
     socket: that.socket,
     faviconNumber: that.faviconNumber,
-    changedLoginName: function(name){
-      that.memoController.setName(name);
-      that.settingViewModel.set_avatar();
-    },
     showRefPoint: function(id){
       that.memoController.move(id);
     },
-    doNotification: that.settingViewModel.doNotification
+    doNotification: that.settingViewModel.doNotification,
+    settingViewModel: that.settingViewModel
   });
 
   this.settingViewModel.loginName.subscribe(function(value){
@@ -68336,9 +68306,11 @@ function ClientViewModel(){
 
   this.init = function(){
     that.init_websocket();
-
     that.settingViewModel.init();
+    init_display();
+  }
 
+  var init_display = function(){
     if ($(window).width() < 768){
       that.is_mobile = true;
     }
@@ -68491,17 +68463,6 @@ function ClientViewModel(){
 
   this.showSetting = function(){
     $('#settings_modal').modal('show');
-  }
-
-  this.initSettings = function(){
-    var that = this;
-
-    // for Timeline
-    if(window.localStorage.timeline == 'own'){
-      $('#mention_own_alert').show();
-    }else if (window.localStorage.timeline == 'mention'){
-      $('#mention_alert').show();
-    }
   }
 
   this.adjust_display_size_for_mobile = function(){
@@ -69897,8 +69858,7 @@ module.exports = MemoViewModel;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../libs/difflib":125,"../libs/diffview":126,"../libs/jquery.selection.js":135,"../libs/knockout.devhub_custom":136,"./calendar_view_model":118,"jquery":60,"jquery-ui":58,"knockout":62,"knockout.mapping":61,"moment":64,"textarea-helper":113}],124:[function(require,module,exports){
-var COOKIE_NAME = "dev_hub_name";
-var COOKIE_EXPIRES = 365;
+var COOKIE_NAME = "dev_hub_name"; // delete
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
@@ -69911,7 +69871,10 @@ function SettingViewModel(param){
 
   this.socket = param.socket;
 
-  this.loginName = ko.observable($.cookie(COOKIE_NAME));
+  this.loginName = ko.observable(window.localStorage.loginName != null ? window.localStorage.loginName : $.cookie(COOKIE_NAME));
+  this.loginName.subscribe(function(newValue){
+    window.localStorage.loginName = newValue;
+  });
  
   // notification mode
   this.notificationMode = ko.observable(window.localStorage.popupNotification != null ? window.localStorage.popupNotification : 'disable');
@@ -70044,7 +70007,6 @@ function SettingViewModel(param){
   }
 
   this.set_avatar = function(){
-    $.cookie(COOKIE_NAME, that.loginName(),{ expires: COOKIE_EXPIRES });
     window.localStorage.avatarImage = that.avatar();
 
     that.socket.emit('name',
@@ -70065,6 +70027,26 @@ function SettingViewModel(param){
     return false;
   }
  
+  this.judgeSendKey = function(event){
+    if(that.sendKey() == 'ctrl'){
+      if ( event.ctrlKey && event.keyCode == 13) {
+        return true;
+      }
+    }else if (that.sendKey() == 'shift'){
+      if ( event.shiftKey && event.keyCode == 13) {
+        return true;
+      }
+    }else{
+      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
+        return false;
+      }else if(event.keyCode == 13){
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 }
 
 module.exports = SettingViewModel;

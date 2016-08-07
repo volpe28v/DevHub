@@ -22,6 +22,7 @@ require('../libs/jquery.autosize');
 var FaviconNumber = require('../libs/favicon-number');
 var DropZone = require('../libs/dropzone');
 
+// ViewModels
 var SettingViewModel = require('./setting_view_model');
 var MemoController = require('./memo_controller');
 var ChatController = require('./chat_controller');
@@ -51,14 +52,11 @@ function ClientViewModel(){
   this.chatController = new ChatController({
     socket: that.socket,
     faviconNumber: that.faviconNumber,
-    changedLoginName: function(name){
-      that.memoController.setName(name);
-      that.settingViewModel.set_avatar();
-    },
     showRefPoint: function(id){
       that.memoController.move(id);
     },
-    doNotification: that.settingViewModel.doNotification
+    doNotification: that.settingViewModel.doNotification,
+    settingViewModel: that.settingViewModel
   });
 
   this.settingViewModel.loginName.subscribe(function(value){
@@ -71,9 +69,11 @@ function ClientViewModel(){
 
   this.init = function(){
     that.init_websocket();
-
     that.settingViewModel.init();
+    init_display();
+  }
 
+  var init_display = function(){
     if ($(window).width() < 768){
       that.is_mobile = true;
     }
@@ -226,17 +226,6 @@ function ClientViewModel(){
 
   this.showSetting = function(){
     $('#settings_modal').modal('show');
-  }
-
-  this.initSettings = function(){
-    var that = this;
-
-    // for Timeline
-    if(window.localStorage.timeline == 'own'){
-      $('#mention_own_alert').show();
-    }else if (window.localStorage.timeline == 'mention'){
-      $('#mention_alert').show();
-    }
   }
 
   this.adjust_display_size_for_mobile = function(){

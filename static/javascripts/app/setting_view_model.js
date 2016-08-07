@@ -1,5 +1,4 @@
-var COOKIE_NAME = "dev_hub_name";
-var COOKIE_EXPIRES = 365;
+var COOKIE_NAME = "dev_hub_name"; // delete
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
@@ -12,7 +11,10 @@ function SettingViewModel(param){
 
   this.socket = param.socket;
 
-  this.loginName = ko.observable($.cookie(COOKIE_NAME));
+  this.loginName = ko.observable(window.localStorage.loginName != null ? window.localStorage.loginName : $.cookie(COOKIE_NAME));
+  this.loginName.subscribe(function(newValue){
+    window.localStorage.loginName = newValue;
+  });
  
   // notification mode
   this.notificationMode = ko.observable(window.localStorage.popupNotification != null ? window.localStorage.popupNotification : 'disable');
@@ -145,7 +147,6 @@ function SettingViewModel(param){
   }
 
   this.set_avatar = function(){
-    $.cookie(COOKIE_NAME, that.loginName(),{ expires: COOKIE_EXPIRES });
     window.localStorage.avatarImage = that.avatar();
 
     that.socket.emit('name',
@@ -166,6 +167,26 @@ function SettingViewModel(param){
     return false;
   }
  
+  this.judgeSendKey = function(event){
+    if(that.sendKey() == 'ctrl'){
+      if ( event.ctrlKey && event.keyCode == 13) {
+        return true;
+      }
+    }else if (that.sendKey() == 'shift'){
+      if ( event.shiftKey && event.keyCode == 13) {
+        return true;
+      }
+    }else{
+      if ((event.altKey || event.ctrlKey || event.shiftKey ) && event.keyCode == 13) {
+        return false;
+      }else if(event.keyCode == 13){
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 }
 
 module.exports = SettingViewModel;
