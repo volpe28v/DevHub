@@ -21,6 +21,7 @@ function MemoController(param){
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.zenMode = param.zenMode;
+  this.settingViewModel = param.settingViewModel;
 
   this.memo_number = ko.observable(1);
 
@@ -361,6 +362,7 @@ function MemoController(param){
         no: i,
         active: i == that.currentMemoNo,
         socket: that.socket,
+        settingViewModel: that.settingViewModel,
         getName: function() { return that.getName(); },
         endSearch: that.end_search_control
       }));

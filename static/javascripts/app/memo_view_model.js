@@ -140,6 +140,7 @@ function SearchState(parent){
 function MemoViewModel(param){
   this.no = param.no;
   this.socket = param.socket;
+  this.settingViewModel = param.settingViewModel;
   this.getName = param.getName; //function
   this.notifyEndSearch = param.endSearch; //function
   this.active = param.active;
@@ -161,7 +162,7 @@ function MemoViewModel(param){
     that.socket.emit('text',{
       no: that.no,
       name: that.getName(),
-      avatar: window.localStorage.avatarImage,
+      avatar: that.settingViewModel.avatar(),
       text: that.edit_text()
     });
   }
@@ -460,7 +461,7 @@ function MemoViewModel(param){
     that.socket.emit('text',{
       no: that.no,
       name: that.getName(),
-      avatar: window.localStorage.avatarImage,
+      avatar: that.settingViewModel.avatar(),
       text: that.latest_text().text});
   }
 
@@ -482,7 +483,7 @@ function MemoViewModel(param){
     that.socket.emit('text',{
       no: that.no,
       name: that.getName(),
-      avatar: window.localStorage.avatarImage,
+      avatar: taht.settingViewModel.avatar(),
       text: that.latest_text().text});
 
     return false;
@@ -502,7 +503,7 @@ function MemoViewModel(param){
       that.socket.emit('text',{
         no: that.no,
         name: that.getName(),
-        avatar: window.localStorage.avatarImage,
+        avatar: that.settingViewModel.avatar(),
         text: that.latest_text().text});
     });
   }
@@ -835,7 +836,7 @@ function MemoViewModel(param){
     that.socket.emit('text',{
       no: this.no,
       name: this.getName(),
-      avatar: window.localStorage.avatarImage,
+      avatar: that.settingViewModel.avatar(),
       text: this.latest_text().text});
   },
 
@@ -863,7 +864,7 @@ function MemoViewModel(param){
       title: that._title(selected_text),
       text: selected_text,
       name: that.getName(),
-      avatar: window.localStorage.avatarImage
+      avatar: that.settingViewModel.avatar()
     };
 
     $.ajax('blog' , {
