@@ -21,6 +21,7 @@ function MemoController(param){
   this.socket = param.socket;
   this.setMessage = param.setMessage;
   this.zenMode = param.zenMode;
+  this.settingViewModel = param.settingViewModel;
 
   this.memo_number = ko.observable(1);
 
@@ -28,7 +29,7 @@ function MemoController(param){
   this.doing_down = false;
 
   this.memoViewModels = ko.observableArray([]);
-  this.currentMemoNo = window.localStorage.tabSelectedNo ? window.localStorage.tabSelectedNo : 1;
+
   this.isMovingTab = false;
   this.control_offset_base = 0;
 
@@ -59,24 +60,21 @@ function MemoController(param){
   this.matched_title = ko.observable("");
 
   this.currentMemo = function(){
-    return that.memoViewModels()[that.currentMemoNo-1];
+    return that.memoViewModels()[that.settingViewModel.selectedMemoNo() - 1];
   }
 
   this.select_memo_tab = function(data){
     if (that.isMovingTab){ return true; }
 
     // タブ選択のIDを記憶する
-    var memoViewModel = this;
-
-    window.localStorage.tabSelectedNo = memoViewModel.no;
+    var selectedMemoViewModel = this;
 
     that.currentMemo().unselect();
-    that.currentMemoNo = memoViewModel.no;
     if (that.keyword() == ""){
-      that.currentMemo().select();
+      selectedMemoViewModel.select();
     }else{
       // 検索中
-      that.currentMemo().beginSearch();
+      selectedMemoViewModel.beginSearch();
     }
 
     $('#memo_area').scrollTop(0);
@@ -95,12 +93,6 @@ function MemoController(param){
 
   this.setWidth = function(width){
     $('#memo_area').css('width',width + 'px').css('margin',0);
-  }
-
-  this.setFocus = function(){
-    var data_no = that.currentMemo().no;
-    var targetMemo = this.memoViewModels()[data_no-1];
-    targetMemo.switchEditShareMemo(-1);
   }
 
   this.top = function(){
@@ -359,51 +351,39 @@ function MemoController(param){
     for (var i = 1; i <= SHARE_MEMO_NUMBER; i++){
       this.memoViewModels.push(new MemoViewModel({
         no: i,
-        active: i == that.currentMemoNo,
+        active: i == that.settingViewModel.selectedMemoNo(),
         socket: that.socket,
+        settingViewModel: that.settingViewModel,
         getName: function() { return that.getName(); },
         endSearch: that.end_search_control
       }));
     }
 
-    $("#tab_change").click(function(){
-      if ($('#share_memo_tabbable').hasClass("tabs-left")){
-        $('#share_memo_nav').fadeOut("fast",function(){
-          $('#share_memo_tabbable').removeClass("tabs-left");
-          $('#share_memo_nav').removeClass("nav-tabs");
-          $('#share_memo_nav').addClass("nav-pills");
-          $('#share_memo_nav').fadeIn();
-        });
-        window.localStorage.tabChanged = 'true';
+    function changeTabStyle(style){
+      if (style == 'horizontal'){
+        $('#share_memo_tabbable').removeClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-tabs");
+        $('#share_memo_nav').addClass("nav-pills");
       }else{
-        $('#share_memo_nav').fadeOut("fast",function(){
-          $('#share_memo_tabbable').addClass("tabs-left");
-          $('#share_memo_nav').removeClass("nav-pills");
-          $('#share_memo_nav').addClass("nav-tabs");
-          $('#share_memo_nav').fadeIn();
-        });
-        window.localStorage.tabChanged = 'false';
+        $('#share_memo_tabbable').addClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-pills");
+        $('#share_memo_nav').addClass("nav-tabs");
       }
+    }
+
+    changeTabStyle(that.settingViewModel.memoTabStyle());
+    that.settingViewModel.memoTabStyle.subscribe(function(newValue){
+      changeTabStyle(newValue);
     });
 
     $('#memo_area').scroll(function(){
       that.adjustMemoControllbox();
     });
 
-    // 前回の状態を復元する
-    // タブスタイル
-    if ( window.localStorage.tabChanged != 'false' ){
-      $('#share_memo_nav').hide();
-      $('#share_memo_tabbable').removeClass("tabs-left");
-      $('#share_memo_nav').removeClass("nav-tabs");
-      $('#share_memo_nav').addClass("nav-pills");
-      $('#share_memo_nav').show();
-    }
-
     $("body").on('keydown',function(event){
       // F2で共有メモの編集状態へ
       if (event.keyCode == 113){
-        that.setFocus();
+        that.currentMemo().switchEditShareMemo(-1);
         return false;
       }
     });

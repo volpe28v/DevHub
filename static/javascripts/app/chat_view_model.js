@@ -19,13 +19,7 @@ function ChatViewModel(param){
   this.no = param.no;
   this.room = ko.observable(param.room_name);
   this.socket = param.socket;
-  this.getId = param.getId; // function
-  this.getName = param.getName; // function
-  this.getFilterName = param.getFilterName; // function
-  this.getFilterWord = param.getFilterWord; // function
-  this.upHidingCount = param.upHidingCount; // function
-  this.notifyChangeUnreadCount = param.notifyChangeUnreadCount; // function
-  this.doNotification = param.doNotification; // function
+  this.parent = param.parent;
   this.showRefPoint = param.showRefPoint; // function
 
   // Models
@@ -37,7 +31,7 @@ function ChatViewModel(param){
     return that.mentionCount() + that.unreadCount() + that.unreadRoomCount();
   }).extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 200 }});
   this.allUnreadCount.subscribe(function(value){
-    that.notifyChangeUnreadCount();
+    that.parent.updateFaviconNumber();
   });
   this.isActive = ko.observable(false);
 
@@ -198,8 +192,8 @@ ChatViewModel.prototype = {
     that.clear_unread();
     $(that.listId).empty();
 
-    var filterName = that.getFilterName();
-    var filterWord = that.getFilterWord();
+    var filterName = that.parent.getFilterName();
+    var filterWord = that.parent.getFilterWord();
 
     // 既に読み込み中の場合は完了後に再度読み込み開始する
     if (that.isLoadingLog){
@@ -219,8 +213,8 @@ ChatViewModel.prototype = {
     $('#message_loader').show();
     this.isLoadingLog = true;
 
-    var filterName = this.getFilterName();
-    var filterWord = this.getFilterWord();
+    var filterName = this.parent.getFilterName();
+    var filterWord = this.parent.getFilterWord();
     this.socket.emit('load_log_more', {room_id: this.no, id: id, name: filterName, word: filterWord});
   },
 
@@ -292,7 +286,7 @@ ChatViewModel.prototype = {
       callback($msg);
       return true;
     }else{
-      this.upHidingCount();
+      this.parent.upHidingCount();
       return false;
     }
   },
@@ -317,7 +311,7 @@ ChatViewModel.prototype = {
       callback($msg);
       return true;
     }else{
-      this.upHidingCount();
+      this.parent.upHidingCount();
       return false;
     }
   },
@@ -330,7 +324,7 @@ ChatViewModel.prototype = {
 
   get_msg_html: function(data){
     var disp_date = data.date.replace(/:\d\d$/,""); // 秒は削る
-    if ( data.name == this.getName()){
+    if ( data.name == this.parent.getName()){
       return {
         html: this.get_msg_body(data) + '<a data-bind="click: $parent.remove_msg.bind($data, $element)" class="remove_msg">x</a><span class="own_msg_date">' + disp_date + '</span></td></tr></table>',
         css: "own_msg",
@@ -364,7 +358,7 @@ ChatViewModel.prototype = {
     var name_class = "login-name";
     var msg_class = "msg";
 
-    data.id = this.getId(data.name)
+    data.id = this.parent.getId(data.name);
 
     if ( data.name == "System" ){
       name_class = "login-name-system";
@@ -407,7 +401,7 @@ ChatViewModel.prototype = {
     var deco_msg = msg;
     var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room(), "g");
     deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.getName()||
+      if (arguments[1] == that.parent.getName()||
           arguments[0] == "@みなさん"     ||
           arguments[0] == "@all"){
         return '<span class="target-me">' + arguments[0] + '</span>'
@@ -425,7 +419,7 @@ ChatViewModel.prototype = {
   },
 
   include_target_name: function(msg){
-    var name = this.getName();
+    var name = this.parent.getName();
     var name_reg = RegExp("@" + this.escape_reg(name) + "( |　|さん|$)");
     if (msg.match(name_reg)    ||
         msg.match("@みなさん") ||
@@ -472,22 +466,23 @@ ChatViewModel.prototype = {
   },
 
   display_message: function(msg){
-    if (window.localStorage.timeline == "own"){
+    var that = this;
+    if (that.parent.timeline() == "own"){
       if (msg.css == 'normal_msg'){
         return false;
       }
-    }else if (window.localStorage.timeline == "mention"){
+    }else if (that.parent.timeline() == "mention"){
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
         return false;
       }
-    }else if (this.getFilterName() != ""){
-      if ($(msg.html).find(".login-symbol").data("name") != this.getFilterName()){
+    }else if (this.parent.getFilterName() != ""){
+      if ($(msg.html).find(".login-symbol").data("name") != this.parent.getFilterName()){
         return false;
       }
     }
 
-    if (this.getFilterWord() != ""){
-      var reg = RegExp(this.getFilterWord(),"im");
+    if (this.parent.getFilterWord() != ""){
+      var reg = RegExp(this.parent.getFilterWord(),"im");
       if (!$(msg.html).find(".msg").text().match(reg)){
         return false;
       }
@@ -499,7 +494,7 @@ ChatViewModel.prototype = {
     var notif_msg = data.msg;
     var isMention = this.include_target_name(notif_msg);
 
-    this.doNotification(data, isMention, this.room());
+    this.parent.doNotification(data, isMention, this.room());
   }
 }
 

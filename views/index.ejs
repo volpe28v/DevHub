@@ -26,7 +26,7 @@
   </head>
 
   <body id="body-main" style="padding-top: 0px">
-    <div class="modal hide fade" id="name_in">
+    <div class="modal hide fade" data-bind="with: settingViewModel" id="name_in">
       <div class="modal-header">
         <h3>DevHub</h3>
       </div>
@@ -87,7 +87,6 @@
 
 
           <ul class="nav pull-right">
-           <li><a id="tab_change" rel="tooltip" title="Change Tab Layout" style="cursor: pointer"><i class="icon-white icon-resize-full"></i></a></li>
             <li><a id="scroll_top" data-bind="click: memoController.top" rel="tooltip" title="Scroll Top" style="cursor: pointer"><i class="icon-white icon-arrow-up"></i></a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" rel="tooltip" title="Full Screen" style="cursor: pointer">
@@ -378,7 +377,7 @@
       </div>
     </div>
 
-    <div id="settings_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="settings_modal" data-bind="with: settingViewModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">Settings</h3>
@@ -473,13 +472,24 @@
               <label class="control-label">Send Message Key</label>
               <div class="controls">
                 <label class="radio inline">
-                  <input type="radio" name="sendkey" id="send_enter" value="enter" checked> Enter
+                  <input type="radio" name="sendkey" id="send_enter" value="enter" data-bind="checked: sendKey"> Enter
                 </label>
                 <label class="radio inline">
-                  <input type="radio" name="sendkey" id="send_ctrl" value="ctrl"> Ctrl+Enter
+                  <input type="radio" name="sendkey" id="send_ctrl" value="ctrl"   data-bind="checked: sendKey"> Ctrl+Enter
                 </label>
                 <label class="radio inline">
-                  <input type="radio" name="sendkey" id="send_shift" value="shift"> Shift+Enter
+                  <input type="radio" name="sendkey" id="send_shift" value="shift" data-bind="checked: sendKey"> Shift+Enter
+                </label>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Memo tab style</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="memoTabStyle" value="horizontal" data-bind="checked: memoTabStyle"> Horizontal
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="memoTabStyle" value="vertical" data-bind="checked: memoTabStyle"> Vertical
                 </label>
               </div>
             </div>
@@ -488,7 +498,7 @@
 
               <label class="control-label">Enable chat room</label>
               <div class="controls">
-                <!-- ko with: chatController -->
+                <!-- ko with: $parent.chatController -->
                 <select id="chat_number" class="span1" data-bind="
                   value: chatNumber,
                   event: {change: changeChatNumber}
@@ -504,7 +514,7 @@
             <div class="control-group">
               <label class="control-label">Enable share memo</label>
               <div class="controls">
-                <!-- ko with: memoController -->
+                <!-- ko with: $parent.memoController -->
                 <select id="memo_number" class="span1" data-bind="
                   value: memo_number,
                   event: {change: change_memo_number}
