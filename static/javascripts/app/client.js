@@ -4,33 +4,28 @@ global.moment = require('moment');
 require('../libs/moment.lang_ja');
 require('jquery-ui');
 require('bootstrap');
-
 require('jquery-colorbox');
-require('jquery.cookie');
 require('../libs/livestamp');
-
-var Flipsnap = require('flipsnap');
-var emojify = require('emojify.js');
+require('../libs/jquery.autosize');
 require('perfect-scrollbar/jquery')($);
-var socket = require('socket.io-client')('/', {query: 'from=devhub'});
 
+// knockout.js
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 
-require('../libs/jquery.autosize');
 var FaviconNumber = require('../libs/favicon-number');
-var DropZone = require('../libs/dropzone');
+var Flipsnap = require('flipsnap');
 
 // ViewModels
 var SettingViewModel = require('./setting_view_model');
-var MemoController = require('./memo_controller');
-var ChatController = require('./chat_controller');
+var MemoController   = require('./memo_controller');
+var ChatController   = require('./chat_controller');
 
-function ClientViewModel(){
+function ClientViewModel(param){
   var that = this;
 
-  this.socket = socket;
+  this.socket = param.socket;
   this.is_mobile = false;
 
   this.faviconNumber = new FaviconNumber();
@@ -64,7 +59,6 @@ function ClientViewModel(){
     that.chatController.setName(value);
     that.memoController.setName(value);
   });
-
 
   this.zenMode = false;
 
@@ -242,7 +236,11 @@ function ClientViewModel(){
 }
 
 $(function() {
-  var clientViewModel = new ClientViewModel();
+  var socket = require('socket.io-client')('/', {query: 'from=devhub'});
+
+  var clientViewModel = new ClientViewModel({
+    socket: socket
+  });
   ko.applyBindings(clientViewModel);
   clientViewModel.init();
 });

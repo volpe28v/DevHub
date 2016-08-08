@@ -1,4 +1,5 @@
-var COOKIE_NAME = "dev_hub_name"; // delete
+var COOKIE_NAME = "dev_hub_name"; // legacy 
+require('jquery.cookie'); // legacy
 
 var ko = require('knockout');
 ko.mapping = require('knockout.mapping');
