@@ -11,6 +11,7 @@ function SettingViewModel(param){
 
   this.socket = param.socket;
 
+  // login name
   this.loginName = ko.observable(window.localStorage.loginName != null ? window.localStorage.loginName : $.cookie(COOKIE_NAME));
   this.loginName.subscribe(function(newValue){
     window.localStorage.loginName = newValue;
@@ -26,6 +27,8 @@ function SettingViewModel(param){
       }
     }
   });
+
+  // notification seconds
   this.notificationSeconds = ko.observable(window.localStorage.notificationSeconds != null ? window.localStorage.notificationSeconds : 5);
   this.notificationSeconds.subscribe(function(newValue){
     window.localStorage.notificationSeconds = newValue;
@@ -68,6 +71,12 @@ function SettingViewModel(param){
   this.sendKey = ko.observable(window.localStorage.sendkey != null ? window.localStorage.sendkey : "enter");
   this.sendKey.subscribe(function(newValue){
     window.localStorage.sendkey = newValue;
+  });
+
+  // memo tab style
+  this.memoTabStyle = ko.observable(window.localStorage.tabChanged == 'vertical' ? 'vertical' : 'horizontal'); 
+  this.memoTabStyle.subscribe(function(newValue){
+    window.localStorage.tabChanged = newValue;
   });
 
   this.init = function(){

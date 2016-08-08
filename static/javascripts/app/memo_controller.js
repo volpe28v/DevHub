@@ -368,39 +368,26 @@ function MemoController(param){
       }));
     }
 
-    $("#tab_change").click(function(){
-      if ($('#share_memo_tabbable').hasClass("tabs-left")){
-        $('#share_memo_nav').fadeOut("fast",function(){
-          $('#share_memo_tabbable').removeClass("tabs-left");
-          $('#share_memo_nav').removeClass("nav-tabs");
-          $('#share_memo_nav').addClass("nav-pills");
-          $('#share_memo_nav').fadeIn();
-        });
-        window.localStorage.tabChanged = 'true';
+    function changeTabStyle(style){
+      if (style == 'horizontal'){
+        $('#share_memo_tabbable').removeClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-tabs");
+        $('#share_memo_nav').addClass("nav-pills");
       }else{
-        $('#share_memo_nav').fadeOut("fast",function(){
-          $('#share_memo_tabbable').addClass("tabs-left");
-          $('#share_memo_nav').removeClass("nav-pills");
-          $('#share_memo_nav').addClass("nav-tabs");
-          $('#share_memo_nav').fadeIn();
-        });
-        window.localStorage.tabChanged = 'false';
+        $('#share_memo_tabbable').addClass("tabs-left");
+        $('#share_memo_nav').removeClass("nav-pills");
+        $('#share_memo_nav').addClass("nav-tabs");
       }
+    }
+
+    changeTabStyle(that.settingViewModel.memoTabStyle());
+    that.settingViewModel.memoTabStyle.subscribe(function(newValue){
+      changeTabStyle(newValue);
     });
 
     $('#memo_area').scroll(function(){
       that.adjustMemoControllbox();
     });
-
-    // 前回の状態を復元する
-    // タブスタイル
-    if ( window.localStorage.tabChanged != 'false' ){
-      $('#share_memo_nav').hide();
-      $('#share_memo_tabbable').removeClass("tabs-left");
-      $('#share_memo_nav').removeClass("nav-tabs");
-      $('#share_memo_nav').addClass("nav-pills");
-      $('#share_memo_nav').show();
-    }
 
     $("body").on('keydown',function(event){
       // F2で共有メモの編集状態へ
