@@ -16,7 +16,7 @@ function SettingViewModel(param){
   this.loginName.subscribe(function(newValue){
     window.localStorage.loginName = newValue;
   });
- 
+
   // notification mode
   this.notificationMode = ko.observable(window.localStorage.popupNotification != null ? window.localStorage.popupNotification : 'disable');
   this.notificationMode.subscribe(function(newValue){
@@ -77,6 +77,12 @@ function SettingViewModel(param){
   this.memoTabStyle = ko.observable(window.localStorage.tabChanged == 'vertical' ? 'vertical' : 'horizontal'); 
   this.memoTabStyle.subscribe(function(newValue){
     window.localStorage.tabChanged = newValue;
+  });
+
+  // memo current no
+  this.selectedMemoNo = ko.observable(window.localStorage.tabSelectedNo != null ? window.localStorage.tabSelectedNo : 1);
+  this.selectedMemoNo.subscribe(function(newValue){
+    window.localStorage.tabSelectedNo = newValue;
   });
 
   this.init = function(){

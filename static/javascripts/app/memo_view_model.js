@@ -447,7 +447,6 @@ function MemoViewModel(param){
     var $target = $('#share_memo_' + this.no);
     var row = $target.find('.code-out-tr').index(ui.item);
     that.drag_index = row;
-    console.log(that.drag_index + " : " + row);
   }
 
   this.stopMemoMoving = function(ui){
@@ -528,6 +527,7 @@ function MemoViewModel(param){
 
   this.select = function(){
     this.switchFixShareMemo(1);
+    this.settingViewModel.selectedMemoNo(this.no);
   }
 
   this.unselect = function(){
@@ -580,6 +580,7 @@ function MemoViewModel(param){
   this.beginSearch = function(){
     this.set_state(this.states.search);
     this.setDisplayControl();
+    this.settingViewModel.selectedMemoNo(this.no);
   }
 
   this.endSearch = function(){
