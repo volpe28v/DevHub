@@ -482,7 +482,7 @@ function MemoViewModel(param){
     that.socket.emit('text',{
       no: that.no,
       name: that.getName(),
-      avatar: taht.settingViewModel.avatar(),
+      avatar: that.settingViewModel.avatar(),
       text: that.latest_text().text});
 
     return false;
