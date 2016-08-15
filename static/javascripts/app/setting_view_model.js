@@ -96,7 +96,7 @@ function SettingViewModel(param){
   }
 
   this.doNotification = function(data, isMention, room){
-    if (that.notificationMode() == 'true' ||
+    if ((that.notificationMode() == 'true') ||
         (that.notificationMode() == 'mention' && isMention)){
       if(Notification){
         if (Notification.permission != "denied"){

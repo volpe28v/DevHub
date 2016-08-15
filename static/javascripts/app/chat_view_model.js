@@ -492,7 +492,9 @@ ChatViewModel.prototype = {
 
   do_notification: function(data){
     var notif_msg = data.msg;
-    var isMention = this.include_target_name(notif_msg);
+    var isMentionName = this.include_target_name(notif_msg);
+    var isMentionRoom = this.include_room_name(data.msg);
+    var isMention = isMentionName || (isMentionRoom && this.isActive());
 
     this.parent.doNotification(data, isMention, this.room());
   }
