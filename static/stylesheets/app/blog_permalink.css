@@ -1,4 +1,5 @@
 body{
+  font-family: 游ゴシック体, 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
   width : 100%;
   margin : 0px;
   background-color: #FFF;
@@ -88,6 +89,7 @@ pre.text-base-style {
 }
 
 .code-out {
+  font-family: 游ゴシック体, 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
   width: 100%;
   margin-top: 0px;
   font-size: 15px;
@@ -168,6 +170,7 @@ pre.text-base-style {
 }
 
 .code-out-pre {
+  font-family: Menlo,Monaco,"Courier New",monospace;
   margin-left: 12px;
   margin-right: 12px;
 }

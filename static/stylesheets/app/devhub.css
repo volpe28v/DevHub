@@ -1,4 +1,5 @@
 body{
+  font-family: 游ゴシック体, 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
   width : 100%;
   margin : 0px;
 }
@@ -99,7 +100,6 @@ body{
 
 .memo-alert {
   color: #3a87ad !important;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .area-inner {
@@ -423,6 +423,7 @@ a, a:hover {
 }
 
 .code-out,.diff-view {
+  font-family: 游ゴシック体, 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
   width: 100%;
   min-height: 700px;
   margin-top: 0px;
@@ -512,6 +513,7 @@ a, a:hover {
 }
 
 .code-out-pre {
+  font-family: Menlo,Monaco,"Courier New",monospace;
   margin-left: 12px;
   margin-right: 12px;
 }
