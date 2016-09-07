@@ -873,8 +873,9 @@ function MemoViewModel(param){
       cache: false,
       data: {blog: item},
       success: function(data){
+        var permalink = "[" + data.blog.title + "](blog?id=" + data.blog._id + ")\n";
         $target_code.selection('replace', {
-          text: '',
+          text: permalink,
           caret: 'start'
         });
         $('#memo_area').scrollTop(before_pos);
