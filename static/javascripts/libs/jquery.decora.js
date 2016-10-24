@@ -194,6 +194,28 @@ var prettify = require('prettify');
     return target_text;
   }
 
+  function _decorate_raw_tag_for_message(target_text){
+    var text_array = target_text.split("\n");
+    var first_line = text_array.shift();
+    var is_code = first_line.indexOf("code") != -1;
+    target_text = text_array.join('\n');
+    if (is_code){
+      // コードに色付け
+      var raw_text = target_text.replace(/^code/,"");
+      var $pretty_tmp_pre = $('<pre/>').addClass("prettyprint").text(raw_text);
+      var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_pre);
+
+      prettyPrint(null, $pretty_tmp_div.get(0));
+      raw_text = $pretty_tmp_pre.html();
+      $pretty_tmp_div.empty();
+      return '<div class="pre-message">' + raw_text + '</div>';
+    }else{
+      var raw_text = target_text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
+      return '<div class="pre-message">' + raw_text + '</div>';
+    }
+  }
+
+
   function _create_decorate_html_tag(){
     var checkbox_no = 0;
     var img_no = 0;
@@ -234,7 +256,7 @@ var prettify = require('prettify');
     if (is_code){
       // コードに色付け
       var raw_text = text.replace(/^code/,"");
-      var $pretty_tmp_pre= $('<pre/>').addClass("prettyprint").text(raw_text);
+      var $pretty_tmp_pre = $('<pre/>').addClass("prettyprint").text(raw_text);
       var $pretty_tmp_div = $('#share_memo_pre_tmp').append($pretty_tmp_pre);
 
       prettyPrint(null, $pretty_tmp_div.get(0));
@@ -533,6 +555,13 @@ var prettify = require('prettify');
           _decorate_raw_tag);
     },
 
+    message_to_html: function(target_text){
+      return this.apply_to_deco_and_raw(
+          target_text,
+          _decorate_html_tag_for_message,
+          _decorate_raw_tag_for_message);
+    },
+
     apply_to_deco_and_raw: function(target_text, deco_func, raw_func){
       var bq_sepa_array = target_text.split("```");
       for (var i = 0; i < bq_sepa_array.length; i++){
@@ -552,10 +581,6 @@ var prettify = require('prettify');
       }
 
       return bq_sepa_array.join('');
-    },
-
-    message_to_html: function(target_text){
-      return _decorate_html_tag_for_message(target_text);
     }
   };
 })(jQuery);
