@@ -338,14 +338,22 @@ var prettify = require('prettify');
   }
 
   function _decorate_link_tag( text ){
-    var linked_text = text.replace(/(\[(.+?)\])?[\(]?((https?|ftp)(:\/\/[-_.!~*\'a-zA-Z0-9;\/?:\@&=+\$,%#]+)|blog\?id=[^\)]+)[\)]?/g,
+    var linked_text = text.replace(/\[(.+?)\]\((((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)|(blog\?id=\w+)))\)|((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
         function(){
-          var matched_link = arguments[3];
-          if ( matched_link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp)[?]?/i)){
-            return matched_link;
+          var title = arguments[1];
+          if (title == null){
+            // 生URL
+            var link = arguments[7];
+
+            if ( link.match(/(\.jpg|\.jpeg|\.gif|\.png|\.bmp)[?]?/i)){
+              return link;
+            }else{
+              return '<a href="' + link + '" target="_blank" >' + link + '</a>';
+            }
           }else{
-            var title_text = arguments[2] ? arguments[2] : matched_link;
-            return '<a href="' + matched_link + '" target="_blank" >' + title_text + '</a>';
+            var link = arguments[2];
+            // タイトル付きURL
+            return '<a href="' + link + '" target="_blank" >' + title + '</a>';
           }
         });
     return linked_text;
