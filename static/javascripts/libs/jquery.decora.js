@@ -208,10 +208,10 @@ var prettify = require('prettify');
       prettyPrint(null, $pretty_tmp_div.get(0));
       raw_text = $pretty_tmp_pre.html();
       $pretty_tmp_div.empty();
-      return '<div class="pre-message">' + raw_text + '</div>';
+      return '<pre class="pre-message">' + raw_text + '</pre>';
     }else{
       var raw_text = target_text.replace(/</g,function(){ return '&lt;';}).replace(/>/g,function(){ return '&gt;';});
-      return '<div class="pre-message">' + raw_text + '</div>';
+      return '<pre class="pre-message">' + raw_text + '</pre>';
     }
   }
 

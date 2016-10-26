@@ -990,9 +990,8 @@ button.close {
 
 .pre-message{
   background-color: #f7f7f7;
-  border-right: solid 0px #ccc;
-  border-left: solid 0px #ccc;
-  padding: 8px;
+  border: solid 0px #ccc;
+  padding: 10px;
   margin-right: 5px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
