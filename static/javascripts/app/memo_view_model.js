@@ -292,7 +292,7 @@ function MemoViewModel(param){
     };
 
     title = $('<div/>').html($.decora.to_html(title)).text();
-    if (!title.match(/\S/g)){
+    if ($.trim(title) == 'undefined' || !title.match(/\S/g)){
       title = " - No." + this.no + " - ";
     }
     return title;
