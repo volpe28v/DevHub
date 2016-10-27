@@ -95,6 +95,10 @@ function MemoController(param){
     $('#memo_area').css('width',width + 'px').css('margin',0);
   }
 
+  this.unSetWidth = function(){
+    $('#memo_area').css('width','').css('margin','');
+  }
+
   this.top = function(){
     $('#memo_area').scrollTop(0);
     that.adjustMemoControllbox();

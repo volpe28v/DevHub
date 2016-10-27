@@ -407,6 +407,9 @@ ChatController.prototype = {
     $('#chat_area').css('width',width + 'px').css('margin',0);
   },
 
+  unSetWidth: function(){
+    $('#chat_area').css('width','').css('margin','');
+  },
 
   initDropzone: function(){
     var that = this;

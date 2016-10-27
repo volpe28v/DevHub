@@ -27,6 +27,7 @@ function ClientViewModel(param){
 
   this.socket = param.socket;
   this.is_mobile = false;
+  this.flipsnap = null;
 
   this.faviconNumber = new FaviconNumber();
 
@@ -77,37 +78,9 @@ function ClientViewModel(param){
     // 本当は bootstrap-responsive のみやりたいが、perfectScrollbar の制御は
     // js側でやらないといけないので解像度で切り分ける
     if (!that.is_mobile){
-      $('body').addClass("perfect-scrollbar-body-style");
-
-      var scrollOption = {
-        wheelSpeed: 1,
-        useKeyboard: true,
-        suppressScrollX: true
-      };
-
-      $('#chat_area').addClass("perfect-scrollbar-style");
-      $('#chat_area').perfectScrollbar(scrollOption);
-      $('#memo_area').addClass("perfect-scrollbar-style");
-      $('#memo_area').perfectScrollbar(scrollOption);
+      that.switch_to_normal();
     }else{
-      // モバイルの場合はフリックイベントでチャットとメモを切り替える
-      $('.hidden-phone').remove();
-      $('.visible-phone').show();
-      $('.text-date').remove();
-      $('.checkbox-count').remove();
-
-      // フリック用のサイズ調整
-      that.adjust_display_size_for_mobile();
-
-      $(window).resize(function(){
-        that.adjust_display_size_for_mobile();
-      });
-
-      $('#share_memo_nav').hide();
-      $('#share_memo_tabbable').removeClass("tabs-left");
-      $('#share_memo_nav').removeClass("nav-tabs");
-      $('#share_memo_nav').addClass("nav-pills");
-      $('#share_memo_nav').show();
+      that.switch_to_flipsnap(0);
     }
 
     if ( that.settingViewModel.loginName() == null){
@@ -127,17 +100,8 @@ function ClientViewModel(param){
     $(document).on("keyup", function (e) {
       if (e.keyCode == 27){ // ESC key return fullscreen mode.
         that.zenMode = false;
-        $(".navbar").fadeIn();
-        $(".dummy-top-space").fadeIn();
 
-        $("#memo_area").removeClass("span12 memo-area-zen");
-        $("#memo_area").addClass("span7 memo-area");
-        $("#chat_area").removeClass("span12");
-        $("#chat_area").addClass("span5");
-
-        $("#memo_area").fadeIn();
-        $("#chat_area").fadeIn();
-        $("#memo_area").trigger("scroll");
+        that.switch_to_normal();
       } else if (e.ctrlKey && e.ctrlKey == true ){
         /*
            if (e.keyCode == 73){ // Ctrl - i : focus chat form
@@ -201,26 +165,66 @@ function ClientViewModel(param){
 
   this.fullscreen_memo = function(){
     this.zenMode = true;
-    $(".navbar").fadeOut();
-    $(".dummy-top-space").fadeOut();
-    $("#chat_area").hide();
-    $("#memo_area").removeClass("span7 memo-area");
-    $("#memo_area").addClass("span12 memo-area-zen");
-    $("#memo_area").trigger("scroll");
+    this.switch_to_flipsnap(1);
   }
 
   this.fullscreen_chat = function(){
     this.zenMode = true;
-    $(".navbar").fadeOut();
-    $(".dummy-top-space").fadeOut();
-    $("#memo_area").hide();
-    $("#chat_area").removeClass("span5");
-    $("#chat_area").addClass("span12");
-    $("#memo_area").trigger("scroll");
+    this.switch_to_flipsnap(0);
   }
 
   this.showSetting = function(){
     $('#settings_modal').modal('show');
+  }
+
+  this.switch_to_normal = function(){
+    // 全画面モードを解除
+    $('.hidden-phone').show();
+    $('.visible-phone').hide();
+    $('.text-date').show();
+    $('.checkbox-count').show();
+
+    $(window).unbind('resize');
+
+    that.un_adjust_display_size_for_mobile();
+
+    // ノーマルスタイルを設定
+    $('body').addClass("perfect-scrollbar-body-style");
+
+    var scrollOption = {
+      wheelSpeed: 1,
+      useKeyboard: true,
+      suppressScrollX: true
+    };
+
+    $('#chat_area').addClass("perfect-scrollbar-style");
+    $('#chat_area').perfectScrollbar(scrollOption);
+    $('#memo_area').addClass("perfect-scrollbar-style");
+    $('#memo_area').perfectScrollbar(scrollOption);
+  }
+
+  this.switch_to_flipsnap = function(point){
+    // ノーマルスタイルを解除
+    $('body').removeClass("perfect-scrollbar-body-style");
+
+    $('#chat_area').removeClass("perfect-scrollbar-style");
+    $('#chat_area').perfectScrollbar('destroy');
+    $('#memo_area').removeClass("perfect-scrollbar-style");
+    $('#memo_area').perfectScrollbar('destroy');
+
+    // 全画面モードを設定
+    $('.hidden-phone').hide();
+    $('.visible-phone').show();
+    $('.text-date').hide();
+    $('.checkbox-count').hide();
+
+    // フリック用のサイズ調整
+    that.adjust_display_size_for_mobile();
+    that.flipsnap.moveToPoint(point);
+
+    $(window).resize(function(){
+      that.adjust_display_size_for_mobile();
+    });
   }
 
   this.adjust_display_size_for_mobile = function(){
@@ -231,8 +235,26 @@ function ClientViewModel(param){
 
     that.chatController.setWidth(window_width);
     that.memoController.setWidth(window_width);
-    Flipsnap('.flipsnap').refresh();
+    if (that.flipsnap == null){
+      that.flipsnap = Flipsnap('.flipsnap');
+    }
+    that.flipsnap.refresh();
   }
+
+  this.un_adjust_display_size_for_mobile = function(){
+    // フリック解除
+    if (that.flipsnap != null){
+      that.flipsnap.destroy();
+      that.flipsnap = null;
+    }
+
+    that.chatController.unSetWidth();
+    that.memoController.unSetWidth();
+
+    $('.viewport').removeAttr('style');
+    $('.flipsnap').removeAttr('style');
+  }
+
 }
 
 $(function() {
