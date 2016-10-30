@@ -236,7 +236,11 @@ function ClientViewModel(param){
     that.chatController.setWidth(window_width);
     that.memoController.setWidth(window_width);
     if (that.flipsnap == null){
-      that.flipsnap = Flipsnap('.flipsnap');
+      if (that.is_mobile){
+        that.flipsnap = Flipsnap('.flipsnap');
+      }else{
+        that.flipsnap = Flipsnap('.flipsnap', { disableTouch: true, disable3d: true });
+      }
     }
     that.flipsnap.refresh();
   }
