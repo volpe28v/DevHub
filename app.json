@@ -8,8 +8,14 @@
     "mongolab"
   ],
   "env": {
-    "BASIC_AUTH_USER": "",
-    "BASIC_AUTH_PASS": "",
-    "GRIDFS": "false"
+    "BASIC_AUTH_USER": {
+      "required": false
+    },
+    "BASIC_AUTH_PASS": {
+      "required": false
+    },
+    "GRIDFS": {
+      "value": "true"
+    }
   }
 }
