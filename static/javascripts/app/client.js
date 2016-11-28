@@ -165,6 +165,7 @@ function ClientViewModel(param){
 
   this.fullscreen_memo = function(){
     this.zenMode = true;
+    this.memoController.top();
     this.switch_to_flipsnap(1);
   }
 
