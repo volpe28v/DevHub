@@ -399,7 +399,7 @@ ChatViewModel.prototype = {
   deco_login_name: function(msg){
     var that = this;
     var deco_msg = msg;
-    var name_reg = RegExp("@([^ ]+?)さん|@all|@" + that.room(), "g");
+    var name_reg = RegExp("@([^ |　|]+?)さん|@all|@" + that.room(), "g");
     deco_msg = deco_msg.replace( name_reg, function(){
       if (arguments[1] == that.parent.getName()||
           arguments[0] == "@みなさん"     ||
