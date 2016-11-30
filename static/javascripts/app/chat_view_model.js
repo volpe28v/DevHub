@@ -398,20 +398,25 @@ ChatViewModel.prototype = {
 
   deco_login_name: function(msg){
     var that = this;
-    var deco_msg = msg;
     var name_reg = RegExp("@([^ |　|]+?)さん|@all|@" + that.room(), "g");
-    deco_msg = deco_msg.replace( name_reg, function(){
-      if (arguments[1] == that.parent.getName()||
-          arguments[0] == "@みなさん"     ||
-          arguments[0] == "@all"){
-        return '<span class="target-me">' + arguments[0] + '</span>'
-      }else if (arguments[0] == "@" + that.room()){
-        return '<span class="target-room">' + arguments[0] + '</span>'
-      }else{
-        return '<span class="target-other">' + arguments[0] + '</span>'
+
+    var bq_sepa_array = msg.split("```");
+    for (var i = 0; i < bq_sepa_array.length; i++){
+      if (i%2 == 0){
+        bq_sepa_array[i] = bq_sepa_array[i].replace( name_reg, function(){
+          if (arguments[1] == that.parent.getName()||
+            arguments[0] == "@みなさん"     ||
+            arguments[0] == "@all"){
+            return '<span class="target-me">' + arguments[0] + '</span>'
+          }else if (arguments[0] == "@" + that.room()){
+            return '<span class="target-room">' + arguments[0] + '</span>'
+          }else{
+            return '<span class="target-other">' + arguments[0] + '</span>'
+          }
+        });
       }
-    });
-    return deco_msg;
+    }
+    return bq_sepa_array.join("```");
   },
 
   escape_reg: function(target){
