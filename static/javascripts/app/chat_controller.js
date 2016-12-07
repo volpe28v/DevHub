@@ -52,6 +52,14 @@ function ChatController(param){
   this.timeline = ko.observable("all");
 
   // Member function
+  this.focusChatTab = function(elem){
+    var thisVm = this;
+    if (!thisVm.isActive()){
+      // フォーカス状態に変更
+      $(elem).click();
+    }
+  }
+
   this.selectChatTab = function(){
     if(that.isTabMoving){ return; }
 
