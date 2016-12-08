@@ -53,11 +53,7 @@ function ChatController(param){
 
   // Member function
   this.focusChatTab = function(elem){
-    var thisVm = this;
-    if (!thisVm.isActive()){
-      // フォーカス状態に変更
-      $(elem).click();
-    }
+    // チャットタブのマウスオーバーイベント。今は何もしない
   }
 
   this.selectChatTab = function(){
