@@ -238,12 +238,13 @@
                 </div>
               </div>
               <div id="chat_tabbable"  class="tabbable">
-                <ul id="chat_nav" class="nav nav-tabs" data-bind="
+                <ul class="nav nav-tabs" data-bind="
+                  visible: chatNumber() != 1,
                   sortable: true,
                   foreach: chatViewModels
                 ">
                   <li data-bind="attr: {id: 'chat_li_' + no}, css{active: isActive}">
-                    <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, event: {mouseover: $parent.focusChatTab.bind($data,$element)}, attr: {id: 'chat_tab_' + no, href: '#tab_' + no, 'data-id': no}" data-toggle="tab">
+                    <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, event: {mouseover: $parent.focusChatTab.bind($data,$element)}, attr: {id: 'chat_tab_' + no, href: '#tab_' + no}" data-toggle="tab">
                       <span data-bind="text: room"></span>
                       <!-- ko if: mentionCount() != 0 -->
                       <span class="label label-important" data-bind="text: mentionCount"></span>

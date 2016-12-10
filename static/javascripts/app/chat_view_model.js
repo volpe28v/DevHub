@@ -205,10 +205,6 @@ ChatViewModel.prototype = {
     }
   },
 
-  set_active: function(is_active){
-    this.isActive(is_active);
-  },
-
   load_log_more: function(id){
     $('#message_loader').show();
     this.isLoadingLog = true;

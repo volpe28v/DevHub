@@ -67,9 +67,9 @@ function ChatController(param){
 
     that.chatViewModels().forEach(function(vm){
       if (vm == thisVm){
-        thisVm.set_active(true);
+        thisVm.isActive(true);
       }else{
-        vm.set_active(false);
+        vm.isActive(false);
       }
     });
     return true;
@@ -121,12 +121,6 @@ function ChatController(param){
     });
 
     that.socket.on('chat_number', function(number) {
-      if (number.num == 1){
-        $('#chat_nav').css('display','none');
-      }else{
-        $('#chat_nav').css('display','block');
-      }
-
       if (that.chatNumber() != number.num){
         that.chatNumber(number.num);
       }
@@ -137,7 +131,6 @@ function ChatController(param){
       var active_numbers = that.getActiveNumbers(number.num, number.numbers);
 
       that.chatViewModels([]);
-      $('#chat_nav').empty();
       active_numbers.forEach(function(no){
         no = Number(no);
         var room_name = "Room" + no;
@@ -192,8 +185,15 @@ function ChatController(param){
     }
 
     that.socket.on('chat_tab_numbers', function(number) {
+      var beforeChats = that.chatViewModels();
+      that.chatViewModels([]);
       number.numbers.forEach(function(num){
-        $('#chat_nav').append($('#chat_li_' + num));
+        var currentChat = beforeChats.filter(function(chat){ return chat.no == num;})[0];
+        that.chatViewModels.push(currentChat);
+        if (currentChat.isActive()){
+          currentChat.isActive(false);
+          $("#chat_tab_" + currentChat.no).click();
+        }
       });
     });
 
@@ -277,7 +277,7 @@ ChatController.prototype = {
       if ( message && name ){
         that.inputMessage("");
         $('#message').trigger('autosize.resize');
-        var room_id = $("#chat_nav").find(".active").find("a").data("id");
+        var room_id = that.chatViewModels().filter(function(vm){ return vm.isActive(); })[0].no;
         that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
       }
 
