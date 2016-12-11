@@ -152,11 +152,23 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.keydownEditing = function(data, event, element){
-    // Ctrl - S or Ctrl - enter
-    if ((event.ctrlKey == true && event.keyCode == 83) ||
-        (event.ctrlKey == true && event.keyCode == 13)) {
-      that._update(data, false);
-
+    // Ctrl - S
+    if (event.ctrlKey == true && event.keyCode == 83){
+      // 編集継続
+      that._update({
+        blog: data,
+        is_notify: false,
+        editing: true,
+      });
+      return false;
+    // Ctrl - enter
+    }else if (event.ctrlKey == true && event.keyCode == 13) {
+      // 編集完了
+      that._update({
+        blog: data,
+        is_notify: false,
+        editing: false,
+      });
       return false;
     }else{
       return true;
@@ -415,8 +427,7 @@ function BlogViewModel(name, start, end, editing){
   },
 
   this.edit = function(blog){
-    blog.editing_text(blog.text());
-    blog.editing(true);
+    blog.startEdit();
   }
 
   this.next = function(callback){

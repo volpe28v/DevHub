@@ -86,9 +86,10 @@
                     <button class="btn btn-primary update-blog" data-bind="click: $parent.update">Add</button>
                     <!-- /ko -->
                     <!-- ko ifnot: isNew -->
-                    <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
-                    <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
+                    <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Done and notify</button>
+                    <button class="btn btn-info update-blog" data-bind="click: $parent.update">Done</button>
                     <!-- /ko -->
+                    <button class="btn btn-default cancel-edit" data-bind="click: $parent.updateAndEditing, enable: edit_text_changed"><span data-bind="visible: edit_text_changed">* </span>Save</button>
                     <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
                   </div>
                 </div>

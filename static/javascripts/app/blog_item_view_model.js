@@ -21,6 +21,11 @@ function BlogItemViewModel(item, parent){
   that.matched = ko.observable(0);
   that.editing = ko.observable(false);
   that.copy_title = ko.observable("");
+  that.edit_text_changed = ko.observable(false);
+
+  that.editing_text.subscribe(function (val){
+    that.edit_text_changed(true);
+  });
 
   that.delayedText = ko.pureComputed(this.editing_text)
     .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
@@ -59,6 +64,13 @@ function BlogItemViewModel(item, parent){
     that.matched(0);
     that.editing(editing);
     that.copy_title(that._createCopyTitle(item.text, item._id));
+    that.edit_text_changed(false);
+  }
+
+  this.startEdit = function(){
+    that.editing_text(that.text());
+    that.editing(true);
+    that.edit_text_changed(false);
   }
 
   this.updateEdit = function(){
