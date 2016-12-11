@@ -47,13 +47,6 @@ $(function() {
   ko.applyBindings(blogViewModel);
 
   // ViewとViewModelをバインド
-  $('#blog_form').autosize();
-
-  $("#save_btn").click(function(){
-    blogViewModel.add();
-    $('#blog_form').trigger('autosize.resize');
-  })
-
   function moveSearchIndex(offset_top){
     var target_top = offset_top;
     var base_top = $("#index_list").offset().top;

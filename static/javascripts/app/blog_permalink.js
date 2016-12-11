@@ -13,12 +13,8 @@ require('../libs/jquery.autosize');
 ko.mapping = require('knockout.mapping');
 require('../libs/knockout.devhub_custom')(ko);
 
-
-var COOKIE_NAME = "dev_hub_name";
-var CODE_INDEX_ADJUST_HEIGHT = 10;
-
 $(function() {
-  var name = $.cookie(COOKIE_NAME);
+  var name = window.localStorage.loginName;
 
   $('a[rel=tooltip]').tooltip({
     placement : 'bottom'

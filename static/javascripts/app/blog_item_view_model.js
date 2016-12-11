@@ -45,7 +45,7 @@ function BlogItemViewModel(item, parent){
     that.apply(item);
   }
 
-  this.apply = function(item){
+  this.apply = function(item, editing){
     that._id(item._id);
     that.name(item.name);
     that.title(that._title(item.text));
@@ -57,7 +57,7 @@ function BlogItemViewModel(item, parent){
     that.date(item.date);
     that.has_avatar((item.avatar != null && item.avatar != ""));
     that.matched(0);
-    that.editing(false);
+    that.editing(editing);
     that.copy_title(that._createCopyTitle(item.text, item._id));
   }
 

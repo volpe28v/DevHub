@@ -54,15 +54,36 @@ function BlogViewModel(name, start, end, editing){
 
   this.update = function(){
     var blog = this;
-    that._update(blog, false);
+    that._update({
+      blog: blog,
+      is_notify: false,
+      editing: false,
+    });
   }
 
   this.updateWithNotify = function(){
     var blog = this;
-    that._update(blog, true);
+    that._update({
+      blog: blog,
+      is_notify: true,
+      editing: false,
+    });
   }
 
-  this._update = function(blog, is_notify){
+  this.updateAndEditing = function(){
+    var blog = this;
+    that._update({
+      blog: blog,
+      is_notify: false,
+      editing: true,
+    });
+  }
+
+  this._update = function(update_info){
+    var blog = update_info.blog;
+    var is_notify = update_info.is_notify;
+    var editing = update_info.editing;
+
     blog.updateEdit();
     var update_blog = blog.toJS();
     if (update_blog.title == ""){ return; }
@@ -77,7 +98,7 @@ function BlogViewModel(name, start, end, editing){
       data: {blog: update_blog},
       success: function(data){
         that.tags(data.tags);
-        blog.apply(data.blog);
+        blog.apply(data.blog, editing);
         that._update_tags();
       }
     });
