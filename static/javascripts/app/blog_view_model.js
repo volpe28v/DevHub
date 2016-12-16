@@ -297,12 +297,13 @@ function BlogViewModel(name, start, end, editing){
 
         that.items([]);
         that.item_count(data.count);
-        var blogs = data.body;
+        that.searched_blogs = data.body;
+        that.search_displaying_blogs = that.searched_blogs.splice(0,10);
 
         // 検索キーワードを含む行に色付けする
         that.matched_doms = [];
         var reg_keywords = that.keyword().split(" ").map(function(key){ return new RegExp(key,"i"); });
-        blogs.forEach(function(blog){
+        that.search_displaying_blogs.forEach(function(blog){
           var matched_doms = that._addItem(blog).find("td").map(function(){
             for (var i = 0; i < reg_keywords.length; i++){
               if ($(this).text().match(reg_keywords[i])){
@@ -329,7 +330,6 @@ function BlogViewModel(name, start, end, editing){
 
         that._change_state_load_more();
         that.load_end();
-
       }
     });
   }
@@ -397,7 +397,30 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.load_more = function(){
-    if (that.keyword() != ""){ return; }
+    if (that.keyword() != ""){
+      // 検索中の場合は残りがあれば表示する
+      var addBlog = that.searched_blogs.splice(0,1)[0];
+      if (addBlog != null){
+        //this._addItem(addBlog);
+        var reg_keywords = that.keyword().split(" ").map(function(key){ return new RegExp(key,"i"); });
+        var matched_doms = that._addItem(addBlog).find("td").map(function(){
+          for (var i = 0; i < reg_keywords.length; i++){
+            if ($(this).text().match(reg_keywords[i])){
+              $(this).addClass("matched_line");
+              return {dom: this, blog: addBlog};
+            }
+          }
+          return null;
+        });
+        var binded_blog = that.items()[that.items().length - 1];
+        binded_blog.matched = matched_doms.length;
+
+        Array.prototype.push.apply(that.matched_doms, matched_doms);
+        that.matched_num(that.matched_doms.length);
+      }
+      return;
+    }
+
     if (that.loading_more){ return; }
 
     var last_id = that.items()[that.items().length - 1]._id();
