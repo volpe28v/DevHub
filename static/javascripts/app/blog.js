@@ -60,9 +60,11 @@ $(function() {
   }
 
   $("#blog_list").on('inview', '.blog-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+    console.log('inview blog')
     blogViewModel.load_more();
   });
   $("#index_list").on('inview', '.index-body:last-child', function(event, isInView, visiblePartX, visiblePartY) {
+    console.log('inview list')
     blogViewModel.load_more();
   });
 
