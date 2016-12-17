@@ -17,6 +17,7 @@ function BlogViewModel(name, start, end, editing){
   this.item_count = ko.observable(0);
   this.remain_count = 0;
   this.keyword = ko.observable("");
+  this.searching_regs = [];
   this.before_keyword = "";
   this.has_editing = ko.pureComputed(function(){
     var edit_items = ko.utils.arrayFilter(that.items(), function (item, index) {
@@ -283,6 +284,23 @@ function BlogViewModel(name, start, end, editing){
     return true;
   }
 
+  this._addSearchingItems = function(blogs, regs){
+    blogs.forEach(function(blog){
+      var matched_doms = that._addItem(blog).find("td").map(function(){
+        for (var i = 0; i < regs.length; i++){
+          if ($(this).text().match(regs[i])){
+            $(this).addClass("matched_line");
+            return {dom: this, blog: blog};
+          }
+        }
+        return null;
+      });
+      Array.prototype.push.apply(that.matched_doms, matched_doms);
+    });
+
+    that.matched_num(that.matched_doms.length);
+  }
+
   this._search = function(keyword){
     this.load_start();
     var that = this;
@@ -296,30 +314,14 @@ function BlogViewModel(name, start, end, editing){
         $('#blog_area').scrollTop(0);
 
         that.items([]);
-        that.item_count(data.count);
-        that.searched_blogs = data.body;
-        that.search_displaying_blogs = that.searched_blogs.splice(0,10);
+        that.item_count(data.blogs.count);
+        that.searched_blogs = data.blogs;
+        var search_displaying_blogs = that.searched_blogs.splice(0,10);
 
         // 検索キーワードを含む行に色付けする
         that.matched_doms = [];
-        var reg_keywords = that.keyword().split(" ").map(function(key){ return new RegExp(key,"i"); });
-        that.search_displaying_blogs.forEach(function(blog){
-          var matched_doms = that._addItem(blog).find("td").map(function(){
-            for (var i = 0; i < reg_keywords.length; i++){
-              if ($(this).text().match(reg_keywords[i])){
-                $(this).addClass("matched_line");
-                return {dom: this, blog: blog};
-              }
-            }
-            return null;
-          });
-          var binded_blog = that.items()[that.items().length - 1];
-          binded_blog.matched = matched_doms.length;
-
-          Array.prototype.push.apply(that.matched_doms, matched_doms);
-        });
-
-        that.matched_num(that.matched_doms.length);
+        that.searching_regs = data.keys.map(function(key){ return new RegExp(key,"i"); });
+        that._addSearchingItems(search_displaying_blogs, that.searching_regs);
         that.matched_index(0);
 
         if (that.matched_num() > 0){
@@ -399,25 +401,8 @@ function BlogViewModel(name, start, end, editing){
   this.load_more = function(){
     if (that.keyword() != ""){
       // 検索中の場合は残りがあれば表示する
-      var addBlog = that.searched_blogs.splice(0,1)[0];
-      if (addBlog != null){
-        //this._addItem(addBlog);
-        var reg_keywords = that.keyword().split(" ").map(function(key){ return new RegExp(key,"i"); });
-        var matched_doms = that._addItem(addBlog).find("td").map(function(){
-          for (var i = 0; i < reg_keywords.length; i++){
-            if ($(this).text().match(reg_keywords[i])){
-              $(this).addClass("matched_line");
-              return {dom: this, blog: addBlog};
-            }
-          }
-          return null;
-        });
-        var binded_blog = that.items()[that.items().length - 1];
-        binded_blog.matched = matched_doms.length;
-
-        Array.prototype.push.apply(that.matched_doms, matched_doms);
-        that.matched_num(that.matched_doms.length);
-      }
+      var search_displaying_blogs = that.searched_blogs.splice(0,5);
+      that._addSearchingItems(search_displaying_blogs, that.searching_regs);
       return;
     }
 

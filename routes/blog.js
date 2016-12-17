@@ -76,8 +76,8 @@ exports.body_older = function(req, res){
 };
 
 exports.body_search = function(req, res){
-  blog_model.search(req.query.keyword).then(function(blogs){
-    res.send({body: blogs, count: blogs.length});
+  blog_model.search(req.query.keyword).then(function(result){
+    res.send(result);
   });
 };
 
