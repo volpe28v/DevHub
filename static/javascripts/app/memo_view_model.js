@@ -242,7 +242,7 @@ function MemoViewModel(param){
 
       var $code = $('#share_memo_' + that.no).find('.code');
       var row = $code.caretLine();
-      that.insert(row -1 , "### " + title);
+      that.insert(row -1 , "#### " + title);
       $code.caretLine(row);
     }
   });
