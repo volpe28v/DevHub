@@ -335,7 +335,9 @@
                       </button>
                       <span class="text-date" data-bind="text: latest_text().date_name, css: {'writing-name': update_timer() != null}"></span>
                       <span data-bind="visible: !is_memo_empty(), text: bytes" class="memo-bytes"></span>
-                      <span class="checkbox-count" style="display: none" data-bind="visible: checkbox_count() > 0, css: {'checkbox-count-done': checked_count() == checkbox_count()}"><span data-bind="text: checked_count"></span>/<span data-bind="text: checkbox_count"></span> done</span>
+                      <span class="checkbox-count" data-bind="if: checkbox_count() > 0, css: {'checkbox-count-done': checked_count() == checkbox_count()}">
+                        <span data-bind="text: checked_count"></span>/<span data-bind="text: checkbox_count"></span> done
+                      </span>
                       <div class="clearfix"></div>
                     </div>
                     <div class="memo-control-dummy" style="display:none;"></div>

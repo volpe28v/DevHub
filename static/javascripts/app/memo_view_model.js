@@ -421,6 +421,10 @@ function MemoViewModel(param){
     }
   }
 
+  this.IsIncludeKeyword = function(reg){
+    return that.latest_text().text.match(reg);
+  }
+
   this.showText = function(){
     // メモに更新があれば実行
     if (!this.is_existed_update){

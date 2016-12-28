@@ -35,13 +35,6 @@ function MemoController(param){
 
   // searchBox
   this.keyword = ko.observable('');
-  // 検索キーワードのインクリメンタルサーチ
-  this.delayed_keyword = ko.pureComputed(this.keyword)
-    .extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 } });
-  this.delayed_keyword.subscribe(function(value){
-    that.search();
-  }, this);
-
   this.keyword.subscribe(function(value){
     if (value != ''){
       $("#search_clear").show();
@@ -162,13 +155,17 @@ function MemoController(param){
       $(".matched_line").removeClass("matched_line");
 
       // 検索前に一旦最新の表示に更新する
+      var reg_keyword = new RegExp(keyword,"i");
       that.memoViewModels().forEach(function(vm){
-        that.currentMemo() == vm ? vm.beginSearch() : vm.showText();
+        if (that.currentMemo() == vm){
+          vm.beginSearch();
+        }else if (vm.IsIncludeKeyword(reg_keyword)){
+          vm.showText();
+        }
       });
 
       that.before_keyword = keyword;
       that.matched_doms = [];
-      var reg_keyword = new RegExp(keyword,"i");
       $(".code-out").each(function(){
         var matched_doms = $(this).find("td").map(function(){
           if ($(this).text().match(reg_keyword)){
@@ -231,6 +228,7 @@ function MemoController(param){
   }
 
   this.do_search_clear = function(){
+    that.keyword('');
     that.currentMemo().endSearch();
     $('#memo_area').scrollTop(0);
   }
