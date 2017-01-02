@@ -315,7 +315,7 @@ ChatViewModel.prototype = {
   exist_msg: function(data){
     if (data.msg == undefined) { data.msg = ""; }
     var id = '#msg_' + data._id.toString();
-    return $(id).size() > 0;
+    return $(id).length > 0;
   },
 
   get_msg_html: function(data){
