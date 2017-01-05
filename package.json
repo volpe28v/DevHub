@@ -30,7 +30,7 @@
     "grunt-contrib-watch": "~1.0.0",
     "uglifyjs": "2.4.10",
     "moment": "2.17.1",
-    "mongodb": "2.2.16",
+    "mongodb": "2.1.8",
     "multiparty": "^4.1.2",
     "mv": "^2.1.1",
     "nightwatch": "0.9.11",
