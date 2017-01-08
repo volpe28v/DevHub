@@ -103,11 +103,11 @@
             <li>
               <ul class="index-ul" data-bind="foreach: indexes, attr: {'data-id': _id}">
                 <li>
-                  <a class="index-li">
+                  <a class="index-li" data-bind="
+                    click: $root.selectIndexHeader.bind($data,0)">
                     <div data-bind="
                       css: index_class,
-                      decoMemoIndex: body,
-                      click: $root.selectIndexHeader.bind($data,0)">
+                      decoMemoIndex: body">
                     </div>
                   </a>
                 </li>

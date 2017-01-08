@@ -147,9 +147,9 @@ function BlogItemViewModel(item, parent){
   this._indexes = function(text, id){
     var indexes = [];
 
+    var no = 1;
     $.decora.apply_to_deco_and_raw(text,
       function(deco_text){
-        var no = 1;
         deco_text.split("\n").forEach(function(val){
           var matches = val.match(/^(#+)/);
           if (matches){
