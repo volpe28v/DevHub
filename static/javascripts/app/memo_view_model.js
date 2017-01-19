@@ -205,7 +205,7 @@ function MemoViewModel(param){
   }
 
   this.text_logs = [];
-  this.title = ko.observable("- No." + this.no + " -");
+  this.title = ko.observable("- Empty -");
   this.bytes = ko.observable("");
   this.hasWip = ko.observable(false);
   this.wipCount = ko.observable(0);
@@ -280,21 +280,18 @@ function MemoViewModel(param){
   }
 
   this._title = function(text){
+    if (that.is_memo_empty()){ return " - Empty - "; }
+
     var text_lines = text.split('\n');
     var title = "";
     for (var i = 0; i < text_lines.length; i++){
       var line = text_lines[i];
-      var matched = line.match(/(\S+)/);
-      if (matched){
+      if (line.match(/(\S+)/)){
         title = text_lines[i];
         break;
       }
     };
 
-    title = $('<div/>').html($.decora.to_html(title)).text();
-    if ($.trim(title) == 'undefined' || !title.match(/\S/g)){
-      title = " - No." + this.no + " - ";
-    }
     return title;
   }
 

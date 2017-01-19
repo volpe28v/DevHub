@@ -289,7 +289,7 @@
                 ">
                   <li data-bind="attr: {id:'share_memo_li_' + no, 'data-no': no}, css: {active: active}" class="share-memo-tab">
                     <a class="share-memo-tab-elem" data-bind="attr: {id: 'share_memo_tab_' + no, href: '#share_memo_' + no, 'data-no': no}, click: $parent.select_memo_tab" data-toggle="tab" style="display:none">
-                      <span class="share-memo-title" data-bind="decoMemoTitle: title"></span>
+                      <span class="share-memo-title" data-bind="decoMemoTitle: title, css: {'silent-name': is_memo_empty}"></span>
                       <div class="writer silent-name" data-bind="visible: !is_memo_empty(), text: writer, css: {'writing-name': update_timer() != null}"></div>
                       <div>
                         <span class="timestamp" data-bind="visible: !is_memo_empty(), attr: {'data-livestamp': latest_text().date}"></span>
