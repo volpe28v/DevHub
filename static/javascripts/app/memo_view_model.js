@@ -3,6 +3,7 @@ var CODE_INDEX_ADJUST_HEIGHT = 40;
 var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
+var EMPTY_TITLE = "- Empty -";
 
 
 global.jQuery = require('jquery');
@@ -205,7 +206,7 @@ function MemoViewModel(param){
   }
 
   this.text_logs = [];
-  this.title = ko.observable("- Empty -");
+  this.title = ko.observable(EMPTY_TITLE);
   this.bytes = ko.observable("");
   this.hasWip = ko.observable(false);
   this.wipCount = ko.observable(0);
@@ -280,7 +281,7 @@ function MemoViewModel(param){
   }
 
   this._title = function(text){
-    if (that.is_memo_empty()){ return " - Empty - "; }
+    if (that.is_memo_empty()){ return EMPTY_TITLE; }
 
     var text_lines = text.split('\n');
     var title = "";
@@ -292,6 +293,11 @@ function MemoViewModel(param){
       }
     };
 
+    // マークダウンの記号を外した文字列をタイトルとする
+    title = $('<div/>').html($.decora.to_html(title)).text();
+    if ($.trim(title) == 'undefined' || !title.match(/\S/g)){
+      title = EMPTY_TITLE;
+    }
     return title;
   }
 
