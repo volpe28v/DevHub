@@ -93,7 +93,6 @@ function ClientViewModel(param){
     }else{
       that.chatController.setName(that.settingViewModel.loginName());
       that.memoController.setName(that.settingViewModel.loginName());
-      that.chatController.focus();
     }
 
     // ショートカットキー
@@ -106,7 +105,7 @@ function ClientViewModel(param){
         that.zenMode = false;
         that.switch_to_normal();
       } else if ($(':focus').length == 0 ){
-        if (e.keyCode == 73){ // i : focus chat field 
+        if (e.keyCode == 67){ // c : focus chat field
           that.chatController.focus();
         } else if (e.keyCode == 77){ // m : focus current memo form
           that.memoController.setFocus();
