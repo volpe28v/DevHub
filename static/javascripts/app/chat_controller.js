@@ -407,6 +407,15 @@ ChatController.prototype = {
     $('#message').focus().trigger('autosize.resize');
   },
 
+  goToUnread: function(){
+    var unreadVms = this.chatViewModels().filter(function(vm){
+      return vm.allUnreadCount() > 0;
+    });
+    if (unreadVms.length > 0){
+      unreadVms[0].focusOrClearUnread();
+    }
+  },
+
   setWidth: function(width){
     $('#chat_area').css('width',width + 'px').css('margin',0);
   },

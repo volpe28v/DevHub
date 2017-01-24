@@ -88,6 +88,15 @@ ChatViewModel.prototype = {
     this.socket.emit('latest_log', {room_id: this.no});
   },
 
+  focusOrClearUnread: function(){
+    var that = this;
+    if (that.isActive()){
+      that.clear_unread();
+    }else{
+      $('#chat_tab_' + that.no).click();
+    }
+  },
+
   _msg_post_processing: function(data, $msg){
     var that = this;
     that.setColorbox($msg.find('.thumbnail'));

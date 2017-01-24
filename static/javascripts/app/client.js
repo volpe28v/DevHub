@@ -120,6 +120,8 @@ function ClientViewModel(param){
           that.memoController.down();
         } else if (e.keyCode == 75){ // k: move down share memo
           that.memoController.up();
+        } else if (e.keyCode == 190){ // .: go to next unread room
+          that.chatController.goToUnread();
         }
       } else if (e.keyCode == 113){ // F2 : focus current memo form
         that.memoController.setFocus();
