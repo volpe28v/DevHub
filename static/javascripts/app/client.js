@@ -98,28 +98,31 @@ function ClientViewModel(param){
 
     // ショートカットキー
     $(document).on("keyup", function (e) {
-      if (e.keyCode == 27){ // ESC key return fullscreen mode.
+      if (e.keyCode == 27){ // ESC : blur and return fullscreen mode.
+        var focusedDom = $(':focus');
+        if (focusedDom.length != 0 ){
+          focusedDom.blur();
+        }
         that.zenMode = false;
-
         that.switch_to_normal();
-      } else if (e.ctrlKey && e.ctrlKey == true ){
-        /*
-           if (e.keyCode == 73){ // Ctrl - i : focus chat form
-           $('#message').focus();
-           } else if (e.keyCode == 77){ // Ctrl - m : focus current memo form
-           memoController.setFocus();
-           } else if (e.keyCode == 72){ // Ctrl - h: select prev share memo
-           memoController.prev();
-           } else if (e.keyCode == 76){ // Ctrl - l: select next share memo
-           memoController.next();
-           } else if (e.keyCode == 48){ // Ctrl - 0: move top share memo
-           memoController.top();
-           } else if (e.keyCode == 74){ // Ctrl - j: move down share memo
-           memoController.down();
-           } else if (e.keyCode == 75){ // Ctrl - j: move down share memo
-           memoController.up();
-           }
-           */
+      } else if ($(':focus').length == 0 ){
+        if (e.keyCode == 73){ // i : focus chat field 
+          that.chatController.focus();
+        } else if (e.keyCode == 77){ // m : focus current memo form
+          that.memoController.setFocus();
+        //} else if (e.keyCode == 72){ // h: select prev share memo
+          //that.memoController.prev();
+        //} else if (e.keyCode == 76){ // l: select next share memo
+          //that.memoController.next();
+        } else if (e.keyCode == 48){ // 0: move top share memo
+          that.memoController.top();
+        } else if (e.keyCode == 74){ // j: move down share memo
+          that.memoController.down();
+        } else if (e.keyCode == 75){ // k: move down share memo
+          that.memoController.up();
+        }
+      } else if (e.keyCode == 113){ // F2 : focus current memo form
+        that.memoController.setFocus();
       }
     });
 
