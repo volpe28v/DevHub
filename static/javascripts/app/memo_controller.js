@@ -99,14 +99,14 @@ function MemoController(param){
 
   this.down = function(){
     if (!this.doing_down){
-      $('#memo_area').scrollTop($('#memo_area').scrollTop() + 400);
+      $('#memo_area').animate({scrollTop: $('#memo_area').scrollTop() + 400}, 200, 'swing');
       that.doing_down = false;
     }
   }
 
   this.up = function(){
     if (!this.doing_up){
-      $('#memo_area').scrollTop($('#memo_area').scrollTop() - 400);
+      $('#memo_area').animate({scrollTop: $('#memo_area').scrollTop() - 400}, 200, 'swing');
       that.doing_up = false;
     }
   }
@@ -140,6 +140,10 @@ function MemoController(param){
     },100);
   }
 
+  this.setFocus = function(){
+    that.currentMemo().switchEditShareMemo(-1);
+  }
+ 
   this.search = function(){
     var keyword = that.keyword();
     if (keyword == ""){
@@ -380,14 +384,6 @@ function MemoController(param){
 
     $('#memo_area').scroll(function(){
       that.adjustMemoControllbox();
-    });
-
-    $("body").on('keydown',function(event){
-      // F2で共有メモの編集状態へ
-      if (event.keyCode == 113){
-        that.currentMemo().switchEditShareMemo(-1);
-        return false;
-      }
     });
 
     function apply_memo_number(num){
