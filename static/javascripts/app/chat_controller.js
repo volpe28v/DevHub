@@ -56,6 +56,27 @@ function ChatController(param){
     // チャットタブのマウスオーバーイベント。今は何もしない
   }
 
+  this.getActiveIndex = function(){
+    for(var i = 0; i < that.chatViewModels().length; i++){
+      if (that.chatViewModels()[i].isActive() == true){
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  this.prev = function(){
+    var activeIndex = that.getActiveIndex();
+    var nextIndex = activeIndex == 0 ? that.chatViewModels().length-1 : activeIndex-1;
+    $("#chat_tab_" + that.chatViewModels()[nextIndex].no).click();
+  }
+
+  this.next = function(){
+    var activeIndex = that.getActiveIndex();
+    var nextIndex = activeIndex == that.chatViewModels().length-1 ? 0 : activeIndex+1;
+    $("#chat_tab_" + that.chatViewModels()[nextIndex].no).click();
+  }
+
   this.selectChatTab = function(){
     if(that.isTabMoving){ return; }
 
@@ -408,6 +429,14 @@ ChatController.prototype = {
   },
 
   goToUnread: function(){
+    // カレントルームに未読があれば優先的に既読へ
+    var activeIndex = this.getActiveIndex();
+    if (this.chatViewModels()[activeIndex].allUnreadCount() > 0){
+      this.chatViewModels()[activeIndex].focusOrClearUnread();
+      return;
+    }
+
+    // カレント以外の未読へ移動
     var unreadVms = this.chatViewModels().filter(function(vm){
       return vm.allUnreadCount() > 0;
     });

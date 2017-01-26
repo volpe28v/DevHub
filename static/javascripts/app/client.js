@@ -105,22 +105,32 @@ function ClientViewModel(param){
         that.zenMode = false;
         that.switch_to_normal();
       } else if ($(':focus').length == 0 ){
-        if (e.keyCode == 67){ // c : focus chat field
-          that.chatController.focus();
-        } else if (e.keyCode == 77){ // m : focus current memo form
-          that.memoController.setFocus();
-        //} else if (e.keyCode == 72){ // h: select prev share memo
-          //that.memoController.prev();
-        //} else if (e.keyCode == 76){ // l: select next share memo
-          //that.memoController.next();
-        } else if (e.keyCode == 48){ // 0: move top share memo
-          that.memoController.top();
-        } else if (e.keyCode == 74){ // j: move down share memo
-          that.memoController.down();
-        } else if (e.keyCode == 75){ // k: move down share memo
-          that.memoController.up();
-        } else if (e.keyCode == 190){ // .: go to next unread room
-          that.chatController.goToUnread();
+        if(e.shiftKey){
+          if(e.keyCode == 72){         // Shift + h: select prev chat room
+            that.chatController.prev();
+          }else if (e.keyCode == 76){  // Shift + l: select prev chat room
+            that.chatController.next();
+          }
+        }else{
+          if (e.keyCode == 67){        // c : focus chat field
+            that.chatController.focus();
+          } else if (e.keyCode == 77){ // m : focus current memo form
+            that.memoController.setFocus();
+          } else if (e.keyCode == 72){ // h: select prev share memo
+            that.memoController.prev();
+          } else if (e.keyCode == 76){ // l: select next share memo
+            that.memoController.next();
+          } else if (e.keyCode == 48){ // 0: move top share memo
+            that.memoController.top();
+          } else if (e.keyCode == 74){ // j: move down share memo
+            that.memoController.down();
+          } else if (e.keyCode == 75){ // k: move down share memo
+            that.memoController.up();
+          } else if (e.keyCode == 190){ // .: go to next unread room
+            that.chatController.goToUnread();
+          } else if (e.keyCode == 113){ // F2 : focus current memo form
+            that.memoController.setFocus();
+          }
         }
       } else if (e.keyCode == 113){ // F2 : focus current memo form
         that.memoController.setFocus();

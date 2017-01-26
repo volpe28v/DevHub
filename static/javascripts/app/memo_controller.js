@@ -112,21 +112,25 @@ function MemoController(param){
   }
 
   this.prev = function(){
-    var data_no = that.currentMemo().no;
-    data_no -= 1;
-    if (data_no <= 0){
-      data_no = this.memo_number();
-    }
-    $("#share_memo_tab_" + data_no).click();
+    var activeNo = $('.share-memo-tab.active').data('no');
+    var memo_lis = $('#share_memo_nav').children('li');
+    var activeIndex = memo_lis.index($('#share_memo_li_' + activeNo));
+
+    var nextIndex = activeIndex == 0 ? that.memo_number() - 1 : activeIndex - 1;
+    var nextNo = $(memo_lis[nextIndex]).data('no');
+
+    $("#share_memo_tab_" + nextNo).click();
   }
 
   this.next = function(){
-    var data_no = that.currentMemo().no;
-    data_no += 1;
-    if (data_no > this.memo_number()){
-      data_no = 1;
-    }
-    $("#share_memo_tab_" + data_no).click();
+    var activeNo = $('.share-memo-tab.active').data('no');
+    var memo_lis = $('#share_memo_nav').children('li');
+    var activeIndex = memo_lis.index($('#share_memo_li_' + activeNo));
+
+    var nextIndex = activeIndex == that.memo_number()-1 ? 0 : activeIndex + 1;
+    var nextNo = $(memo_lis[nextIndex]).data('no');
+
+    $("#share_memo_tab_" + nextNo).click();
   }
 
   this.move = function(id){

@@ -246,15 +246,15 @@
                   <li data-bind="attr: {id: 'chat_li_' + no}, css{active: isActive}">
                     <a class="chat-tab-elem" data-bind="click: $parent.selectChatTab, event: {mouseover: $parent.focusChatTab.bind($data,$element)}, attr: {id: 'chat_tab_' + no, href: '#tab_' + no}" data-toggle="tab">
                       <span data-bind="text: room"></span>
-                      <!-- ko if: mentionCount() != 0 -->
-                      <span class="label label-important" data-bind="text: mentionCount"></span>
-                      <!-- /ko -->
-                      <!-- ko if: unreadRoomCount() != 0 -->
-                      <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
-                      <!-- /ko -->
-                      <!-- ko if: unreadCount() != 0 -->
-                      <span class="label label-default" data-bind="text: unreadCount"></span>
-                      <!-- /ko -->
+                      <span data-bind="visible: mentionCount() != 0" style="display:none">
+                        <span class="label label-important" data-bind="text: mentionCount"></span>
+                      </span>
+                      <span data-bind="visible: unreadRoomCount() != 0" style="display:none">
+                        <span class="label label-warning" data-bind="text: unreadRoomCount"></span>
+                      </span>
+                      <span data-bind="visible: unreadCount() != 0" style="display:none">
+                        <span class="label label-default" data-bind="text: unreadCount"></span>
+                      </span>
                     </a>
                   </li>
                 </ul>
