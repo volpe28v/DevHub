@@ -208,9 +208,10 @@ function MemoViewModel(param){
   this.text_logs = [];
   this.title = ko.observable(EMPTY_TITLE);
   this.bytes = ko.observable("");
-  this.hasWip = ko.observable(false);
   this.wipCount = ko.observable(0);
+  this.hasWip = ko.computed(function(){ return this.wipCount() > 0 }, this);
   this.currentWip = 0;
+
   this.update_timer = ko.observable(null);
   this.writer = ko.observable("");
   this.is_shown_move_to_blog = ko.observable(false);
@@ -218,6 +219,11 @@ function MemoViewModel(param){
 
   this.checkbox_count = ko.observable(0);
   this.checked_count = ko.observable(0);
+  this.unchecked_count = ko.computed(function(){
+    return this.checkbox_count() - this.checked_count();
+  },this);
+  this.hasTask = ko.computed(function(){ return this.unchecked_count() > 0 },this);
+  this.currentTask = 0;
 
   this.indexes = ko.observableArray([]);
   this.diffTitles = ko.observableArray([]);
@@ -311,7 +317,6 @@ function MemoViewModel(param){
     this.writer(this.latest_text().name);
     this.title(this._title(this.latest_text().text));
     this.bytes(this.latest_text().text.length + "bytes");
-    this.hasWip(this.latest_text().text.match(/\[WIP\]/));
     this.wipCount((this.latest_text().text.match(/\[WIP\]/g) || []).length);
     this.currentWip = 0;
     this._updateIndexes();
@@ -331,6 +336,7 @@ function MemoViewModel(param){
   }
 
   this.wipJump = function(){
+    if (!that.hasWip()){ return; }
     that.switchFixShareMemo(1);
 
     that.currentWip = that.wipCount() <= that.currentWip ? 1 : that.currentWip + 1;
@@ -339,6 +345,19 @@ function MemoViewModel(param){
     $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
     return true;
   }
+
+  this.taskJump = function(){
+    if (!that.hasTask()){ return };
+
+    that.switchFixShareMemo(1);
+
+    that.currentTask = that.unchecked_count() <= that.currentTask ? 1 : that.currentTask + 1;
+    var $code_out = $('#share_memo_' + that.no).find('.code-out');
+    var pos = $($code_out.find("input:not(:checked)")[that.currentTask - 1]).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 10);
+    return true;
+  }
+
 
   this.switchFixShareMemo = function(row, offset){
     that.set_state(that.states.display);

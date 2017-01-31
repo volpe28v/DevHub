@@ -151,6 +151,10 @@ function MemoController(param){
   this.wipJump = function(){
     that.currentMemo().wipJump();
   }
+
+  this.taskJump = function(){
+    that.currentMemo().taskJump();
+  }
  
   this.search = function(){
     var keyword = that.keyword();

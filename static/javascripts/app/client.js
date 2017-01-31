@@ -132,6 +132,8 @@ function ClientViewModel(param){
             that.memoController.setFocus();
           } else if (e.keyCode == 87){  // w : wip jump
             that.memoController.wipJump();
+          } else if (e.keyCode == 84){  // t : task jump
+            that.memoController.taskJump();
           }
         }
       } else if (e.keyCode == 113){ // F2 : focus current memo form
