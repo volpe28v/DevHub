@@ -130,6 +130,8 @@ function ClientViewModel(param){
             that.chatController.goToUnread();
           } else if (e.keyCode == 113){ // F2 : focus current memo form
             that.memoController.setFocus();
+          } else if (e.keyCode == 87){  // w : wip jump
+            that.memoController.wipJump();
           }
         }
       } else if (e.keyCode == 113){ // F2 : focus current memo form

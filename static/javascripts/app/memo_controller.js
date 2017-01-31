@@ -148,6 +148,10 @@ function MemoController(param){
     that.currentMemo().switchEditShareMemo(-1);
   }
  
+  this.wipJump = function(){
+    that.currentMemo().wipJump();
+  }
+ 
   this.search = function(){
     var keyword = that.keyword();
     if (keyword == ""){
