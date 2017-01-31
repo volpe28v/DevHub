@@ -353,7 +353,7 @@ function MemoViewModel(param){
 
     that.currentTask = that.unchecked_count() <= that.currentTask ? 1 : that.currentTask + 1;
     var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var pos = $($code_out.find("input:not(:checked)")[that.currentTask - 1]).offset().top - $('#share-memo').offset().top;
+    var pos = $($code_out.find("input[type=checkbox]:not(:checked)")[that.currentTask - 1]).offset().top - $('#share-memo').offset().top;
     $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 10);
     return true;
   }
@@ -465,7 +465,7 @@ function MemoViewModel(param){
     this._setFocusToInputTask($target, focus_index);
 
     // チェックボックスの進捗表示
-    that.checked_count($code_out.find("input:checked").length);
+    that.checked_count($code_out.find("input[type=checkbox]:checked").length);
     that.checkbox_count($code_out.find("input[type=checkbox]").length);
   }
 
