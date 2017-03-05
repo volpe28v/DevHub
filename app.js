@@ -9,7 +9,7 @@ index_socket.setup(io);
 var program = require('commander');
 program
   .version('0.0.3')
-  .option('-p, --port <n>', 'port no. default is 3008.')
+  .option('-p, --port <n>', 'port no. default is 3000.')
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
   .option('BASIC_AUTH_USER', 'user name of basic authentication. define with env.')
