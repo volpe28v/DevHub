@@ -410,6 +410,11 @@ a, a:hover {
   padding-top: 5px;
 }
 
+#restore {
+  padding-top: 10px;
+}
+
+
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;
   font-size: 14px;

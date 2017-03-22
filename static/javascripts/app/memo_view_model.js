@@ -365,6 +365,13 @@ function MemoViewModel(param){
     that.setDisplayPos(row, offset);
   }
 
+  this.restore = function(){
+    that.edit_text(that.showing_diff_text);
+    that._updateTextAndHistory();
+    that._add_history();
+    that.switchFixShareMemo(1);
+  }
+
   this.setDisplayPos = function(row, offset){
     var $share_memo = $('#share_memo_' + this.no);
 
@@ -752,11 +759,11 @@ function MemoViewModel(param){
 
       if (that.diff_block_list.length > 0){
         $('#diff_controller').fadeIn();
-      }
 
-      // 一つ目のDiffに移動
-      var pos = that.getNextDiffPos();
-      $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+        // 一つ目のDiffに移動
+        var pos = that.getNextDiffPos();
+        $('#memo_area').scrollTop(pos - $share_memo.offset().top - $(window).height()/2);
+      }
     });
 
     return true;
@@ -772,6 +779,9 @@ function MemoViewModel(param){
       cache: false,
       data: {id: text_log[index]._id},
       success: function(data){
+        // 表示中Diff を退避する
+        that.showing_diff_text = data.text;
+
         var baseHtml = $.decora.to_html(data.text);
         var newHtml = $.decora.to_html(that.latest_text().text);
 

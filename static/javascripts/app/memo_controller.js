@@ -336,6 +336,11 @@ function MemoController(param){
     $('#memo_area').scrollTop(0);
   }
 
+  this.restore = function(){
+    that.currentMemo().restore();
+    $('#memo_area').scrollTop(0);
+  }
+
   this.change_memo_number = function(){
     that.socket.emit('memo_number', {num: that.memo_number()});
   }
