@@ -12,9 +12,6 @@ program
   .option('-p, --port <n>', 'port no. default is 3000.')
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
-  .option('BASIC_AUTH_USER', 'user name of basic authentication. define with env.')
-  .option('BASIC_AUTH_PASS', 'password of basic authentication. define with env.')
-  .option('GRIDFS', 'Set "true" when useing gridfs. define with env.')
   .parse(process.argv);
 
 var menu_links = [];
