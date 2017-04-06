@@ -16,6 +16,10 @@
     },
     "GRIDFS": {
       "value": "true"
+    },
+    "FORCE_SSL": {
+      "required": false,
+      "value": "true"
     }
   }
 }

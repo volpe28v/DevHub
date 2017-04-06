@@ -57,6 +57,16 @@ $ BASIC_AUTH_USER=user BASIC_AUTH_PASS=pass node app.js -p 3000 -d devhub_db -t 
 * BASIC_AUTH_USER ユーザ名
 * BASIC_AUTH_PASS パスワード
 
+### HTTPS 通信を強制する
+<pre>
+$ node app.js --force-ssl
+</pre>
+
+もしくは
+<pre>
+$ FORCE_SSL=true node app.js
+</pre>
+
 ## ビルド
 jsやcssを変更した場合はビルドが必要
 ### 開発向け
