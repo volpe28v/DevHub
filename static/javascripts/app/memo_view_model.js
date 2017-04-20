@@ -341,8 +341,10 @@ function MemoViewModel(param){
 
     that.currentWip = that.wipCount() <= that.currentWip ? 1 : that.currentWip + 1;
     var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var pos = $($code_out.find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top - $('#share-memo').offset().top;
-    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT + 1);
+    var pos = $($code_out.find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top;
+    var topPos = $('#share-memo').offset().top;
+    var wipPos = (pos - topPos) - CODE_INDEX_ADJUST_HEIGHT + 1;
+    $('#memo_area').scrollTop(wipPos);
     return true;
   }
 
@@ -366,10 +368,19 @@ function MemoViewModel(param){
   }
 
   this.restore = function(){
-    that.edit_text(that.showing_diff_text);
-    that._updateTextAndHistory();
-    that._add_history();
-    that.switchFixShareMemo(1);
+    swal({
+      title: "Are you sure?",
+      text: "",
+      type: "info",
+      showCancelButton: true,
+      confirmButtonText: "Yes, restore it!",
+      closeOnConfirm: true
+    },function(){
+      that.edit_text(that.showing_diff_text);
+      that._updateTextAndHistory();
+      that._add_history();
+      that.switchFixShareMemo(1);
+    });
   }
 
   this.setDisplayPos = function(row, offset){

@@ -140,7 +140,7 @@ function MemoController(param){
     // 移動したタブ名を見せたいのでタイムラグを入れる
     setTimeout(function(){
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
-      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 16);
+      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 40);
     },100);
   }
 
