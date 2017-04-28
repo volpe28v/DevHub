@@ -24,8 +24,10 @@ function ChatController(param){
   this.inputMessage = ko.observable("");
   this.inputMessage.subscribe(function (message){
     that.doClientCommand(message);
+    that.showImagePreview(message);
   }, this);
 
+  this.imagePreviews = ko.observableArray([]);
   this.chatNumber = ko.observable(1);
   var chatMaxNumberTemp = [];
   for(var i = 1; i <= 10; i++){
@@ -375,6 +377,13 @@ ChatController.prototype = {
     }
 
     return;
+  },
+
+  showImagePreview: function(message){
+    var that = this;
+
+    var urls = message.match(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s))/gi);
+    that.imagePreviews(urls);
   },
 
   initChat: function(){

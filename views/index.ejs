@@ -200,6 +200,11 @@
                   </tr>
                 </table>
               </form>
+              <div data-bind="foreach: imagePreviews"> 
+                <div class="thumbnail cboxElement">
+                  <img data-bind="attr: {src: $data}" style="max-height:100px">
+                </div>
+              </div>
             </div>
             <div class="chat-control-dummy" style="display:none;"></div>
             <div id="chat_body" class="text-base-style">
