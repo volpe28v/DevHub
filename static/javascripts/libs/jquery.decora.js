@@ -122,7 +122,7 @@ var prettify = require('prettify');
           $(this).find('img').css('max-height','');
         },
         stop: function(e, ui){
-          var next_height = $(this).height();
+          var next_height = parseInt($(this).height());
           options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
 
           // リサイズ後は colorbox を有効化
