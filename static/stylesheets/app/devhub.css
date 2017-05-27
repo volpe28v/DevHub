@@ -82,6 +82,7 @@ body{
 .perfect-scrollbar-style {
   position : absolute;
   overflow: hidden;
+  height: 100%;
 }
 
 .memo-area{
