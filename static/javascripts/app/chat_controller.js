@@ -38,7 +38,13 @@ function ChatController(param){
   this.ownName = ko.observable();
   this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = ko.observable(0);
+
   this.filterName = ko.observable("");
+  this.delayedFilterName = ko.pureComputed(this.filterName)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterName.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
 
   this.filterWord = ko.observable("");
   this.delayedFilterWord = ko.pureComputed(this.filterWord)
@@ -117,12 +123,11 @@ function ChatController(param){
   }
 
   this.inputLoginName = function(data, event, element){
+    var name = $(element).data("name");
     if (event.shiftKey == true ){
-      that.filterName($(element).data("name"));
+      that.filterName(name);
       $('.tooltip').hide();
-      that.doFilterTimeline();
     }else{
-      var name = $(element).data("name");
       that.setMessage("@" + name + "さん");
     }
   }
@@ -354,7 +359,16 @@ ChatController.prototype = {
 
   doClientCommand: function(message){
     var that = this;
-    if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
+    if (message.match(/^\/@(.*)/)){
+      var search_words = RegExp.$1.split(" ");
+      that.filterName(search_words.shift());
+      
+      // 名前の後の文字は検索ワードで絞る
+      if (search_words.length > 0){
+        that.filterWord(search_words.join(" "));
+      }
+      that.isCommand(true);
+    }else if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
       that.filterWord(search_word);
       that.isCommand(true);
@@ -409,16 +423,15 @@ ChatController.prototype = {
       var data_id = $(this).closest(".alert").attr('id');
       if (data_id == "mention_own_alert"){
         that.timeline("all");
-        that.inputMessage("");
-        that.isCommand(false);
       }else if (data_id == "mention_alert"){
         that.timeline("all");
-        that.inputMessage("");
-        that.isCommand(false);
       }else if (data_id == "filter_name_alert"){
         that.filterName("");
       }else if (data_id == "filter_word_alert"){
         that.filterWord("");
+      }
+
+      if (that.isCommand()){
         that.inputMessage("");
         that.isCommand(false);
       }
