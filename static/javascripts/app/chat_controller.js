@@ -120,12 +120,15 @@ function ChatController(param){
     if (event.shiftKey == true ){
       that.filterName($(element).data("name"));
       $('.tooltip').hide();
-      $('#chat_area').scrollTop(0);
       that.doFilterTimeline();
     }else{
       var name = $(element).data("name");
       that.setMessage("@" + name + "さん");
     }
+  }
+
+  this.scrollTop = function(){
+    $('#chat_area').scrollTop(0);
   }
 
   this.changeLoginName = function(){
@@ -345,6 +348,8 @@ ChatController.prototype = {
     this.chatViewModels().forEach(function(vm){
       vm.reloadTimeline();
     });
+
+    that.scrollTop();
   },
 
   doClientCommand: function(message){
