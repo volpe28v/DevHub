@@ -485,17 +485,6 @@ ChatViewModel.prototype = {
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
         return false;
       }
-    }else if (this.parent.getFilterName() != ""){
-      if ($(msg.html).find(".login-symbol").data("name") != this.parent.getFilterName()){
-        return false;
-      }
-    }
-
-    if (this.parent.getFilterWord() != ""){
-      var reg = RegExp(this.parent.getFilterWord(),"im");
-      if (!$(msg.html).find(".msg").text().match(reg)){
-        return false;
-      }
     }
     return true;
   },
