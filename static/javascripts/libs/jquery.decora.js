@@ -530,7 +530,16 @@ var prettify = require('prettify');
 
           // table 作成開始
           table_tmp = '<table class="table table-bordered code-table"><tbody>';
-          table_tmp += '<tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+ 
+          if ((i+1 < text_array.length) && text_array[i+1].match(/^\|-/)){
+            // ヘッダあり
+            //TODO アライメントを解析し、全ての列に反映したい
+            table_tmp += '<tr class="code-out-tr"><th>' + rows.join('</th><th>') + '</th></tr>';
+            i++; // ヘッダ指定行を読み飛ばす
+          }else{
+            // ヘッダなし
+            table_tmp += '<tr><td>' + rows.join('</td><td>') + '</td></tr>';
+          }
         }else{
           table_tmp += '<tr class="code-out-tr"><td>' + rows.join('</td><td>') + '</td></tr>';
         }
