@@ -513,11 +513,33 @@ var prettify = require('prettify');
     return win_path;
   }
 
+  function _get_table_aligns(aligns_text){
+    var AlignCenter = /^[ ]*[:]-+[:][ ]*/;
+    var AlignRight  = /^[ ]*[-]-+[:][ ]*/;
+    var AlignLeft   = /^[ ]*[:]-+[-][ ]*/;
+
+    var align_rows = aligns_text.split(/\|/);
+    align_rows.shift();
+    align_rows.pop();
+
+    return align_rows.map(function(row){
+      if (row.match(AlignCenter)) return "center";
+      if (row.match(AlignRight)) return "right";
+      if (row.match(AlignLeft)) return "left";
+      return "left"; // デフォルトは左寄せ
+    });
+  }
+
   function _decorate_table( text ){
     var text_array = text.split(/\n/);
     var isInTable = false;
     var tabled_text_array = [];
     var table_tmp = "";
+
+    var AlignAll = /^\|[ ]*[:-]-+[:-][ ]*\|/;
+
+    var aligns = [];
+
     for (var i = 0; i < text_array.length; i++){
       if (text_array[i].match(/^\|/)){
         var rows = text_array[i].split(/\|/);
@@ -531,17 +553,30 @@ var prettify = require('prettify');
           // table 作成開始
           table_tmp = '<table class="table table-bordered code-table"><tbody>';
  
-          if ((i+1 < text_array.length) && text_array[i+1].match(/^\|-/)){
+          if ((i+1 < text_array.length) && text_array[i+1].match(AlignAll)){
             // ヘッダあり
-            //TODO アライメントを解析し、全ての列に反映したい
-            table_tmp += '<tr class="code-out-tr"><th>' + rows.join('</th><th>') + '</th></tr>';
+            aligns = _get_table_aligns(text_array[i+1]);
+
+            var aligned_rows = rows.map(function(row, j){
+              return '<th style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</th>';
+            });
+
+            table_tmp += '<tr class="code-out-tr">' + aligned_rows.join('') + '</tr>';
             i++; // ヘッダ指定行を読み飛ばす
           }else{
             // ヘッダなし
-            table_tmp += '<tr><td>' + rows.join('</td><td>') + '</td></tr>';
+            var aligned_rows = rows.map(function(row, j){
+              return '<td style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</td>';
+            });
+
+            table_tmp += '<tr>' + aligned_rows.join('') + '</tr>';
           }
         }else{
-          table_tmp += '<tr class="code-out-tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+          var aligned_rows = rows.map(function(row, j){
+            return '<td style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</td>';
+          });
+
+          table_tmp += '<tr class="code-out-tr">' + aligned_rows.join('') + '</tr>';
         }
       }else{
         if (isInTable){
@@ -551,6 +586,7 @@ var prettify = require('prettify');
           table_tmp += '</tbody></table>';
 
           tabled_text_array.push(table_tmp);
+          aligns = [];
         }
 
         tabled_text_array.push(text_array[i]);
