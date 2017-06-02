@@ -415,6 +415,13 @@ a, a:hover {
   padding-top: 10px;
 }
 
+#memo_scroll_top{
+  opacity: 0.8;
+  position: fixed;
+  bottom: 20px;
+  right: 50px;
+}
+
 
 .code {
   font-family: Menlo,Monaco,"Courier New",monospace;

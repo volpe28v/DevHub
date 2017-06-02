@@ -262,6 +262,7 @@ function MemoController(param){
     var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
     var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
     var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+    var $scroll_top_button = $('#memo_scroll_top');
 
     if (!$control.hasClass('fixed')){
       var control_offset = $control.offset();
@@ -275,9 +276,11 @@ function MemoController(param){
       $control.addClass('fixed');
       $control.css("top", fixed_top);
       $dummy.height($control.outerHeight()).show();
+      $scroll_top_button.fadeIn();
     }else{
       $control.removeClass('fixed');
       $dummy.hide();
+      $scroll_top_button.fadeOut();
     }
 
     // for index cursor
