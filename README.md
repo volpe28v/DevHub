@@ -172,6 +172,7 @@ wget http://XXXXX:3000/notify?name=SVN&msg="($NAME): $LOG"
 ### メニューバーにリンクを追加する
 * よく行くサイトのリンクをDevhubの上部メニューに表示しておくことができる。
 * /lib/menu_links.json を追加する。
+* 要再起動
 
 <pre>
 [
