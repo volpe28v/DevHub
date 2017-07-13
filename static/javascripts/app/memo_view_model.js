@@ -931,6 +931,47 @@ function MemoViewModel(param){
       }
     });
   }
+  
+  this.moveToBlogWithRange = function(from, to){
+
+    // ブログ範囲のテキストを取得
+    var org_text = that.display_text();
+    var text_array = org_text.split("\n");
+
+    if (to == -1){
+      to = text_array.length;
+    }
+
+    var blog_text = text_array.slice(from,to).join("\n");
+
+    var item = {
+      title: that._title(blog_text),
+      text: blog_text,
+      name: that.getName(),
+      avatar: that.settingViewModel.avatar()
+    };
+
+    swal({
+      title: "Move to blog?",
+      text: item.title,
+      type: "info",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      closeOnConfirm: true
+    },function(){
+      $.ajax('blog' , {
+        type: 'POST',
+        cache: false,
+        data: {blog: item},
+        success: function(data){
+          var permalink = "[" + data.blog.title + "](blog?id=" + data.blog._id + ")\n";
+          var blog_line = to - from;
+          text_array.splice(from,blog_line, permalink);
+          that.edit_text(text_array.join("\n"));
+        }
+      });
+    });
+  }
 
   this.do_diff_list = function(){
     that.set_state(that.states.display);
