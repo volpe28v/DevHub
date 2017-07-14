@@ -329,28 +329,6 @@ function MemoController(param){
     return false;
   }
 
-  this.move_index_li = function(data, event, element){
-    var index = $(element).closest(".index-ul").find(".index-li").index(element);
-    var $code_out = $('#share_memo_' + that.currentMemo().no).find('.code-out');
-    var $header = $code_out.find(":header").eq(index);
-    var header_tag = $header.get(0).tagName;
-    if (!header_tag.match(/h1/i)) return;
-
-    var $header_list = $code_out.find(header_tag);
-    var $next_header = $header_list.eq($header_list.index($header)+1);
-
-    var trs = $code_out.find(".code-out-tr");
-
-    var $target = $header.closest("tr");
-    var row = trs.index($target);
-
-    var $next_target = $next_header.closest("tr");
-    var next_row = trs.index($next_target);
-
-    that.currentMemo().moveToBlogWithRange(row, next_row);
-    return false;
-  }
-
   this.move_diff = function(){
     var pos = that.currentMemo().getNextDiffPos();
     $('#memo_area').scrollTop(pos - $("#share-memo").offset().top - $(window).height()/2);

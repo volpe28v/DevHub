@@ -664,7 +664,7 @@ function MemoViewModel(param){
     $.decora.apply_to_deco_and_raw(this.latest_text().text,
       function(deco_text){
         // 装飾ありの場合は目次候補
-        deco_text.split("\n").forEach(function(val){
+        deco_text.split("\n").forEach(function(val,i){
           var matches = val.match(/^(#+)/);
           if (matches){
             index_num++;
@@ -674,7 +674,9 @@ function MemoViewModel(param){
             that.indexes.push(
               {
                 index_class: "header-level-" + header_level,
-                body: $.decora.to_html(header_text)
+                body: $.decora.to_html(header_text),
+                level: header_level,
+                line: i
               });
 
             events.push({id: index_num, body: header_text});
@@ -932,11 +934,28 @@ function MemoViewModel(param){
     });
   }
   
-  this.moveToBlogWithRange = function(from, to){
+  this.moveToBlogWithIndex = function(data, event, element){
+    var from = data.line;
+    var to = -1;
+
+    // ブログ最終行の算出
+    var found = false;
+    for (var i = 0; i < that.indexes().length; i++){
+      var index = that.indexes()[i];
+
+      if (data == index){
+        found = true;
+        continue;
+      }
+
+      if (found && data.level >= index.level){
+        to = index.line;
+        break;
+      }
+    }
 
     // ブログ範囲のテキストを取得
-    var org_text = that.display_text();
-    var text_array = org_text.split("\n");
+    var text_array = that.display_text().split("\n");
 
     if (to == -1){
       to = text_array.length;
@@ -952,21 +971,24 @@ function MemoViewModel(param){
     };
 
     swal({
-      title: "Move to blog?",
+      title: "Post to blog?",
       text: item.title,
       type: "info",
       showCancelButton: true,
       confirmButtonText: "Yes!",
       closeOnConfirm: true
     },function(){
+
+      text_array.splice(from, (to - from));
+      that.edit_text(text_array.join("\n"));
+
       $.ajax('blog' , {
         type: 'POST',
         cache: false,
         data: {blog: item},
         success: function(data){
           var permalink = "[" + data.blog.title + "](blog?id=" + data.blog._id + ")\n";
-          var blog_line = to - from;
-          text_array.splice(from,blog_line, permalink);
+          text_array.splice(from,0, permalink);
           that.edit_text(text_array.join("\n"));
         }
       });
