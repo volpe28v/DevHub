@@ -66,12 +66,8 @@ body{
 
 .index-body a{
   min-height: 50px;
-  border: 1px solid #bce8f1 !important;
-  background-color: #d9edf7;
-}
-
-.index-body a:hover {
-  background-color: #fafafa !important;
+  border: 1px solid #ddd !important;
+  background-color: #fafafa;
 }
 
 .indexes-link {
@@ -82,8 +78,8 @@ body{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #3a87ad;
-  line-height: 21px;
+  color: #555;
+  line-height: 24px;
 }
 
 .writer {
@@ -529,6 +525,26 @@ hr {
 .tag-name {
   margin: 0px 2px;
   cursor: pointer;
+  padding: 5px !important;
+}
+
+.tag-li {
+  margin: 0px 2px;
+  cursor: pointer;
+  padding: 2px !important;
+}
+
+.tag-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 90%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.tag-count {
+  float: right;
 }
 
 #tag_list .tag-name {

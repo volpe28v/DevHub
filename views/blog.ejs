@@ -72,11 +72,15 @@
         <div id="tags_area">
           <div class="dummy-space"></div>
           <div class="row-fluid">
+
+          <!-- ko if: tags().length == 0 -->
+            no tags.
+          <!-- /ko -->
             <ul id="tags_list" data-bind="foreach: tags" class="nav nav-pills nav-stacked">
-              <li>
-                <a class="tag-name label" data-bind="attr: {'data-tag': tag_name}, click: $parent.selectTag">
-                  <span data-bind="text: tag_name"></span> (<span data-bind="text: count"></span>)
-                </a>
+              <li class="tag-li">
+                <div class="label" data-bind="attr: {'data-tag': tag_name}, css: { 'label-info': active }, click: function(data,event){ return $parent.selectTagFromList(data)}">
+                  <span class="tag-name-text" data-bind="text: tag_name"></span> <span class="tag-count" data-bind="text: count"></span>
+                </div>
               </li>
             </ul>
           </div>

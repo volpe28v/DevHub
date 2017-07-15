@@ -46,6 +46,17 @@ function BlogViewModel(name, start, end, editing){
     $('#tags_modal').modal('hide');
   }
 
+  this.selectTagFromList = function(data, event, element){
+    if (data.active()){
+      that.searchClear();
+      data.active(false);
+    }else{
+      that.tags().forEach(function(tag){ tag.active(false); });
+      data.active(true);
+      that.search_by_tag(data.tag_name);
+    }
+  }
+
   this.selectTagInTitle = function(data, event, element){
     if (that.load_start == null){ return; }
 
@@ -98,6 +109,7 @@ function BlogViewModel(name, start, end, editing){
       cache: false,
       data: {blog: update_blog},
       success: function(data){
+        data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
         that.tags(data.tags);
         blog.apply(data.blog, editing);
         that._update_tags();
@@ -137,6 +149,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {blog: remove_blog},
         success: function(data){
+          data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
           that.tags(data.tags);
           that._update_tags();
 
@@ -354,6 +367,7 @@ function BlogViewModel(name, start, end, editing){
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
+        data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
         that.tags(data.tags);
 
         var blogs = data.blogs;
@@ -388,6 +402,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {_id: id},
         success: function(data){
+          data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
           that.tags(data.tags);
           var blogs = data.blogs;
           blogs.body.forEach(function(blog){
