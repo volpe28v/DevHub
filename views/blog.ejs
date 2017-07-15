@@ -79,7 +79,16 @@
             <ul id="tags_list" data-bind="foreach: tags" class="nav nav-pills nav-stacked">
               <li class="tag-li">
                 <div class="label" data-bind="attr: {'data-tag': tag_name}, css: { 'label-info': active }, click: function(data,event){ return $parent.selectTagFromList(data)}">
-                  <span class="tag-name-text" data-bind="text: tag_name"></span> <span class="tag-count" data-bind="text: count"></span>
+                  <table style="table-layout: fixed; width: 100%">
+                    <tr>
+                      <td>
+                        <span class="tag-name-text" data-bind="text: tag_name"></span>
+                      </td>
+                      <td width="22px">
+                        <span class="tag-count" data-bind="text: count"></span>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </li>
             </ul>
