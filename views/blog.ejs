@@ -69,49 +69,20 @@
     <div class="container-fluid">
       <div class="row-fluid">
 
-        <div id="blog_area" class="span8">
+        <div id="tags_area">
           <div class="dummy-space"></div>
-          <ul id="blog_list" data-bind="foreach: items">
-            <li data-bind="attr: {id: _id}" class="blog-body">
-              <div class="alert alert-info">
-                <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
-                <div class="blog-header">
-                  <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
-                  <!-- /ko -->
-                  <!-- ko ifnot: has_avatar -->
-                  <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
-                  <!-- /ko -->
-                  <a class="edit-blog" data-bind="attr: {href:'blog?id=' + _id() + '&edit=true'}"><i class="icon-pencil"></i></a>
-                  <span class="remove-blog" data-bind="click: $parent.destroy.bind($data, false)"><i class="icon-trash"></i></span>
-                  <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
-                  <a class="btn btn-mini " data-bind="attr: {href:'blog?id=' + _id()}" target="_blank"> Permalink</a>
-                </div>
-              </div>
-              <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
-              <div class="edit-form" data-bind="visible: editing()" style="display: none">
-                <div>
-                  <textarea class="edit-area" data-bind="
-                    textInput: text,
-                    textcomplete: true,
-                    hasFocus: editing(),
-                    autofit: true,
-                    editStartTextarea: editing(),
-                    event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
-                  "></textarea>
-                </div>
-                <div class="blog-action">
-                  <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
-                  <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
-                  <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
-                </div>
-              </div>
-            </li>
-          </ul>
-          <div class="dummy-space"></div>
+          <div class="row-fluid">
+            <ul id="tags_list" data-bind="foreach: tags" class="nav nav-pills nav-stacked">
+              <li>
+                <a class="tag-name label" data-bind="attr: {'data-tag': tag_name}, click: $parent.selectTag">
+                  <span data-bind="text: tag_name"></span> (<span data-bind="text: count"></span>)
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div id="index_area" class="span4">
+        <div id="index_area">
           <div class="dummy-space"></div>
           <div class="row-fluid">
             <ul id="index_list" data-bind="foreach: items" class="nav nav-tabs nav-stacked">
@@ -157,6 +128,49 @@
             <div class="dummy-space"></div>
           </div>
         </div>
+
+        <div id="blog_area">
+          <div class="dummy-space"></div>
+          <ul id="blog_list" data-bind="foreach: items">
+            <li data-bind="attr: {id: _id}" class="blog-body">
+              <div class="alert alert-info">
+                <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
+                <div class="blog-header">
+                  <!-- ko if: has_avatar -->
+                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
+                  <!-- /ko -->
+                  <!-- ko ifnot: has_avatar -->
+                  <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
+                  <!-- /ko -->
+                  <a class="edit-blog" data-bind="attr: {href:'blog?id=' + _id() + '&edit=true'}"><i class="icon-pencil"></i></a>
+                  <span class="remove-blog" data-bind="click: $parent.destroy.bind($data, false)"><i class="icon-trash"></i></span>
+                  <button class="btn btn-mini clip" style="margin-left: 10px" data-bind="attr: {'data-clipboard-text': copy_title()}">Copy Title and URL</button>
+                  <a class="btn btn-mini " data-bind="attr: {href:'blog?id=' + _id()}" target="_blank"> Permalink</a>
+                </div>
+              </div>
+              <pre class="text-base-style" data-bind="visible: !editing()"><div class="code-out" data-bind="decoBlogHtml: text"></div></pre>
+              <div class="edit-form" data-bind="visible: editing()" style="display: none">
+                <div>
+                  <textarea class="edit-area" data-bind="
+                    textInput: text,
+                    textcomplete: true,
+                    hasFocus: editing(),
+                    autofit: true,
+                    editStartTextarea: editing(),
+                    event: {keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}},
+                  "></textarea>
+                </div>
+                <div class="blog-action">
+                  <button class="btn btn-info btn-mini update-notify-blog" data-bind="click: $parent.updateWithNotify">Update and notify</button>
+                  <button class="btn btn-info update-blog" data-bind="click: $parent.update">Update</button>
+                  <button class="btn btn-default cancel-edit" data-bind="click: $parent.cancel">Cancel</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="dummy-space"></div>
+        </div>
+
       </div>
     </div>
 

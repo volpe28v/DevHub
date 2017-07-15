@@ -32,16 +32,31 @@ body{
 
 }
 
-#blog_area {
+#tags_area {
   height: 100%;
   top: 0px;
-  left: 14px;
+  left: 10px;
+  width: 10%;
 }
 
 #index_area {
   height: 100%;
   top: 0px;
-  left: 65%;
+  left: 10%;
+  margin-left: 0px;
+  width: 20%;
+}
+
+#blog_area {
+  height: 100%;
+  top: 0px;
+  left: 29.5%;
+  margin-left: 0px;
+  width: 70%;
+}
+
+#tags_list {
+  padding-right: 10px;
 }
 
 #index_list {
