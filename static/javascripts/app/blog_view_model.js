@@ -42,11 +42,28 @@ function BlogViewModel(name, start, end, editing){
   this.clipboard = new Clipboard('.clip');
 
   this.selectTag = function(data, event, element){
-    that.search_by_tag(this.tag_name);
+    var tag_name = this.tag_name;
+    var tag_data = that.tags().filter(function(tag){ return tag.tag_name == tag_name; })[0];
+
+    that.search_or_clear_tag(tag_data);
+
     $('#tags_modal').modal('hide');
   }
 
   this.selectTagFromList = function(data, event, element){
+    that.search_or_clear_tag(data);
+  }
+
+  this.selectTagInTitle = function(data, event, element){
+    if (that.load_start == null){ return; }
+
+    var tag_name = $(element).data("tag");
+    var tag_data = that.tags().filter(function(tag){ return tag.tag_name == tag_name; })[0];
+
+    that.search_or_clear_tag(tag_data);
+  }
+
+  this.search_or_clear_tag = function(data){
     if (data.active()){
       that.searchClear();
       data.active(false);
@@ -55,13 +72,6 @@ function BlogViewModel(name, start, end, editing){
       data.active(true);
       that.search_by_tag(data.tag_name);
     }
-  }
-
-  this.selectTagInTitle = function(data, event, element){
-    if (that.load_start == null){ return; }
-
-    var tag = $(element).data("tag");
-    that.search_by_tag(tag);
   }
 
   this.update = function(){
@@ -327,7 +337,7 @@ function BlogViewModel(name, start, end, editing){
         $('#blog_area').scrollTop(0);
 
         that.items([]);
-        that.item_count(data.blogs.count);
+        that.item_count(data.blogs.length);
         that.searched_blogs = data.blogs;
         var search_displaying_blogs = that.searched_blogs.splice(0,10);
 

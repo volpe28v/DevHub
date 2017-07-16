@@ -15,7 +15,9 @@
     "watch:blog_permalink": "watchify static/javascripts/app/blog_permalink.js -o static/javascripts/blog_permalink_bundle.js -v",
     "watch:calendar": "watchify static/javascripts/app/calendar.js -o static/javascripts/calendar_bundle.js -v",
     "dev": "parallelshell \"npm run watch:devhub\" \"npm run watch:upload\" \"npm run watch:blog\" \"npm run watch:blog_permalink\" \"npm run watch:calendar\" \"grunt\" \"node-dev app.js -t Development\" ",
-    "rel": "parallelshell \"npm run watch_r:devhub\" \"npm run watch_r:upload\" \"npm run watch_r:blog\" \"npm run watch_r:blog_permalink\" \"npm run watch_r:calendar\" \"grunt\" \"node-dev app.js -t Release\" "
+    "d": "npm run dev",
+    "rel": "parallelshell \"npm run watch_r:devhub\" \"npm run watch_r:upload\" \"npm run watch_r:blog\" \"npm run watch_r:blog_permalink\" \"npm run watch_r:calendar\" \"grunt\" \"node-dev app.js -t Release\" ",
+    "r": "npm run rel"
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
