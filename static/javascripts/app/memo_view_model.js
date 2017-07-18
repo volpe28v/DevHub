@@ -662,7 +662,7 @@ function MemoViewModel(param){
     var events = [];
     var index_num = 0;
     $.decora.apply_to_deco_and_raw(this.latest_text().text,
-      function(deco_text){
+      function(deco_text, line){
         // 装飾ありの場合は目次候補
         deco_text.split("\n").forEach(function(val,i){
           var matches = val.match(/^(#+)/);
@@ -676,14 +676,14 @@ function MemoViewModel(param){
                 index_class: "header-level-" + header_level,
                 body: $.decora.to_html(header_text),
                 level: header_level,
-                line: i
+                line: line + i
               });
 
             events.push({id: index_num, body: header_text});
           }
         });
       },
-      function(raw_text){
+      function(raw_text, line){
         // 装飾なしは目次対象外
       });
 

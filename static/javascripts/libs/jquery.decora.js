@@ -617,18 +617,22 @@ var prettify = require('prettify');
 
     apply_to_deco_and_raw: function(target_text, deco_func, raw_func){
       var bq_sepa_array = target_text.split("```");
+      var base_line = 0;
       for (var i = 0; i < bq_sepa_array.length; i++){
         if (bq_sepa_array[i] != undefined){
+          var line = bq_sepa_array[i].split("\n").length;
           if (i%2 == 0){
             // 装飾有り
             if ( typeof deco_func === "function"){
-              bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+              bq_sepa_array[i] = deco_func(bq_sepa_array[i], base_line);
             }
+            base_line += line - 1;
           }else{
             // 装飾無し
             if ( typeof raw_func === "function"){
-              bq_sepa_array[i] = raw_func(bq_sepa_array[i]);
+              bq_sepa_array[i] = raw_func(bq_sepa_array[i], base_line);
             }
+            base_line += line -1;
           }
         }
       }
