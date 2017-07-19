@@ -130,7 +130,7 @@ function BlogViewModel(name, start, end, editing){
   this.setTags = function(tags){
     // 属性を付加
     tags.forEach(function(tag){ tag.active = ko.observable(false); });
-    tags.forEach(function(tag){ tag.visible = ko.computed(function(){ return ~tag.tag_name.indexOf(that.tag_filter()); })});
+    tags.forEach(function(tag){ tag.visible = ko.computed(function(){ return ~tag.tag_name.toLowerCase().indexOf(that.tag_filter().toLowerCase()); })});
     that.tags(tags);
   }
 
