@@ -26,6 +26,7 @@ function BlogViewModel(name, start, end, editing){
     return edit_items.length != 0;
   });
 
+  this.tag_filter = ko.observable("");
   this.tags = ko.observableArray([]);
 
   this.matched_doms = [];
@@ -119,12 +120,18 @@ function BlogViewModel(name, start, end, editing){
       cache: false,
       data: {blog: update_blog},
       success: function(data){
-        data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
-        that.tags(data.tags);
+        that.setTags(data.tags);
         blog.apply(data.blog, editing);
         that._update_tags();
       }
     });
+  }
+
+  this.setTags = function(tags){
+    // 属性を付加
+    tags.forEach(function(tag){ tag.active = ko.observable(false); });
+    tags.forEach(function(tag){ tag.visible = ko.computed(function(){ return ~tag.tag_name.indexOf(that.tag_filter()); })});
+    that.tags(tags);
   }
 
   this.cancel = function(){
@@ -159,8 +166,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {blog: remove_blog},
         success: function(data){
-          data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
-          that.tags(data.tags);
+          that.setTags(data.tags);
           that._update_tags();
 
           if (goto_blog){
@@ -377,8 +383,7 @@ function BlogViewModel(name, start, end, editing){
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
-        data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
-        that.tags(data.tags);
+        that.setTags(data.tags);
 
         var blogs = data.blogs;
         that.items([]);
@@ -412,8 +417,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {_id: id},
         success: function(data){
-          data.tags.forEach(function(tag){ tag.active = ko.observable(false); });
-          that.tags(data.tags);
+          that.setTags(data.tags);
           var blogs = data.blogs;
           blogs.body.forEach(function(blog){
             that._addItem(blog, that.initialEditing);

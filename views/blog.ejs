@@ -73,11 +73,15 @@
           <div class="dummy-space"></div>
           <div class="row-fluid">
 
+            <div id="tag_filter_div">
+              <input type="text" data-bind="textInput: tag_filter" class="form-control" placeholder="Tag Filter">
+            </div>
+
           <!-- ko if: tags().length == 0 -->
             no tags.
           <!-- /ko -->
             <ul id="tags_list" data-bind="foreach: tags" class="nav nav-pills nav-stacked">
-              <li class="tag-li">
+              <li class="tag-li" data-bind="visible: visible">
                 <div class="label" data-bind="attr: {'data-tag': tag_name}, css: { 'label-info': active }, click: function(data,event){ return $parent.selectTagFromList(data)}">
                   <table style="table-layout: fixed; width: 100%">
                     <tr>
