@@ -976,22 +976,42 @@ function MemoViewModel(param){
       type: "info",
       showCancelButton: true,
       confirmButtonText: "Yes!",
-      closeOnConfirm: true
+      closeOnConfirm: false,
+      showLoaderOnConfirm: true
     },function(){
 
       text_array.splice(from, (to - from));
       that.edit_text(text_array.join("\n"));
 
-      $.ajax('blog' , {
+      $.ajax({
+        url: 'blog',
         type: 'POST',
         cache: false,
-        data: {blog: item},
-        success: function(data){
+        data: {blog: item}
+      }).then(
+        function(data){
+          // permalink の挿入確認
           var permalink = "[" + data.blog.title + "](blog?id=" + data.blog._id + ")\n";
-          text_array.splice(from,0, permalink);
-          that.edit_text(text_array.join("\n"));
+          swal({
+            title: "Insert the permalink?",
+            text: "<b>" + permalink + "</b>",
+            html: true,
+            type: "info",
+            showCancelButton: true,
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+          },function(isComfirm){
+            if (isComfirm){
+              text_array.splice(from,0, permalink);
+              that.edit_text(text_array.join("\n"));
+            }
+          });
+        },
+        function(){
+          swal("Error", "Failed to post a blog", "error");
         }
-      });
+      );
     });
   }
 
