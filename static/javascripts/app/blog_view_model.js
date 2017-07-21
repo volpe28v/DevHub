@@ -210,7 +210,9 @@ function BlogViewModel(name, start, end, editing){
     var target_top = $target.offset().top;
     var base_top = $("#blog_list").offset().top;
     $('#blog_area').scrollTop(target_top - base_top);
+  }
 
+  this.selectIndexesLink = function(blog){
     that.toggleIndexes(blog);
   }
 

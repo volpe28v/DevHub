@@ -115,12 +115,12 @@
                   </div>
 
                   <!-- ko if: indexes() && indexes().length -->
-                  <i class="icon-align-left indexes-link"></i>
+                  <i data-bind="click: $parent.selectIndexesLink" class="icon-align-left indexes-link"></i>
                   <!-- /ko -->
 
                   <div class="index-header">
                     <!-- ko if: has_avatar -->
-                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'left'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
                     <!-- /ko -->
                     <!-- ko ifnot: has_avatar -->
                       <span data-bind="text: name"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
