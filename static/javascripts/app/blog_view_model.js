@@ -298,6 +298,12 @@ function BlogViewModel(name, start, end, editing){
     that.search();
   }
 
+  this.selectUser = function(name){
+    that.tags().forEach(function(tag){ tag.active(false); });
+    that.keyword("name:" + name);
+    that.search();
+  }
+
   this.search = function(){
     // キーワード無しの場合は全blog更新
     if (this.keyword() == ""){

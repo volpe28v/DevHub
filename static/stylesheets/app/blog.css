@@ -14,6 +14,10 @@ body{
   overflow: hidden;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 #search_form {
   position: relative;
 }
@@ -140,7 +144,7 @@ a, a:hover {
 
 #matched_title {
   font-size: 12pt;
-  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .blog-title {
@@ -149,13 +153,16 @@ a, a:hover {
 
 #blog_count {
   margin-top: 14px;
-  margin-left: 10px;
+  margin-left: 5px;
   margin-bottom: 6px;
 }
 
 #blog_count .count {
   font-size: 16pt;
   font-weight: bold;
+  display: inline-block;
+  min-width: 50px;
+  text-align: right;
 }
 
 #blog_count .unit {

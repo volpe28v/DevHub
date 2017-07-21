@@ -32,7 +32,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/">DevHub - <span id="blog_count">
+          <a class="brand" href="/">DevHub Blog<span id="blog_count">
 
             <span class="count" data-bind="text: item_count"></span><span class="unit"> blogs.</span>
           </span></a>
@@ -43,22 +43,22 @@
               <li><a id="scroll_top" rel="tooltip" title="Scroll Top" href="#" data-bind="click: moveTop"><i class="icon-white icon-arrow-up"></i></a></li>
             </ul>
 
-            <form id="search_form" class="navbar-form pull-right" data-bind="submit: submitSearch">
-              <input type="text" class="search-query input-middle" placeholder="foo name:hoge tag:fuga" data-bind="textInput: keyword">
+            <form id="search_form" class="navbar-form pull-left" data-bind="submit: submitSearch">
+              <input type="text" class="form-control input-middle" placeholder="foo name:hoge tag:fuga" data-bind="textInput: keyword">
                 <i id="search_clear" class="icon-remove" data-bind="visible: keyword() != '', click: searchClear"></i>
             </form>
 
-            <form id="matched_control" class="navbar-form pull-right">
+            <form id="matched_control" class="navbar-form pull-left">
               <div class="btn-group">
                 <button id="prev_match" class="btn btn-inverse" data-bind="visible: is_visible_navi, click: movePrevMatch"><i class="icon-chevron-up icon-white"></i></button>
                 <button id="next_match" class="btn btn-inverse" data-bind="visible: is_visible_navi, click: moveNextMatch"><i class="icon-chevron-down icon-white"></i></button>
               </div>
             </form>
 
-            <span id="matched_count" class="navbar-text pull-right" data-bind="visible: is_visible_navi">
+            <span id="matched_count" class="navbar-text pull-left" data-bind="visible: is_visible_navi">
               <span data-bind="text: matched_index"></span>/<span data-bind="text: matched_num"></span>
             </span>
-            <span id="matched_title" class="navbar-text pull-right" data-bind="visible: is_visible_navi">
+            <span id="matched_title" class="navbar-text pull-left" data-bind="visible: is_visible_navi">
               <span data-bind="text: matched_title"></span>
             </span>
           </div>
@@ -120,10 +120,10 @@
 
                   <div class="index-header">
                     <!-- ko if: has_avatar -->
-                    <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                    <span class="login-symbol" data-bind="click: function(){ return $parent.selectUser(name()); } , attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
                     <!-- /ko -->
                     <!-- ko ifnot: has_avatar -->
-                      <span data-bind="text: name"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
+                      <span data-bind="text: name, click: function(){ return $parent.selectUser(name()); }"></span> - <span class="timestamp" data-bind="attr: {'data-livestamp': date}"></span>
                     <!-- /ko -->
                   </div>
                 </a>
@@ -154,10 +154,10 @@
                 <h1 data-bind="decoBlogTitleHtml: title" class="blog-title"></h1>
                 <div class="blog-header">
                   <!-- ko if: has_avatar -->
-                  <span class="login-symbol" data-bind="attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
+                  <span class="login-symbol cursor" data-bind="click: function(){ return $parent.selectUser(name());}, attr: {'data-name': name, title: name}, tooltip: 'bottom'" rel="tooltip"><img class="avatar" data-bind="attr: {src: avatar}"></span> updated <span class="timestamp" data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <!-- ko ifnot: has_avatar -->
-                  <strong data-bind="text: name"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
+                  <strong class="cursor" data-bind="text: name, click: function(){ return $parent.selectUser(name());}"></strong> updated <span data-bind="attr: {'data-livestamp':date}"></span>
                   <!-- /ko -->
                   <a class="edit-blog" data-bind="attr: {href:'blog?id=' + _id() + '&edit=true'}"><i class="icon-pencil"></i></a>
                   <span class="remove-blog" data-bind="click: $parent.destroy.bind($data, false)"><i class="icon-trash"></i></span>
