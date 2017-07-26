@@ -973,7 +973,8 @@ function MemoViewModel(param){
       text: that._title(blog_text),
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
       closeOnConfirm: true
     },function(){
       text_array.splice(from, (to - from));
