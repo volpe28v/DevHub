@@ -148,7 +148,7 @@
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">
                 <li class="index-li" data-bind="
                   click: function(data, event){ return $parents[1].select_index_li(data,event,$element) },
-                  event: { dblclick: function(data, event){ return $parent.moveToBlogWithIndex(data,event,$element) }}">
+                  event: { dblclick: function(data, event){ return $parent.selectMemoFromIndexes(data,event,$element) }}">
                   <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
                 </li>
               </ul>

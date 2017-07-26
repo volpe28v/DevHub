@@ -934,14 +934,18 @@ function MemoViewModel(param){
     });
   }
   
-  this.moveToBlogWithIndex = function(data, event, element){
-    var from = data.line;
-    var to = -1;
+  this.selectMemoFromIndexes = function(data, event, element){
+    if(event.shiftKey){
+      this.deleteMemoWithIndex(data, event, element);
+    }else{
+      this.moveToBlogWithIndex(data, event, element);
+    }
+  }
 
-    // ブログ最終行の算出
+  this.getLastLineNumber = function(data, indexes, lastLineNumber){
     var found = false;
-    for (var i = 0; i < that.indexes().length; i++){
-      var index = that.indexes()[i];
+    for (var i = 0; i < indexes.length; i++){
+      var index = indexes[i];
 
       if (data == index){
         found = true;
@@ -949,17 +953,40 @@ function MemoViewModel(param){
       }
 
       if (found && data.level >= index.level){
-        to = index.line;
-        break;
+        return index.line;
       }
     }
 
-    // ブログ範囲のテキストを取得
+    return lastLineNumber;
+  }
+
+  this.deleteMemoWithIndex = function(data, event, element){
     var text_array = that.display_text().split("\n");
 
-    if (to == -1){
-      to = text_array.length;
-    }
+    var from = data.line;
+    var to = this.getLastLineNumber(data, that.indexes(), text_array.length);
+
+    var blog_text = text_array.slice(from,to).join("\n");
+
+    swal({
+      title: "Delete this memo?",
+      text: that._title(blog_text),
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      closeOnConfirm: true
+    },function(){
+      text_array.splice(from, (to - from));
+      that.edit_text(text_array.join("\n"));
+    });
+
+  }
+
+  this.moveToBlogWithIndex = function(data, event, element){
+    var text_array = that.display_text().split("\n");
+
+    var from = data.line;
+    var to = this.getLastLineNumber(data, that.indexes(), text_array.length);
 
     var blog_text = text_array.slice(from,to).join("\n");
 
