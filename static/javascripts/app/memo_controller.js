@@ -97,6 +97,11 @@ function MemoController(param){
     that.adjustMemoControllbox();
   }
 
+  this.bottom = function(){
+    $('#memo_area').scrollTop($('#memo_area')[0].scrollHeight);
+    that.adjustMemoControllbox();
+  }
+
   this.down = function(){
     if (!this.doing_down){
       $('#memo_area').animate({scrollTop: $('#memo_area').scrollTop() + 400}, 200, 'swing');

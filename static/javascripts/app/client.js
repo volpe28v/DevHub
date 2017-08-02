@@ -112,6 +112,8 @@ function ClientViewModel(param){
             that.chatController.next();
           } else if (e.keyCode == 87){  // Shift + w : wip reverse jump
             that.memoController.wipReverseJump();
+          } else if (e.keyCode == 52){ // $: move bottom share memo
+            that.memoController.bottom();
           }
         }else{
           if (e.keyCode == 67){        // c : focus chat field
