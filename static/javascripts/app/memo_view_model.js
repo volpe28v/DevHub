@@ -337,15 +337,29 @@ function MemoViewModel(param){
 
   this.wipJump = function(){
     if (!that.hasWip()){ return; }
-    that.switchFixShareMemo(1);
 
     that.currentWip = that.wipCount() <= that.currentWip ? 1 : that.currentWip + 1;
+    that._wipJump();
+
+    return true;
+  }
+
+  this.wipReverseJump = function(){
+    if (!that.hasWip()){ return; }
+
+    that.currentWip = that.currentWip <= 1 ? that.wipCount() : that.currentWip - 1;
+    that._wipJump();
+
+    return true;
+  }
+
+  this._wipJump = function(){
+    that.switchFixShareMemo(1);
     var $code_out = $('#share_memo_' + that.no).find('.code-out');
     var pos = $($code_out.find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top;
     var topPos = $('#share-memo').offset().top;
     var wipPos = (pos - topPos) - CODE_INDEX_ADJUST_HEIGHT + 1;
     $('#memo_area').scrollTop(wipPos);
-    return true;
   }
 
   this.taskJump = function(){

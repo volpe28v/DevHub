@@ -152,6 +152,10 @@ function MemoController(param){
     that.currentMemo().wipJump();
   }
 
+  this.wipReverseJump = function(){
+    that.currentMemo().wipReverseJump();
+  }
+
   this.taskJump = function(){
     that.currentMemo().taskJump();
   }

@@ -110,6 +110,8 @@ function ClientViewModel(param){
             that.chatController.prev();
           }else if (e.keyCode == 76){  // Shift + l: select prev chat room
             that.chatController.next();
+          } else if (e.keyCode == 87){  // Shift + w : wip reverse jump
+            that.memoController.wipReverseJump();
           }
         }else{
           if (e.keyCode == 67){        // c : focus chat field
