@@ -138,10 +138,17 @@ function BlogItemViewModel(item, parent){
     return title;
   }
 
-  this._createCopyTitle = function(text, id){
+  // タグ([tag])を除いたタイトルを返す
+  this._title_no_tag = function(text){
     var plane_title = that._title_plane(text);
+    return plane_title.replace( /\[[^\]]+\]/g , "" );
+  }
+
+  this._createCopyTitle = function(text, id){
+    // タイトルとURLのコピーをする時には、タグがない方が綺麗だと思う。
+    var notag_title = that._title_no_tag(text);
     var url_base = location.href.split('?')[0];
-    return '[' + plane_title + '](' + url_base + '?id=' + id + ')';
+    return '[' + notag_title + '](' + url_base + '?id=' + id + ')';
   }
 
   this._indexes = function(text, id){
