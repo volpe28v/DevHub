@@ -243,6 +243,14 @@
                     <!-- /ko -->
                   </strong>
                 </div>
+                <div id="filter_date_alert" class="alert alert-success" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterDate"></span> date search mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
               </div>
               <div id="chat_tabbable"  class="tabbable">
                 <ul class="nav nav-tabs" data-bind="

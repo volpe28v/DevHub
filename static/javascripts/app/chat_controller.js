@@ -52,6 +52,14 @@ function ChatController(param){
   this.delayedFilterWord.subscribe(function (val){
     that.doFilterTimeline();
   }, this);
+
+  this.filterDate = ko.observable("");
+  this.delayedFilterDate = ko.pureComputed(this.filterDate)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterDate.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
+
   this.isCommand = ko.observable(false);
 
   this.chatViewModels = ko.observableArray([]);
@@ -298,6 +306,7 @@ ChatController.prototype = {
 
     // 検索中は送信しない
     if (that.filterWord() != ""){ return false; }
+    if (that.filterDate() != ""){ return false; }
 
     // 絵文字サジェストが表示中は送信しない
     if ($('.textcomplete-dropdown').css('display') == 'none'){
@@ -344,6 +353,12 @@ ChatController.prototype = {
       $('#filter_word_alert').slideUp();
     }
 
+    if (that.filterDate() != ""){
+      $('#filter_date_alert').slideDown();
+    }else{
+      $('#filter_date_alert').slideUp();
+    }
+
     if (that.filterName() != ""){
       $('#filter_name_alert').slideDown();
     }else{
@@ -372,6 +387,14 @@ ChatController.prototype = {
       var search_word = RegExp.$1;
       that.filterWord(search_word);
       that.isCommand(true);
+    }else if (message.match(/^date:(.+)\/(.+)\/(.+)/) || message.match(/^date:(.+)-(.+)-(.+)/)){
+      var search_date = RegExp.$1 + "/" + RegExp.$2 + "/" + RegExp.$3;
+      var date = new Date(Date.parse(search_date));
+      if (!isNaN(date)){
+        search_date = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2);
+        that.filterDate(search_date);
+        that.isCommand(true);
+      }
     }else if (message.match(/^room_name:/)){
       that.isCommand(true);
     }else if (message.match(/^m:$/)){
@@ -387,6 +410,7 @@ ChatController.prototype = {
     }else{
       that.isCommand(false);
       that.filterWord("");
+      that.filterDate("");
 
       // mention か mention & own の場合はフィルタリングを解除
       if (that.timeline() != "all"){
@@ -429,6 +453,8 @@ ChatController.prototype = {
         that.filterName("");
       }else if (data_id == "filter_word_alert"){
         that.filterWord("");
+      }else if (data_id == "filter_date_alert"){
+        that.filterDate("");
       }
 
       if (that.isCommand()){
@@ -522,6 +548,10 @@ ChatController.prototype = {
 
   getFilterWord: function(){
     return this.filterWord();
+  },
+
+  getFilterDate: function(){
+    return this.filterDate();
   },
 
   updateFaviconNumber: function(){
