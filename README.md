@@ -39,6 +39,7 @@ http://dev-hub.herokuapp.com/
 $ git clone git@github.com:volpe28v/DevHub.git
 $ cd DevHub
 $ npm install 
+$ npm run build 
 </pre>
 
 ## 起動
