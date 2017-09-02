@@ -7,7 +7,8 @@
     "d": "npm run dev",
     "rel": "parallelshell \"webpack --progress --colors -p --watch\" \"grunt\" \"node-dev app.js -t Release\" ",
     "r": "npm run rel",
-    "build": "webpack --progress --colors -p; grunt build"
+    "build": "webpack --progress --colors -p && grunt build",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
