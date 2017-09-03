@@ -387,13 +387,19 @@ ChatController.prototype = {
       var search_word = RegExp.$1;
       that.filterWord(search_word);
       that.isCommand(true);
-    }else if (message.match(/^date:(.+)\/(.+)\/(.+)/) || message.match(/^date:(.+)-(.+)-(.+)/)){
-      var search_date = RegExp.$1 + "/" + RegExp.$2 + "/" + RegExp.$3;
-      var date = new Date(Date.parse(search_date));
-      if (!isNaN(date)){
-        search_date = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2);
-        that.filterDate(search_date);
-        that.isCommand(true);
+    }else if (message.match(/^date:(.*)/)){
+      that.isCommand(true);
+      var arg = RegExp.$1;
+      if (arg.match(/(\d+)\/(\d+)\/(\d+)/) || arg.match(/(\d+)-(\d+)-(\d+)/)) {
+        var search_date = RegExp.$1 + "/" + RegExp.$2 + "/" + RegExp.$3;
+        var date = new Date(Date.parse(search_date));
+        if (!isNaN(date)) {
+          search_date = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2);
+          that.filterDate(search_date);
+        }
+      }else{
+        // 入力例を画面に表示するためにダミーの値をセット
+        that.filterDate(" ");
       }
     }else if (message.match(/^room_name:/)){
       that.isCommand(true);
