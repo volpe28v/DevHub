@@ -91,6 +91,7 @@ $ npm run rel
 * /@user keyword keyword2 でユーザ指定のキーワードAND検索
 * ユーザ名をShift+クリックで指定ユーザ発言の絞り込み
 * m: でメンション絞り込み。 mo: でメンション＋自発言で絞り込み
+* date:yyyy/mm/dd または date:yyyy-mm-dd で日付で絞り込み
 * チャットタブのドラッグ＆ドロップで並び替え
 
 ### 共有メモ
