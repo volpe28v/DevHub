@@ -355,6 +355,8 @@ ChatController.prototype = {
 
     if (that.filterDate() != ""){
       $('#filter_date_alert').slideDown();
+      // 入力例を表示しているだけの状態の時は絞り込みを行わない
+      if (that.filterDate() == " "){ return; }
     }else{
       $('#filter_date_alert').slideUp();
     }
