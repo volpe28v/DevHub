@@ -141,7 +141,7 @@ function BlogItemViewModel(item, parent){
   // タグ([tag])を除いたタイトルを返す
   this._title_no_tag = function(text){
     var plane_title = that._title_plane(text);
-    return plane_title.replace( /\[[^\]]+\]/g , "" );
+    return plane_title.replace( /\[[^\]]+\]/g , "" ).trim();
   }
 
   this._createCopyTitle = function(text, id){
