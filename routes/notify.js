@@ -19,6 +19,7 @@ exports.get = function(req, res, io) {
 
   chat_log.add(data,function(){
     io.sockets.emit('message' + data.room_id, data);
+    io.sockets.emit('message', data); // for bot
     res.end('received msg');
   });
 
