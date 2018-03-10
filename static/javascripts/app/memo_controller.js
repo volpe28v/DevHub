@@ -328,6 +328,22 @@ function MemoController(param){
     }
   }
 
+  this.set_send_message = function(message){
+    if ($('#chat_inner').is(':visible')){
+      that.setMessage(message, true);
+    }else{
+      // 無理やりチャットを表示しているがなんとかしたい
+      $('#chat_area').scrollTop(0);
+      $('#index_inner').hide();
+      $('#calendar_inner').hide();
+      $('#chat_inner').show();
+
+      setTimeout(function(){
+        that.setMessage(message, true);
+      },500);
+    }
+  }
+
   this.select_index_li = function(data, event, element){
     that.currentMemo().switchFixShareMemo(1);
 

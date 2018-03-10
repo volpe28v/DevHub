@@ -285,20 +285,32 @@ function ChatController(param){
 }
 
 ChatController.prototype = {
-  setMessage: function(message){
+  setMessage: function(message, force){
     var that = this;
-    var exist_msg = that.inputMessage();
-    if ( exist_msg == ""){
-      exist_msg += message + " ";
+
+    if (force){
+      // メッセージエリアに表示せずに直接送信する
+      var name = that.loginName();
+      var avatar = that.settingViewModel.avatar();
+
+      if ( message && name ){
+        var room_id = that.chatViewModels().filter(function(vm){ return vm.isActive(); })[0].no;
+        that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
+      }
     }else{
-      if (exist_msg.slice(-1) == " "){
+      var exist_msg = that.inputMessage();
+      if ( exist_msg == ""){
         exist_msg += message + " ";
       }else{
-        exist_msg += " " + message + " ";
+        if (exist_msg.slice(-1) == " "){
+          exist_msg += message + " ";
+        }else{
+          exist_msg += " " + message + " ";
+        }
       }
+      that.inputMessage(exist_msg);
+      $('#message').focus().trigger('autosize.resize');
     }
-    that.inputMessage(exist_msg);
-    $('#message').focus().trigger('autosize.resize');
   },
 
   sendMessage: function(){

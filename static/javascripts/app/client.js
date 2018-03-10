@@ -38,8 +38,8 @@ function ClientViewModel(param){
   this.memoController = new MemoController({
     socket: that.socket,
     settingViewModel: that.settingViewModel,
-    setMessage: function(message){
-      that.chatController.setMessage(message);
+    setMessage: function(message, force){
+      that.chatController.setMessage(message, force);
     },
     zenMode: function(){
       return that.zenMode;

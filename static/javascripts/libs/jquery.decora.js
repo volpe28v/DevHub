@@ -243,6 +243,7 @@ var prettify = require('prettify');
       deco_text = _decorate_list( deco_text );
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
+      deco_text = _decorate_send_message( deco_text );
       deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_windows_path( deco_text );
       deco_text = _decorate_table( deco_text );
@@ -493,6 +494,16 @@ var prettify = require('prettify');
           return '<span data-bind="click: $parent.set_ref_point.bind($data, $element)" class="btn btn-default btn-mini ref-point" id="' + matched_id + '"><i class="icon-share"></i></span>';
         });
     return refed_text;
+  }
+
+  function _decorate_send_message( text ){
+    console.log(text);
+    var message_text = text.replace(/^&lt;=(.+)/mg,
+        function(){
+          var send_message = arguments[1];
+          return '<span data-bind="click: $parent.set_send_message.bind($data, \'' + send_message + '\'),tooltip: \'bottom\'" class="btn btn-info btn-mini" title="チャットに送信する"><i class="icon-comment icon-white"></i> ' + send_message + '</span> ';
+        });
+    return message_text;
   }
 
   function _decorate_hr( text ){
