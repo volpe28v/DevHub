@@ -45,7 +45,7 @@ console.log(' GRIDFS: ' + app.get('gridfs'));
 
 if (app.get('force_ssl')) {
   app.get('*', function(req, res, next) {
-    if (req.recure || req.headers['x-forwarded-proto'] === 'https') {
+    if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
       next();
     } else {
       res.redirect('https://' + req.headers.host + req.url);
