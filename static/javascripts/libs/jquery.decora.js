@@ -497,7 +497,6 @@ var prettify = require('prettify');
   }
 
   function _decorate_send_message( text ){
-    console.log(text);
     var message_text = text.replace(/^&lt;=(.+)/mg,
         function(){
           var send_message = arguments[1];
