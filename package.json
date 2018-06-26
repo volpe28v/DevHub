@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "node-dev": "^3.1.3",
-    "parallelshell": "^2.0.0"
+    "parallelshell": "^3.0.2"
   },
   "browser": {
     "prettify": "./node_modules/google-code-prettify/bin/prettify.min.js"
