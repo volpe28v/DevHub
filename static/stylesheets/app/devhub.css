@@ -1014,6 +1014,7 @@ button.close {
   background-color: #f7f7f7;
   border: solid 0px #ccc;
   padding: 10px;
+  margin-top: 5px;
   margin-right: 5px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
