@@ -189,6 +189,7 @@ var prettify = require('prettify');
     target_text = _decorate_ref( target_text );
     target_text = _decorate_hr( target_text );
     target_text = _decorate_windows_path( target_text );
+    target_text = _decorate_inline_code( target_text );
     target_text = _decorate_table( target_text );
 
     return target_text;
@@ -246,6 +247,7 @@ var prettify = require('prettify');
       deco_text = _decorate_send_message( deco_text );
       deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_windows_path( deco_text );
+      deco_text = _decorate_inline_code( deco_text );
       deco_text = _decorate_table( deco_text );
 
       return deco_text;
@@ -521,6 +523,15 @@ var prettify = require('prettify');
           return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + matched + '</span>';
         });
     return win_path;
+  }
+
+  function _decorate_inline_code( text ){
+    var inline_code = text.replace(/`{1}([^`]+)`{1}/g,
+        function(){
+          var matched = arguments[1];
+          return '<span class="inline-code">' + matched + '</span>';
+        });
+    return inline_code;
   }
 
   function _get_table_aligns(aligns_text){
