@@ -179,6 +179,7 @@ var prettify = require('prettify');
   }
 
   function _decorate_html_tag_for_message(target_text){
+    target_text = _decorate_inline_code( target_text );
     target_text = sanitize(target_text);
     target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
     target_text = _decorate_link_tag( target_text );
@@ -189,7 +190,6 @@ var prettify = require('prettify');
     target_text = _decorate_ref( target_text );
     target_text = _decorate_hr( target_text );
     target_text = _decorate_windows_path( target_text );
-    target_text = _decorate_inline_code( target_text );
     target_text = _decorate_table( target_text );
 
     return target_text;
@@ -223,6 +223,7 @@ var prettify = require('prettify');
 
     return function(deco_text){
       // 装飾有り
+      deco_text = _decorate_inline_code( deco_text );
       deco_text = sanitize(deco_text);
       deco_text = _decorate_wip( deco_text );
       deco_text = _decorate_download_tag( deco_text );
@@ -247,7 +248,6 @@ var prettify = require('prettify');
       deco_text = _decorate_send_message( deco_text );
       deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_windows_path( deco_text );
-      deco_text = _decorate_inline_code( deco_text );
       deco_text = _decorate_table( deco_text );
 
       return deco_text;
@@ -529,7 +529,12 @@ var prettify = require('prettify');
     var inline_code = text.replace(/`{1}([^`]+)`{1}/g,
         function(){
           var matched = arguments[1];
-          return '<span class="inline-code">' + matched + '</span>';
+          var formatted = matched.replace(/&/g, '&amp;')
+                                 .replace(/'/g, '&#x27;')
+                                 .replace(/"/g, '&quot;')
+                                 .replace(/</g, '&lt;')
+                                 .replace(/>/g, '&gt;')
+          return '<span class="inline-code">' + formatted + '</span>';
         });
     return inline_code;
   }
