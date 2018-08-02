@@ -247,12 +247,29 @@ function MemoViewModel(param){
     addEventHandler: function(title){
       that.switchEditShareMemo(-1);
 
+      // カレンダーイベントを指定場所に挿入(指定がなければ最下部)
       var $code = $('#share_memo_' + that.no).find('.code');
-      var row = $code.caretLine();
-      that.insert(row -1 , "#### " + title);
-      $code.caretLine(row);
+      var row = $code.caretLine() - 1;
+      var pos = row;
+
+      var edit_text_array = that.edit_text().split('\n');
+      for (var i = 0; i < edit_text_array.length; i++){
+        if (edit_text_array[i].match(/^\[cal-below\]/)){
+          row = i + 1;
+          pos = row + 1;
+          break;
+        }else if (edit_text_array[i].match(/^\[cal-above\]/)){
+          row = i;
+          pos = row + 1;
+          break;
+        }
+      }
+
+      that.insert(row, "#### " + title + "\n");
+      $code.caretLine(pos);
     }
   });
+
   this.calendarViewModel.init();
 
   var that = this;
