@@ -226,6 +226,7 @@ var prettify = require('prettify');
       deco_text = _decorate_inline_code( deco_text );
       deco_text = sanitize(deco_text);
       deco_text = _decorate_wip( deco_text );
+      deco_text = _decorate_cal_placeholder( deco_text );
       deco_text = _decorate_download_tag( deco_text );
 
       var img_result = _decorate_img_tag( deco_text, 200, img_no );
@@ -338,6 +339,15 @@ var prettify = require('prettify');
           return '<span class="label label-important">[WIP]</span>';
         });
     return wiped_text;
+  }
+
+  function _decorate_cal_placeholder( text ){
+    var cal_text = text.replace(/\[(cal-below|cal-above)\]/g,
+        function(){
+          var cal_kind = arguments[1];
+          return '<span class="cal-placeholder">' + cal_kind + '</span>';
+        });
+    return cal_text;
   }
 
   function _decorate_link_tag( text ){

@@ -1010,6 +1010,12 @@ button.close {
   font-size: 12px;
 }
 
+.cal-placeholder {
+  color: lightgray;
+  font-size: 10px;
+  font-style: italic;
+}
+
 .pre-message{
   background-color: #f7f7f7;
   border: solid 0px #ccc;
