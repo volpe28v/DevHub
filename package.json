@@ -64,7 +64,7 @@
     "prettify": "./node_modules/google-code-prettify/bin/prettify.min.js"
   },
   "engines": {
-    "node": "4.4.0",
-    "npm": "3.8.2"
+    "node": "8.11.3",
+    "npm": "5.6.0"
   }
 }
