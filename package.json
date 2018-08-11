@@ -10,7 +10,8 @@
     "rel": "parallelshell \"webpack --progress --colors -p --watch\" \"grunt\" \"node-dev app.js -t Release\" ",
     "r": "npm run rel",
     "build": "webpack --progress --colors -p && grunt build",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "test": "cd nightwatch; ./run_nightwatch.sh"
   },
   "dependencies": {
     "ajv": "^6.5.2",
