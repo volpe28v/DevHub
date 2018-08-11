@@ -7,8 +7,8 @@ module.exports = {
       .setValue('#login_name', "volpe")
       .pause(1000)
       .click('#login')
-      .waitForElementVisible('#message', 1000)
-      .assert.attributeEquals('#name', 'value', 'volpe')
+      .waitForElementVisible('#login_own', 1000)
+      .assert.containsText('#login_own', 'volpe')
       .end();
   }
 };

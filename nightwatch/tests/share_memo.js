@@ -3,6 +3,7 @@ module.exports = {
     client
       .url('http://localhost:3010')
       .waitForElementVisible('#name_in', 1000)
+      .pause(1000)
       .click('#login')
       .waitForElementVisible('#message', 1000)
       .click('#share_memo_tab_1')
