@@ -6,9 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.11.3
-      - image: circleci/openjdk:8-jdk-browsers
-      - image: circleci/mongo:3.6
+      - image: volpe28v/devhub-e2e
 
     working_directory: ~/repo
 
