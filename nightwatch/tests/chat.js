@@ -14,7 +14,7 @@ module.exports = {
     client.getAttribute('#list_1 li:nth-child(1)', 'id', function(result){
       this.click('#chat_body li:first-child .remove_msg');
       this.pause(1000);
-      this.accept_alert();
+      this.click('.confirm')
       this.pause(1000);
       this.assert.elementNotPresent("#" + result.value);
     });
