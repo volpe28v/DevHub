@@ -2,7 +2,7 @@ module.exports = {
   '名前指定ログイン' : function (client) {
     client
       .url('http://localhost:3010')
-      .waitForElementVisible('#name_in', 1000)
+      .waitForElementVisible('#name_in', 10000)
       .clearValue('#login_name')
       .setValue('#login_name', "volpe")
       .pause(1000)

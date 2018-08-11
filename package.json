@@ -11,7 +11,7 @@
     "r": "npm run rel",
     "build": "webpack --progress --colors -p && grunt build",
     "postinstall": "npm run build",
-    "test": "cd nightwatch; ./run_nightwatch.sh"
+    "e2e": "./nightwatch/run_nightwatch.sh"
   },
   "dependencies": {
     "ajv": "^6.5.2",
@@ -47,7 +47,7 @@
     "mongodb": "3.1.1",
     "multiparty": "^4.1.2",
     "mv": "^2.1.1",
-    "nightwatch": "0.9.15",
+    "nightwatch": "0.9.20",
     "perfect-scrollbar": "0.6.15",
     "q": "^1.1.2",
     "request": "2.81.0",
@@ -61,8 +61,10 @@
     "webpack": "^3.5.5"
   },
   "devDependencies": {
+    "chromedriver": "^2.41.0",
     "node-dev": "^3.1.3",
-    "parallelshell": "^3.0.2"
+    "parallelshell": "^3.0.2",
+    "selenium-server-standalone-jar": "^3.13.0"
   },
   "browser": {
     "prettify": "./node_modules/google-code-prettify/bin/prettify.min.js"
