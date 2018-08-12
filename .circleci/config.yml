@@ -27,5 +27,16 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run:
+          name: Waiting for MongoDB to be ready
+          command: |
+            for i in `seq 1 15`;
+            do
+              nc -z localhost 27017 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MongoDB && exit 1
+
       # run tests!
       - run: npm run e2e
