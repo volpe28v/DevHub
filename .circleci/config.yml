@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: volpe28v/devhub-e2e
+      - image: circleci/node:8.11.3
 
     working_directory: ~/repo
 
@@ -27,16 +27,5 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Waiting for MongoDB to be ready
-          command: |
-            for i in `seq 1 15`;
-            do
-              nc -z localhost 27017 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MongoDB && exit 1
-
       # run tests!
-      - run: npm run e2e
+      #- run: npm run e2e
