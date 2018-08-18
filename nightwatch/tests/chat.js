@@ -2,7 +2,7 @@ module.exports = {
   '平文メッセージを入力' : function (client) {
     client
       .url('http://localhost:3010')
-      .waitForElementVisible('#name_in', 1000)
+      .waitForElementVisible('#name_in', 10000)
       .pause(1000)
       .click('#login')
       .waitForElementVisible('#message', 1000)

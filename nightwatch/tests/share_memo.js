@@ -7,9 +7,9 @@ module.exports = {
       .click('#login')
       .waitForElementVisible('#message', 1000)
       .click('#share_memo_tab_1')
-
+      .pause(500) // フォーカスが落ち着くまで待つ
       .click('#share_memo_1 .sync-text')
-      .waitForElementVisible('#share_memo_1 .code', 1000)
+      .waitForElementVisible('#share_memo_1 .code', 10000)
       .pause(500) // フォーカスが落ち着くまで待つ
       .clearValue('#share_memo_1 .code')
       .setValue('#share_memo_1 .code', 'hello')
