@@ -47,7 +47,7 @@
     "mongodb": "3.1.1",
     "multiparty": "^4.1.2",
     "mv": "^2.1.1",
-    "nightwatch": "0.9.20",
+    "nightwatch": "0.9.21",
     "perfect-scrollbar": "0.6.15",
     "q": "^1.1.2",
     "request": "2.81.0",
