@@ -1,6 +1,6 @@
 var CODE_OUT_ADJUST_HEIGHT = 300;
 var CODE_INDEX_ADJUST_HEIGHT = 40;
-var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 90;
+var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 150;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 var EMPTY_TITLE = "- Empty -";
@@ -235,38 +235,13 @@ function MemoViewModel(param){
 
   this.calendarViewModel = new CalendarViewModel({
     selectEventHandler: function(index_no){
-      that.switchFixShareMemo(1);
-
-      var $code_out = $('#share_memo_' + that.no).find('.code-out');
-      var pos = $code_out.find(":header").eq(index_no-1).offset().top - $('#share-memo').offset().top;
-      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+      that.do_select(index_no);
     },
     editEventHandler: function(){
       that.do_edit();
     },
     addEventHandler: function(title){
-      that.switchEditShareMemo(-1);
-
-      // カレンダーイベントを指定場所に挿入(指定がなければ最下部)
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var row = $code.caretLine() - 1;
-      var pos = row;
-
-      var edit_text_array = that.edit_text().split('\n');
-      for (var i = 0; i < edit_text_array.length; i++){
-        if (edit_text_array[i].match(/^\[cal-below\]/)){
-          row = i + 1;
-          pos = row + 1;
-          break;
-        }else if (edit_text_array[i].match(/^\[cal-above\]/)){
-          row = i;
-          pos = row + 1;
-          break;
-        }
-      }
-
-      that.insert(row, "#### " + title + "\n");
-      $code.caretLine(pos);
+      that.do_insert_event(title);
     }
   });
 
@@ -1080,6 +1055,14 @@ function MemoViewModel(param){
     that.showDiffList();
   }
 
+  this.do_select = function(index_no){
+    that.switchFixShareMemo(1);
+
+    var $code_out = $('#share_memo_' + that.no).find('.code-out');
+    var pos = $code_out.find(":header").eq(index_no-1).offset().top - $('#share-memo').offset().top;
+    $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
+  },
+
   this.do_edit = function(){
     // 表示しているメモの先頭にカーソルを当てて編集状態へ
     var pos = $("#memo_area").scrollTop();
@@ -1094,7 +1077,33 @@ function MemoViewModel(param){
       }
     }
 
-    that.switchEditShareMemo(row, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+    that.switchEditShareMemo(row + 1, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+  }
+
+  this.do_insert_event = function(title){
+    that.setEditText();
+    var text_array = that.edit_text().split('\n');
+
+    // カレンダーイベントを指定場所に挿入(指定がなければ最下部)
+    var $code = $('#share_memo_' + that.no).find('.code');
+    var row = $code.caretLine() - 1;
+    var pos = row;
+
+    for (var i = 0; i < text_array.length; i++){
+      if (text_array[i].match(/^\[cal-below\]/)){
+        row = i + 1;
+        pos = row + 1;
+        break;
+      }else if (text_array[i].match(/^\[cal-above\]/)){
+        row = i;
+        pos = row + 1;
+        break;
+      }
+    }
+
+    that.switchEditShareMemo(pos, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+    that.insert(row, "#### " + title + "\n\n");
+    $code.caretLine(pos);
   }
 
   this.do_fix =  function(element){
