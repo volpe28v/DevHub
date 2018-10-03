@@ -368,6 +368,7 @@
                         dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
                         click: function(data, event){ return clickOnCodeArea(data, event, $element) },
                         keydown: function(data, event){ return keydownOnCodeArea(data, event, $element)},
+                        keypress: function(data, event){ return keypressOnCodeArea(data, event, $element)},
                         keyup: function(data, event){ return keyupOnCodeArea(data, event, $element)},
                         select: function(data, event){ selectText(data, event, $element)}
                       }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
