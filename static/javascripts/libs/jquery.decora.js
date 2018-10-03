@@ -470,9 +470,19 @@ var prettify = require('prettify');
   }
 
   function _decorate_list( text ){
-    return text.replace(/^(\*)[ ]*(.*)$/mg, function(){
-      var matched_text = arguments[2];
-      return '<ul class="list-ul"><li>' + _decorate_line_color(matched_text) + '</li></ul>';
+    return text.replace(/^([ ]*)(\*)[ ]*(.*)$/mg, function(){
+      var indent = arguments[1].length;
+      var matched_text = arguments[3];
+      var li_text = _decorate_line_color(matched_text);
+      if (indent <= 1){
+        return '<ul class="list-ul"><li>' + li_text + '</li></ul>';
+      }else if (indent <= 3){
+        return '<ul class="list-ul hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul>';
+      }else if (indent <= 5){
+        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul></li></ul>';
+      }else{
+        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul class="hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul></li></ul></li></ul>';
+      }
     });
   }
 
