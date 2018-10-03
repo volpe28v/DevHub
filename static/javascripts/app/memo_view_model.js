@@ -4,6 +4,7 @@ var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 150;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 var EMPTY_TITLE = "- Empty -";
+var TAB_STRING = "  ";
 
 
 global.jQuery = require('jquery');
@@ -589,6 +590,11 @@ function MemoViewModel(param){
     that.switchFixShareMemo($(element).caretLine(), event.pageY);
   }
 
+
+  this._key = {
+    press : false
+  };
+
   this.keydownOnCodeArea = function(data, event, element){
     // Ctrl - S or Ctrl - enter
     if ((event.ctrlKey == true && event.keyCode == 83) ||
@@ -598,14 +604,78 @@ function MemoViewModel(param){
       var caret_top = $(element).textareaHelper('caretPos').top + $(element).offset().top;
       that.switchFixShareMemo($(element).caretLine(), caret_top);
       return false;
+    }else if (event.shiftKey == false && event.keyCode == 9){ // Tab
+      event.preventDefault();
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = that.edit_text().split('\n');
+
+      edit_lines[current_row] = TAB_STRING + edit_lines[current_row];
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+      var after_pos = pos + TAB_STRING.length;
+
+      that.edit_text(edit_lines.join('\n'));
+      elem.setSelectionRange(after_pos, after_pos);
+
+      return false;
+    }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab
+      event.preventDefault();
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = that.edit_text().split('\n');
+
+      var matches = edit_lines[current_row].match(/^  ([ ]*\*.*)/);
+      if (matches){
+        edit_lines[current_row] = matches[1];
+      }
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+      var after_pos = pos - TAB_STRING.length;
+
+      that.edit_text(edit_lines.join('\n'));
+      elem.setSelectionRange(after_pos, after_pos);
+
+      return false;
     }else{
       that._adjustBlogUI();
       return true;
     }
   }
 
+  this.keypressOnCodeArea = function(data, event, element){
+    that._key.press = true;
+    return true;
+  }
+
   this.keyupOnCodeArea = function(data, event, element){
-    that._adjustBlogUI();
+    if (event.keyCode == 13 && that._key.press){ // enter
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var before_row = $code.caretLine() - 2;
+      var current_row = before_row + 1;
+      var edit_lines = that.edit_text().split('\n');
+
+      var prefix = "";
+      var matches = edit_lines[before_row].match(/(^[ ]*\*).*/);
+      if (matches){
+        prefix = matches[1] + " ";
+        edit_lines[current_row] = prefix;
+      }
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+      var after_pos = pos + prefix.length;
+
+      that.edit_text(edit_lines.join('\n'));
+      elem.setSelectionRange(after_pos, after_pos);
+    }else{
+      that._adjustBlogUI();
+    }
+
+    that._key.press = false;
+
     return true;
   }
 
