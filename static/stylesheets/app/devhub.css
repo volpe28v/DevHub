@@ -335,6 +335,10 @@ a, a:hover {
   margin-bottom: 2px;
 }
 
+.hide-mark {
+  list-style: none;
+}
+
 .text-base-style {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
