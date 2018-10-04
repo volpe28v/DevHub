@@ -474,14 +474,14 @@ var prettify = require('prettify');
       var indent = arguments[1].length;
       var matched_text = arguments[3];
       var li_text = _decorate_line_color(matched_text);
-      if (indent <= 1){
+      if (indent < 4){
         return '<ul class="list-ul"><li>' + li_text + '</li></ul>';
-      }else if (indent <= 3){
-        return '<ul class="list-ul hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul>';
-      }else if (indent <= 5){
-        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul></li></ul>';
+      }else if (indent < 8){
+        return '<ul class="list-ul hide-mark"><li><ul class="list-ul-2"><li>' + li_text + '</li></ul></li></ul>';
+      }else if (indent < 12){
+        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul class="list-ul-3"><li>' + li_text + '</li></ul></li></ul></li></ul>';
       }else{
-        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul class="hide-mark"><li><ul><li>' + li_text + '</li></ul></li></ul></li></ul></li></ul>';
+        return '<ul class="list-ul hide-mark"><li><ul class="hide-mark"><li><ul class="hide-mark"><li><ul class="list-ul-3"><li>' + li_text + '</li></ul></li></ul></li></ul></li></ul>';
       }
     });
   }
