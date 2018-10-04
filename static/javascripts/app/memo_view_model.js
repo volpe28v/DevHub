@@ -596,16 +596,34 @@ function MemoViewModel(param){
   };
 
   this.keydownOnCodeArea = function(data, event, element){
-    // Ctrl - S or Ctrl - enter
+    // Ctrl - S or Ctrl - enter : finish edit mode
     if ((event.ctrlKey == true && event.keyCode == 83) ||
         (event.ctrlKey == true && event.keyCode == 13)) {
-      event.returnvalue = false;
       that._updateTextAndHistory();
       var caret_top = $(element).textareaHelper('caretPos').top + $(element).offset().top;
       that.switchFixShareMemo($(element).caretLine(), caret_top);
       return false;
-    }else if (event.shiftKey == false && event.keyCode == 9){ // Tab
-      event.preventDefault();
+    }else if (event.ctrlKey == false && event.keyCode == 13){ // enter : new line or clear list markdown
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = that.edit_text().split('\n');
+
+      var matches = edit_lines[current_row].match(/^([ ]*\*[ ]*)$/);
+      if (matches){
+        edit_lines[current_row] = "";
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - matches[1].length;
+
+        that.edit_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+
+        return false;
+      }else{
+        return true;
+      }
+    }else if (event.shiftKey == false && event.keyCode == 9){ // Tab : indent++
       var $code = $('#share_memo_' + that.no).find('.code');
       var current_row = $code.caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
@@ -620,23 +638,23 @@ function MemoViewModel(param){
       elem.setSelectionRange(after_pos, after_pos);
 
       return false;
-    }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab
-      event.preventDefault();
+    }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab : indent--
       var $code = $('#share_memo_' + that.no).find('.code');
       var current_row = $code.caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var matches = edit_lines[current_row].match(/^  ([ ]*\*.*)/);
+      var list_reg = new RegExp('^' + TAB_STRING + '([ ]*\\*.*)');
+      var matches = edit_lines[current_row].match(list_reg);
       if (matches){
         edit_lines[current_row] = matches[1];
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - TAB_STRING.length;
+
+        that.edit_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
       }
-
-      var elem = event.target;
-      var pos = elem.selectionStart;
-      var after_pos = pos - TAB_STRING.length;
-
-      that.edit_text(edit_lines.join('\n'));
-      elem.setSelectionRange(after_pos, after_pos);
 
       return false;
     }else{
@@ -651,32 +669,32 @@ function MemoViewModel(param){
   }
 
   this.keyupOnCodeArea = function(data, event, element){
-    if (event.keyCode == 13 && that._key.press){ // enter
+    var before_key_press = that._key.press;
+    that._key.press = false;
+
+    if (event.keyCode == 13 && before_key_press){ // enter : continue list markdown
       var $code = $('#share_memo_' + that.no).find('.code');
       var before_row = $code.caretLine() - 2;
       var current_row = before_row + 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var prefix = "";
       var matches = edit_lines[before_row].match(/(^[ ]*\*).*/);
       if (matches){
-        prefix = matches[1] + " ";
+        var prefix = matches[1] + " ";
         edit_lines[current_row] = prefix;
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos + prefix.length;
+
+        that.edit_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
       }
-
-      var elem = event.target;
-      var pos = elem.selectionStart;
-      var after_pos = pos + prefix.length;
-
-      that.edit_text(edit_lines.join('\n'));
-      elem.setSelectionRange(after_pos, after_pos);
+      return false;
     }else{
       that._adjustBlogUI();
+      return true;
     }
-
-    that._key.press = false;
-
-    return true;
   }
 
   this.clickOnCodeArea = function(data, event, element){
