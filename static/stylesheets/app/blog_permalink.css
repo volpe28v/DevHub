@@ -311,6 +311,14 @@ pre.text-base-style {
   margin-right: 10px;
 }
 
+.list-ul {
+  margin-bottom: 2px;
+}
+
+.hide-mark {
+  list-style: none;
+}
+
 .edit-blog {
   margin-left: 10px;
 }
