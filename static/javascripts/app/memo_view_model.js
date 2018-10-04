@@ -4,7 +4,7 @@ var CODE_OUT_ADJUST_HEIGHT_BY_CONTROL = 150;
 var CONTROL_FIXED_TOP = 40;
 var CONTROL_FIXED_ZEN_TOP = 0;
 var EMPTY_TITLE = "- Empty -";
-var TAB_STRING = "  ";
+var TAB_STRING = "    ";
 
 
 global.jQuery = require('jquery');

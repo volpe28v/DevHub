@@ -335,6 +335,14 @@ a, a:hover {
   margin-bottom: 2px;
 }
 
+.list-ul-2 {
+  list-style-type: circle;
+}
+
+.list-ul-3 {
+  list-style-type: square;
+}
+
 .hide-mark {
   list-style: none;
 }
