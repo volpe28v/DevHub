@@ -681,7 +681,7 @@ function MemoViewModel(param){
       var matches = edit_lines[before_row].match(/(^[ ]*\*).*/);
       if (matches){
         var prefix = matches[1] + " ";
-        edit_lines[current_row] = prefix;
+        edit_lines[current_row] = prefix + edit_lines[current_row];
 
         var elem = event.target;
         var pos = elem.selectionStart;
