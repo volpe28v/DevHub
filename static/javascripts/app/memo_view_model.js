@@ -528,7 +528,7 @@ function MemoViewModel(param){
     $(element).val("");
 
     var text_array = that.latest_text().text.split("\n");
-    text_array.splice(input_index, 0, "=[ ] " + input_text);
+    text_array.splice(input_index, 0, "- [ ] " + input_text);
     that.latest_text().text = text_array.join("\n");
     that.socket.emit('text',{
       no: that.no,
@@ -608,7 +608,8 @@ function MemoViewModel(param){
       var current_row = $code.caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var matches = edit_lines[current_row].match(/^([ ]*[\*-][ ]*)$/);
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[current_row].match(/^([ ]*([-=][ ]?\[ \]|[\*-])[ ]*)$/);
       if (matches){
         edit_lines[current_row] = "";
 
@@ -678,9 +679,10 @@ function MemoViewModel(param){
       var current_row = before_row + 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var matches = edit_lines[before_row].match(/(^[ ]*[\*-]).*/);
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[before_row].match(/(^[ ]*([-=][ ]?\[[ x]\]|[\*-])).*/);
       if (matches){
-        var prefix = matches[1] + " ";
+        var prefix = matches[1].replace('x',' ') + " ";
         edit_lines[current_row] = prefix + edit_lines[current_row];
 
         var elem = event.target;
