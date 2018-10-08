@@ -608,7 +608,7 @@ function MemoViewModel(param){
       var current_row = $code.caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var matches = edit_lines[current_row].match(/^([ ]*\*[ ]*)$/);
+      var matches = edit_lines[current_row].match(/^([ ]*[\*-][ ]*)$/);
       if (matches){
         edit_lines[current_row] = "";
 
@@ -643,7 +643,7 @@ function MemoViewModel(param){
       var current_row = $code.caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var list_reg = new RegExp('^' + TAB_STRING + '([ ]*\\*.*)');
+      var list_reg = new RegExp('^' + TAB_STRING + '(.*)');
       var matches = edit_lines[current_row].match(list_reg);
       if (matches){
         edit_lines[current_row] = matches[1];
@@ -678,7 +678,7 @@ function MemoViewModel(param){
       var current_row = before_row + 1;
       var edit_lines = that.edit_text().split('\n');
 
-      var matches = edit_lines[before_row].match(/(^[ ]*\*).*/);
+      var matches = edit_lines[before_row].match(/(^[ ]*[\*-]).*/);
       if (matches){
         var prefix = matches[1] + " ";
         edit_lines[current_row] = prefix + edit_lines[current_row];
