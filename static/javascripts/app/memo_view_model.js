@@ -609,7 +609,7 @@ function MemoViewModel(param){
       var edit_lines = that.edit_text().split('\n');
 
       // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
-      var matches = edit_lines[current_row].match(/^([ ]*([-=][ ]?\[ \]|[\*-])[ ]*)$/);
+      var matches = edit_lines[current_row].match(/^([ ]*([-=][ ]?\[[ ]?\]|[\*-])[ ]*)$/);
       if (matches){
         edit_lines[current_row] = "";
 
@@ -680,7 +680,7 @@ function MemoViewModel(param){
       var edit_lines = that.edit_text().split('\n');
 
       // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
-      var matches = edit_lines[before_row].match(/(^[ ]*([-=][ ]?\[[ x]\]|[\*-])).*/);
+      var matches = edit_lines[before_row].match(/(^[ ]*([-=][ ]?\[[ x]?\]|[\*-])).*/);
       if (matches){
         var prefix = matches[1].replace('x',' ') + " ";
         edit_lines[current_row] = prefix + edit_lines[current_row];
