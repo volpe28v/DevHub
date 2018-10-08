@@ -11,8 +11,8 @@ var prettify = require('prettify');
 
 (function($) {
   var REG_CHECKBOX = /(^([ 　]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
-      SYM_CHECKED = "[x]",
-      SYM_UNCHECKED = "[ ]";
+      SYM_CHECKED = " [x]",
+      SYM_UNCHECKED = " [ ]";
 
   emojify.setConfig({
     img_dir: 'img/emoji',  // Directory for emoji images
