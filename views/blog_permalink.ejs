@@ -78,7 +78,9 @@
                     textcomplete: true,
                     dropzoneEdit: true,
                     event: {
-                      keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)}
+                      keydown: function(data,event){ return $parent.keydownEditing(data,event,$element)},
+                      keypress: function(data,event){ return $parent.keypressEditing(data,event,$element)},
+                      keyup: function(data,event){ return $parent.keyupEditing(data,event,$element)}
                     },
                   "></textarea>
                   <div class="blog-action" style="height: 40px">
