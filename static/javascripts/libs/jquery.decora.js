@@ -470,7 +470,7 @@ var prettify = require('prettify');
   }
 
   function _decorate_list( text ){
-    return text.replace(/^([ ]*)(\*)[ ]*(.*)$/mg, function(){
+    return text.replace(/^([ ]*)([\*-])[ ]*(.*)$/mg, function(){
       var indent = arguments[1].length;
       var matched_text = arguments[3];
       var li_text = _decorate_line_color(matched_text);
