@@ -8,6 +8,8 @@ require('sweetalert');
 var DropZone = require('../libs/dropzone');
 var BlogItemViewModel = require('./blog_item_view_model');
 
+var TAB_STRING = "    ";
+
 function BlogViewModel(name, start, end, editing){
   var that = this;
   this.name = name;
@@ -181,6 +183,10 @@ function BlogViewModel(name, start, end, editing){
     });
   }
 
+  this._key = {
+    press : false
+  };
+
   this.keydownEditing = function(data, event, element){
     // Ctrl - S
     if (event.ctrlKey == true && event.keyCode == 83){
@@ -200,10 +206,101 @@ function BlogViewModel(name, start, end, editing){
         editing: false,
       });
       return false;
+    }else if (event.ctrlKey == false && event.keyCode == 13){ // enter : new line or clear list markdown
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[current_row].match(/^([ ]*([-=][ ]?\[[ ]?\]|[\*-])[ ]*)$/);
+      if (matches){
+        edit_lines[current_row] = "";
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - matches[1].length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+
+        return false;
+      }else{
+        return true;
+      }
+    }else if (event.shiftKey == false && event.keyCode == 9){ // Tab : indent++
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      edit_lines[current_row] = TAB_STRING + edit_lines[current_row];
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+      var after_pos = pos + TAB_STRING.length;
+
+      data.editing_text(edit_lines.join('\n'));
+      elem.setSelectionRange(after_pos, after_pos);
+
+      return false;
+    }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab : indent--
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      var list_reg = new RegExp('^' + TAB_STRING + '(.*)');
+      var matches = edit_lines[current_row].match(list_reg);
+      if (matches){
+        edit_lines[current_row] = matches[1];
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - TAB_STRING.length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+      }
+
+      return false;
+
     }else{
       return true;
     }
   }
+
+  this.keypressEditing = function(data, event, element){
+    that._key.press = true;
+    return true;
+  }
+
+  this.keyupEditing = function(data, event, element){
+    var before_key_press = that._key.press;
+    that._key.press = false;
+
+    if (event.keyCode == 13 && before_key_press){ // enter : continue list markdown
+      var $code = $('.edit-area');
+      var before_row = $code.caretLine() - 2;
+      var current_row = before_row + 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[before_row].match(/(^[ ]*([-=][ ]?\[[ x]?\]|[\*-])).*/);
+      if (matches){
+        var prefix = matches[1].replace('x',' ') + " ";
+        edit_lines[current_row] = prefix + edit_lines[current_row];
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos + prefix.length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+      }
+      return false;
+    }else{
+      return true;
+    }
+  }
+
 
   this.selectIndex = function(blog){
     $target = $("#" + blog._id());
