@@ -243,11 +243,11 @@ var prettify = require('prettify');
 
       deco_text = _decorate_draggable( deco_text );
       deco_text = _decorate_header( deco_text );
+      deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_list( deco_text );
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
       deco_text = _decorate_send_message( deco_text );
-      deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_windows_path( deco_text );
       deco_text = _decorate_table( deco_text );
 
