@@ -315,6 +315,10 @@ pre.text-base-style {
   margin-bottom: 2px;
 }
 
+.list-ul-1 {
+  list-style-type: disc;
+}
+
 .list-ul-2 {
   list-style-type: circle;
 }
