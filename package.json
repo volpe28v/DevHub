@@ -70,7 +70,7 @@
     "prettify": "./node_modules/google-code-prettify/bin/prettify.min.js"
   },
   "engines": {
-    "node": "11.0.0",
+    "node": "10.13.0",
     "npm": "6.4.1"
   }
 }
