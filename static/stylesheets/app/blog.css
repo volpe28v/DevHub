@@ -447,6 +447,7 @@ pre.text-base-style {
 
 .hide-mark {
   list-style: none;
+  margin-bottom: 2px;
 }
 
 .edit-blog {
