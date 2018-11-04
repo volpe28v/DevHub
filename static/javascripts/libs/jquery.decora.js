@@ -10,7 +10,9 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  var REG_CHECKBOX = /(^([ 　]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
+  var REG_CHECKBOX_PREFIX = /^([ ]*)([-=][ ]?\[[ x]?\].*)/mg,
+      REG_CHECKBOX_ONLY = /[-=][ ]?\[([ x])?\]/mg,
+      REG_CHECKBOX = /(^([ ]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
       SYM_CHECKED = " [x]",
       SYM_UNCHECKED = " [ ]";
 
@@ -42,35 +44,34 @@ var prettify = require('prettify');
 
     function _updateCheckboxStatus(check_no, is_checked, target_text){
       var check_index = 0;
-      return target_text.replace(REG_CHECKBOX,
-        function(){
-          var matched_check = arguments[0];
-          var current_index = check_index++;
-          var prefix = arguments[2];
-          if (prefix != undefined){
-            var sym_prefix = arguments[3];
-            if ( check_no == current_index){
-              if (is_checked){
-                return prefix + sym_prefix + SYM_CHECKED;
-              }else{
-                return prefix + sym_prefix + SYM_UNCHECKED;
-              }
+      return target_text.replace(REG_CHECKBOX, function(){
+        var matched_check = arguments[0];
+        var current_index = check_index++;
+        var prefix = arguments[2];
+        if (prefix != undefined){
+          var sym_prefix = arguments[3];
+          if ( check_no == current_index){
+            if (is_checked){
+              return prefix + sym_prefix + SYM_CHECKED;
             }else{
-              return matched_check;
+              return prefix + sym_prefix + SYM_UNCHECKED;
             }
           }else{
-            var sym_prefix = arguments[6];
-            if ( check_no == current_index){
-              if (is_checked){
-                return sym_prefix + SYM_CHECKED;
-              }else{
-                return sym_prefix + SYM_UNCHECKED;
-              }
-            }else{
-              return matched_check;
-            }
+            return matched_check;
           }
-        });
+        }else{
+          var sym_prefix = arguments[6];
+          if ( check_no == current_index){
+            if (is_checked){
+              return sym_prefix + SYM_CHECKED;
+            }else{
+              return sym_prefix + SYM_UNCHECKED;
+            }
+          }else{
+            return matched_check;
+          }
+        }
+      });
     }
 
     function _updateImageSize(index, next_height, target_text){
@@ -431,18 +432,18 @@ var prettify = require('prettify');
   }
 
   function _decorate_checkbox( text, no ){
-    var check_text = text.replace(REG_CHECKBOX, function(){
-      var matched_text = arguments[0];
-      var prefix = arguments[2];
-      if (prefix != undefined){
-        var sym_prefix = arguments[3];
-        var checked = arguments[4] == 'x' ? 'checked' : '';
-        var checkbox_class = "checkbox-draggable";
-        return prefix + '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" ' + checked + ' />';
-      }else{
-        var checked = arguments[7] == 'x' ? 'checked' : '';
-        return '<input type="checkbox" class="checkbox" data-no="' + no++ + '" ' + checked + ' />';
-      }
+    var check_text = text.replace(REG_CHECKBOX_PREFIX, function(){
+      var prefix = arguments[1];
+      var text = _decorate_line_color(arguments[2]);
+
+      var indent = prefix.length;
+      var level = parseInt(indent / 4);
+      return '<div class="checkbox-draggable">' + _get_hide_mark_li(level, text) + '</div>';
+    });
+
+    var check_text = check_text.replace(REG_CHECKBOX_ONLY, function(){
+      var checked = arguments[1] == 'x' ? 'checked' : '';
+      return '<input type="checkbox" class="checkbox" data-no="' + no++ + '" ' + checked + ' />';
     });
     return {text: check_text, no: no};
   }
@@ -476,17 +477,21 @@ var prettify = require('prettify');
       var li_text = _decorate_line_color(matched_text);
       var level = parseInt(indent / 4);
       if (level == 0){
-        return _get_hide_mark_li(level, 'list-ul-1', li_text);
+        return _get_hide_mark_li(level, _get_li_content('list-ul-1', li_text));
       }else if (level == 1){
-        return _get_hide_mark_li(level, 'list-ul-2', li_text);
+        return _get_hide_mark_li(level, _get_li_content('list-ul-2', li_text));
       }else{
-        return _get_hide_mark_li(level, 'list-ul-3', li_text);
+        return _get_hide_mark_li(level, _get_li_content('list-ul-3', li_text));
       }
     });
   }
 
-  function _get_hide_mark_li(count, ul_class, content){
-    var wrapped_content = '<ul class="list-ul ' + ul_class + '"><li>' + content + '</li></ul>';
+  function _get_li_content(ul_class, content){
+    return '<ul class="list-ul ' + ul_class + '"><li>' + content + '</li></ul>';
+  }
+
+  function _get_hide_mark_li(count, content){
+    var wrapped_content = content;
     for (var i = 0; i < count; i++){
       wrapped_content = '<ul class="hide-mark"><li>' + wrapped_content + '</li></ul>';
     }
@@ -605,7 +610,7 @@ var prettify = require('prettify');
 
           // table 作成開始
           table_tmp = '<table class="table table-bordered code-table"><tbody>';
- 
+
           if ((i+1 < text_array.length) && text_array[i+1].match(AlignAll)){
             // ヘッダあり
             aligns = _get_table_aligns(text_array[i+1]);
