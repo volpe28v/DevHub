@@ -86,8 +86,7 @@ exports.get = function(req, res){
 
 exports.delete = function(req, res) {
   var gfs = Grid(db, mongo);
-  gfs.remove({ filename: req.query.file}, function (err) {
-    if (err) return handleError(err);
+  gfs.remove({ filename: req.query.file}, function () {
     getFileListAndSizeGridFs().then(function(file_info){
       res.send({all_size: file_info['all_size']});
     });
