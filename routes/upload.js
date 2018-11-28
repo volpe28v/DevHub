@@ -59,10 +59,7 @@ exports.get = function(req, res){
 
 exports.delete = function(req, res) {
   var path = UploadPath + req.body.file;
-  fs.unlink(path, function(err) {
-    if (err) {
-      throw err;
-    }
+  fs.unlink(path, function() {
     util.getFileListAndSize(UploadPath, function(file_info){
       res.send({all_size: file_info['all_size']});
     });
