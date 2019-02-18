@@ -217,7 +217,7 @@ function addCustomBindingHandlers(ko){
       viewModel.el = $(element);
       $(element).fullCalendar('destroy');
 
-      $(element).on('inview', function () {
+      $(element).on('inview', function() {
         $(element).fullCalendar({
           events: ko.utils.unwrapObservable(viewModel.events),
           header: {
