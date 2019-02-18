@@ -217,46 +217,48 @@ function addCustomBindingHandlers(ko){
       viewModel.el = $(element);
       $(element).fullCalendar('destroy');
 
-      $(element).fullCalendar({
-        events: ko.utils.unwrapObservable(viewModel.events),
-        header: {
-          left: '',
-          center: 'title',
-          right: 'prev,next today',
-          ignoreTimezone: false
-        },
-        views: {
-          month: {
-            titleFormat: 'YYYY/M'
+      $(element).on('inview', function () {
+        $(element).fullCalendar({
+          events: ko.utils.unwrapObservable(viewModel.events),
+          header: {
+            left: '',
+            center: 'title',
+            right: 'prev,next today',
+            ignoreTimezone: false
+          },
+          views: {
+            month: {
+              titleFormat: 'YYYY/M'
+            }
+          },
+          defaultView: 'month',
+          defaultDate: viewModel.viewDate,
+          firstHour: 8,
+          ignoreTimezone: false,
+          selectable: true,
+          selectHelper: true,
+          editable: true,
+          eventTextColor: 'black',
+          eventBorderColor: '#aaa',
+          select: viewModel.select,
+          eventClick: viewModel.eventClick,
+          eventDrop: viewModel.eventDropOrResize,
+          eventResize: viewModel.eventDropOrResize,
+          eventMouseover: viewModel.eventMouseover,
+          eventMouseout: viewModel.eventMouseout,
+          eventAfterRender: viewModel.applyCheckEvents,
+          eventAfterAllRender: viewModel.eventAfterAllRender,
+          viewRender: viewModel.viewRender,
+          timeFormat: "H:mm",
+          height: $(window).height() - 65,
+          eventRender: function(event, element) {
+            $(element).attr('data-original-title', event.title).tooltip({placement: 'bottom'});
+            emojify.run($(element[0]).find(".fc-title").get(0));
+            element.bind('dblclick', function() {
+              viewModel.eventDblClick(event, element);
+            });
           }
-        },
-        defaultView: 'month',
-        defaultDate: viewModel.viewDate,
-        firstHour: 8,
-        ignoreTimezone: false,
-        selectable: true,
-        selectHelper: true,
-        editable: true,
-        eventTextColor: 'black',
-        eventBorderColor: '#aaa',
-        select: viewModel.select,
-        eventClick: viewModel.eventClick,
-        eventDrop: viewModel.eventDropOrResize,
-        eventResize: viewModel.eventDropOrResize,
-        eventMouseover: viewModel.eventMouseover,
-        eventMouseout: viewModel.eventMouseout,
-        eventAfterRender: viewModel.applyCheckEvents,
-        eventAfterAllRender: viewModel.eventAfterAllRender,
-        viewRender: viewModel.viewRender,
-        timeFormat: "H:mm",
-        height: $(window).height() - 65,
-        eventRender: function(event, element) {
-          $(element).attr('data-original-title', event.title).tooltip({placement: 'bottom'});
-          emojify.run($(element[0]).find(".fc-title").get(0));
-          element.bind('dblclick', function() {
-            viewModel.eventDblClick(event, element);
-          });
-        }
+        });
       });
     },
   };
