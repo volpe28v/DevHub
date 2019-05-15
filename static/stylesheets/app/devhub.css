@@ -1020,11 +1020,12 @@ button.close {
 
 .inline-code {
   font-family: Menlo,Monaco,"Courier New",monospace;
-  background-color: #f7f7f7;
-  border: 0px solid #ccc;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
   border-radius: 3px;
   padding: 3px 4px;
-  font-size: 12px;
+  font-size: 85%;
+  color: #EB5757;
 }
 
 .cal-placeholder {
