@@ -566,7 +566,8 @@ var prettify = require('prettify');
                                  .replace(/"/g, '&quot;')
                                  .replace(/</g, '&lt;')
                                  .replace(/>/g, '&gt;')
-          return '<span class="inline-code">' + formatted + '</span>';
+
+          return '<span class="inline-code" data-clipboard-text="' + formatted + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + formatted + '</span>';
         });
     return inline_code;
   }

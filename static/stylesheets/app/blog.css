@@ -619,6 +619,7 @@ button.close {
 }
 
 .inline-code {
+  cursor: pointer;
   font-family: Menlo,Monaco,"Courier New",monospace;
   background-color: #fafafa;
   border: 1px solid #ddd;
