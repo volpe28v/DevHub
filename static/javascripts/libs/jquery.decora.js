@@ -659,6 +659,30 @@ var prettify = require('prettify');
     return tabled_text_array.join('\n');
   }
 
+  function _invert_checkbox(target_text){
+    return target_text.replace(REG_CHECKBOX, function(){
+      var matched_check = arguments[0];
+      var prefix = arguments[2];
+      if (prefix != undefined){
+        var sym_prefix = arguments[3];
+        var is_checked = arguments[4] == 'x';
+        if (is_checked){
+          return prefix + sym_prefix + SYM_UNCHECKED;
+        }else{
+          return prefix + sym_prefix + SYM_CHECKED;
+        }
+      }else{
+        var sym_prefix = arguments[6];
+        var is_checked = arguments[7] == 'x';
+        if (is_checked){
+          return sym_prefix + SYM_UNCHECKED;
+        }else{
+          return sym_prefix + SYM_CHECKED;
+        }
+      }
+    });
+  }
+
   $.decora = {
     to_html: function(target_text){
       return this.apply_to_deco_and_raw(
@@ -697,6 +721,10 @@ var prettify = require('prettify');
       }
 
       return bq_sepa_array.join('');
+    },
+
+    invert_checkbox: function(target_text){
+      return _invert_checkbox(target_text);
     }
   };
 })(jQuery);

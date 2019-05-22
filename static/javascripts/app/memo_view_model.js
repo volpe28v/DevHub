@@ -658,6 +658,18 @@ function MemoViewModel(param){
       }
 
       return false;
+    }else if (event.shiftKey && event.metaKey){ // shift + command : add or remove check
+      var $code = $('#share_memo_' + that.no).find('.code');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = that.edit_text().split('\n');
+
+      edit_lines[current_row] = $.decora.invert_checkbox(edit_lines[current_row]);
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+
+      that.edit_text(edit_lines.join('\n'));
+      elem.setSelectionRange(pos, pos);
     }else{
       that._adjustBlogUI();
       return true;
