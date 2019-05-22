@@ -60,8 +60,8 @@ function EditState(parent){
 
     // 編集中の共有メモに他ユーザの変更が来たら編集終了
     if( parent.getName() != new_text.name ){
-      var $target = $('#share_memo_' + parent.no);
-      parent.switchFixShareMemo($target.children('.code').caretLine());
+      parent.switchFixShareMemo(parent.$code().caretLine());
+      //TODO さりげなくアラート出したい
     }
   }
 
@@ -248,13 +248,28 @@ function MemoViewModel(param){
 
   this.calendarViewModel.init();
 
+  // dom
+  this.$share_memo = function(){
+    var _$dom = null;
+    return function(){ return _$dom ? _$dom : _$dom =  $('#share_memo_' + this.no) }
+  }()
+
+  this.$code = function(){
+    var _$dom = null;
+    return function(){ return _$dom ? _$dom : _$dom =  this.$share_memo().find('.code') }
+  }()
+
+  this.$code_out = function(){
+    var _$dom = null;
+    return function(){ return _$dom ? _$dom : _$dom =  this.$share_memo().find('.code-out') }
+  }()
+
   var that = this;
 
   this.init = function(){
     // 初期状態
     if (this.active){
       this.current_state = ko.observable(this.states.display);
-      this.setDisplayControl();
     }else{
       this.current_state = ko.observable(this.states.hide);
     }
@@ -348,8 +363,7 @@ function MemoViewModel(param){
 
   this._wipJump = function(){
     that.switchFixShareMemo(1);
-    var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var pos = $($code_out.find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top;
+    var pos = $(that.$code_out().find("tr:contains('[WIP]')")[that.currentWip - 1]).offset().top;
     var topPos = $('#share-memo').offset().top;
     var wipPos = (pos - topPos) - CODE_INDEX_ADJUST_HEIGHT + 1;
     $('#memo_area').scrollTop(wipPos);
@@ -361,8 +375,7 @@ function MemoViewModel(param){
     that.switchFixShareMemo(1);
 
     that.currentTask = that.unchecked_count() <= that.currentTask ? 1 : that.currentTask + 1;
-    var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var pos = $($code_out.find("input[type=checkbox]:not(:checked)")[that.currentTask - 1]).offset().top - $('#share-memo').offset().top;
+    var pos = $(that.$code_out().find("input[type=checkbox]:not(:checked)")[that.currentTask - 1]).offset().top - $('#share-memo').offset().top;
     $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 10);
     return true;
   }
@@ -391,12 +404,10 @@ function MemoViewModel(param){
   }
 
   this.setDisplayPos = function(row, offset){
-    var $share_memo = $('#share_memo_' + this.no);
-
     offset = offset == undefined ? $(window).height()/3 : offset - 14;
 
     // 閲覧モード時に編集していたキャレット位置を表示する
-    var $target_tr = $share_memo.find('.code-out-tr').eq(row - 1);
+    var $target_tr = that.$share_memo().find('.code-out-tr').eq(row - 1);
     if ($target_tr.length > 0){
       $('#memo_area').scrollTop(0);
       $('#memo_area').scrollTop($target_tr.offset().top - offset);
@@ -404,7 +415,8 @@ function MemoViewModel(param){
   }
 
   this.setDisplayControl = function(){
-    var $share_memo = $('#share_memo_' + this.no);
+    var $share_memo = that.$share_memo();
+
     // 見栄えを閲覧モードへ
     $share_memo.children('.code').hide();
     $share_memo.children('pre').show();
@@ -425,10 +437,9 @@ function MemoViewModel(param){
   this.switchEditShareMemo = function(row, offset){
     this.set_state(this.states.edit);
 
-    var $share_memo = $('#share_memo_' + this.no);
-
     offset = offset == undefined ? $(window).height()/3 : offset - 104;
-    var $target_code = $share_memo.children(".code");
+    var $share_memo = that.$share_memo();
+    var $target_code = that.$code();
 
     $target_code.show();
     $target_code.keyup(); //for autofit
@@ -440,7 +451,7 @@ function MemoViewModel(param){
       // キャレット位置指定なしの場合は前回の場所を復元
       row = $target_code.caretLine();
     }
-    var line_height = Number($share_memo.find('.code').css('line-height').replace('px',''));
+    var line_height = Number($target_code.css('line-height').replace('px',''));
     $('#memo_area').scrollTop(row * line_height + ($share_memo.offset().top - $('#share-memo').offset().top) - offset);
     $target_code.focus();
 
@@ -452,8 +463,7 @@ function MemoViewModel(param){
   this._getFocusFromInputTask = function(){
     var $focus_dom = $(':focus');
     if ($focus_dom && $focus_dom.hasClass('input-task')){
-      var $target = $('#share_memo_' + that.no);
-      return $target.find('.code-out-tr').index($focus_dom.closest('tr'));
+      return that.$share_memo().find('.code-out-tr').index($focus_dom.closest('tr'));
     }
     return -1;
   },
@@ -461,7 +471,7 @@ function MemoViewModel(param){
   this._setFocusToInputTask = function($target, focus_index){
     focus_index++;
     if (focus_index >= 0){
-      var $focus_dom = $target.find('.code-out').find('.code-out-tr:eq(' + focus_index + ')').find('.input-task');
+      var $focus_dom = that.$code_out().find('.code-out-tr:eq(' + focus_index + ')').find('.input-task');
       if ($focus_dom){
         $focus_dom.focus();
       }
@@ -480,29 +490,22 @@ function MemoViewModel(param){
     this.is_existed_update = false;
 
 
-    var $target = $('#share_memo_' + this.no);
-    var $code_out = $target.find('.code-out');
-
     var focus_index = this._getFocusFromInputTask();
-
     that.display_text(that.latest_text().text);
-
-    this._setFocusToInputTask($target, focus_index);
+    this._setFocusToInputTask(that.$share_memo(), focus_index);
 
     // チェックボックスの進捗表示
-    that.checked_count($code_out.find("input[type=checkbox]:checked").length);
-    that.checkbox_count($code_out.find("input[type=checkbox]").length);
+    that.checked_count(that.$code_out().find("input[type=checkbox]:checked").length);
+    that.checkbox_count(that.$code_out().find("input[type=checkbox]").length);
   }
 
   this.startMemoMoving = function(ui){
-    var $target = $('#share_memo_' + this.no);
-    var row = $target.find('.code-out-tr').index(ui.item);
+    var row = that.$share_memo().find('.code-out-tr').index(ui.item);
     that.drag_index = row;
   }
 
   this.stopMemoMoving = function(ui){
-    var $target = $('#share_memo_' + this.no);
-    var drag_stop_index = $target.find('.code-out-tr').index(ui.item);
+    var drag_stop_index = that.$share_memo().find('.code-out-tr').index(ui.item);
     if (drag_stop_index == that.drag_index){ return; }
 
     var text_array = that.latest_text().text.split("\n");
@@ -521,9 +524,8 @@ function MemoViewModel(param){
     var input_text = $(element).val();
     if (input_text == ""){ return false; }
 
-    var $target = $('#share_memo_' + this.no);
     var $this_tr = $(element).closest('tr');
-    var input_index = $target.find('.code-out-tr').index($this_tr);
+    var input_index = that.$share_memo().find('.code-out-tr').index($this_tr);
 
     $(element).val("");
 
@@ -540,9 +542,8 @@ function MemoViewModel(param){
   }
 
   this.deleteTask = function(data, event, element){
-    var $target = $('#share_memo_' + this.no);
     var $this_tr = $(element).closest('tr');
-    delete_index = $target.find('.code-out-tr').index($this_tr);
+    delete_index = that.$share_memo().find('.code-out-tr').index($this_tr);
 
     $this_tr.fadeOut('normal', function(){
       $(this).remove();
@@ -604,8 +605,7 @@ function MemoViewModel(param){
       that.switchFixShareMemo($(element).caretLine(), caret_top);
       return false;
     }else if (event.ctrlKey == false && event.keyCode == 13){ // enter : new line or clear list markdown
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var current_row = $code.caretLine() - 1;
+      var current_row = that.$code().caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
       // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
@@ -625,8 +625,7 @@ function MemoViewModel(param){
         return true;
       }
     }else if (event.shiftKey == false && event.keyCode == 9){ // Tab : indent++
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var current_row = $code.caretLine() - 1;
+      var current_row = that.$code().caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
       edit_lines[current_row] = TAB_STRING + edit_lines[current_row];
@@ -640,8 +639,7 @@ function MemoViewModel(param){
 
       return false;
     }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab : indent--
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var current_row = $code.caretLine() - 1;
+      var current_row = that.$code().caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
       var list_reg = new RegExp('^' + TAB_STRING + '(.*)');
@@ -659,8 +657,7 @@ function MemoViewModel(param){
 
       return false;
     }else if (event.shiftKey && event.metaKey){ // shift + command : add or remove check
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var current_row = $code.caretLine() - 1;
+      var current_row = that.$code().caretLine() - 1;
       var edit_lines = that.edit_text().split('\n');
 
       edit_lines[current_row] = $.decora.invert_checkbox(edit_lines[current_row]);
@@ -686,8 +683,7 @@ function MemoViewModel(param){
     that._key.press = false;
 
     if (event.keyCode == 13 && before_key_press){ // enter : continue list markdown
-      var $code = $('#share_memo_' + that.no).find('.code');
-      var before_row = $code.caretLine() - 2;
+      var before_row = that.$code().caretLine() - 2;
       var current_row = before_row + 1;
       var edit_lines = that.edit_text().split('\n');
 
@@ -719,8 +715,7 @@ function MemoViewModel(param){
   this._adjustBlogUI = function(){
     if (!that.is_shown_move_to_blog()){ return; }
 
-    var $target_code = $('#share_memo_' + this.no).children('.code');
-    if ($target_code.selection('get') == ""){
+    if (that.$code().selection('get') == ""){
       that.is_shown_move_to_blog(false);
     }
   }
@@ -822,7 +817,6 @@ function MemoViewModel(param){
   }
 
   this.showDiffList = function(){
-    var $share_memo = $('#share_memo_' + this.no);
     var text_log = this._getLogsForDiff();
 
     this.diffTitles([]);
@@ -859,9 +853,7 @@ function MemoViewModel(param){
   this.show_diff = function(element){
     that.set_state(that.states.diff);
 
-    var $share_memo = $(element).closest('.share-memo');
-    var $code_out = $share_memo.find('.code-out');
-    var share_memo_no = $share_memo.data('no');
+    var $share_memo = that.$share_memo();
     var index = $(element).closest(".diff-list").find(".diff-li").index(element);
 
     // diff 生成
@@ -873,7 +865,7 @@ function MemoViewModel(param){
 
       // diff 画面を有効化
       $diff_out.show();
-      $code_out.hide();
+      that.$code_out().hide();
 
       $share_memo.find('.diff-done').show();
       $share_memo.find('.sync-text').hide();
@@ -975,8 +967,8 @@ function MemoViewModel(param){
   }
 
   this.endDiff = function(){
-    var $share_memo = $("#share_memo_" + this.no);
-    $share_memo.find('.code-out').show();
+    var $share_memo = that.$share_memo();
+    that.$code_out().show();
     $share_memo.find('.diff-view').hide();
 
     $share_memo.find('.diff-done').hide();
@@ -999,8 +991,7 @@ function MemoViewModel(param){
   },
 
   this.showMoveToBlogButton = function($selected_target, login_name){
-    var $target_code = $('#share_memo_' + that.no).children('.code');
-    var selected_text = $target_code.selection('get');
+    var selected_text = that.$code().selection('get');
     if (selected_text == ""){ return; }
 
     this.is_shown_move_to_blog(true);
@@ -1009,8 +1000,7 @@ function MemoViewModel(param){
   this.moveToBlog = function(){
     that.is_shown_move_to_blog(false);
 
-    var $target_code = $('#share_memo_' + that.no).children('.code');
-    var selected_text = $target_code.selection('get');
+    var selected_text = that.$code().selection('get');
     if (selected_text == ""){ return; }
 
     var before_pos = $('#share-memo').offset().top * -1;
@@ -1160,8 +1150,7 @@ function MemoViewModel(param){
   this.do_select = function(index_no){
     that.switchFixShareMemo(1);
 
-    var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var pos = $code_out.find(":header").eq(index_no-1).offset().top - $('#share-memo').offset().top;
+    var pos = that.$code_out().find(":header").eq(index_no-1).offset().top - $('#share-memo').offset().top;
     $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT);
   },
 
@@ -1169,8 +1158,7 @@ function MemoViewModel(param){
     // 表示しているメモの先頭にカーソルを当てて編集状態へ
     var pos = $("#memo_area").scrollTop();
     var offset = $('#share-memo').offset().top;
-    var $code_out = $('#share_memo_' + that.no).find('.code-out');
-    var $code_out_lines = $code_out.find(".code-out-tr");
+    var $code_out_lines = that.$code_out().find(".code-out-tr");
     var row = 0;
     for (var i = $code_out_lines.length - 1; i >= 0; i--){
       if ($code_out_lines.eq(i).offset().top - offset - CODE_INDEX_ADJUST_HEIGHT < pos){
@@ -1187,8 +1175,7 @@ function MemoViewModel(param){
     var text_array = that.edit_text().split('\n');
 
     // カレンダーイベントを指定場所に挿入(指定がなければ最下部)
-    var $code = $('#share_memo_' + that.no).find('.code');
-    var row = $code.caretLine() - 1;
+    var row = that.$code().caretLine() - 1;
     var pos = row;
 
     for (var i = 0; i < text_array.length; i++){
@@ -1205,12 +1192,11 @@ function MemoViewModel(param){
 
     that.switchEditShareMemo(pos, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
     that.insert(row, "#### " + title + "\n\n");
-    $code.caretLine(pos);
+    that.$code().caretLine(pos);
   }
 
   this.do_fix =  function(element){
-    var $code = $('#share_memo_' + that.no).find('.code');
-    that.switchFixShareMemo($code.caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
+    that.switchFixShareMemo(that.$code().caretLine(), CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
   }
 
   this.done_diff = function(){
