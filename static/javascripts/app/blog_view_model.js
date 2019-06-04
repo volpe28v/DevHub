@@ -667,6 +667,10 @@ function BlogViewModel(name, start, end, editing){
   this.set_ref_point = function(){
     // dummy
   }
+
+  this.set_send_message = function(message){
+    // dummy
+  }
 }
 
 module.exports = BlogViewModel;
