@@ -1021,17 +1021,17 @@ function MemoViewModel(param){
       data: {blog: item},
       success: function(data){
         var permalink = "[" + data.blog.title + "](blog?id=" + data.blog._id + ")\n";
-        $target_code.selection('replace', {
+        that.$code().selection('replace', {
           text: permalink,
           caret: 'start'
         });
         $('#memo_area').scrollTop(before_pos);
 
-        that.edit_text($target_code.val());
+        that.edit_text(that.$code().val());
       }
     });
   }
-  
+
   this.selectMemoFromIndexes = function(data, event, element){
     if(event.shiftKey){
       this.deleteMemoWithIndex(data, event, element);
