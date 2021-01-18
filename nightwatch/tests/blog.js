@@ -14,6 +14,7 @@ module.exports = {
 
   '平文メモを入力' : function (client) {
     client
+      .pause(500)
       .clearValue('.edit-area')
       .setValue('.edit-area', 'hello')
       .click('.update-blog')
