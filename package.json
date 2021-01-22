@@ -33,7 +33,7 @@
     "grunt-contrib-uglify": "~3.4.0",
     "grunt-contrib-watch": "~1.1.0",
     "ion-sound": "3.0.7",
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "jquery-autosize": "1.18.18",
     "jquery-colorbox": "1.6.4",
     "jquery-inview": "1.1.2",
