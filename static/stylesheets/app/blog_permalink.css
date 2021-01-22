@@ -311,6 +311,27 @@ pre.text-base-style {
   margin-right: 10px;
 }
 
+.list-ul {
+  margin-bottom: 2px;
+}
+
+.list-ul-1 {
+  list-style-type: disc;
+}
+
+.list-ul-2 {
+  list-style-type: circle;
+}
+
+.list-ul-3 {
+  list-style-type: square;
+}
+
+.hide-mark {
+  list-style: none;
+  margin-bottom: 2px;
+}
+
 .edit-blog {
   margin-left: 10px;
 }
@@ -448,3 +469,13 @@ hr {
   font-size: 12px;
 }
 
+.inline-code {
+  cursor: pointer;
+  font-family: Menlo,Monaco,"Courier New",monospace;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px 4px;
+  font-size: 85%;
+  color: #EB5757;
+}

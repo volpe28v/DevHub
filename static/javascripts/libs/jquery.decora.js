@@ -10,9 +10,11 @@ require('./sanitize');
 var prettify = require('prettify');
 
 (function($) {
-  var REG_CHECKBOX = /(^([ 　]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
-      SYM_CHECKED = "[x]",
-      SYM_UNCHECKED = "[ ]";
+  var REG_CHECKBOX_PREFIX = /^([ ]*)([-=][ ]?\[[ x]?\].*)/mg,
+      REG_CHECKBOX_ONLY = /[-=][ ]?\[([ x])?\]/mg,
+      REG_CHECKBOX = /(^([ ]*)([-=])[ ]?\[([ x])?\])|(([-=])[ ]?\[([ x])?\])/mg,
+      SYM_CHECKED = " [x]",
+      SYM_UNCHECKED = " [ ]";
 
   emojify.setConfig({
     img_dir: 'img/emoji',  // Directory for emoji images
@@ -42,35 +44,34 @@ var prettify = require('prettify');
 
     function _updateCheckboxStatus(check_no, is_checked, target_text){
       var check_index = 0;
-      return target_text.replace(REG_CHECKBOX,
-        function(){
-          var matched_check = arguments[0];
-          var current_index = check_index++;
-          var prefix = arguments[2];
-          if (prefix != undefined){
-            var sym_prefix = arguments[3];
-            if ( check_no == current_index){
-              if (is_checked){
-                return prefix + sym_prefix + SYM_CHECKED;
-              }else{
-                return prefix + sym_prefix + SYM_UNCHECKED;
-              }
+      return target_text.replace(REG_CHECKBOX, function(){
+        var matched_check = arguments[0];
+        var current_index = check_index++;
+        var prefix = arguments[2];
+        if (prefix != undefined){
+          var sym_prefix = arguments[3];
+          if ( check_no == current_index){
+            if (is_checked){
+              return prefix + sym_prefix + SYM_CHECKED;
             }else{
-              return matched_check;
+              return prefix + sym_prefix + SYM_UNCHECKED;
             }
           }else{
-            var sym_prefix = arguments[6];
-            if ( check_no == current_index){
-              if (is_checked){
-                return sym_prefix + SYM_CHECKED;
-              }else{
-                return sym_prefix + SYM_UNCHECKED;
-              }
-            }else{
-              return matched_check;
-            }
+            return matched_check;
           }
-        });
+        }else{
+          var sym_prefix = arguments[6];
+          if ( check_no == current_index){
+            if (is_checked){
+              return sym_prefix + SYM_CHECKED;
+            }else{
+              return sym_prefix + SYM_UNCHECKED;
+            }
+          }else{
+            return matched_check;
+          }
+        }
+      });
     }
 
     function _updateImageSize(index, next_height, target_text){
@@ -122,7 +123,7 @@ var prettify = require('prettify');
           $(this).find('img').css('max-height','');
         },
         stop: function(e, ui){
-          var next_height = $(this).height();
+          var next_height = parseInt($(this).height());
           options.img_size_callback(that, _updateImageSize.curry(img_index, next_height));
 
           // リサイズ後は colorbox を有効化
@@ -179,6 +180,7 @@ var prettify = require('prettify');
   }
 
   function _decorate_html_tag_for_message(target_text){
+    target_text = _decorate_inline_code( target_text );
     target_text = sanitize(target_text);
     target_text = target_text.replace(/[\(（](笑|爆|喜|嬉|楽|驚|泣|涙|悲|怒|厳|辛|苦|閃|汗|忙|急|輝)[\)）]/g, function(){ return '<span class="emo">' + arguments[1] + '</span>'});
     target_text = _decorate_link_tag( target_text );
@@ -222,8 +224,10 @@ var prettify = require('prettify');
 
     return function(deco_text){
       // 装飾有り
+      deco_text = _decorate_inline_code( deco_text );
       deco_text = sanitize(deco_text);
       deco_text = _decorate_wip( deco_text );
+      deco_text = _decorate_cal_placeholder( deco_text );
       deco_text = _decorate_download_tag( deco_text );
 
       var img_result = _decorate_img_tag( deco_text, 200, img_no );
@@ -240,10 +244,11 @@ var prettify = require('prettify');
 
       deco_text = _decorate_draggable( deco_text );
       deco_text = _decorate_header( deco_text );
+      deco_text = _decorate_hr( deco_text );
       deco_text = _decorate_list( deco_text );
       deco_text = _decorate_line_color( deco_text );
       deco_text = _decorate_ref( deco_text );
-      deco_text = _decorate_hr( deco_text );
+      deco_text = _decorate_send_message( deco_text );
       deco_text = _decorate_windows_path( deco_text );
       deco_text = _decorate_table( deco_text );
 
@@ -337,6 +342,15 @@ var prettify = require('prettify');
     return wiped_text;
   }
 
+  function _decorate_cal_placeholder( text ){
+    var cal_text = text.replace(/\[(cal-below|cal-above)\]/g,
+        function(){
+          var cal_kind = arguments[1];
+          return '<span class="cal-placeholder">' + cal_kind + '</span>';
+        });
+    return cal_text;
+  }
+
   function _decorate_link_tag( text ){
     var linked_text = text.replace(/\[(.+?)\]\((((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)|(blog\?id=\w+)))\)|((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))/g,
         function(){
@@ -418,18 +432,18 @@ var prettify = require('prettify');
   }
 
   function _decorate_checkbox( text, no ){
-    var check_text = text.replace(REG_CHECKBOX, function(){
-      var matched_text = arguments[0];
-      var prefix = arguments[2];
-      if (prefix != undefined){
-        var sym_prefix = arguments[3];
-        var checked = arguments[4] == 'x' ? 'checked' : '';
-        var checkbox_class = "checkbox-draggable";
-        return prefix + '<input type="checkbox" class="' + checkbox_class + '" data-no="' + no++ + '" ' + checked + ' />';
-      }else{
-        var checked = arguments[7] == 'x' ? 'checked' : '';
-        return '<input type="checkbox" class="checkbox" data-no="' + no++ + '" ' + checked + ' />';
-      }
+    var check_text = text.replace(REG_CHECKBOX_PREFIX, function(){
+      var prefix = arguments[1];
+      var text = _decorate_line_color(arguments[2]);
+
+      var indent = prefix.length;
+      var level = parseInt(indent / 4);
+      return '<div class="checkbox-draggable">' + _get_hide_mark_li(level, text) + '</div>';
+    });
+
+    var check_text = check_text.replace(REG_CHECKBOX_ONLY, function(){
+      var checked = arguments[1] == 'x' ? 'checked' : '';
+      return '<input type="checkbox" class="checkbox" data-no="' + no++ + '" ' + checked + ' />';
     });
     return {text: check_text, no: no};
   }
@@ -457,10 +471,31 @@ var prettify = require('prettify');
   }
 
   function _decorate_list( text ){
-    return text.replace(/^(\*)[ ]*(.*)$/mg, function(){
-      var matched_text = arguments[2];
-      return '<ul class="list-ul"><li>' + _decorate_line_color(matched_text) + '</li></ul>';
+    return text.replace(/^([ ]*)([\*-])[ ]*(.*)$/mg, function(){
+      var indent = arguments[1].length;
+      var matched_text = arguments[3];
+      var li_text = _decorate_line_color(matched_text);
+      var level = parseInt(indent / 4);
+      if (level == 0){
+        return _get_hide_mark_li(level, _get_li_content('list-ul-1', li_text));
+      }else if (level == 1){
+        return _get_hide_mark_li(level, _get_li_content('list-ul-2', li_text));
+      }else{
+        return _get_hide_mark_li(level, _get_li_content('list-ul-3', li_text));
+      }
     });
+  }
+
+  function _get_li_content(ul_class, content){
+    return '<ul class="list-ul ' + ul_class + '"><li>' + content + '</li></ul>';
+  }
+
+  function _get_hide_mark_li(count, content){
+    var wrapped_content = content;
+    for (var i = 0; i < count; i++){
+      wrapped_content = '<ul class="hide-mark"><li>' + wrapped_content + '</li></ul>';
+    }
+    return wrapped_content;
   }
 
   function _decorate_line_color( text ){
@@ -495,6 +530,15 @@ var prettify = require('prettify');
     return refed_text;
   }
 
+  function _decorate_send_message( text ){
+    var message_text = text.replace(/^&lt;=(.+)/mg,
+        function(){
+          var send_message = arguments[1];
+          return '<span data-bind="click: $parent.set_send_message.bind($data, \'' + send_message + '\'),tooltip: \'bottom\'" class="btn btn-info btn-mini" title="チャットに送信する"><i class="icon-comment icon-white"></i> ' + send_message + '</span> ';
+        });
+    return message_text;
+  }
+
   function _decorate_hr( text ){
     var hr_text = text.replace(/^---[-]*$/mg,
         function(){
@@ -504,13 +548,45 @@ var prettify = require('prettify');
   }
 
   function _decorate_windows_path( text ){
-    var win_path = text.replace(/(^|[ ]+)((\\\\[^\s　]+|[a-zA-Z]:)\\[^\s　]+)/mg,
+    var win_path = text.replace(/((^|[ ]+)((\\\\[^\s　]+|[a-zA-Z]:)\\[^\s　]+)|(^|[ ]+)"((\\\\[^\s　]+|[a-zA-Z]:)\\.+)")/mg,
         function(){
-          var prefix = arguments[1];
-          var matched = arguments[2];
+          var prefix = ((arguments[2] || arguments[5] ) || "");
+          var matched = arguments[3] || arguments[6];
           return prefix + '<span class="win-path" data-clipboard-text="' + matched + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + matched + '</span>';
         });
     return win_path;
+  }
+
+  function _decorate_inline_code( text ){
+    var inline_code = text.replace(/`{1}([^`]+)`{1}/g,
+        function(){
+          var matched = arguments[1];
+          var formatted = matched.replace(/&/g, '&amp;')
+                                 .replace(/'/g, '&#x27;')
+                                 .replace(/"/g, '&quot;')
+                                 .replace(/</g, '&lt;')
+                                 .replace(/>/g, '&gt;')
+
+          return '<span class="inline-code" data-clipboard-text="' + formatted + '" data-bind="clippable: true, tooltip: \'bottom\'" title="Copy">' + formatted + '</span>';
+        });
+    return inline_code;
+  }
+
+  function _get_table_aligns(aligns_text){
+    var AlignCenter = /^[ ]*[:]-+[:][ ]*/;
+    var AlignRight  = /^[ ]*[-]-+[:][ ]*/;
+    var AlignLeft   = /^[ ]*[:]-+[-][ ]*/;
+
+    var align_rows = aligns_text.split(/\|/);
+    align_rows.shift();
+    align_rows.pop();
+
+    return align_rows.map(function(row){
+      if (row.match(AlignCenter)) return "center";
+      if (row.match(AlignRight)) return "right";
+      if (row.match(AlignLeft)) return "left";
+      return "left"; // デフォルトは左寄せ
+    });
   }
 
   function _decorate_table( text ){
@@ -518,6 +594,11 @@ var prettify = require('prettify');
     var isInTable = false;
     var tabled_text_array = [];
     var table_tmp = "";
+
+    var AlignAll = /^\|[ ]*[:-]-+[:-][ ]*\|/;
+
+    var aligns = [];
+
     for (var i = 0; i < text_array.length; i++){
       if (text_array[i].match(/^\|/)){
         var rows = text_array[i].split(/\|/);
@@ -530,9 +611,31 @@ var prettify = require('prettify');
 
           // table 作成開始
           table_tmp = '<table class="table table-bordered code-table"><tbody>';
-          table_tmp += '<tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+
+          if ((i+1 < text_array.length) && text_array[i+1].match(AlignAll)){
+            // ヘッダあり
+            aligns = _get_table_aligns(text_array[i+1]);
+
+            var aligned_rows = rows.map(function(row, j){
+              return '<th style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</th>';
+            });
+
+            table_tmp += '<tr class="code-out-tr">' + aligned_rows.join('') + '</tr>';
+            i++; // ヘッダ指定行を読み飛ばす
+          }else{
+            // ヘッダなし
+            var aligned_rows = rows.map(function(row, j){
+              return '<td style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</td>';
+            });
+
+            table_tmp += '<tr>' + aligned_rows.join('') + '</tr>';
+          }
         }else{
-          table_tmp += '<tr class="code-out-tr"><td>' + rows.join('</td><td>') + '</td></tr>';
+          var aligned_rows = rows.map(function(row, j){
+            return '<td style="text-align: ' + (aligns[j] ? aligns[j] : 'left') + '">' + row + '</td>';
+          });
+
+          table_tmp += '<tr class="code-out-tr">' + aligned_rows.join('') + '</tr>';
         }
       }else{
         if (isInTable){
@@ -542,6 +645,7 @@ var prettify = require('prettify');
           table_tmp += '</tbody></table>';
 
           tabled_text_array.push(table_tmp);
+          aligns = [];
         }
 
         tabled_text_array.push(text_array[i]);
@@ -553,6 +657,30 @@ var prettify = require('prettify');
     }
 
     return tabled_text_array.join('\n');
+  }
+
+  function _invert_checkbox(target_text){
+    return target_text.replace(REG_CHECKBOX, function(){
+      var matched_check = arguments[0];
+      var prefix = arguments[2];
+      if (prefix != undefined){
+        var sym_prefix = arguments[3];
+        var is_checked = arguments[4] == 'x';
+        if (is_checked){
+          return prefix + sym_prefix + SYM_UNCHECKED;
+        }else{
+          return prefix + sym_prefix + SYM_CHECKED;
+        }
+      }else{
+        var sym_prefix = arguments[6];
+        var is_checked = arguments[7] == 'x';
+        if (is_checked){
+          return sym_prefix + SYM_UNCHECKED;
+        }else{
+          return sym_prefix + SYM_CHECKED;
+        }
+      }
+    });
   }
 
   $.decora = {
@@ -572,23 +700,31 @@ var prettify = require('prettify');
 
     apply_to_deco_and_raw: function(target_text, deco_func, raw_func){
       var bq_sepa_array = target_text.split("```");
+      var base_line = 0;
       for (var i = 0; i < bq_sepa_array.length; i++){
         if (bq_sepa_array[i] != undefined){
+          var line = bq_sepa_array[i].split("\n").length;
           if (i%2 == 0){
             // 装飾有り
             if ( typeof deco_func === "function"){
-              bq_sepa_array[i] = deco_func(bq_sepa_array[i]);
+              bq_sepa_array[i] = deco_func(bq_sepa_array[i], base_line);
             }
+            base_line += line - 1;
           }else{
             // 装飾無し
             if ( typeof raw_func === "function"){
-              bq_sepa_array[i] = raw_func(bq_sepa_array[i]);
+              bq_sepa_array[i] = raw_func(bq_sepa_array[i], base_line);
             }
+            base_line += line -1;
           }
         }
       }
 
       return bq_sepa_array.join('');
+    },
+
+    invert_checkbox: function(target_text){
+      return _invert_checkbox(target_text);
     }
   };
 })(jQuery);

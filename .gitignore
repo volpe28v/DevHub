@@ -19,3 +19,9 @@ node_modules
 npm-debug.log
 
 nightwatch/reports/
+
+static/javascripts/blog_bundle.js
+static/javascripts/blog_permalink_bundle.js
+static/javascripts/calendar_bundle.js
+static/javascripts/devhub_bundle.js
+static/javascripts/upload_bundle.js

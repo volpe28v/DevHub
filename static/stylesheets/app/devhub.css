@@ -82,6 +82,7 @@ body{
 .perfect-scrollbar-style {
   position : absolute;
   overflow: hidden;
+  height: 100%;
 }
 
 .memo-area{
@@ -334,6 +335,23 @@ a, a:hover {
   margin-bottom: 2px;
 }
 
+.list-ul-1 {
+  list-style-type: disc;
+}
+
+.list-ul-2 {
+  list-style-type: circle;
+}
+
+.list-ul-3 {
+  list-style-type: square;
+}
+
+.hide-mark {
+  list-style: none;
+  margin-bottom: 2px;
+}
+
 .text-base-style {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -411,7 +429,14 @@ a, a:hover {
 }
 
 #restore {
-  padding-top: 10px;
+  padding-top: 50px;
+}
+
+#memo_scroll_top{
+  opacity: 0.8;
+  position: fixed;
+  bottom: 20px;
+  right: 50px;
 }
 
 
@@ -993,10 +1018,28 @@ button.close {
   font-size: 12px;
 }
 
+.inline-code {
+  cursor: pointer;
+  font-family: Menlo,Monaco,"Courier New",monospace;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px 4px;
+  font-size: 85%;
+  color: #EB5757;
+}
+
+.cal-placeholder {
+  color: lightgray;
+  font-size: 10px;
+  font-style: italic;
+}
+
 .pre-message{
   background-color: #f7f7f7;
   border: solid 0px #ccc;
   padding: 10px;
+  margin-top: 5px;
   margin-right: 5px;
   border-radius: 4px;
   -webkit-border-radius: 4px;

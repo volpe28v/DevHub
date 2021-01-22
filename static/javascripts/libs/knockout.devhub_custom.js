@@ -212,13 +212,26 @@ function addCustomBindingHandlers(ko){
   }
 
   ko.bindingHandlers.fullCalendar = {
+    init: function(element, viewModelAccessor) {
+      var viewModel = viewModelAccessor();
+      $(element).on('inview', function() {
+        viewModel.hasBeenInView(true);
+      });
+    },
     update: function(element, viewModelAccessor) {
       var viewModel = viewModelAccessor();
+      var eventsUnwrapped = ko.utils.unwrapObservable(viewModel.events);
+      
+      var hasBeenInView = ko.utils.unwrapObservable(viewModel.hasBeenInView);
+      if (hasBeenInView == false) {
+        return;
+      }
+      
       viewModel.el = $(element);
       $(element).fullCalendar('destroy');
 
       $(element).fullCalendar({
-        events: ko.utils.unwrapObservable(viewModel.events),
+        events: eventsUnwrapped,
         header: {
           left: '',
           center: 'title',

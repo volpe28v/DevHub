@@ -13,6 +13,7 @@ function CalendarViewModel(options){
   var that = this;
 
   this.el = null;
+  this.hasBeenInView = ko.observable(false);
   this.options = options;
 
   this.events = ko.observableArray([]);

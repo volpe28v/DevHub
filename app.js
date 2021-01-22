@@ -12,6 +12,7 @@ program
   .option('-p, --port <n>', 'port no. default is 3000.')
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
+  .option('--force-ssl', 'enforce access via https. default is false.')
   .parse(process.argv);
 
 var menu_links = [];
@@ -26,6 +27,7 @@ try{
 app.set('port', program.port || process.env.PORT || 3000);
 app.set('db_name', program.db_name || 'devhub_db');
 app.set('title_name', program.title_name ? "for " + program.title_name : "");
+app.set('force_ssl', program.forceSsl || process.env.FORCE_SSL === 'true');
 app.set('basic_user', process.env.BASIC_AUTH_USER ? process.env.BASIC_AUTH_USER : "");
 app.set('basic_pass', process.env.BASIC_AUTH_PASS ? process.env.BASIC_AUTH_PASS : "");
 app.set('gridfs', process.env.GRIDFS == "true" ? true : false);
@@ -37,6 +39,16 @@ console.log(' title_name : ' + app.get('title_name'));
 console.log(' BASIC_AUTH_USER : ' + app.get('basic_user'));
 console.log(' BASIC_AUTH_PASS : ' + app.get('basic_pass'));
 console.log(' GRIDFS: ' + app.get('gridfs'));
+
+if (app.get('force_ssl')) {
+  app.get('*', function(req, res, next) {
+    if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+}
 
 var client_info = require('./lib/client_info');
 client_info.options({
@@ -91,4 +103,4 @@ mongo_builder.ready(app.get('db_name'), function(db){
   console.log("listen!!!");
 });
 
-console.log('Server running at http://127.0.0.1:' + app.get('port') + '/');
+console.log('Server running at ' + (app.get('force_ssl') ? 'https' : 'http') + '://127.0.0.1:' + app.get('port') + '/');

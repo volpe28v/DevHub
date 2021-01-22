@@ -97,6 +97,11 @@ function MemoController(param){
     that.adjustMemoControllbox();
   }
 
+  this.bottom = function(){
+    $('#memo_area').scrollTop($('#memo_area')[0].scrollHeight);
+    that.adjustMemoControllbox();
+  }
+
   this.down = function(){
     if (!this.doing_down){
       $('#memo_area').animate({scrollTop: $('#memo_area').scrollTop() + 400}, 200, 'swing');
@@ -140,7 +145,7 @@ function MemoController(param){
     // 移動したタブ名を見せたいのでタイムラグを入れる
     setTimeout(function(){
       var pos = $("#share_memo_" + no).find("#" + id).offset().top - $('#share-memo').offset().top;
-      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 16);
+      $('#memo_area').scrollTop(pos - CODE_INDEX_ADJUST_HEIGHT - 40);
     },100);
   }
 
@@ -150,6 +155,10 @@ function MemoController(param){
  
   this.wipJump = function(){
     that.currentMemo().wipJump();
+  }
+
+  this.wipReverseJump = function(){
+    that.currentMemo().wipReverseJump();
   }
 
   this.taskJump = function(){
@@ -262,6 +271,7 @@ function MemoController(param){
     var $control = $('#share_memo_' + that.currentMemo().no).find('.memo-control');
     var $dummy = $('#share_memo_' + that.currentMemo().no).find('.memo-control-dummy');
     var fixed_top = that.zenMode() ? CONTROL_FIXED_ZEN_TOP : CONTROL_FIXED_TOP;
+    var $scroll_top_button = $('#memo_scroll_top');
 
     if (!$control.hasClass('fixed')){
       var control_offset = $control.offset();
@@ -275,9 +285,11 @@ function MemoController(param){
       $control.addClass('fixed');
       $control.css("top", fixed_top);
       $dummy.height($control.outerHeight()).show();
+      $scroll_top_button.fadeIn();
     }else{
       $control.removeClass('fixed');
       $dummy.hide();
+      $scroll_top_button.fadeOut();
     }
 
     // for index cursor
@@ -312,6 +324,22 @@ function MemoController(param){
       setTimeout(function(){
         var id = $(element).attr("id");
         that.setMessage("[ref:" + id + "]");
+      },500);
+    }
+  }
+
+  this.set_send_message = function(message){
+    if ($('#chat_inner').is(':visible')){
+      that.setMessage(message, true);
+    }else{
+      // 無理やりチャットを表示しているがなんとかしたい
+      $('#chat_area').scrollTop(0);
+      $('#index_inner').hide();
+      $('#calendar_inner').hide();
+      $('#chat_inner').show();
+
+      setTimeout(function(){
+        that.setMessage(message, true);
       },500);
     }
   }

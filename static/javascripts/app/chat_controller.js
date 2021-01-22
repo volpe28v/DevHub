@@ -24,8 +24,10 @@ function ChatController(param){
   this.inputMessage = ko.observable("");
   this.inputMessage.subscribe(function (message){
     that.doClientCommand(message);
+    that.showImagePreview(message);
   }, this);
 
+  this.imagePreviews = ko.observableArray([]);
   this.chatNumber = ko.observable(1);
   var chatMaxNumberTemp = [];
   for(var i = 1; i <= 10; i++){
@@ -36,7 +38,13 @@ function ChatController(param){
   this.ownName = ko.observable();
   this.loginElemList = ko.observableArray([]);
   this.hidingMessageCount = ko.observable(0);
+
   this.filterName = ko.observable("");
+  this.delayedFilterName = ko.pureComputed(this.filterName)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterName.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
 
   this.filterWord = ko.observable("");
   this.delayedFilterWord = ko.pureComputed(this.filterWord)
@@ -44,6 +52,14 @@ function ChatController(param){
   this.delayedFilterWord.subscribe(function (val){
     that.doFilterTimeline();
   }, this);
+
+  this.filterDate = ko.observable("");
+  this.delayedFilterDate = ko.pureComputed(this.filterDate)
+    .extend({ rateLimit: { method: "nofityWhenChangesStop", timeout: 500 }});
+  this.delayedFilterDate.subscribe(function (val){
+    that.doFilterTimeline();
+  }, this);
+
   this.isCommand = ko.observable(false);
 
   this.chatViewModels = ko.observableArray([]);
@@ -115,15 +131,17 @@ function ChatController(param){
   }
 
   this.inputLoginName = function(data, event, element){
+    var name = $(element).data("name");
     if (event.shiftKey == true ){
-      that.filterName($(element).data("name"));
+      that.filterName(name);
       $('.tooltip').hide();
-      $('#chat_area').scrollTop(0);
-      that.doFilterTimeline();
     }else{
-      var name = $(element).data("name");
       that.setMessage("@" + name + "さん");
     }
+  }
+
+  this.scrollTop = function(){
+    $('#chat_area').scrollTop(0);
   }
 
   this.changeLoginName = function(){
@@ -267,20 +285,32 @@ function ChatController(param){
 }
 
 ChatController.prototype = {
-  setMessage: function(message){
+  setMessage: function(message, force){
     var that = this;
-    var exist_msg = that.inputMessage();
-    if ( exist_msg == ""){
-      exist_msg += message + " ";
+
+    if (force){
+      // メッセージエリアに表示せずに直接送信する
+      var name = that.loginName();
+      var avatar = that.settingViewModel.avatar();
+
+      if ( message && name ){
+        var room_id = that.chatViewModels().filter(function(vm){ return vm.isActive(); })[0].no;
+        that.socket.emit('message', {name:name, avatar:avatar, room_id: room_id, msg:message});
+      }
     }else{
-      if (exist_msg.slice(-1) == " "){
+      var exist_msg = that.inputMessage();
+      if ( exist_msg == ""){
         exist_msg += message + " ";
       }else{
-        exist_msg += " " + message + " ";
+        if (exist_msg.slice(-1) == " "){
+          exist_msg += message + " ";
+        }else{
+          exist_msg += " " + message + " ";
+        }
       }
+      that.inputMessage(exist_msg);
+      $('#message').focus().trigger('autosize.resize');
     }
-    that.inputMessage(exist_msg);
-    $('#message').focus().trigger('autosize.resize');
   },
 
   sendMessage: function(){
@@ -288,6 +318,7 @@ ChatController.prototype = {
 
     // 検索中は送信しない
     if (that.filterWord() != ""){ return false; }
+    if (that.filterDate() != ""){ return false; }
 
     // 絵文字サジェストが表示中は送信しない
     if ($('.textcomplete-dropdown').css('display') == 'none'){
@@ -334,6 +365,14 @@ ChatController.prototype = {
       $('#filter_word_alert').slideUp();
     }
 
+    if (that.filterDate() != ""){
+      $('#filter_date_alert').slideDown();
+      // 入力例を表示しているだけの状態の時は絞り込みを行わない
+      if (that.filterDate() == " "){ return; }
+    }else{
+      $('#filter_date_alert').slideUp();
+    }
+
     if (that.filterName() != ""){
       $('#filter_name_alert').slideDown();
     }else{
@@ -343,14 +382,39 @@ ChatController.prototype = {
     this.chatViewModels().forEach(function(vm){
       vm.reloadTimeline();
     });
+
+    that.scrollTop();
   },
 
   doClientCommand: function(message){
     var that = this;
-    if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
+    if (message.match(/^\/@(.*)/)){
+      var search_words = RegExp.$1.split(" ");
+      that.filterName(search_words.shift());
+      
+      // 名前の後の文字は検索ワードで絞る
+      if (search_words.length > 0){
+        that.filterWord(search_words.join(" "));
+      }
+      that.isCommand(true);
+    }else if (message.match(/^search:(.*)/) || message.match(/^\/(.*)/)){
       var search_word = RegExp.$1;
       that.filterWord(search_word);
       that.isCommand(true);
+    }else if (message.match(/^date:(.*)/)){
+      that.isCommand(true);
+      var arg = RegExp.$1;
+      if (arg.match(/(\d+)\/(\d+)\/(\d+)/) || arg.match(/(\d+)-(\d+)-(\d+)/)) {
+        var search_date = RegExp.$1 + "/" + RegExp.$2 + "/" + RegExp.$3;
+        var date = new Date(Date.parse(search_date));
+        if (!isNaN(date)) {
+          search_date = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2);
+          that.filterDate(search_date);
+        }
+      }else{
+        // 入力例を画面に表示するためにダミーの値をセット
+        that.filterDate(" ");
+      }
     }else if (message.match(/^room_name:/)){
       that.isCommand(true);
     }else if (message.match(/^m:$/)){
@@ -366,6 +430,7 @@ ChatController.prototype = {
     }else{
       that.isCommand(false);
       that.filterWord("");
+      that.filterDate("");
 
       // mention か mention & own の場合はフィルタリングを解除
       if (that.timeline() != "all"){
@@ -375,6 +440,13 @@ ChatController.prototype = {
     }
 
     return;
+  },
+
+  showImagePreview: function(message){
+    var that = this;
+
+    var urls = message.match(/(=?)((\S+?(\.jpg|\.jpeg|\.gif|\.png|\.bmp)([?][\S]*)?)($|\s))/gi);
+    that.imagePreviews(urls);
   },
 
   initChat: function(){
@@ -395,16 +467,17 @@ ChatController.prototype = {
       var data_id = $(this).closest(".alert").attr('id');
       if (data_id == "mention_own_alert"){
         that.timeline("all");
-        that.inputMessage("");
-        that.isCommand(false);
       }else if (data_id == "mention_alert"){
         that.timeline("all");
-        that.inputMessage("");
-        that.isCommand(false);
       }else if (data_id == "filter_name_alert"){
         that.filterName("");
       }else if (data_id == "filter_word_alert"){
         that.filterWord("");
+      }else if (data_id == "filter_date_alert"){
+        that.filterDate("");
+      }
+
+      if (that.isCommand()){
         that.inputMessage("");
         that.isCommand(false);
       }
@@ -495,6 +568,10 @@ ChatController.prototype = {
 
   getFilterWord: function(){
     return this.filterWord();
+  },
+
+  getFilterDate: function(){
+    return this.filterDate();
   },
 
   updateFaviconNumber: function(){

@@ -203,13 +203,14 @@ ChatViewModel.prototype = {
 
     var filterName = that.parent.getFilterName();
     var filterWord = that.parent.getFilterWord();
+    var filterDate = that.parent.getFilterDate();
 
     // 既に読み込み中の場合は完了後に再度読み込み開始する
     if (that.isLoadingLog){
       that.reloadAgain = true;
     }else{
       that.isLoadingLog = true;
-      that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord});
+      that.socket.emit('latest_log', {room_id: that.no, name: filterName, word: filterWord, date: filterDate});
       $('#message_loader').show();
     }
   },
@@ -220,7 +221,8 @@ ChatViewModel.prototype = {
 
     var filterName = this.parent.getFilterName();
     var filterWord = this.parent.getFilterWord();
-    this.socket.emit('load_log_more', {room_id: this.no, id: id, name: filterName, word: filterWord});
+    var filterDate = this.parent.getFilterDate();
+    this.socket.emit('load_log_more', {room_id: this.no, id: id, name: filterName, word: filterWord, date:filterDate});
   },
 
   clear_unread: function(){
@@ -483,17 +485,6 @@ ChatViewModel.prototype = {
       }
     }else if (that.parent.timeline() == "mention"){
       if (msg.css == 'normal_msg' || msg.css == 'own_msg'){
-        return false;
-      }
-    }else if (this.parent.getFilterName() != ""){
-      if ($(msg.html).find(".login-symbol").data("name") != this.parent.getFilterName()){
-        return false;
-      }
-    }
-
-    if (this.parent.getFilterWord() != ""){
-      var reg = RegExp(this.parent.getFilterWord(),"im");
-      if (!$(msg.html).find(".msg").text().match(reg)){
         return false;
       }
     }

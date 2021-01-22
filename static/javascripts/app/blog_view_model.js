@@ -8,6 +8,8 @@ require('sweetalert');
 var DropZone = require('../libs/dropzone');
 var BlogItemViewModel = require('./blog_item_view_model');
 
+var TAB_STRING = "    ";
+
 function BlogViewModel(name, start, end, editing){
   var that = this;
   this.name = name;
@@ -26,6 +28,7 @@ function BlogViewModel(name, start, end, editing){
     return edit_items.length != 0;
   });
 
+  this.tag_filter = ko.observable("");
   this.tags = ko.observableArray([]);
 
   this.matched_doms = [];
@@ -42,15 +45,36 @@ function BlogViewModel(name, start, end, editing){
   this.clipboard = new Clipboard('.clip');
 
   this.selectTag = function(data, event, element){
-    that.search_by_tag(this.tag_name);
+    var tag_name = this.tag_name;
+    var tag_data = that.tags().filter(function(tag){ return tag.tag_name == tag_name; })[0];
+
+    that.search_or_clear_tag(tag_data);
+
     $('#tags_modal').modal('hide');
+  }
+
+  this.selectTagFromList = function(data, event, element){
+    that.search_or_clear_tag(data);
   }
 
   this.selectTagInTitle = function(data, event, element){
     if (that.load_start == null){ return; }
 
-    var tag = $(element).data("tag");
-    that.search_by_tag(tag);
+    var tag_name = $(element).data("tag");
+    var tag_data = that.tags().filter(function(tag){ return tag.tag_name == tag_name; })[0];
+
+    that.search_or_clear_tag(tag_data);
+  }
+
+  this.search_or_clear_tag = function(data){
+    if (data.active()){
+      that.searchClear();
+      data.active(false);
+    }else{
+      that.tags().forEach(function(tag){ tag.active(false); });
+      data.active(true);
+      that.search_by_tag(data.tag_name);
+    }
   }
 
   this.update = function(){
@@ -98,11 +122,18 @@ function BlogViewModel(name, start, end, editing){
       cache: false,
       data: {blog: update_blog},
       success: function(data){
-        that.tags(data.tags);
+        that.setTags(data.tags);
         blog.apply(data.blog, editing);
         that._update_tags();
       }
     });
+  }
+
+  this.setTags = function(tags){
+    // 属性を付加
+    tags.forEach(function(tag){ tag.active = ko.observable(false); });
+    tags.forEach(function(tag){ tag.visible = ko.computed(function(){ return ~tag.tag_name.toLowerCase().indexOf(that.tag_filter().toLowerCase()); })});
+    that.tags(tags);
   }
 
   this.cancel = function(){
@@ -137,7 +168,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {blog: remove_blog},
         success: function(data){
-          that.tags(data.tags);
+          that.setTags(data.tags);
           that._update_tags();
 
           if (goto_blog){
@@ -151,6 +182,10 @@ function BlogViewModel(name, start, end, editing){
       });
     });
   }
+
+  this._key = {
+    press : false
+  };
 
   this.keydownEditing = function(data, event, element){
     // Ctrl - S
@@ -171,17 +206,110 @@ function BlogViewModel(name, start, end, editing){
         editing: false,
       });
       return false;
+    }else if (event.ctrlKey == false && event.keyCode == 13){ // enter : new line or clear list markdown
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[current_row].match(/^([ ]*([-=][ ]?\[[ ]?\]|[\*-])[ ]*)$/);
+      if (matches){
+        edit_lines[current_row] = "";
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - matches[1].length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+
+        return false;
+      }else{
+        return true;
+      }
+    }else if (event.shiftKey == false && event.keyCode == 9){ // Tab : indent++
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      edit_lines[current_row] = TAB_STRING + edit_lines[current_row];
+
+      var elem = event.target;
+      var pos = elem.selectionStart;
+      var after_pos = pos + TAB_STRING.length;
+
+      data.editing_text(edit_lines.join('\n'));
+      elem.setSelectionRange(after_pos, after_pos);
+
+      return false;
+    }else if (event.shiftKey == true && event.keyCode == 9){ // shift + Tab : indent--
+      var $code = $('.edit-area');
+      var current_row = $code.caretLine() - 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      var list_reg = new RegExp('^' + TAB_STRING + '(.*)');
+      var matches = edit_lines[current_row].match(list_reg);
+      if (matches){
+        edit_lines[current_row] = matches[1];
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos - TAB_STRING.length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+      }
+
+      return false;
+
     }else{
       return true;
     }
   }
+
+  this.keypressEditing = function(data, event, element){
+    that._key.press = true;
+    return true;
+  }
+
+  this.keyupEditing = function(data, event, element){
+    var before_key_press = that._key.press;
+    that._key.press = false;
+
+    if (event.keyCode == 13 && before_key_press){ // enter : continue list markdown
+      var $code = $('.edit-area');
+      var before_row = $code.caretLine() - 2;
+      var current_row = before_row + 1;
+      var edit_lines = data.editing_text().split('\n');
+
+      // match beginning  = [ ] , = [x] , - [ ] , - [x] , * , -
+      var matches = edit_lines[before_row].match(/(^[ ]*([-=][ ]?\[[ x]?\]|[\*-])).*/);
+      if (matches){
+        var prefix = matches[1].replace('x',' ') + " ";
+        edit_lines[current_row] = prefix + edit_lines[current_row];
+
+        var elem = event.target;
+        var pos = elem.selectionStart;
+        var after_pos = pos + prefix.length;
+
+        data.editing_text(edit_lines.join('\n'));
+        elem.setSelectionRange(after_pos, after_pos);
+      }
+      return false;
+    }else{
+      return true;
+    }
+  }
+
 
   this.selectIndex = function(blog){
     $target = $("#" + blog._id());
     var target_top = $target.offset().top;
     var base_top = $("#blog_list").offset().top;
     $('#blog_area').scrollTop(target_top - base_top);
+  }
 
+  this.selectIndexesLink = function(blog){
     that.toggleIndexes(blog);
   }
 
@@ -267,6 +395,12 @@ function BlogViewModel(name, start, end, editing){
     that.search();
   }
 
+  this.selectUser = function(name){
+    that.tags().forEach(function(tag){ tag.active(false); });
+    that.keyword("name:" + name);
+    that.search();
+  }
+
   this.search = function(){
     // キーワード無しの場合は全blog更新
     if (this.keyword() == ""){
@@ -314,7 +448,7 @@ function BlogViewModel(name, start, end, editing){
         $('#blog_area').scrollTop(0);
 
         that.items([]);
-        that.item_count(data.blogs.count);
+        that.item_count(data.blogs.length);
         that.searched_blogs = data.blogs;
         var search_displaying_blogs = that.searched_blogs.splice(0,10);
 
@@ -354,7 +488,7 @@ function BlogViewModel(name, start, end, editing){
         $('#index_area').scrollTop(0);
         $('#blog_area').scrollTop(0);
 
-        that.tags(data.tags);
+        that.setTags(data.tags);
 
         var blogs = data.blogs;
         that.items([]);
@@ -388,7 +522,7 @@ function BlogViewModel(name, start, end, editing){
         cache: false,
         data: {_id: id},
         success: function(data){
-          that.tags(data.tags);
+          that.setTags(data.tags);
           var blogs = data.blogs;
           blogs.body.forEach(function(blog){
             that._addItem(blog, that.initialEditing);
@@ -531,6 +665,10 @@ function BlogViewModel(name, start, end, editing){
   }
 
   this.set_ref_point = function(){
+    // dummy
+  }
+
+  this.set_send_message = function(message){
     // dummy
   }
 }

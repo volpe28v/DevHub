@@ -3,6 +3,8 @@ var fs = require('fs');
 var mv = require('mv');
 var util = require('../lib/util');
 
+var UploadPath = __dirname + "/../static/uploads/";
+
 module.exports.set_db = function(current_db){
 
 };
@@ -30,7 +32,7 @@ exports.post = function(req, res) {
       var type = files[name][0].headers['content-type'];;
       var file_name = modifyFileName(org_name, type);
       var tmp_path = files[name][0].path;
-      var target_path = './static/uploads/' + file_name;
+      var target_path = UploadPath + file_name;
       var access_path = '/uploads/' + file_name;
 
       mv(tmp_path, target_path, function(err) {
@@ -50,18 +52,15 @@ exports.post = function(req, res) {
 };
 
 exports.get = function(req, res){
-  util.getFileListAndSize('./static/uploads/',function(file_info){
+  util.getFileListAndSize(UploadPath, function(file_info){
     res.render('upload',{file_info: file_info});
   });
 };
 
 exports.delete = function(req, res) {
-  var path = './static/uploads/' + req.body.file;
-  fs.unlink(path, function(err) {
-    if (err) {
-      throw err;
-    }
-    util.getFileListAndSize('./static/uploads/',function(file_info){
+  var path = UploadPath + req.body.file;
+  fs.unlink(path, function() {
+    util.getFileListAndSize(UploadPath, function(file_info){
       res.send({all_size: file_info['all_size']});
     });
   });

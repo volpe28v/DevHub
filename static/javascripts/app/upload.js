@@ -4,6 +4,7 @@ require('jquery-ui');
 require('jquery-colorbox');
 require('jquery-lazyload');
 require('sweetalert');
+require('tablesorter');
 
 $(function() {
   $('.delete-button').click(function(){
@@ -48,6 +49,7 @@ $(function() {
   });
 
   setColorbox($('.thumbnail'));
+  $("#file_list").tablesorter();
 });
 
 function setColorbox($dom){

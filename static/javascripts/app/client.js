@@ -38,8 +38,8 @@ function ClientViewModel(param){
   this.memoController = new MemoController({
     socket: that.socket,
     settingViewModel: that.settingViewModel,
-    setMessage: function(message){
-      that.chatController.setMessage(message);
+    setMessage: function(message, force){
+      that.chatController.setMessage(message, force);
     },
     zenMode: function(){
       return that.zenMode;
@@ -110,6 +110,10 @@ function ClientViewModel(param){
             that.chatController.prev();
           }else if (e.keyCode == 76){  // Shift + l: select prev chat room
             that.chatController.next();
+          } else if (e.keyCode == 87){  // Shift + w : wip reverse jump
+            that.memoController.wipReverseJump();
+          } else if (e.keyCode == 52){ // $: move bottom share memo
+            that.memoController.bottom();
           }
         }else{
           if (e.keyCode == 67){        // c : focus chat field

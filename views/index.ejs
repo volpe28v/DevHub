@@ -146,7 +146,9 @@
             <div class="clearfix"></div>
             <div id="share_memo_index" data-bind="foreach: memoViewModels">
               <ul data-bind="foreach: indexes, attr: {id: 'share_memo_index_' + no, 'data-no': no}, visible: active" class="index-ul">
-                <li class="index-li" data-bind="click: function(data, event){ return $parents[1].select_index_li(data,event,$element) }">
+                <li class="index-li" data-bind="
+                  click: function(data, event){ return $parents[1].select_index_li(data,event,$element) },
+                  event: { dblclick: function(data, event){ return $parent.selectMemoFromIndexes(data,event,$element) }}">
                   <a><div data-bind="css: index_class, decoMemoIndex: body"></div></a>
                 </li>
               </ul>
@@ -200,6 +202,11 @@
                   </tr>
                 </table>
               </form>
+              <div data-bind="foreach: imagePreviews"> 
+                <div class="thumbnail">
+                  <img data-bind="attr: {src: $data}" style="max-height:100px">
+                </div>
+              </div>
             </div>
             <div class="chat-control-dummy" style="display:none;"></div>
             <div id="chat_body" class="text-base-style">
@@ -231,6 +238,17 @@
                 <div id="filter_word_alert" class="alert alert-success" style="display:none">
                   <button type="button" class="close" data-dismiss="alert">&times;</button>
                   <strong>Display <span data-bind="text: filterWord"></span> search mode.
+                    <!-- ko if: hidingMessageCount() != 0 -->
+                    <span data-bind="text: hidingMessageCount"></span> new messages.
+                    <!-- /ko -->
+                  </strong>
+                </div>
+                <div id="filter_date_alert" class="alert alert-success" style="display:none">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Display <span data-bind="text: filterDate"></span> date search mode.
+                    <!-- ko if: filterDate() == " " -->
+                    Type yyyy/mm/dd or yyyy-mm-dd.
+                    <!-- /ko -->
                     <!-- ko if: hidingMessageCount() != 0 -->
                     <span data-bind="text: hidingMessageCount"></span> new messages.
                     <!-- /ko -->
@@ -350,6 +368,7 @@
                         dblclick: function(data, event){ displaySpecificRow(data, event, $element) },
                         click: function(data, event){ return clickOnCodeArea(data, event, $element) },
                         keydown: function(data, event){ return keydownOnCodeArea(data, event, $element)},
+                        keypress: function(data, event){ return keypressOnCodeArea(data, event, $element)},
                         keyup: function(data, event){ return keyupOnCodeArea(data, event, $element)},
                         select: function(data, event){ selectText(data, event, $element)}
                       }" class="code code-unselect" style="display: none" placeholder="Write here"></textarea>
@@ -373,7 +392,7 @@
               </div>
             </div>
             <footer>
-              <span>© 2012 Naoki KODAMA. All rights reserved.</span>
+              <span>© 2017 Naoki KODAMA. All rights reserved.</span>
             </footer>
           </div>
         </div>
@@ -548,6 +567,10 @@
       <div id="restore">
         <button data-bind="click: restore" class="btn btn-danger"><i class="icon-arrow-left icon-white"></i> Restore</button>
       </div>
+    </div>
+
+    <div id="memo_scroll_top" data-bind="with: memoController" style="display: none">
+      <button data-bind="click: top" class="btn btn-default"><i class="icon-arrow-up icon-black"></i></button>
     </div>
 
     <div id="loading">
