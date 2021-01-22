@@ -1191,7 +1191,7 @@ function MemoViewModel(param){
     }
 
     that.switchEditShareMemo(pos, CODE_OUT_ADJUST_HEIGHT_BY_CONTROL);
-    that.insert(row, "#### " + title + "\n\n");
+    that.insert(row, "## " + title + "\n\n");
     that.$code().caretLine(pos);
   }
 
