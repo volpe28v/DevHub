@@ -28,4 +28,4 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      #- run: npm run e2e
+      - run: npm run e2e
