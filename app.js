@@ -13,7 +13,12 @@ program
   .option('-d, --db_name [name]', 'db name. default is "devhub_db".')
   .option('-t, --title_name [name]', 'title name. default is "".')
   .option('--force-ssl', 'enforce access via https. default is false.')
+  .addHelpText('after', `Environment variables
+  BASIC_AUTH_USER: user name of basic authentication.
+  BASIC_AUTH_PASS: password of basic authentication.
+  GRIDFS: Set "true" when useing gridfs.`)
   .parse(process.argv);
+
 
 var menu_links = [];
 try{
