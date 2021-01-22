@@ -29,10 +29,12 @@ try{
   // ファイルが無ければメニューリンクなし
 }
 
-app.set('port', program.port || process.env.PORT || 3000);
-app.set('db_name', program.db_name || 'devhub_db');
-app.set('title_name', program.title_name ? "for " + program.title_name : "");
-app.set('force_ssl', program.forceSsl || process.env.FORCE_SSL === 'true');
+const options = program.opts();
+
+app.set('port', options.port || process.env.PORT || 3000);
+app.set('db_name', options.db_name || 'devhub_db');
+app.set('title_name', options.title_name ? "for " + options.title_name : "");
+app.set('force_ssl', options.forceSsl || process.env.FORCE_SSL === 'true');
 app.set('basic_user', process.env.BASIC_AUTH_USER ? process.env.BASIC_AUTH_USER : "");
 app.set('basic_pass', process.env.BASIC_AUTH_PASS ? process.env.BASIC_AUTH_PASS : "");
 app.set('gridfs', process.env.GRIDFS == "true" ? true : false);
