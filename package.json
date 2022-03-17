@@ -44,7 +44,7 @@
     "knockout": "3.5.0",
     "knockout.mapping": "2.4.3",
     "moment": "2.22.2",
-    "mongodb": "^3.3.2",
+    "mongodb": "^4.0.0",
     "multiparty": "^4.2.2",
     "mv": "^2.1.1",
     "nightwatch": "1.5.1",
