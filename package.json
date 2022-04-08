@@ -43,7 +43,7 @@
     "jquery.cookie": "1.4.1",
     "knockout": "3.5.0",
     "knockout.mapping": "2.4.3",
-    "moment": "2.22.2",
+    "moment": "2.29.2",
     "mongodb": "^3.3.2",
     "multiparty": "^4.2.2",
     "mv": "^2.1.1",
