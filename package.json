@@ -59,7 +59,7 @@
     "tablesorter": "2.31.1",
     "textarea-helper": "0.3.1",
     "underscore": "^1.10.2",
-    "webpack": "^3.5.5"
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "chromedriver": "^87.0.5",
